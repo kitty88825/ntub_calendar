@@ -1,0 +1,58 @@
+<div class="wrap">
+  <div class="head">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" [routerLink]="['/user-calendar']">Calendar</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">建立</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/add-schedule']">建立行程</a>
+          <a class="dropdown-item" [routerLink]="['/add-meet']">建立會議</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">訂閱</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/add-subscribe']">新增訂閱</a>
+          <a class="dropdown-item" [routerLink]="['/my-subscribe']">我的訂閱</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" [routerLink]="['/export']">匯出pdf</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" (click)="logout()" type="button">登出</a>
+      </li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="bar">
+      <span class="badge badge-light">選擇匯出行事曆</span>
+      <br>
+      <input type="checkbox" ng-model="all" class="mine"> 我的行事曆
+      <hr>
+      <span class="badge badge-light">我的訂閱</span>
+      <div  class="card">
+        <div class="list">
+          <input type="checkbox" ng-model="all"> 學校<br>
+          <input type="checkbox" ng-model="all"> 期中考<br>
+          <input type="checkbox" ng-model="all"> 期末考<br>
+        </div>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/user-calendar']"> 取消
+        </label>
+        <label class="btn btn-primary">
+          <input type="checkbox" autocomplete="off"> 匯出
+        </label>
+      </div>
+    </div>
+    <div class="content">
+      <div class="card"></div>
+    </div>
+  </div>
+</div>

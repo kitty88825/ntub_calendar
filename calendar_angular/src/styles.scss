@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://bootswatch.com/4/sketchy/bootstrap.css');
+
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+
+html,
+body {
+  width : 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.theme-green .bs-datepicker-head {
+  background-color: rgb(48, 48, 48);
+}
+
+.theme-green .bs-datepicker-body table td.week span {
+  display: none;
+}
+
+@media screen and (max-width:480px) {
+  .fc-toolbar {
+    display: block;
+  }
+
+  .fc-toolbar.fc-header-toolbar {
+    text-align: center;
+  }
+}
