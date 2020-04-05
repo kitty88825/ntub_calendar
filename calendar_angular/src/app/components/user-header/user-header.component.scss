@@ -1,0 +1,38 @@
+@media screen {
+  .head {
+    background-color: white;
+  }
+
+  a.nav-link{
+    color: black;
+  }
+
+  form {
+    float: left;
+  }
+
+  ul {
+    margin-left: auto;
+  }
+
+  ul li:nth-child(1) {
+    letter-spacing: 3px;
+  }
+
+  .form-control {
+    height: 30px;
+  }
+
+  ul li:nth-child(2) {
+    margin-left: auto;
+  }
+}
+
+
+@media screen and (max-width:480px){
+  ul li:nth-child(2) {
+    margin-left: 0px;
+  }
+
+}
+

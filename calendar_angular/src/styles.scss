@@ -4,11 +4,14 @@
 @import '~@fullcalendar/core/main.css';
 @import '~@fullcalendar/daygrid/main.css';
 
+@import '~pretty-checkbox/src/pretty-checkbox.scss';
+
 html,
 body {
   width : 100%;
   height: 100%;
   margin: 0;
+  background-color: rgb(48, 48, 48);
 }
 
 .theme-green .bs-datepicker-head {
@@ -19,12 +22,43 @@ body {
   display: none;
 }
 
-@media screen and (max-width:480px) {
-  .fc-toolbar {
-    display: block;
-  }
+.table-active, .table-active > th, .table-active > td {
+  background-color: #eee;
+}
 
-  .fc-toolbar.fc-header-toolbar {
-    text-align: center;
-  }
+.fc-ltr .fc-list-heading-main {
+  color: black;
+  letter-spacing: 4px;
+}
+
+.fc-ltr .fc-list-heading-alt {
+  color: black;
+  letter-spacing: 4px;
+  margin-right: 10px;
+}
+
+.fc-listYear-view td{
+  border-style: unset;
+}
+
+.fc-listYear-view td:nth-child(1){
+  padding-left: 10px;
+}
+
+.fc-list-item-time {
+  letter-spacing: 4px;
+}
+
+.fc-list-item-title a {
+  letter-spacing: 4px;
+  margin-left: 10px;
+}
+
+.card-header {
+  border-style: unset;
+  background-color: unset;
+}
+
+@media screen and (max-width:480px) {
+
 }

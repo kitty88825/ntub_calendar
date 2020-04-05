@@ -5,23 +5,39 @@
     height   : 100%;
     position : relative;
     min-width: 320px;
-  }
-
-  .head {
-    background-color: rgb(48, 48, 48);
-  }
-
-  a.nav-link {
-    color: white;
+    margin-top: 80px;
   }
 
   .two {
     margin-left: 30px;
   }
 
+  .date {
+    width:130px;
+  }
 
-  ul li:nth-child(2) {
-    margin-left: auto;
+  .time {
+    margin-left: 20px;
+  }
+
+  .time1 {
+    margin-left: 5px;
+  }
+
+  .col-md-4 {
+    position: relative;
+    z-index: 10;
+  }
+
+  img.calendar {
+    position: relative;
+    margin-left: -60px;
+    z-index: 20;
+  }
+
+  span.to {
+    margin-left: 15px;
+    margin-top: 8px;
   }
 
   .title {
@@ -29,20 +45,23 @@
     margin-top: 20px;
   }
 
-  select.time {
-    margin-left: 45px;
+  .location-form {
+    position: relative;
+    z-index: 10;
   }
 
-  select.time1 {
-    margin-left: 12px;
+  img.location {
+    margin-left: -45px;
+    position: relative;
+    z-index: 20;
   }
 
   .title button {
     position        : relative;
     font-weight     : 1000;
     z-index         : 2;
-    background-color: rgb(48, 48, 48);
-    color           : white;
+    background-color:white;
+    color           :black;
   }
 
   .btn-group {
@@ -78,8 +97,14 @@
 }
 
 @media screen and (max-width:480px) {
-  ul li:nth-child(2) {
-    margin-left: 0px;
+  .date {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  img.calendar {
+    margin-left: -60px;
+    margin-bottom: 10px;
   }
 
   .title {
@@ -87,12 +112,12 @@
   }
 
   .time1 {
-    margin-top: 10px;
+    width: 45%;
   }
 
   .jumbotron {
-    width : 70%;
-    margin: -20px 15% 20px 15%;
+    width : 90%;
+    margin: -20px 5% 20px 5%;
   }
 
   .form-group {
@@ -108,10 +133,9 @@
     margin-left: 0px;
   }
 
-  select.time {
-    margin-left: 0;
-    width: 50%;
-    margin-left: 25%;
+  .time {
+    margin-left: 5%;
+    width: 45%;
   }
 
   button.down {

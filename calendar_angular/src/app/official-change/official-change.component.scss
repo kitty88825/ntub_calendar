@@ -1,0 +1,57 @@
+@media screen {
+  .wrap {
+    width    : 100%;
+    height   : 100%;
+    position : relative;
+    min-width: 320px;
+    background-color: rgb(48, 48 , 48);
+    margin-top: 80px;
+  }
+
+  .bar {
+    margin-left: 35%;
+    margin-bottom: 10px;
+  }
+
+  .content {
+    color: white;
+    margin: 30px 3%;
+  }
+
+  .container {
+    width: 60%;
+    height: fit-content;
+    background-color: white;
+  }
+
+  .table {
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .btn-group {
+    margin-bottom: 20px;
+    margin-left: 40%;
+  }
+
+}
+
+@media screen and (max-width:480px) {
+  .bar {
+    margin-left: 15%;
+    margin-bottom: 20px;
+  }
+
+  .container {
+    width: 90%;
+  }
+
+  .btn-group {
+    margin-left: 30%;
+  }
+
+  .col-sm-2 {
+    width: 30%;
+  }
+}
+

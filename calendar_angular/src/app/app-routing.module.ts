@@ -10,6 +10,9 @@ import { AddMeetComponent } from './add-meet/add-meet.component';
 import { AddSubscribeComponent } from './add-subscribe/add-subscribe.component';
 import { MySubscribeComponent } from './my-subscribe/my-subscribe.component';
 import { ExportComponent } from './export/export.component';
+import { OfficialCalendarComponent } from './official-calendar/official-calendar.component';
+import { OfficialAddComponent } from './official-add/official-add.component';
+import { OfficialChangeComponent } from './official-change/official-change.component';
 
 
 const routes: Routes = [
@@ -23,7 +26,10 @@ const routes: Routes = [
   { path: 'add-meet', component: AddMeetComponent},
   { path: 'add-subscribe', component: AddSubscribeComponent},
   { path: 'my-subscribe', component: MySubscribeComponent},
-  { path: 'export', component: ExportComponent}
+  { path: 'export', component: ExportComponent},
+  { path: 'official-calendar', component: OfficialCalendarComponent},
+  { path: 'official-add', component: OfficialAddComponent},
+  { path: 'official-change', component: OfficialChangeComponent}
 ];
 
 @NgModule({

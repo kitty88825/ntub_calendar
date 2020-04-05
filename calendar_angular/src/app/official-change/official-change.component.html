@@ -1,0 +1,45 @@
+<div class="wrap">
+  <app-official-header></app-official-header>
+  <div class="content">
+    <div class="bar row">
+      <label for="static" class="top col-form-label">學年度</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control">
+      </div>
+      <label for="static" class="top col-form-label">學制</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control">
+      </div>
+    </div>
+    <div class="container">
+      <div class="table">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">日期</th>
+              <th scope="col">行程名稱</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-active">
+              <th scope="row">
+                date
+              </th>
+              <td>
+                schedule
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/official-calendar']"> 取消
+        </label>
+        <label class="btn btn-primary">
+          <input type="checkbox" autocomplete="off" (click)="add()"> 建立
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

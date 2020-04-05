@@ -1,38 +1,6 @@
 <div class="wrap">
-  <div class="head">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" [routerLink]="['/user-calendar']">Calendar</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">建立</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/add-schedule']">建立行程</a>
-          <a class="dropdown-item" [routerLink]="['/add-meet']">建立會議</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">訂閱</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/add-subscribe']">新增訂閱</a>
-          <a class="dropdown-item" [routerLink]="['/my-subscribe']">我的訂閱</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" [routerLink]="['/export']">匯出pdf</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" (click)="logout()" type="button">登出</a>
-      </li>
-    </ul>
-  </div>
+    <app-user-header></app-user-header>
   <div class="content">
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-    </form>
     <div id="calendar" class="calendar"></div>
   </div>
 </div>

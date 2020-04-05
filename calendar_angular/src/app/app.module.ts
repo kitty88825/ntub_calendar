@@ -19,7 +19,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FormsModule } from '@angular/forms';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-
+import { UserHeaderComponent } from './components/user-header/user-header.component';
+import { OfficialCalendarComponent } from './official-calendar/official-calendar.component';
+import { OfficialHeaderComponent } from './components/official-header/official-header.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { OfficialAddComponent } from './official-add/official-add.component';
+import { OfficialChangeComponent } from './official-change/official-change.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +39,11 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     AddSubscribeComponent,
     MySubscribeComponent,
     ExportComponent,
+    UserHeaderComponent,
+    OfficialCalendarComponent,
+    OfficialHeaderComponent,
+    OfficialAddComponent,
+    OfficialChangeComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,7 +53,8 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     BrowserAnimationsModule,
     BsDatepickerModule.forRoot(),
     FormsModule,
-    CollapseModule
+    CollapseModule,
+    BsDropdownModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

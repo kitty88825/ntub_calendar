@@ -9,12 +9,17 @@
     margin-top: 80px;
   }
 
-  .head {
-    background-color: white;
+  a.nav-link {
+    font-size: 25px;
+    color: white;
   }
 
-  a.nav-link{
-    color: black;
+  a.dropdown-item:hover {
+    color: white;
+  }
+
+  .nav {
+    margin-left: 45%;
   }
 
   .content {
@@ -25,6 +30,9 @@
 }
 
 @media screen and (max-width:480px) {
+  .nav {
+    margin-left: 25%;
+  }
 
 }
 

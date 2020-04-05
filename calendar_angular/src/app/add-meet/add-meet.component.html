@@ -1,36 +1,8 @@
 <div class="wrap">
-  <div class="head">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" [routerLink]="['/user-calendar']">Calendar</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">建立</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/add-schedule']">建立行程</a>
-          <a class="dropdown-item" [routerLink]="['/add-meet']">建立會議</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">訂閱</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/add-subscribe']">新增訂閱</a>
-          <a class="dropdown-item" [routerLink]="['/my-subscribe']">我的訂閱</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" [routerLink]="['/export']">匯出pdf</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" (click)="logout()" type="button">登出</a>
-      </li>
-    </ul>
-  </div>
+  <app-user-header></app-user-header>
   <div class="content">
     <div class="title">
-      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-schedule']">建立會議</button>
+      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-meet']">建立會議</button>
     </div>
     <div class="jumbotron">
       <div class="form-group row">
@@ -40,19 +12,45 @@
         </div>
       </div>
       <div class="form-group row">
-        <label for="static" class="top col-form-label">日期：</label>
-        <div class="two col-md-8">
-          <input type="text" class="form-control" bsDatepicker>
+        <label for="static" class="top col-form-label">開始時間：</label>
+        <div class="col-md-4">
+          <input type="text" class="date form-control" bsDatepicker>
         </div>
-      </div>
-      <div class="form-group row">
-        <label for="static" class="top col-form-label">時間：</label>
+        <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar" bsDatepicker>
         <select class="time form-control col-md-2">
           <option>全天</option>
           <option>上午</option>
           <option>下午</option>
         </select>
-        <select class="time1 form-control col-md-5">
+        <select class="time1 form-control col-md-2">
+          <option></option>
+          <option>1:00</option><option>1:30</option>
+          <option>2:00</option><option>2:30</option>
+          <option>3:00</option><option>3:30</option>
+          <option>4:00</option><option>4:30</option>
+          <option>5:00</option><option>5:30</option>
+          <option>6:00</option><option>6:30</option>
+          <option>7:00</option><option>7:30</option>
+          <option>8:00</option><option>8:30</option>
+          <option>9:00</option><option>9:30</option>
+          <option>10:00</option><option>10:30</option>
+          <option>11:00</option><option>11:30</option>
+          <option>12:00</option><option>12:30</option>
+        </select>
+      </div>
+      <div class="form-group row">
+        <label for="static" class="top col-form-label">結束時間：</label>
+        <div class="col-md-4">
+          <input type="text" class="date form-control" bsDatepicker>
+        </div>
+        <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar" bsDatepicker>
+        <select class="time form-control col-md-2">
+          <option>全天</option>
+          <option>上午</option>
+          <option>下午</option>
+        </select>
+        <select class="time1 form-control col-md-2">
+          <option></option>
           <option>1:00</option><option>1:30</option>
           <option>2:00</option><option>2:30</option>
           <option>3:00</option><option>3:30</option>
@@ -72,6 +70,7 @@
         <div class="two col-sm-8">
           <input type="text" class="form-control">
         </div>
+        <img src="../assets/images/edit_location-black-18dp.svg" class="location">
       </div>
       <div class="form-group row">
         <label for="static" class="top col-form-label">參與人員：</label>
@@ -91,13 +90,10 @@
           <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <div class="input-group mb-3">
+          <div class="input-group">
             <div class="custom-file">
               <input type="file" class="custom-file-input" id="inputGroupFile02">
               <label class="custom-file-label" for="inputGroupFile02">選擇檔案</label>
-            </div>
-            <div class="input-group-append">
-              <span class="input-group-text" id="">上傳</span>
             </div>
           </div>
         </div>

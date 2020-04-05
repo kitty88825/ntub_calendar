@@ -3,12 +3,11 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-subscribe',
-  templateUrl: './add-subscribe.component.html',
-  styleUrls: ['./add-subscribe.component.scss']
+  selector: 'app-official-header',
+  templateUrl: './official-header.component.html',
+  styleUrls: ['./official-header.component.scss']
 })
-export class AddSubscribeComponent implements OnInit {
-  isOpen = true;
+export class OfficialHeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
@@ -32,4 +31,5 @@ export class AddSubscribeComponent implements OnInit {
       }
     });
   }
+
 }

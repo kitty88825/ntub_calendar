@@ -1,31 +1,30 @@
 <div class="wrap">
-  <div class="head">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" [routerLink]="['/user-calendar']">Calendar</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">建立</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/add-schedule']">建立行程</a>
-          <a class="dropdown-item" [routerLink]="['/add-meet']">建立會議</a>
+    <app-user-header></app-user-header>
+    <div class="content">
+      <div class="title">
+        <button type="button" class="btn btn-outline-secondary" [routerLink]="['/my-subscribe']">我的訂閱</button>
+      </div>
+      <div class="jumbotron">
+        <div class="form-group">
+          <label for="static" class="top col-form-label">目前已訂閱行事曆：</label>
         </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">訂閱</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/add-subscribe']">新增訂閱</a>
-          <a class="dropdown-item" [routerLink]="['/my-subscribe']">我的訂閱</a>
+        <div class="form-group row">
+          <div class="pretty p-default p-curve p-thick">
+            <input type="checkbox" />
+            <div class="state">
+              <label class="mine">教務處</label>
+            </div>
+          </div>
+          <div class="pretty p-default p-curve p-thick">
+            <input type="checkbox" />
+            <div class="state">
+              <label class="mine">學務處</label>
+            </div>
+          </div>
         </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" [routerLink]="['/export']">匯出pdf</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" (click)="logout()" type="button">登出</a>
-      </li>
-    </ul>
-  </div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <button type="button" class="btn btn-outline-secondary" [routerLink]="['/user-calendar']">返回</button>
+        </div>
+      </div>
+    </div>
 </div>

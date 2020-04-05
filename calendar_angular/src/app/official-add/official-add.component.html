@@ -1,0 +1,51 @@
+<div class="wrap">
+  <app-official-header></app-official-header>
+  <div class="content">
+    <div class="bar">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link year" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+            aria-expanded="false">108</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item">107</a>
+            <a class="dropdown-item">106</a>
+            <a class="dropdown-item">105</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">學年度</a>
+        </li>
+      </ul>
+    </div>
+    <div class="container">
+      <div class="table">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">日期</th>
+              <th scope="col">行程名稱</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-active">
+              <th scope="row">
+                date
+              </th>
+              <td>
+                schedule
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/official-calendar']"> 取消
+        </label>
+        <label class="btn btn-primary">
+          <input type="checkbox" autocomplete="off" [routerLink]="['/official-change']"> 修改
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

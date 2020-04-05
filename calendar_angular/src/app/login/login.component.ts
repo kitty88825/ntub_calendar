@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   enter() {
-    this.router.navigate(['/user-calendar']);
+    this.router.navigate(['/official-calendar']);
   }
 
 }

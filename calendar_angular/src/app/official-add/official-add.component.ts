@@ -3,12 +3,11 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-subscribe',
-  templateUrl: './add-subscribe.component.html',
-  styleUrls: ['./add-subscribe.component.scss']
+  selector: 'app-official-add',
+  templateUrl: './official-add.component.html',
+  styleUrls: ['./official-add.component.scss']
 })
-export class AddSubscribeComponent implements OnInit {
-  isOpen = true;
+export class OfficialAddComponent implements OnInit {
 
   constructor(
     private router: Router,
@@ -17,19 +16,20 @@ export class AddSubscribeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  logout() {
+  add() {
     Swal.fire({
-      text: '是否確定要登出？',
-      icon: 'warning',
+      text: '修改成功',
+      icon: 'success',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#aaa',
-      confirmButtonText: '確定',
-      cancelButtonText: '取消'
+      confirmButtonText: '返回首頁',
+      cancelButtonText: '再添一筆'
     }).then((result) => {
       if (result.value) {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/official-calendar']);
       }
     });
   }
+
 }

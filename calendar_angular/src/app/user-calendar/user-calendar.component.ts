@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { Calendar } from '@fullcalendar/core';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
-import listWeekPlugin from '@fullcalendar/list';
+import listPlugin from '@fullcalendar/list';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 
@@ -20,32 +20,33 @@ export class UserCalendarComponent implements OnInit {
   ngOnInit() {
     const calendarDiv: HTMLElement = document.getElementById('calendar');
     const calendar = new Calendar(calendarDiv, {
-      plugins: [dayGridPlugin, bootstrapPlugin, listWeekPlugin],
+      plugins: [dayGridPlugin, bootstrapPlugin, listPlugin],
+      defaultView: 'listYear',
+      events: [
+        {
+          title: 'Meeting',
+          start: '2020-04-02T14:30:00',
+          extendedProps: {
+            status: 'done'
+          }
+        },
+        {
+          title: 'Birthday Party',
+          start: '2020-04-03T07:00:00',
+          backgroundColor: 'green',
+          borderColor: 'green'
+        }
+      ],
       themeSystem: 'bootstrap',
       header: {
-        left: 'prevYear,prev,next,nextYear,today',
+        left: 'prev',
         center: 'title',
-        right: 'listYear,dayGridMonth,dayGridWeek,dayGridDay'
+        right: 'next'
       },
 
     });
     calendar.render();
   }
 
-  logout() {
-    Swal.fire({
-      text: '是否確定要登出？',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#aaa',
-      confirmButtonText: '確定',
-      cancelButtonText: '取消'
-    }).then((result) => {
-      if (result.value) {
-        this.router.navigate(['/login']);
-      }
-    });
-  }
 
 }

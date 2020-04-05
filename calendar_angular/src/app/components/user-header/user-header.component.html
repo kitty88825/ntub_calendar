@@ -1,0 +1,43 @@
+<div class="head">
+  <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+    <div class="container">
+      <a [routerLink]="['/user-calendar']" class="navbar-brand">Calendar</a>
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse" id="navbarResponsive">
+        <ul class="navbar-nav">
+          <form class="form-inline my-2 my-lg-0">
+            <input class="search form-control mr-sm-2" type="text">
+            <a class="nav-link"><img src="../assets/images/search-black-18dp.svg"></a>
+          </form>
+          <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+              aria-expanded="false"><img src="../assets/images/add_box-black-18dp.svg"></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" [routerLink]="['/add-schedule']">建立行程</a>
+              <a class="dropdown-item" [routerLink]="['/add-meet']">建立會議</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+              aria-expanded="false"><img src="../assets/images/star-black-18dp.svg"></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" [routerLink]="['/add-subscribe']">新增訂閱</a>
+              <a class="dropdown-item" [routerLink]="['/my-subscribe']">我的訂閱</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/export']"><img
+                src="../assets/images/picture_as_pdf-black-18dp.svg"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="logout()" type="button"><img
+                src="../assets/images/power_settings_new-black-18dp.svg"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
