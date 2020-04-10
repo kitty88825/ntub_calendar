@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { UserCalendarComponent } from './user-calendar/user-calendar.component';
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { ForgetPasswdComponent } from './forget-passwd/forget-passwd.component';
-import { ChangePasswdComponent } from './change-passwd/change-passwd.component';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
 import { AddMeetComponent } from './add-meet/add-meet.component';
 import { AddSubscribeComponent } from './add-subscribe/add-subscribe.component';
@@ -13,15 +9,14 @@ import { ExportComponent } from './export/export.component';
 import { OfficialCalendarComponent } from './official-calendar/official-calendar.component';
 import { OfficialAddComponent } from './official-add/official-add.component';
 import { OfficialChangeComponent } from './official-change/official-change.component';
+import { IndexComponent } from './index/index.component';
+import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', component: IndexComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'user-calendar', component: UserCalendarComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'forget-passwd', component: ForgetPasswdComponent},
-  { path: 'change-passwd', component: ChangePasswdComponent},
+  { path: 'calendar', component: MainCalendarComponent},
   { path: 'add-schedule', component: AddScheduleComponent},
   { path: 'add-meet', component: AddMeetComponent},
   { path: 'add-subscribe', component: AddSubscribeComponent},
@@ -29,7 +24,8 @@ const routes: Routes = [
   { path: 'export', component: ExportComponent},
   { path: 'official-calendar', component: OfficialCalendarComponent},
   { path: 'official-add', component: OfficialAddComponent},
-  { path: 'official-change', component: OfficialChangeComponent}
+  { path: 'official-change', component: OfficialChangeComponent},
+  { path: 'index', component: IndexComponent}
 ];
 
 @NgModule({

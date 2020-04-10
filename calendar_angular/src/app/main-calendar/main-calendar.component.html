@@ -1,0 +1,32 @@
+<div class="wrap">
+  <app-user-header></app-user-header>
+  <div class="content">
+    <div class="bar">
+      <div class="title">
+        <button type="button" class="btn btn-outline-secondary" [routerLink]="['/my-subscribe']">我的訂閱</button>
+      </div>
+      <div class="container">
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" />
+          <div class="state">
+            <label class="mine">我的行事曆</label>
+          </div>
+        </div>
+        <hr>
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" />
+          <div class="state">
+            <label class="add">學校行事曆</label>
+          </div>
+        </div>
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" />
+          <div class="state">
+            <label class="add">教務處</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="calendar" class="calendar"></div>
+  </div>
+</div>

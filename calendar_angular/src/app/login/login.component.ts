@@ -15,16 +15,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  register() {
-    this.router.navigate(['/register']);
-  }
-
-  forgetPasswd() {
-    this.router.navigate(['/forget-passwd']);
-  }
-
   enter() {
-    this.router.navigate(['/official-calendar']);
+    this.router.navigate(['/calendar']);
   }
 
 }

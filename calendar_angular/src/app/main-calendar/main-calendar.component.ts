@@ -7,17 +7,17 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user-calendar',
-  templateUrl: './user-calendar.component.html',
-  styleUrls: ['./user-calendar.component.scss']
+  selector: 'app-main-calendar',
+  templateUrl: './main-calendar.component.html',
+  styleUrls: ['./main-calendar.component.scss']
 })
-export class UserCalendarComponent implements OnInit {
+export class MainCalendarComponent implements OnInit {
 
   constructor(
     private router: Router,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const calendarDiv: HTMLElement = document.getElementById('calendar');
     const calendar = new Calendar(calendarDiv, {
       plugins: [dayGridPlugin, bootstrapPlugin, listPlugin],
@@ -47,6 +47,5 @@ export class UserCalendarComponent implements OnInit {
     });
     calendar.render();
   }
-
 
 }

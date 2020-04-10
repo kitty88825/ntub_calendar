@@ -9,6 +9,9 @@ import { Router } from '@angular/router';
 })
 export class UserHeaderComponent implements OnInit {
 
+  user = true;
+  official = !this.user;
+
   constructor(
     private router: Router,
   ) { }
@@ -27,7 +30,7 @@ export class UserHeaderComponent implements OnInit {
       cancelButtonText: '取消'
     }).then((result) => {
       if (result.value) {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/index']);
       }
     });
   }

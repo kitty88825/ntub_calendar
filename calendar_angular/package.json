@@ -28,6 +28,7 @@
     "@fullcalendar/list": "^4.4.0",
     "angular-calendar": "^0.28.5",
     "bootstrap": "^4.4.1",
+    "bootswatch": "^4.4.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
     "ngx-bootstrap": "^5.5.0",

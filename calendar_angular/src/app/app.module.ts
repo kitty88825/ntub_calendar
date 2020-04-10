@@ -5,11 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {MatSelectModule} from '@angular/material/select';
 import { FullCalendarModule} from '@fullcalendar/angular';
-import { UserCalendarComponent } from './user-calendar/user-calendar.component';
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { ForgetPasswdComponent } from './forget-passwd/forget-passwd.component';
-import { ChangePasswdComponent } from './change-passwd/change-passwd.component';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
 import { AddMeetComponent } from './add-meet/add-meet.component';
 import { AddSubscribeComponent } from './add-subscribe/add-subscribe.component';
@@ -25,15 +21,14 @@ import { OfficialHeaderComponent } from './components/official-header/official-h
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { OfficialAddComponent } from './official-add/official-add.component';
 import { OfficialChangeComponent } from './official-change/official-change.component';
+import { IndexComponent } from './index/index.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserCalendarComponent,
     LoginComponent,
-    RegisterComponent,
-    ForgetPasswdComponent,
-    ChangePasswdComponent,
     AddScheduleComponent,
     AddMeetComponent,
     AddSubscribeComponent,
@@ -44,6 +39,8 @@ import { OfficialChangeComponent } from './official-change/official-change.compo
     OfficialHeaderComponent,
     OfficialAddComponent,
     OfficialChangeComponent,
+    IndexComponent,
+    MainCalendarComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +52,7 @@ import { OfficialChangeComponent } from './official-change/official-change.compo
     FormsModule,
     CollapseModule,
     BsDropdownModule,
+    CarouselModule
   ],
   providers: [],
   bootstrap: [AppComponent]
