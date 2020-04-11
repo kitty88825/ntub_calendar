@@ -12,31 +12,21 @@
             <!-- <input class="search form-control mr-sm-2" type="text"> -->
             <a class="nav-link"><img src="../assets/images/search-black-18dp.svg"></a>
           </form>
-          <li class="nav-item dropdown" *ngIf="user">
-            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-              aria-expanded="false"><img src="../assets/images/add_box-black-18dp.svg"></a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" [routerLink]="['/add-schedule']">建立行程</a>
-              <a class="dropdown-item" [routerLink]="['/add-meet']">建立會議</a>
-            </div>
+          <li class="nav-item" *ngIf="user">
+            <a class="nav-link" [routerLink]="['/add-schedule']"><img src="../assets/images/add_box-black-18dp.svg"></a>
           </li>
           <li class="nav-item dropdown" *ngIf="official">
             <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
               aria-expanded="false"><img src="../assets/images/add_box-black-18dp.svg"></a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" [routerLink]="['/add-schedule']">匯入匯出</a>
-              <a class="dropdown-item" [routerLink]="['/add-meet']">修改行程</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown" *ngIf="user">
-            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-              aria-expanded="false"><img src="../assets/images/star-black-18dp.svg"></a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" [routerLink]="['/add-subscribe']">新增訂閱</a>
-              <a class="dropdown-item" [routerLink]="['/my-subscribe']">我的訂閱</a>
+              <a class="dropdown-item" [routerLink]="['/official-add']">匯出修改</a>
+              <a class="dropdown-item" [routerLink]="['/official-change']">匯入建立</a>
             </div>
           </li>
           <li class="nav-item" *ngIf="user">
+            <a class="nav-link" [routerLink]="['/add-subscribe']"><img src="../assets/images/star-black-18dp.svg"></a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" [routerLink]="['/export']"><img
                 src="../assets/images/picture_as_pdf-black-18dp.svg"></a>
           </li>

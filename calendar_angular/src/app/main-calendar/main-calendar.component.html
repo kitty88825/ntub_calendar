@@ -1,7 +1,7 @@
 <div class="wrap">
-  <app-user-header></app-user-header>
+  <app-navbar></app-navbar>
   <div class="content">
-    <div class="bar">
+    <div class="bar" *ngIf="user">
       <div class="title">
         <button type="button" class="btn btn-outline-secondary" [routerLink]="['/my-subscribe']">我的訂閱</button>
       </div>
@@ -23,6 +23,32 @@
           <input type="checkbox" />
           <div class="state">
             <label class="add">教務處</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bar" *ngIf="official">
+      <div class="title">
+        <button type="button" class="btn btn-outline-secondary" [routerLink]="['/my-subscribe']">歷年行事曆</button>
+      </div>
+      <div class="container">
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" />
+          <div class="state">
+            <label class="mine">109學年度</label>
+          </div>
+        </div>
+        <hr>
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" />
+          <div class="state">
+            <label class="add">108學年度</label>
+          </div>
+        </div>
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" />
+          <div class="state">
+            <label class="add">107學年度</label>
           </div>
         </div>
       </div>

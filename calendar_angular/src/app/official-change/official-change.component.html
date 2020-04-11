@@ -1,7 +1,15 @@
 <div class="wrap">
-  <app-official-header></app-official-header>
+  <app-navbar></app-navbar>
   <div class="content">
     <div class="bar row">
+      <div class="form-group col-sm-4">
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile02">
+            <label class="custom-file-label" for="inputGroupFile02">選擇檔案</label>
+          </div>
+        </div>
+      </div>
       <label for="static" class="top col-form-label">學年度</label>
       <div class="col-sm-2">
         <input type="text" class="form-control">
@@ -34,7 +42,7 @@
       </div>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-primary active">
-          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/official-calendar']"> 取消
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
         </label>
         <label class="btn btn-primary">
           <input type="checkbox" autocomplete="off" (click)="add()"> 建立

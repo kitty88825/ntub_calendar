@@ -1,5 +1,5 @@
 <div class="wrap">
-  <app-user-header></app-user-header>
+  <app-navbar></app-navbar>
   <div class="content">
     <div class="title">
       <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-subscribe']">新增訂閱</button>
@@ -39,7 +39,7 @@
           <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/user-calendar']"> 取消
         </label>
         <label class="btn btn-primary">
-          <input type="checkbox" autocomplete="off" (click)="collapse.show()" aria-controls="collapseManual"> 產生URL
+          <input type="checkbox" autocomplete="off" (click)="collapse.show()" aria-controls="collapseManual"> 確定
         </label>
       </div>
     </div>

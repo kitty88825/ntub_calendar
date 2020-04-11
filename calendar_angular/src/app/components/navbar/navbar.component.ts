@@ -3,11 +3,13 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-official-header',
-  templateUrl: './official-header.component.html',
-  styleUrls: ['./official-header.component.scss']
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss']
 })
-export class OfficialHeaderComponent implements OnInit {
+export class NavbarComponent implements OnInit {
+  user = false;
+  official = !this.user;
 
   constructor(
     private router: Router,
@@ -27,7 +29,7 @@ export class OfficialHeaderComponent implements OnInit {
       cancelButtonText: '取消'
     }).then((result) => {
       if (result.value) {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/index']);
       }
     });
   }

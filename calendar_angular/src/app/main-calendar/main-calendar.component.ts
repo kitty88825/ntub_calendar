@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./main-calendar.component.scss']
 })
 export class MainCalendarComponent implements OnInit {
+  user = false;
+  official = !this.user;
 
   constructor(
     private router: Router,
