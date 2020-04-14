@@ -22,6 +22,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

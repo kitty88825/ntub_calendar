@@ -5,8 +5,7 @@
       <div class="form-group col-sm-4">
         <div class="input-group">
           <div class="custom-file">
-            <input type="file" class="custom-file-input" id="inputGroupFile02">
-            <label class="custom-file-label" for="inputGroupFile02">選擇檔案</label>
+            <input type="file" (change)="onFileChange($event)" multiple="false" />
           </div>
         </div>
       </div>
@@ -29,12 +28,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="table-active">
-              <th scope="row">
-                date
-              </th>
-              <td>
-                schedule
+            <tr *ngFor="let row of data">
+              <td *ngFor="let val of row">
+                {{val}}
               </td>
             </tr>
           </tbody>

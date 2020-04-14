@@ -27,14 +27,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="table-active">
-              <th scope="row">
-                date
-              </th>
-              <td>
-                schedule
-              </td>
-            </tr>
+            <tr *ngFor="let row of data">
+            <td *ngFor="let val of row">
+              {{val}}
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -43,7 +40,7 @@
           <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
         </label>
         <label class="btn btn-primary">
-          <input type="checkbox" autocomplete="off"> 匯出
+          <input type="checkbox" autocomplete="off" (click)="daochu()"> 匯出
         </label>
       </div>
     </div>
