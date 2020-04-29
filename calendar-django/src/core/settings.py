@@ -141,3 +141,5 @@ STATIC_ROOT = root('assets')
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = root('media')
+
+AUTH_USER_MODEL = 'users.User'
