@@ -8,9 +8,9 @@
 
 html,
 body {
-  width : 100%;
-  height: 100%;
-  margin: 0;
+  width           : 100%;
+  height          : 100%;
+  margin          : 0;
   background-color: rgb(48, 48, 48);
 }
 
@@ -22,26 +22,40 @@ body {
   display: none;
 }
 
-.table-active, .table-active > th, .table-active > td {
+.table-active,
+.table-active>th,
+.table-active>td {
   background-color: #eee;
 }
 
 .fc-ltr .fc-list-heading-main {
-  color: black;
+  color         : black;
   letter-spacing: 4px;
 }
 
 .fc-ltr .fc-list-heading-alt {
-  color: black;
+  color         : black;
   letter-spacing: 4px;
-  margin-right: 10px;
+  margin-right  : 10px;
 }
 
-.fc-listYear-view td{
-  border-style: unset;
+.fc-listYear-view td {
+  border-style: none;
 }
 
-.fc-listYear-view td:nth-child(1){
+.fc-list-view {
+  border: none;
+}
+
+.fc-toolbar h2 {
+  color: white;
+}
+
+.fc-scroller {
+  background-color: white;
+}
+
+.fc-listYear-view td:nth-child(1) {
   padding-left: 10px;
 }
 
@@ -50,15 +64,13 @@ body {
 }
 
 .fc-list-item-title a {
-  letter-spacing: 4px;
-  margin-left: 10px;
+  letter-spacing: 1px;
+  margin-left   : 10px;
 }
 
 .card-header {
-  border-style: unset;
+  border-style    : unset;
   background-color: unset;
 }
 
-@media screen and (max-width:480px) {
-
-}
+@media screen and (max-width:480px) {}

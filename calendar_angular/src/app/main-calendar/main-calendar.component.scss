@@ -25,7 +25,7 @@
     position: absolute;
     width   : 17%;
     margin-top  : -20px;
-    margin-left: 10px;
+    margin-left: 20px;
     z-index : 1;
     height  : fit-content;
     border: solid 2px white;
@@ -33,7 +33,7 @@
   }
 
   .pretty {
-    margin-left: 30px;
+    margin-left: 50px;
     margin-top: 10px;
   }
 
@@ -53,17 +53,19 @@
     float: left;
     width: 20%;
     height: 600px;
+    margin-left: 3%;
   }
-
 
   .calendar {
-    color: white;
-    margin-right: 3%;
+    margin-left: 25%;
+    width: 70%;
   }
+
 
   .head {
     background-color: white;
   }
+
 
   a.nav-link{
     color: black;
@@ -93,11 +95,15 @@
     color: white;
   }
 
-  .calendar {
-    color: white;
-    margin-right: 3%;
-    margin-left: 3%;
+  .pretty {
+    margin-left: 35%;
   }
+
+  .calendar {
+    width: 90%;
+    margin-left: 7%;
+  }
+
 
 }
 

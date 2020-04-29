@@ -29,30 +29,30 @@
     </div>
     <div class="bar" *ngIf="official">
       <div class="title">
-        <button type="button" class="btn btn-outline-secondary" [routerLink]="['/my-subscribe']">歷年行事曆</button>
+        <button type="button" class="btn btn-outline-secondary">學制</button>
       </div>
       <div class="container">
         <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" />
+          <input class='calFilter' type="checkbox" value="day" (click)='displayType(eventTypes[0])'/>
           <div class="state">
-            <label class="mine">109學年度</label>
+            <label class="day">日間部</label>
           </div>
         </div>
         <hr>
         <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" />
+          <input class='calFilter' type="checkbox" value="night" (click)='displayType(eventTypes[1])'/>
           <div class="state">
-            <label class="add">108學年度</label>
-          </div>
-        </div>
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" />
-          <div class="state">
-            <label class="add">107學年度</label>
+            <label class="night">進修部</label>
           </div>
         </div>
       </div>
     </div>
-    <div id="calendar" class="calendar"></div>
+    <div class="calendar">
+      <full-calendar #calendar defaultView="listYear" [header]="{
+      left: 'prev',
+      center: 'title',
+      right: 'next'
+    }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents"></full-calendar>
+    </div>
   </div>
 </div>

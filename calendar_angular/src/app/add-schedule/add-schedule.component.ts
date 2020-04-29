@@ -44,7 +44,7 @@ export class AddScheduleComponent implements OnInit {
       cancelButtonText: '再添一筆'
     }).then((result) => {
       if (result.value) {
-        this.router.navigate(['/user-calendar']);
+        this.router.navigate(['/calendar']);
       }
     });
   }

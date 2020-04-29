@@ -3,9 +3,8 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {MatSelectModule} from '@angular/material/select';
-import { FullCalendarModule} from '@fullcalendar/angular';
-import { LoginComponent } from './login/login.component';
+import { MatSelectModule } from '@angular/material/select';
+import { FullCalendarModule } from '@fullcalendar/angular';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
 import { AddSubscribeComponent } from './add-subscribe/add-subscribe.component';
 import { MySubscribeComponent } from './my-subscribe/my-subscribe.component';
@@ -21,17 +20,18 @@ import { IndexComponent } from './index/index.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-
+import { LoginComponent } from './login/login.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
     AddScheduleComponent,
     AddSubscribeComponent,
     MySubscribeComponent,
     ExportComponent,
     OfficialAddComponent,
+    LoginComponent,
     OfficialChangeComponent,
     IndexComponent,
     MainCalendarComponent,
@@ -47,7 +47,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     FormsModule,
     CollapseModule,
     BsDropdownModule,
-    CarouselModule
+    CarouselModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
