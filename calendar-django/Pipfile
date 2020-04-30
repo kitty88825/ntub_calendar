@@ -10,6 +10,7 @@ flake8-commas = "*"
 [packages]
 django = "*"
 django-environ = "*"
+djangorestframework-camel-case = "*"
 
 [requires]
 python_version = "3.8"
