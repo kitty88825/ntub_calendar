@@ -144,7 +144,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = root('media')
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 NTUB_AUTH_API_URL = env('NTUB_AUTH_API_URL')
 NTUB_AUTH_API_DOMAIN = env('NTUB_AUTH_API_DOMAIN')
