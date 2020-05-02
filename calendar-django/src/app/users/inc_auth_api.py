@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from django.conf import settings
 
-from app.utils.api_client import BaseAPIClient
+from .api_client import BaseAPIClient
 
 
 class IncAuthClient(BaseAPIClient):

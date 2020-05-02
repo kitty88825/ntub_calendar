@@ -45,7 +45,9 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'rest_framework',
+]
 
 LOCAL_APPS = [
     'app.users',
@@ -142,4 +144,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = root('media')
 
-AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.User'
+
+NTUB_AUTH_API_URL = env('NTUB_AUTH_API_URL')
+NTUB_AUTH_API_DOMAIN = env('NTUB_AUTH_API_DOMAIN')
