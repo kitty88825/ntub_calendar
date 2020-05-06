@@ -20,8 +20,9 @@ import { IndexComponent } from './index/index.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { LoginComponent } from './login/login.component';
 import { HttpClientModule } from '@angular/common/http';
+import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,6 @@ import { HttpClientModule } from '@angular/common/http';
     MySubscribeComponent,
     ExportComponent,
     OfficialAddComponent,
-    LoginComponent,
     OfficialChangeComponent,
     IndexComponent,
     MainCalendarComponent,
@@ -48,7 +48,10 @@ import { HttpClientModule } from '@angular/common/http';
     CollapseModule,
     BsDropdownModule,
     CarouselModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbPaginationModule,
+    NgbAlertModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

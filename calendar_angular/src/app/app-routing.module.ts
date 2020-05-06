@@ -8,13 +8,10 @@ import { OfficialAddComponent } from './official-add/official-add.component';
 import { OfficialChangeComponent } from './official-change/official-change.component';
 import { IndexComponent } from './index/index.component';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
-import { LoginComponent } from './login/login.component';
-
 
 const routes: Routes = [
   { path: '', component: IndexComponent },
   { path: 'calendar', component: MainCalendarComponent },
-  { path: 'login', component: LoginComponent },
   { path: 'add-schedule', component: AddScheduleComponent },
   { path: 'add-subscribe', component: AddSubscribeComponent },
   { path: 'my-subscribe', component: MySubscribeComponent },

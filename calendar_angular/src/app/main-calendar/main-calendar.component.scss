@@ -11,6 +11,7 @@
   .title {
     text-align: center;
     margin-top: 20px;
+    margin-left: 25%;
   }
 
   .title button {
@@ -25,7 +26,7 @@
     position: absolute;
     width   : 17%;
     margin-top  : -20px;
-    margin-left: 20px;
+    margin-left: 4%;
     z-index : 1;
     height  : fit-content;
     border: solid 2px white;
@@ -35,6 +36,10 @@
   .pretty {
     margin-left: 50px;
     margin-top: 10px;
+  }
+
+  .form-control {
+    width:100%;
   }
 
   .pretty:nth-child(1) {
@@ -53,7 +58,6 @@
     float: left;
     width: 20%;
     height: 600px;
-    margin-left: 3%;
   }
 
   .calendar {
@@ -73,6 +77,11 @@
 
   .content {
     margin-bottom: 20px;
+  }
+
+  .form-inline {
+    width: 210px;
+    margin-left: 60px;
   }
 
 }
@@ -100,10 +109,19 @@
   }
 
   .calendar {
+    margin-top: 40px;
     width: 90%;
-    margin-left: 7%;
+    margin-left: 5%;
   }
 
+  .title {
+    margin-left: 0;
+  }
+
+  .form-inline {
+    width:310px;
+    margin-left: 50px;
+  }
 
 }
 

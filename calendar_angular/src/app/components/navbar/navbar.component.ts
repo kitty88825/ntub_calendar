@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit {
   user = false;
   official = !this.user;
+  public isMenuCollapsed = true;
 
   constructor(
     private router: Router,

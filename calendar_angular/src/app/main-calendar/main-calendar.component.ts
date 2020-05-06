@@ -4,7 +4,11 @@ import bootstrapPlugin from '@fullcalendar/bootstrap';
 import listPlugin from '@fullcalendar/list';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { Router } from '@angular/router';
+
 // import { CalendarService } from '../services/calendar.service';
+declare var $: any;
 
 
 @Component({
@@ -16,84 +20,9 @@ export class MainCalendarComponent {
   user = false;
   official = !this.user;
 
-  // const calendarDiv: HTMLElement = document.getElementById('calendar');
-
-  // const calendar = new Calendar(calendarDiv, {
-
-  //   plugins: [dayGridPlugin, bootstrapPlugin, listPlugin],
-  //   defaultView: 'listYear',
-  //   events: [
-  //     {
-  //       id: '1',
-  //       title: 'Meeting',
-  //       start: '2020-04-25',
-  //       category: 'day'
-  //     },
-  //     {
-  //       id: '2',
-  //       title: 'Meeting',
-  //       start: '2020-04-26',
-  //       category: 'night'
-  //     },
-  //     {
-  //       id: '3',
-  //       title: 'Meeting',
-  //       start: '2020-04-27',
-  //       category: 'day'
-  //     }
-  //   ],
-  //   themeSystem: 'bootstrap',
-  //   header: {
-  //     left: 'prev',
-  //     center: 'title',
-  //     right: 'next'
-  //   },
-
-  //   eventClick(info) {
-  //     Swal.fire({
-  //       text: '確定要刪除' + info.event.title + '?',
-  //       icon: 'warning',
-  //       showCancelButton: true,
-  //       confirmButtonColor: '#3085d6',
-  //       cancelButtonColor: '#aaa',
-  //       confirmButtonText: '確定',
-  //       cancelButtonText: '取消'
-  //     }).then((result) => {
-  //       if (result.value) {
-  //         const event = calendar.getEventById(info.event.id);
-  //         event.remove();
-  //         Swal.fire({
-  //           text: '已刪除',
-  //           icon: 'success',
-  //         });
-  //       }
-  //     });
-  //   },
-
-  //   eventRender(info) {
-  //     if (info.event.extendedProps.category === 'day') {
-  //       // Change color of dot marker
-  //       const dotEl = info.el.getElementsByClassName('fc-event-dot')[0] as HTMLElement;
-  //       if (dotEl) {
-  //         dotEl.style.backgroundColor = 'orange';
-  //       }
-  //     } else if (info.event.extendedProps.category === 'night') {
-  //       // Change color of dot marker
-  //       const dotE2 = info.el.getElementsByClassName('fc-event-dot')[0] as HTMLElement;
-  //       if (dotE2) {
-  //         dotE2.style.backgroundColor = 'black';
-  //       }
-  //     }
-
-  //   }
-
-
-  // });
-
-
-  // calendar.render();
-
-
+  constructor(
+    private router: Router,
+  ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
 
@@ -101,17 +30,59 @@ export class MainCalendarComponent {
   calendarPlugins = [dayGridPlugin, bootstrapPlugin, listPlugin];
   calendarWeekends = true;
   calendarEvents: EventInput[] = [
-    { id: 1, title: 'Meeting', start: '2020-05-03T12:00', color: 'orange', category: 1 },
+    { id: 1, title: 'Meeting', start: '2020-05-03T12:00', end: '2020-05-06', color: 'orange', category: 1 },
     { id: 2, title: '放假', start: '2020-05-02', color: 'black', category: 2 },
-    { id: 3, title: '吃飯', start: '2020-05-01', color: 'orange', category: 1 }
+    { id: 3, title: '吃飯', start: '2020-05-01', color: 'orange', category: 1 },
   ];
   eventTypes: any[] = [
-    { title: '日間部', id: 1, selected: true },
-    { title: '進修部', id: 2, selected: true },
+    { title: 'type1', id: 1, color: 'orange', selected: true },
+    { title: 'type2', id: 2, color: 'black', selected: true },
+    { title: 'type3', id: 3, color: 'blue', selected: true }
   ];
+
   hiddenCalendarEvents: EventInput[] = [];
 
+  eventClick(info) {
+    Swal.fire({
+      text: '請選擇要執行的動作',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '編輯',
+      cancelButtonText: '刪除',
+    }).then((result) => {
+      if (!result.value) {
+        Swal.fire({
+          text: '確定要刪除「' + info.event.title + '」?',
+          showCancelButton: true,
+          icon: 'warning',
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#aaa',
+          confirmButtonText: '確定',
+          cancelButtonText: '取消'
+          // tslint:disable-next-line: no-shadowed-variable
+        }).then((result) => {
+          if (result.value) {
+            // -----------------------------deleteEvent
+            this.calendarComponent
+              .getApi()
+              .getEventById(String(info.event.id))
+              .remove();
+            Swal.fire({
+              text: '已刪除',
+              icon: 'success',
+            });
+          }
+        });
+      } else if (result.value) {
+        this.router.navigate(['/add-schedule']);
+      }
+    });
+  }
+
   displayType(eventType: any): void {
+
     eventType.selected = !eventType.selected;
     const calendarEvents = this.calendarEvents.slice(); // a clone
 
@@ -159,4 +130,10 @@ export class MainCalendarComponent {
     this.calendarEvents = calendarEvents; // reassign the array
   }
 
+
+  eventRender(info) {
+    const e = info.el;
+    e.setAttribute('title', `點選編輯或刪除`);
+    $(e).tooltip();
+  }
 }

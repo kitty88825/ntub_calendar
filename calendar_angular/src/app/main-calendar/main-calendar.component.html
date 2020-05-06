@@ -7,20 +7,20 @@
       </div>
       <div class="container">
         <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" />
+          <input type="checkbox" (click)='displayType(eventTypes[0])' checked />
           <div class="state">
             <label class="mine">我的行事曆</label>
           </div>
         </div>
         <hr>
         <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" />
+          <input type="checkbox" (click)='displayType(eventTypes[1])' checked />
           <div class="state">
             <label class="add">學校行事曆</label>
           </div>
         </div>
         <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" />
+          <input type="checkbox" (click)='displayType(eventTypes[2])' checked />
           <div class="state">
             <label class="add">教務處</label>
           </div>
@@ -28,19 +28,22 @@
       </div>
     </div>
     <div class="bar" *ngIf="official">
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      </form>
       <div class="title">
         <button type="button" class="btn btn-outline-secondary">學制</button>
       </div>
       <div class="container">
         <div class="pretty p-default p-curve p-thick">
-          <input class='calFilter' type="checkbox" value="day" (click)='displayType(eventTypes[0])'/>
+          <input class='calFilter' type="checkbox" value="day" (click)='displayType(eventTypes[0])' checked />
           <div class="state">
             <label class="day">日間部</label>
           </div>
         </div>
         <hr>
         <div class="pretty p-default p-curve p-thick">
-          <input class='calFilter' type="checkbox" value="night" (click)='displayType(eventTypes[1])'/>
+          <input class='calFilter' type="checkbox" value="night" (click)='displayType(eventTypes[1])' checked />
           <div class="state">
             <label class="night">進修部</label>
           </div>
@@ -52,7 +55,9 @@
       left: 'prev',
       center: 'title',
       right: 'next'
-    }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents"></full-calendar>
+    }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents"
+        (eventClick)="eventClick($event)" (eventRender)="eventRender($event)">
+      </full-calendar>
     </div>
   </div>
 </div>

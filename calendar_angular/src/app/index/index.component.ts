@@ -10,6 +10,8 @@ import * as $ from 'jquery';
 export class IndexComponent implements OnInit {
 
   auth2: any;
+  public isMenuCollapsed = true;
+
 
   @ViewChild('loginRef', { static: true }) loginElement: ElementRef;
 
