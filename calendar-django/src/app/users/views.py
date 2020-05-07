@@ -31,8 +31,13 @@ class AccountView(GenericViewSet):
         token = response['access']
         user_data = self.inc_auth.current_user(token)
         user = update_user(user_data)
-        print(user.groups.all())
-        return Response(dict(username=user.username, email=user.email), status=status.HTTP_200_OK)  # noqa: E501
+
+        # 取得所有群組資料
+        # group_data = self.inc_auth.group_list(token)
+        # grous = filter_group(group_data)
+        # print(grous)
+
+        return Response(dict(email=user.email), status=status.HTTP_200_OK)
 
     def get_api_client(self):
         # 如果需要可以複寫或是餵入客製化參數

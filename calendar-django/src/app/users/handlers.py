@@ -1,20 +1,22 @@
 import re
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.db.transaction import atomic
+
+from .models import User
+
+from typing import List
 
 
 @atomic
 def update_user(data: dict) -> User:
 
-    fields = ['email',
+    fields = ['username',
+              'email',
+              'last_name',
               'first_name',
               'is_active',
-              'is_staff',
-              'is_superuser',
-              'last_login',
-              'last_name',
-              'username']
+              'last_login']
     snake_res = {key: value for key, value in data.items() if key in fields}
     user, created = User.objects.update_or_create(username=snake_res.pop('username'), defaults=snake_res)  # noqa: E501
 
@@ -28,8 +30,8 @@ def update_group(user: User, data: dict) -> None:
         return None
 
     for d in data:
-        group, created = Group.objects.update_or_create(id=d['id'], name=d['name'])  # noqa: E501
-        user.groups.add(group)
+        group = Group.objects.get(name=d['display'])
+        group.user_set.add(user)
 
 
 def get_match(email):
@@ -47,3 +49,9 @@ def get_match(email):
     else:
         # Student
         return True
+
+
+def filter_group(data: List[dict]) -> dict:
+    group_list = {d['name']: d['display'] for d in data}
+
+    return group_list
