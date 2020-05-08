@@ -23,7 +23,6 @@ class AccountView(GenericViewSet):
             serializer.is_valid(raise_exception=True)
             access_token = serializer.data.get('access_token')
             response = self.inc_auth.login(access_token)
-
         except HTTPError as e:
             return Response(e.response, status=e.response.status_code)
 
@@ -32,16 +31,7 @@ class AccountView(GenericViewSet):
         user_data = self.inc_auth.current_user(token)
         user = update_user(user_data)
 
-        # 取得所有群組資料
-        # group_data = self.inc_auth.group_list(token)
-        # grous = filter_group(group_data)
-        # print(grous)
-
         return Response(dict(email=user.email), status=status.HTTP_200_OK)
-
-    def get_api_client(self):
-        # 如果需要可以複寫或是餵入客製化參數
-        return self.api_client()
 
     @property
     def inc_auth(self):
