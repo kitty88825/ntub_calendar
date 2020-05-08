@@ -24,14 +24,15 @@ from drf_yasg import openapi
 
 from app.users.views import AccountView
 
+
 router = DefaultRouter(False)
 router.register('', AccountView, 'sign_account')
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Book Store API",
+      title="NTUB Calendar",
       default_version='v1',
-      description="My Book Store",
+      description="臺台北商業大學 專題組別：109405",
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
