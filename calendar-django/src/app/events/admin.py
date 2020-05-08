@@ -10,7 +10,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'title', 'create_at', 'update_at')
 
 
 @admin.register(Participant)
