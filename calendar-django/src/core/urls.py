@@ -23,12 +23,13 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from app.users.views import AccountView
-from app.events.views import EventViewSet
+from app.events.views import EventViewSet, AttachmentViewSet
 
 
 router = DefaultRouter(False)
 router.register('', AccountView, 'sign_account')
 router.register('event', EventViewSet)
+router.register('attachment', AttachmentViewSet)
 
 schema_view = get_schema_view(
    openapi.Info(
