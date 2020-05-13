@@ -6,6 +6,7 @@
 
 @import '~pretty-checkbox/src/pretty-checkbox.scss';
 
+
 html,
 body {
   width           : 100%;
@@ -72,6 +73,7 @@ body {
   border-style    : unset;
   background-color: unset;
 }
+
 
 
 @media screen and (max-width:480px) {

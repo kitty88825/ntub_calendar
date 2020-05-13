@@ -19,6 +19,7 @@ declare var $: any;
 export class MainCalendarComponent {
   user = false;
   official = !this.user;
+  searchText = '';
 
   constructor(
     private router: Router,
@@ -136,4 +137,5 @@ export class MainCalendarComponent {
     e.setAttribute('title', `點選編輯或刪除`);
     $(e).tooltip();
   }
+
 }

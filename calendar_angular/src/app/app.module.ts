@@ -21,8 +21,8 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpClientModule } from '@angular/common/http';
-import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     NgbPaginationModule,
     NgbAlertModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
