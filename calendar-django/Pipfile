@@ -10,11 +10,12 @@ flake8-commas = "*"
 [packages]
 django = "*"
 django-environ = "*"
-djangorestframework-camel-case = "*"
 djangorestframework = "*"
 requests = "*"
 drf-yasg = "*"
 django-ical = "*"
+djangorestframework-camel-case = "*"
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.8"

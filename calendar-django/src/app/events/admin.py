@@ -5,7 +5,7 @@ from .models import Attachment, Event, Participant
 
 @admin.register(Attachment)
 class AttachmentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'event', 'name')
 
 
 @admin.register(Event)

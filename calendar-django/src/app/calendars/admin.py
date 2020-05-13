@@ -10,9 +10,9 @@ class CalendarAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'calendar_id')
+    list_display = ('user', 'calendar')
 
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
-    list_display = ('group_id', 'calendar_id', 'role')
+    list_display = ('group', 'calendar', 'role')
