@@ -24,7 +24,7 @@ class Attachment(models.Model):
         return f'event_attachment/{instance.event.id}/{filename}'
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='attachments')  # noqa: E501
-    name = models.FileField(upload_to=attachment_path)
+    file = models.FileField(upload_to=attachment_path)
 
 
 class Participant(models.Model):

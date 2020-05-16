@@ -6,24 +6,40 @@ from .models import Attachment, Event
 class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
-        fields = '__all__'
+        fields = ('id', 'event', 'file')
 
 
 class EventSerializer(serializers.ModelSerializer):
-    attachments = serializers.ListField(child=serializers.FileField())
+    files = serializers.ListField(
+        child=serializers.FileField(),
+        write_only=True,
+        allow_null=True,
+    )
+    attachments = AttachmentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Event
-        exclude = ['create_at', 'update_at']
+        fields = (
+            'title',
+            'start_at',
+            'end_at',
+            'description',
+            'location',
+            'files',
+            'attachments',
+            'calendars',
+        )
+        read_only_fields = (
+            'id',
+            'create_at',
+            'update_at',
+            'attachments',
+        )
 
     def create(self, validated_data):
-        attachments = validated_data.pop('attachments')
+        files = validated_data.pop('files')
         event = super().create(validated_data)
         Attachment.objects.bulk_create(
-            [Attachment(event=event, name=a) for a in attachments],
+            [Attachment(event=event, file=file) for file in files],
         )
         return event
-
-    def to_representation(self, instance):
-        self.fields['attachments'] = AttachmentSerializer(many=True)
-        return super().to_representation(instance)
