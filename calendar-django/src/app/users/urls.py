@@ -13,32 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path, include
 
-from rest_framework import permissions
+from rest_framework.routers import DefaultRouter
 
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from .views import AccountView
 
 
-api_urlpatterns = [
-    path('user/', include('app.users.urls')),
-    path('event/', include('app.events.urls')),
-]
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="NTUB Calendar",
-      default_version='v1',
-      description="臺台北商業大學 專題組別：109405",
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
+router = DefaultRouter(False)
+router.register('', AccountView, 'sign_account')
 
 urlpatterns = [
-    path('api/v1/', include(api_urlpatterns)),
-    path('admin/', admin.site.urls),
-    path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
+    path('', include(router.urls)),
 ]
