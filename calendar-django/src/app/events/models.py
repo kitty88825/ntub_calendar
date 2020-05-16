@@ -5,13 +5,13 @@ from app.users.models import User
 
 
 class Event(models.Model):
-    title = models.CharField(max_length=50)
-    start_at = models.DateTimeField()
-    end_at = models.DateTimeField()
-    description = models.TextField(null=True, blank=True)
-    create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
-    location = models.TextField(null=True, blank=True)
+    title = models.CharField('行程名稱', max_length=50)
+    start_at = models.DateTimeField('開始時間')
+    end_at = models.DateTimeField('結束時間')
+    description = models.TextField('備註', null=True, blank=True)
+    create_at = models.DateTimeField('建立時間', auto_now_add=True)
+    update_at = models.DateTimeField('更新時間', auto_now=True)
+    location = models.TextField('地點', null=True, blank=True)
     calendars = models.ManyToManyField(Calendar)
 
     def __str__(self):
@@ -24,7 +24,7 @@ class Attachment(models.Model):
         return f'event_attachment/{instance.event.id}/{filename}'
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='attachments')  # noqa: E501
-    file = models.FileField(upload_to=attachment_path)
+    file = models.FileField('檔案位置', upload_to=attachment_path)
 
 
 class Participant(models.Model):
