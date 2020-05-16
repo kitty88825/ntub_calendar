@@ -14,6 +14,7 @@ class EventSerializer(serializers.ModelSerializer):
         child=serializers.FileField(),
         write_only=True,
         allow_null=True,
+        required=False,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
 
@@ -37,9 +38,12 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        files = validated_data.pop('files')
-        event = super().create(validated_data)
-        Attachment.objects.bulk_create(
-            [Attachment(event=event, file=file) for file in files],
-        )
+        if 'files' in validated_data:
+            files = validated_data.pop('files')
+            event = super().create(validated_data)
+            Attachment.objects.bulk_create(
+                [Attachment(event=event, file=file) for file in files],
+            )
+        else:
+            event = super().create(validated_data)
         return event
