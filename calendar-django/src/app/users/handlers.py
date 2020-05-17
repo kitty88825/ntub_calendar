@@ -8,6 +8,22 @@ from .models import User
 from typing import List
 
 
+def group_add_role(user: User, role: str):
+    if not role:
+        return
+    group_role = Group.objects.get(name=role)
+    group_role.user_set.add(user)
+
+
+def update_group(user: User, data: dict) -> None:
+    if not data:
+        return
+
+    for d in data:
+        group = Group.objects.get(name=d['display'])
+        group.user_set.add(user)
+
+
 @atomic
 def update_user(data: dict) -> User:
 
@@ -16,29 +32,14 @@ def update_user(data: dict) -> User:
               'last_name',
               'first_name',
               'is_active',
-              'last_login',
-              'role']
+              'last_login']
     snake_res = {key: value for key, value in data.items() if key in fields}
     user, created = User.objects.update_or_create(username=snake_res.pop('username'), defaults=snake_res)  # noqa: E501
 
     update_group(user, data['groups'])
-    group_add_role(user, snake_res.get('role'))
+    group_add_role(user, data['role'])
 
     return user
-
-
-def group_add_role(user: User, role: str):
-    group_role = Group.objects.get(name=role)
-    group_role.user_set.add(user)
-
-
-def update_group(user: User, data: dict) -> None:
-    if not data:
-        return None
-
-    for d in data:
-        group = Group.objects.get(name=d['display'])
-        group.user_set.add(user)
 
 
 def get_match(email):
