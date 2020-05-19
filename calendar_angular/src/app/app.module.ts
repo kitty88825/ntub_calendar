@@ -20,9 +20,10 @@ import { IndexComponent } from './index/index.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgbModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpBodyInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

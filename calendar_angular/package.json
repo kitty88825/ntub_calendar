@@ -41,6 +41,7 @@
     "@progress/kendo-angular-popup": "^3.0.5",
     "@progress/kendo-data-query": "^1.5.3",
     "@progress/kendo-drawing": "^1.7.0",
+    "@ridi/object-case-converter": "^2.0.4",
     "@types/jquery": "^3.3.35",
     "angular-calendar": "^0.28.5",
     "bootstrap": "^4.4.1",
