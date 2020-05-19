@@ -5,5 +5,5 @@ from .serializers import EventSerializer
 
 
 class EventViewSet(ModelViewSet):
-    queryset = Event.objects.all()
+    queryset = Event.objects.prefetch_related('attachments')
     serializer_class = EventSerializer
