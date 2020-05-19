@@ -10,6 +10,8 @@ from .serializers import LoginSerializer
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
 
+from rest_framework.authtoken.models import Token
+
 
 class AccountView(GenericViewSet):
     serializer_class = LoginSerializer
@@ -31,7 +33,9 @@ class AccountView(GenericViewSet):
         user_data = self.inc_auth.current_user(token)
         user = update_user(user_data)
 
-        return Response(dict(email=user.email), status=status.HTTP_200_OK)
+        user_token, created = Token.objects.get_or_create(user=user)
+
+        return Response(dict(email=user.email, token=user_token.key), status=status.HTTP_200_OK)  # noqa: E501
 
     @property
     def inc_auth(self):
