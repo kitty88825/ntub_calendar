@@ -48,3 +48,44 @@ class EventSerializer(serializers.ModelSerializer):
         else:
             event = super().create(validated_data)
         return event
+
+
+class UpdateAttachmentSerializer(EventSerializer):
+    extra_fields = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        allow_null=True,
+        required=False,
+    )
+
+    class Meta:
+        model = Event
+        fields = (
+            'id',
+            'title',
+            'start_at',
+            'end_at',
+            'description',
+            'location',
+            'files',
+            'attachments',
+            'calendars',
+            'extra_fields',
+        )
+
+    def update(self, instance, validated_data):
+        if 'extra_fields' in validated_data:
+            extra_fields = validated_data.pop('extra_fields')
+            for extra_field in extra_fields:
+                Attachment.objects.filter(id=extra_field).delete()
+
+        if 'files' in validated_data:
+            event = super().update(instance, validated_data)
+            files = validated_data.pop('files')
+            Attachment.objects.bulk_create(
+                [Attachment(event=event, file=file) for file in files],
+            )
+        else:
+            event = super().update(instance, validated_data)
+
+        return event
