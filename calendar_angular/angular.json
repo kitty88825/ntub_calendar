@@ -40,7 +40,9 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@fullcalendar/core/main.js",
               "node_modules/@fullcalendar/daygrid/main.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/jspdf/dist/jspdf.min.js",
+              "src/assets/fonts/jf-normal.js"
             ]
           },
           "configurations": {
@@ -136,5 +138,8 @@
       }
     }
   },
-  "defaultProject": "project"
+  "defaultProject": "project",
+  "cli": {
+    "analytics": "63fd104e-4ed1-4b10-9121-b36f27ca727b"
+  }
 }

@@ -23,6 +23,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpClientModule } from '@angular/common/http';
 import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
+import { IntlModule } from '@progress/kendo-angular-intl';
+import { GridModule } from '@progress/kendo-angular-grid';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     OfficialChangeComponent,
     IndexComponent,
     MainCalendarComponent,
-    NavbarComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,10 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     NgbPaginationModule,
     NgbAlertModule,
-    NgbModule
+    NgbModule,
+    IntlModule,
+    GridModule,
+    PDFExportModule
   ],
   providers: [],
   bootstrap: [AppComponent]
