@@ -8,8 +8,14 @@ class AttachmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'event', 'file')
 
 
+class AttachmentInlineAdmin(admin.TabularInline):
+    model = Attachment
+    extra = 0
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    inlines = (AttachmentInlineAdmin,)
     list_display = ('id', 'title', 'create_at', 'update_at')
 
 
