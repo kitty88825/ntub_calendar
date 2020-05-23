@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import listPlugin from '@fullcalendar/list';
@@ -6,8 +6,8 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
+import { CalendarService } from '../services/calendar.service';
 
-// import { CalendarService } from '../services/calendar.service';
 declare var $: any;
 
 
@@ -16,13 +16,14 @@ declare var $: any;
   templateUrl: './main-calendar.component.html',
   styleUrls: ['./main-calendar.component.scss']
 })
-export class MainCalendarComponent {
-  user = false;
+export class MainCalendarComponent implements OnInit {
+  user = true;
   official = !this.user;
   searchText = '';
 
   constructor(
     private router: Router,
+    private calendarService: CalendarService
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -30,15 +31,12 @@ export class MainCalendarComponent {
 
   calendarPlugins = [dayGridPlugin, bootstrapPlugin, listPlugin];
   calendarWeekends = true;
-  calendarEvents: EventInput[] = [
-    { id: 1, title: 'Meeting', start: '2020-05-03T12:00', end: '2020-05-06', color: 'orange', category: 1 },
-    { id: 2, title: '放假', start: '2020-05-02', color: 'black', category: 2 },
-    { id: 3, title: '吃飯', start: '2020-05-01', color: 'orange', category: 1 },
-  ];
+  calendarEvents: EventInput[];
+
   eventTypes: any[] = [
-    { title: 'type1', id: 1, color: 'orange', selected: true },
-    { title: 'type2', id: 2, color: 'black', selected: true },
-    { title: 'type3', id: 3, color: 'blue', selected: true }
+    { title: 'type1', id: '1', selected: true },
+    { title: 'type2', id: '2', selected: true },
+    { title: 'type3', id: '3', selected: true },
   ];
 
   hiddenCalendarEvents: EventInput[] = [];
@@ -125,9 +123,6 @@ export class MainCalendarComponent {
         calendarEvents.splice(index, 1);
       });
     }
-
-    console.log(calendarEvents);
-
     this.calendarEvents = calendarEvents; // reassign the array
   }
 
@@ -137,5 +132,23 @@ export class MainCalendarComponent {
     e.setAttribute('title', `點選編輯或刪除`);
     $(e).tooltip();
   }
+
+  ngOnInit() {
+    this.calendarService.getEvents().subscribe(
+      data => {
+        const events = [];
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          events.push({
+            id: data[i].id, title: data[i].title, start: data[i].startAt,
+            end: data[i].endAt, category: data[i].calendars.toString()
+          });
+          this.calendarEvents = events;
+        }
+        console.log(events);
+      }
+    );
+  }
+
 
 }

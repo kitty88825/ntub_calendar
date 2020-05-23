@@ -24,6 +24,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
+import { FileUploadModule } from 'ng2-file-upload';
+
 
 @NgModule({
   declarations: [
@@ -54,6 +56,7 @@ import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
     NgbAlertModule,
     NgbModule,
     HttpClientModule,
+    FileUploadModule
   ],
   providers: [
     {

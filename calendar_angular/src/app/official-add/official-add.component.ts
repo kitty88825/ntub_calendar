@@ -9,7 +9,10 @@ import * as XLSX from 'xlsx';
 })
 export class OfficialAddComponent implements OnInit {
   data = [
-    ['2020-01-11', '放假']
+    ['2020-01-11', '放假'],
+    ['2020-02-13', '期中考'],
+    ['2020-02-14', '開會'],
+    ['2020-02-15', 'Meeting']
   ];
 
   constructor(
@@ -33,7 +36,7 @@ export class OfficialAddComponent implements OnInit {
 
     console.log(wb);
     /* save to file */
-    XLSX.writeFile(wb, 'SheetJS.xlsx');
+    XLSX.writeFile(wb, 'demo.xlsx');
   }
 
 

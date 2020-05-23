@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import * as $ from 'jquery';
+import { TokenService } from '../services/token.service';
+import { Token } from '../models/token.model';
+
 
 @Component({
   selector: 'app-index',
@@ -17,6 +19,7 @@ export class IndexComponent implements OnInit {
 
   constructor(
     private router: Router,
+    public tokenService: TokenService
   ) { }
 
   ngOnInit() {
@@ -28,10 +31,19 @@ export class IndexComponent implements OnInit {
 
     this.auth2.attachClickHandler(this.loginElement.nativeElement, {},
       (googleUser) => {
-
         const profile = googleUser.getBasicProfile();
-        this.router.navigate(['/calendar']);
-        console.log('Token || ' + googleUser.getAuthResponse().id_token);
+        const token: Token = {
+          accessToken: googleUser.getAuthResponse().access_token,
+        };
+        this.tokenService.postToken(token).subscribe(
+          data => {
+            console.log(data);
+          },
+          error => {
+            console.log(error);
+          }
+        );
+        console.log('Token || ' + googleUser.getAuthResponse().access_token);
         console.log('ID: ' + profile.getId());
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());

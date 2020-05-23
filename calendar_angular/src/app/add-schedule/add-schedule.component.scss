@@ -30,12 +30,8 @@
     z-index: 30;
   }
 
-  .time {
-    margin-left: 20px;
-  }
-
-  .time1 {
-    margin-left: 5px;
+  .timepicker {
+    margin-left: 30px;
   }
 
   .col-md-4 {
@@ -89,6 +85,18 @@
 
   button.down {
     font-size: small;
+  }
+
+  .pretty {
+    margin-top: 10px;
+  }
+
+  h2 {
+    margin-left: 10%;
+  }
+
+  .file {
+    margin-left: 10%;
   }
 
 }

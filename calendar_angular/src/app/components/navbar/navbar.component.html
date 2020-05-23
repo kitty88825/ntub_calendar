@@ -1,7 +1,7 @@
 <div class="head">
   <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
     <div class="container">
-      <a [routerLink]="['/calendar']" class="navbar-brand">Calendar</a>
+      <a [routerLink]="['/calendar']" class="navbar-brand"><img src="../../../assets/images/一訂行_藕粉.png" style="width: 35px; height: 35px;"></a>
       <button class="navbar-toggler collapsed" type="button"  (click)="isMenuCollapsed = !isMenuCollapsed">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -9,7 +9,7 @@
         <ul class="navbar-nav">
           <li ngbDropdown class="nav-item dropdown" *ngIf="official">
             <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-              aria-expanded="false" ngbDropdownToggle><img src="../assets/images/launch-24px.svg" placement="bottom" ngbTooltip="匯入匯出"></a>
+              aria-expanded="false" ngbDropdownToggle><img src="../assets/images/launch-24px.svg" placement="bottom" ngbTooltip="匯入匯出" style="width: 20px; height: 20px;"></a>
             <div class="dropdown-menu" ngbDropdownMenu>
               <a class="dropdown-item" [routerLink]="['/official-add']" ngbDropdownItem>匯出修改</a>
               <a class="dropdown-item" [routerLink]="['/official-change']" ngbDropdownItem>匯入建立</a>
