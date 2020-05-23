@@ -13,7 +13,6 @@ class EventSerializer(serializers.ModelSerializer):
     files = serializers.ListField(
         child=serializers.FileField(),
         write_only=True,
-        allow_null=True,
         required=False,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
@@ -38,23 +37,25 @@ class EventSerializer(serializers.ModelSerializer):
             'attachments',
         )
 
+    def create_attachment_for_event(self, event, files):
+        if not files:
+            return
+
+        Attachment.objects.bulk_create(
+            [Attachment(event=event, file=file) for file in files],
+        )
+
     def create(self, validated_data):
-        if 'files' in validated_data:
-            files = validated_data.pop('files')
-            event = super().create(validated_data)
-            Attachment.objects.bulk_create(
-                [Attachment(event=event, file=file) for file in files],
-            )
-        else:
-            event = super().create(validated_data)
+        files = validated_data.pop('files', None)
+        event = super().create(validated_data)
+        self.create_attachment_for_event(event, files)
         return event
 
 
 class UpdateAttachmentSerializer(EventSerializer):
-    extra_fields = serializers.ListField(
+    remove_files = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True,
-        allow_null=True,
         required=False,
     )
 
@@ -70,22 +71,18 @@ class UpdateAttachmentSerializer(EventSerializer):
             'files',
             'attachments',
             'calendars',
-            'extra_fields',
+            'remove_files',
         )
 
     def update(self, instance, validated_data):
-        if 'extra_fields' in validated_data:
-            extra_fields = validated_data.pop('extra_fields')
-            for extra_field in extra_fields:
-                Attachment.objects.filter(id=extra_field).delete()
+        remove_files = validated_data.pop('remove_files', None)
+        files = validated_data.pop('files', None)
+        event = super().update(instance, validated_data)
 
-        if 'files' in validated_data:
-            event = super().update(instance, validated_data)
-            files = validated_data.pop('files')
-            Attachment.objects.bulk_create(
-                [Attachment(event=event, file=file) for file in files],
-            )
-        else:
-            event = super().update(instance, validated_data)
+        if remove_files:
+            Attachment.objects \
+                .filter(id__in=remove_files, event=event) \
+                .delete()
 
+        self.create_attachment_for_event(event, files)
         return event
