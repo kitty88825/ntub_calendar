@@ -6,11 +6,11 @@ import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-add-schedule',
-  templateUrl: './add-schedule.component.html',
-  styleUrls: ['./add-schedule.component.scss']
+  selector: 'app-edit-schedule',
+  templateUrl: './edit-schedule.component.html',
+  styleUrls: ['./edit-schedule.component.scss']
 })
-export class AddScheduleComponent implements OnInit {
+export class EditScheduleComponent implements OnInit {
   startTime = { hour: 0, minute: 0, second: 0 };
   endTime = { hour: 0, minute: 0, second: 0 };
   seconds = false;

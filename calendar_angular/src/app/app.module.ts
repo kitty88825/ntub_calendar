@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MatSelectModule } from '@angular/material/select';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
 import { AddSubscribeComponent } from './add-subscribe/add-subscribe.component';
@@ -11,7 +10,7 @@ import { MySubscribeComponent } from './my-subscribe/my-subscribe.component';
 import { ExportComponent } from './export/export.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { OfficialAddComponent } from './official-add/official-add.component';
@@ -24,7 +23,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbPaginationModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
-import { FileUploadModule } from 'ng2-file-upload';
+import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 
 
 @NgModule({
@@ -39,11 +38,11 @@ import { FileUploadModule } from 'ng2-file-upload';
     IndexComponent,
     MainCalendarComponent,
     NavbarComponent,
+    EditScheduleComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatSelectModule,
     FullCalendarModule,
     BrowserAnimationsModule,
     BsDatepickerModule.forRoot(),
@@ -56,7 +55,7 @@ import { FileUploadModule } from 'ng2-file-upload';
     NgbAlertModule,
     NgbModule,
     HttpClientModule,
-    FileUploadModule
+    ReactiveFormsModule
   ],
   providers: [
     {

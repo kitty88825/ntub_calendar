@@ -68,6 +68,11 @@ export class MainCalendarComponent implements OnInit {
               .getApi()
               .getEventById(String(info.event.id))
               .remove();
+            this.calendarService.deleteEvent(info.event.id).subscribe(
+              data => {
+                console.log(data);
+              }
+            );
             Swal.fire({
               text: '已刪除',
               icon: 'success',
@@ -75,7 +80,7 @@ export class MainCalendarComponent implements OnInit {
           }
         });
       } else if (result.value) {
-        this.router.navigate(['/add-schedule']);
+        this.router.navigate(['/edit-schedule']);
       }
     });
   }

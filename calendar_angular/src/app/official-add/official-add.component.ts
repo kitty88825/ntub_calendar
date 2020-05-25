@@ -9,10 +9,7 @@ import * as XLSX from 'xlsx';
 })
 export class OfficialAddComponent implements OnInit {
   data = [
-    ['2020-01-11', '放假'],
-    ['2020-02-13', '期中考'],
-    ['2020-02-14', '開會'],
-    ['2020-02-15', 'Meeting']
+    ['Meeting', '2020-05-11', '2020-05-12']
   ];
 
   constructor(

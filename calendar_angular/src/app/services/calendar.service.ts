@@ -14,8 +14,12 @@ export class CalendarService {
     private http: HttpClient
   ) { }
 
-  postEvent(event: Event): Observable<Event> {
-    return this.http.post<Event>(this.serverIp + 'event/', event);
+  postEvent(formData: any): Observable<any> {
+    return this.http.post<any>(this.serverIp + 'event/', formData);
+  }
+
+  deleteEvent(id: number): Observable<Event> {
+    return this.http.delete<Event>(`${this.serverIp}event/${id}`);
   }
 
   getEvents(): Observable<Event[]> {
