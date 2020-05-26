@@ -4,9 +4,14 @@ from .models import Attachment, Event
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
+    filename = serializers.SerializerMethodField()
+
     class Meta:
         model = Attachment
-        fields = ('id', 'event', 'file')
+        fields = ('id', 'event', 'file', 'filename')
+
+    def get_filename(self, attachment):
+        return str(attachment.file).split('/')[-1]
 
 
 class EventSerializer(serializers.ModelSerializer):
