@@ -21,4 +21,4 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'user_id', 'user', 'event_id', 'event', 'role')
