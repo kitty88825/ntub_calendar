@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Attachment, Event
+from .models import Attachment, Event, Participant
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -21,6 +21,7 @@ class EventSerializer(serializers.ModelSerializer):
         required=False,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
+    user = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Event
@@ -34,6 +35,7 @@ class EventSerializer(serializers.ModelSerializer):
             'files',
             'attachments',
             'calendars',
+            'user',
         )
         read_only_fields = (
             'id',
@@ -51,8 +53,10 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
+        user = validated_data.pop('user', None)
         files = validated_data.pop('files', None)
         event = super().create(validated_data)
+        Participant.objects.create(event=event, user=user, role='editors')
         self.create_attachment_for_event(event, files)
         return event
 

@@ -13,3 +13,6 @@ class EventViewSet(ModelViewSet):
         else:
             serializer_class = EventSerializer
         return serializer_class
+
+    def perform_create(self, serializers):
+        serializers.save(user=self.request.user)
