@@ -27,6 +27,7 @@ from drf_yasg import openapi
 api_urlpatterns = [
     path('user/', include('app.users.urls')),
     path('event/', include('app.events.urls')),
+    path('calendar/', include('app.calendars.urls')),
 ]
 
 schema_view = get_schema_view(
