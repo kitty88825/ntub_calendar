@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 from app.calendars.models import Calendar
@@ -28,13 +29,13 @@ class Attachment(models.Model):
 
 
 class Participant(models.Model):
-    role_choice = [
-        ('editors', '編輯者'),
-        ('participants', '參與者'),
-    ]
+    class RoleChoice(models.TextChoices):
+        editors = 'editors', _('編輯者')
+        participants = 'participants', _('參與者')
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    role = models.CharField(max_length=15, choices=role_choice)
+    role = models.CharField(max_length=15, choices=RoleChoice.choices)
 
     class Meta:
         unique_together = ['user', 'event']

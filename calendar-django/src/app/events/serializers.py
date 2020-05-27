@@ -56,7 +56,11 @@ class EventSerializer(serializers.ModelSerializer):
         user = validated_data.pop('user', None)
         files = validated_data.pop('files', None)
         event = super().create(validated_data)
-        Participant.objects.create(event=event, user=user, role='editors')
+        Participant.objects.create(
+            event=event,
+            user=user,
+            role=Participant.RoleChoice.editors,
+        )
         self.create_attachment_for_event(event, files)
         return event
 
