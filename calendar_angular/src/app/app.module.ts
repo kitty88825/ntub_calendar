@@ -25,8 +25,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
-import { AppHttpInterceptorService } from './services/app-http-interceptor.service';
-
 
 @NgModule({
   declarations: [
