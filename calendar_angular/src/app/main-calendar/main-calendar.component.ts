@@ -25,7 +25,6 @@ export class MainCalendarComponent implements OnInit {
   put;
   title;
 
-
   constructor(
     private router: Router,
     private calendarService: CalendarService,
@@ -72,19 +71,25 @@ export class MainCalendarComponent implements OnInit {
         }).then((result) => {
           if (result.value) {
             // -----------------------------deleteEvent
-            this.calendarComponent
-              .getApi()
-              .getEventById(String(info.event.id))
-              .remove();
             this.calendarService.deleteEvent(info.event.id).subscribe(
               data => {
                 console.log(data);
+                this.calendarComponent
+                .getApi()
+                .getEventById(String(info.event.id))
+                .remove();
+                Swal.fire({
+                  text: '已刪除',
+                  icon: 'success',
+                });
+              },
+              error => {
+                Swal.fire({
+                  text: '你沒有刪除權限唷！',
+                  icon: 'error',
+                });
               }
             );
-            Swal.fire({
-              text: '已刪除',
-              icon: 'success',
-            });
           }
         });
       } else if (result.value) {

@@ -98,7 +98,7 @@ export class ExportComponent implements OnInit {
 
     // text
     doc.setFontSize(19);
-    doc.text('國 立 臺 北 商 業 大 學   學 年 度 第 1 學 期 行 事 曆', 230, 70);
+    doc.text('國 立 臺 北 商 業 大 學 108 學 年 度 第 1 學 期 行 事 曆', 230, 70);
 
     doc.setFontSize(14);
     doc.text('日', 91, 96);
@@ -189,7 +189,7 @@ export class ExportComponent implements OnInit {
 
     // text
     doc.setFontSize(19);
-    doc.text('國 立 臺 北 商 業 大 學    學 年 度 第 2 學 期 行 事 曆  ', 230, 70);
+    doc.text('國 立 臺 北 商 業 大 學 108 學 年 度 第 2 學 期 行 事 曆  ', 230, 70);
 
     doc.setFontSize(14);
     doc.text('日', 91, 96);

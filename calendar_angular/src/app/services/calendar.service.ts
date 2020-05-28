@@ -39,7 +39,7 @@ export class CalendarService {
     const reqHeader = new HttpHeaders({
       Authorization: 'token ' + this.resToken
     });
-    return this.http.delete<Event>(`${this.serverIp}event/${id}`, { headers: reqHeader });
+    return this.http.delete<Event>(`${this.serverIp}event/${id}`, {headers: reqHeader});
   }
 
   getEvents(): Observable<Event[]> {
