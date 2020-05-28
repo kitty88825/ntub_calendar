@@ -4,7 +4,6 @@ import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
 import { ShareDataService } from '../services/share-data.service';
 
-
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',

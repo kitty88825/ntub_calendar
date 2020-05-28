@@ -13,6 +13,7 @@ import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 
 const routes: Routes = [
   { path: '', component: IndexComponent },
+  { path: 'index', component: IndexComponent },
   { path: 'calendar', component: MainCalendarComponent },
   { path: 'add-schedule', component: AddScheduleComponent },
   { path: 'add-subscribe', component: AddSubscribeComponent },
@@ -20,7 +21,6 @@ const routes: Routes = [
   { path: 'export', component: ExportComponent },
   { path: 'official-add', component: OfficialAddComponent },
   { path: 'official-change', component: OfficialChangeComponent },
-  { path: 'index', component: IndexComponent },
   { path: 'edit-schedule', component: EditScheduleComponent}
 ];
 

@@ -23,7 +23,7 @@ export class ShareDataService {
     this.resToken.next({ token });
   }
 
-  getToken(): Observable<string> {
+  getToken(): Observable<any> {
     return this.resToken.asObservable();
   }
 
