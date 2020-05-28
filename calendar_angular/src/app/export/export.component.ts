@@ -80,11 +80,11 @@ export class ExportComponent implements OnInit {
 
     // vertical line
     doc.setLineWidth(3)
-    doc.line(20, 78.5, 20, 530) 
+    doc.line(20, 78.5, 20, 531.5) 
     doc.line(87, 78.5, 87, 530)
-    doc.line(250, 78.5, 250, 530)
-    doc.line(260, 78.5, 260, 530)
-    doc.line(820, 78.5, 820, 530)
+    doc.line(250, 78.5, 250, 531.5)
+    doc.line(260, 78.5, 260, 531.5)
+    doc.line(820, 78.5, 820, 531.5)
     
     doc.setLineWidth(1)
     doc.line(40, 100, 40, 530)
@@ -174,11 +174,11 @@ export class ExportComponent implements OnInit {
 
     // vertical line
     doc.setLineWidth(3)
-    doc.line(20, 78.5, 20, 530) 
+    doc.line(20, 78.5, 20, 531.5) 
     doc.line(87, 78.5, 87, 530)
-    doc.line(250, 78.5, 250, 530)
-    doc.line(260, 78.5, 260, 530)
-    doc.line(820, 78.5, 820, 530)
+    doc.line(250, 78.5, 250, 531.5)
+    doc.line(260, 78.5, 260, 531.5)
+    doc.line(820, 78.5, 820, 531.5)
     
     doc.setLineWidth(1)
     doc.line(40, 100, 40, 530)
