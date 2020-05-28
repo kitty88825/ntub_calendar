@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
+import { ShareDataService } from '../services/share-data.service';
 
 
 @Component({
@@ -13,13 +14,15 @@ export class IndexComponent implements OnInit {
 
   auth2: any;
   public isMenuCollapsed = true;
+  resToken = '';
 
 
   @ViewChild('loginRef', { static: true }) loginElement: ElementRef;
 
   constructor(
     private router: Router,
-    public tokenService: TokenService
+    public tokenService: TokenService,
+    private shareDataService: ShareDataService
   ) { }
 
   ngOnInit() {
@@ -37,17 +40,19 @@ export class IndexComponent implements OnInit {
         };
         this.tokenService.postToken(token).subscribe(
           data => {
-            console.log(data);
+            this.resToken = data.token;
+            console.log(data.token);
+            this.shareDataService.sendToken(data.token);
           },
           error => {
             console.log(error);
           }
         );
-        console.log('Token || ' + googleUser.getAuthResponse().access_token);
-        console.log('ID: ' + profile.getId());
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail());
+        // console.log('Token || ' + googleUser.getAuthResponse().access_token);
+        // console.log('ID: ' + profile.getId());
+        // console.log('Name: ' + profile.getName());
+        // console.log('Image URL: ' + profile.getImageUrl());
+        // console.log('Email: ' + profile.getEmail());
       }, (error) => {
         // alert(JSON.stringify(error, undefined, 2));
       });

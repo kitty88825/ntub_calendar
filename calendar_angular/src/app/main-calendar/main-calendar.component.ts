@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import listPlugin from '@fullcalendar/list';
@@ -7,6 +7,8 @@ import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { CalendarService } from '../services/calendar.service';
+import { Event } from '../models/event.model';
+import { ShareDataService } from '../services/share-data.service';
 
 declare var $: any;
 
@@ -20,26 +22,32 @@ export class MainCalendarComponent implements OnInit {
   user = true;
   official = !this.user;
   searchText = '';
+  put;
+  title;
+
 
   constructor(
     private router: Router,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private shareDataService: ShareDataService,
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
-
 
   calendarPlugins = [dayGridPlugin, bootstrapPlugin, listPlugin];
   calendarWeekends = true;
   calendarEvents: EventInput[];
 
   eventTypes: any[] = [
-    { title: 'type1', id: '1', selected: true },
-    { title: 'type2', id: '2', selected: true },
-    { title: 'type3', id: '3', selected: true },
+    { title: 'type1', id: 1, selected: true },
+    { title: 'type2', id: 2, selected: true },
+    { title: 'type3', id: 3, selected: true },
+    { title: 'type4', id: 4, selected: true },
+    { title: 'type5', id: 5, selected: true },
   ];
 
-  hiddenCalendarEvents: EventInput[] = [];
+  hiddenCalendarEvents: Event[] = [];
+
 
   eventClick(info) {
     Swal.fire({
@@ -80,6 +88,14 @@ export class MainCalendarComponent implements OnInit {
           }
         });
       } else if (result.value) {
+        this.calendarService.getEvent(info.event.id).subscribe(
+          data => {
+            console.log(data);
+            this.put = data;
+            this.title = data.title;
+            this.shareDataService.sendMessage(this.put);
+          }
+        );
         this.router.navigate(['/edit-schedule']);
       }
     });
@@ -95,22 +111,42 @@ export class MainCalendarComponent implements OnInit {
 
       // Show
       this.hiddenCalendarEvents
-        .filter(calendarEvent => calendarEvent.category === eventType.id)
+        .filter(calendarEvent => calendarEvent.calendars.includes(eventType.id))
         .forEach(calendarEvent => {
           calendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
           calendarEventsToShow.push(calendarEvent.id);
         });
 
+
       calendarEventsToShow.forEach(calendarEventToShow => {
         const index = this.hiddenCalendarEvents.findIndex(hiddenCalendarEvent => hiddenCalendarEvent.id === calendarEventToShow);
         this.hiddenCalendarEvents.splice(index, 1);
       });
+      console.log(calendarEventsToShow);
     } else {
       const calendarEventsToHide: any[] = [];
 
       // Hide
       calendarEvents
-        .filter(calendarEvent => calendarEvent.category === eventType.id)
+        .filter(calendarEvent => {
+          if (calendarEvent.calendars.length === 1) {
+            return calendarEvent.calendars.includes(eventType.id);
+          } else if (calendarEvent.calendars.length > 1) {
+            let count = 0;
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < calendarEvent.calendars.length; i++) {
+              // tslint:disable-next-line: prefer-for-of
+              for (let j = 0; j < this.eventTypes.length; j++) {
+                if (calendarEvent.calendars[i] === this.eventTypes[j].id && this.eventTypes[j].selected === false) {
+                  count++;
+                  if (count === calendarEvent.calendars.length) {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        })
         .forEach(calendarEvent => {
           if (this.calendarComponent.getApi().getEventById(String(calendarEvent.id))) {
             this.calendarComponent
@@ -127,6 +163,7 @@ export class MainCalendarComponent implements OnInit {
         const index = calendarEvents.findIndex(calendarEvent => calendarEvent.id === calendarEventToHide);
         calendarEvents.splice(index, 1);
       });
+      console.log(calendarEventsToHide);
     }
     this.calendarEvents = calendarEvents; // reassign the array
   }
@@ -144,15 +181,19 @@ export class MainCalendarComponent implements OnInit {
         const events = [];
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
+
           events.push({
             id: data[i].id, title: data[i].title, start: data[i].startAt,
-            end: data[i].endAt, category: data[i].calendars.toString()
+            end: data[i].endAt, calendars: data[i].calendars
           });
+
           this.calendarEvents = events;
         }
         console.log(events);
       }
     );
+
+
   }
 
 

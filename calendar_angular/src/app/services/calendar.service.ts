@@ -26,5 +26,12 @@ export class CalendarService {
     return this.http.get<Event[]>(this.serverIp + 'event/');
   }
 
+  getEvent(id: number): Observable<Event> {
+    return this.http.get<Event>(`${this.serverIp}event/${id}`);
+  }
+
+  putEvent(id: number, formData: any): Observable<Event> {
+    return this.http.put<Event>(`${this.serverIp}event/${id}`, formData);
+  }
 
 }

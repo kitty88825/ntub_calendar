@@ -61,7 +61,10 @@ export class AddScheduleComponent implements OnInit {
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
     this.formData.append('end_at', this.addEndDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
       + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
-    this.formData.append('calendars', [1].toString());
+    for (let i = 1; i < 4; i++) {
+      this.formData.append('calendars', [1].toString());
+      this.formData.append('calendars', [4].toString());
+    }
 
     this.formData.append('description', this.description.nativeElement.value);
     this.formData.append('location', this.location.nativeElement.value);
