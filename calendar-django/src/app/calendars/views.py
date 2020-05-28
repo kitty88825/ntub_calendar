@@ -10,7 +10,8 @@ from .serializers import CalendarSerializer
 
 
 class CalendarViewSet(ModelViewSet):
-    permission_class = [IsAuthenticated]
+    serializer_class = CalendarSerializer
+    permission_classes = [IsAuthenticated]
     queryset = Calendar.objects.all()
 
     def get_queryset(self):
@@ -20,5 +21,3 @@ class CalendarViewSet(ModelViewSet):
         calendar_id = list(Permission.objects.values_list('calendar_id', flat=True).filter(group_id__in=group_id))  # noqa 501
         queryset = Calendar.objects.filter(id__in=calendar_id)
         return queryset
-
-    serializer_class = CalendarSerializer

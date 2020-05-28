@@ -6,7 +6,7 @@ from .serializers import EventSerializer, UpdateAttachmentSerializer
 
 
 class EventViewSet(ModelViewSet):
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Event.objects.prefetch_related('attachments')
 
     def get_serializer_class(self):
