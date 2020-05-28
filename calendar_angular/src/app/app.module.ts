@@ -26,6 +26,7 @@ import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
 
+
 @NgModule({
   declarations: [
     AppComponent,

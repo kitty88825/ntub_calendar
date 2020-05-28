@@ -10,6 +10,7 @@ import { IndexComponent } from './index/index.component';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 
+
 const routes: Routes = [
   { path: '', component: IndexComponent },
   { path: 'calendar', component: MainCalendarComponent },
