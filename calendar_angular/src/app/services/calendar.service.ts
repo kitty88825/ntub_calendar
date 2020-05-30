@@ -17,15 +17,7 @@ export class CalendarService {
     private http: HttpClient,
     private shareDataService: ShareDataService,
   ) {
-    this.shareDataService.getToken().subscribe(
-      data => {
-        this.resToken = data.token;
-        console.log(this.resToken);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.resToken = this.shareDataService.getToken();
   }
 
   postEvent(formData: any): Observable<any> {
@@ -56,11 +48,11 @@ export class CalendarService {
     return this.http.get<Event>(`${this.serverIp}event/${id}`, { headers: reqHeader });
   }
 
-  putEvent(id: number, formData: any): Observable<Event> {
+  patchEvent(id: number, formData: any): Observable<Event> {
     const reqHeader = new HttpHeaders({
       Authorization: 'token ' + this.resToken
     });
-    return this.http.put<Event>(`${this.serverIp}event/${id}`, formData, { headers: reqHeader });
+    return this.http.patch<Event>(`${this.serverIp}event/${id}`, formData, { headers: reqHeader });
   }
 
 }

@@ -16,7 +16,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { OfficialAddComponent } from './official-add/official-add.component';
 import { OfficialChangeComponent } from './official-change/official-change.component';
 import { IndexComponent } from './index/index.component';
-import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -25,8 +24,20 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
+import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
+import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
 
 
+const config = new AuthServiceConfig([
+  {
+    id: GoogleLoginProvider.PROVIDER_ID,
+    provider: new GoogleLoginProvider('1035929255551-0a4248ua8cabhe19s8v946td1i211u5r.apps.googleusercontent.com')
+  },
+]);
+
+export function provideConfig() {
+  return config;
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,13 +62,13 @@ import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
     FormsModule,
     CollapseModule,
     BsDropdownModule,
-    CarouselModule,
     HttpClientModule,
     NgbPaginationModule,
     NgbAlertModule,
     NgbModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SocialLoginModule
   ],
   providers: [
     {
@@ -65,6 +76,10 @@ import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
       useClass: HttpBodyInterceptor,
       multi: true,
     },
+    {
+      provide: AuthServiceConfig,
+      useFactory: provideConfig
+    }
   ],
   bootstrap: [AppComponent]
 })

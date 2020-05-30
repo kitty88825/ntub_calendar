@@ -29,6 +29,8 @@ export class EditScheduleComponent implements OnInit {
   location = '';
   description = '';
   id = 0;
+  deleteId;
+  filesId;
 
   constructor(
     private router: Router,
@@ -69,6 +71,7 @@ export class EditScheduleComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.message.attachments.length; i++) {
           this.fileName.push(data.message.attachments[i].filename);
+          this.formData.append('filesId', data.message.attachments[i].id);
         }
       }
     );
@@ -84,6 +87,36 @@ export class EditScheduleComponent implements OnInit {
     }
   }
 
+  removeSelectedFile(index) {
+    const initLenght = this.formData.getAll('filesId').length;
+    console.log(initLenght);
+    this.fileName.splice(index, 1);
+
+    if (initLenght > index) {
+      this.filesId = this.formData.getAll('filesId');
+      console.log(this.filesId);
+      this.deleteId = this.filesId[index];
+      console.log(this.deleteId);
+      this.filesId.splice(index, 1);
+      console.log(this.filesId);
+      this.formData.delete('filesId');
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < this.filesId.length; i++) {
+        this.formData.append('filesId', this.filesId[i]);
+      }
+      this.formData.append('remove_files', this.deleteId);
+    }
+
+    const selectFile = this.formData.getAll('files');
+    selectFile.splice(index - this.formData.getAll('filesId').length, 1);
+    this.formData.delete('files');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < selectFile.length; i++) {
+      this.formData.append('files', selectFile[i]);
+    }
+
+  }
+
 
   update() {
     this.formData.append('title', this.title);
@@ -96,7 +129,7 @@ export class EditScheduleComponent implements OnInit {
     this.formData.append('description', this.description);
     this.formData.append('location', this.location);
 
-    this.calendarService.putEvent(this.id, this.formData).subscribe(
+    this.calendarService.patchEvent(this.id, this.formData).subscribe(
       data => {
         console.log(data);
         Swal.fire({
@@ -129,5 +162,6 @@ export class EditScheduleComponent implements OnInit {
       }
     );
   }
+
 
 }

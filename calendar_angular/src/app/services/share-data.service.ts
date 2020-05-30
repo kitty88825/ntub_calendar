@@ -9,7 +9,7 @@ export class ShareDataService {
   constructor() { }
 
   private subject = new Subject<any>();
-  private resToken = new Subject<any>();
+  private resToken = '';
 
   sendMessage(message: any) {
     this.subject.next({ message });
@@ -19,12 +19,11 @@ export class ShareDataService {
     return this.subject.asObservable();
   }
 
-  sendToken(token: string) {
-    this.resToken.next({ token });
+  sendToken(token: any) {
+    this.resToken = token;
   }
 
-  getToken(): Observable<any> {
-    return this.resToken.asObservable();
+  getToken(): string {
+    return this.resToken;
   }
-
 }

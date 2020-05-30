@@ -40,6 +40,7 @@
     "@ridi/object-case-converter": "^2.0.4",
     "@types/jquery": "^3.3.35",
     "angular-calendar": "^0.28.5",
+    "angularx-social-login": "^2.3.1",
     "bootstrap": "^4.4.1",
     "bootswatch": "^4.4.1",
     "font-awesome": "^4.7.0",

@@ -3,15 +3,15 @@
   <div class="content">
     <div class="bar">
       <ul class="nav">
-        <li class="nav-item">
-          <a class="nav-link year" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-            aria-expanded="false">108</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item">107</a>
-            <a class="dropdown-item">106</a>
-            <a class="dropdown-item">105</a>
-          </div>
-        </li>
+        <div class="form-group">
+          <select class="form-control" id="exampleSelect1">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
         <li class="nav-item">
           <a class="nav-link disabled" href="#">學年度</a>
         </li>
@@ -28,7 +28,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of data">
+            <tr *ngFor="let row of datas">
             <td *ngFor="let val of row">
               {{val}}
             </td>

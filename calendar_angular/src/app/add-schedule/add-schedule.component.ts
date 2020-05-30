@@ -20,7 +20,6 @@ export class AddScheduleComponent implements OnInit {
   formData = new FormData();
   fileName = [];
 
-
   constructor(
     private router: Router,
     public calendarService: CalendarService,
@@ -51,6 +50,18 @@ export class AddScheduleComponent implements OnInit {
       this.uploadForm.get('profile').setValue(file);
       this.formData.append('files', this.uploadForm.get('profile').value);
       this.fileName.push(this.uploadForm.get('profile').value.name);
+    }
+  }
+
+  removeSelectedFile(index) {
+    this.fileName.splice(index, 1);
+    const files = this.formData.getAll('files');
+    files.splice(index, 1);
+    console.log(files);
+    this.formData.delete('files');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < files.length; i++) {
+      this.formData.append('files', files[i]);
     }
   }
 

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
+import { AuthService } from 'angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
+
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +17,7 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -31,6 +35,7 @@ export class NavbarComponent implements OnInit {
       cancelButtonText: '取消'
     }).then((result) => {
       if (result.value) {
+        this.authService.signOut();
         this.router.navigate(['/index']);
       }
     });

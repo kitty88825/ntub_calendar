@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
 import { ShareDataService } from '../services/share-data.service';
+import { AuthService } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'app-index',
@@ -11,80 +13,51 @@ import { ShareDataService } from '../services/share-data.service';
 })
 export class IndexComponent implements OnInit {
 
-  auth2: any;
+  serverIp = 'http://127.0.0.1:8000/api/v1/';
+
   public isMenuCollapsed = true;
   resToken = '';
-
-
-  @ViewChild('loginRef', { static: true }) loginElement: ElementRef;
+  authToken;
+  loggedIn: boolean;
 
   constructor(
     private router: Router,
     public tokenService: TokenService,
-    private shareDataService: ShareDataService
+    private shareDataService: ShareDataService,
+    private authService: AuthService,
   ) { }
 
-  ngOnInit() {
-    this.googleSDK();
-  }
+  ngOnInit() {}
 
-
-  prepareLoginButton() {
-
-    this.auth2.attachClickHandler(this.loginElement.nativeElement, {},
-      (googleUser) => {
-        const profile = googleUser.getBasicProfile();
-        const token: Token = {
-          accessToken: googleUser.getAuthResponse().access_token,
-        };
-        this.tokenService.postToken(token).subscribe(
-          data => {
-            this.resToken = data.token;
-            console.log(data.token);
-            this.shareDataService.sendToken(data.token);
-          },
-          error => {
-            console.log(error);
-          }
-        );
-        // console.log('Token || ' + googleUser.getAuthResponse().access_token);
-        // console.log('ID: ' + profile.getId());
-        // console.log('Name: ' + profile.getName());
-        // console.log('Image URL: ' + profile.getImageUrl());
-        // console.log('Email: ' + profile.getEmail());
-      }, (error) => {
-        // alert(JSON.stringify(error, undefined, 2));
-      });
-
-  }
-  googleSDK() {
-
-    // tslint:disable-next-line: no-string-literal
-    window['googleSDKLoaded'] = () => {
-      // tslint:disable-next-line: no-string-literal
-      window['gapi'].load('auth2', () => {
-        // tslint:disable-next-line: no-string-literal
-        this.auth2 = window['gapi'].auth2.init({
-          client_id: '1035929255551-0a4248ua8cabhe19s8v946td1i211u5r.apps.googleusercontent.com',
-          cookiepolicy: 'single_host_origin',
-          scope: 'profile email'
+  signInWithGoogle() {
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
+      (result) => {
+        this.authService.authState.subscribe((user) => {
+          this.authToken = user.authToken;
+          this.loggedIn = (user != null);
+          console.log(this.authToken);
+          console.log(this.loggedIn);
+          const token: Token = {
+            accessToken: this.authToken,
+          };
+          this.tokenService.postToken(token).subscribe(
+            data => {
+              this.resToken = data.token;
+              console.log(data.token);
+              this.shareDataService.sendToken(data.token);
+              this.router.navigate(['/calendar']);
+            },
+            error => {
+              console.log(error);
+            }
+          );
         });
-        this.prepareLoginButton();
-      });
-    };
-
-    // tslint:disable-next-line: only-arrow-functions
-    (function (d, s, id) {
-      // tslint:disable-next-line: one-variable-per-declaration
-      let js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) { return; }
-      js = d.createElement(s); js.id = id;
-      js.src = 'https://apis.google.com/js/platform.js?onload=googleSDKLoaded';
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'google-jssdk'));
-
+      }
+    );
   }
-
-
 
 }
+
+
+
+
