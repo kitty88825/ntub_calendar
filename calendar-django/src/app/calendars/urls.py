@@ -17,11 +17,12 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from .views import CalendarViewSet
+from .views import CalendarViewSet, SubscriptionViewSet
 
 
 router = DefaultRouter(False)
 router.register('', CalendarViewSet)
+router.register('subscription/', SubscriptionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

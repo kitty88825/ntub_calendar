@@ -5,8 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from app.users.models import User
 
-from .models import Calendar, Permission
+from .models import Calendar, Permission, Subscription
 from .serializers import CalendarSerializer
+from .serializers import SubscriptionSerializer
 
 
 class CalendarViewSet(ModelViewSet):
@@ -21,3 +22,12 @@ class CalendarViewSet(ModelViewSet):
         calendar_id = list(Permission.objects.values_list('calendar_id', flat=True).filter(group_id__in=group_id))  # noqa 501
         queryset = Calendar.objects.filter(id__in=calendar_id)
         return queryset
+
+
+class SubscriptionViewSet(ModelViewSet):
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Subscription.objects.all()
+
+    def perform_create(self, serializers):
+        serializers.save(user=self.request.user)
