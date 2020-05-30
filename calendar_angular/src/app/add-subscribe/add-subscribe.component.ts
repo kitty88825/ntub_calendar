@@ -17,6 +17,19 @@ export class AddSubscribeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /* To copy Text from Textbox */
+  copyInputMessage(inputElement) {
+    inputElement.select();
+    document.execCommand('copy');
+    inputElement.setSelectionRange(0, 0);
+    Swal.fire({
+      text: '已複製',
+      icon: 'success',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'OK'
+    });
+  }
+
   logout() {
     Swal.fire({
       text: '是否確定要登出？',

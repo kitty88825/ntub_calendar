@@ -9,10 +9,7 @@ import { Router } from '@angular/router';
 import { CalendarService } from '../services/calendar.service';
 import { Event } from '../models/event.model';
 import { ShareDataService } from '../services/share-data.service';
-
-
 declare var $: any;
-
 
 @Component({
   selector: 'app-main-calendar',
@@ -25,6 +22,7 @@ export class MainCalendarComponent implements OnInit {
   searchText = '';
   put;
   title;
+  calendars = [];
 
   constructor(
     private router: Router,
@@ -58,6 +56,7 @@ export class MainCalendarComponent implements OnInit {
       cancelButtonColor: '#aaa',
       confirmButtonText: '編輯',
       cancelButtonText: '刪除',
+      allowOutsideClick: false
     }).then((result) => {
       if (!result.value) {
         Swal.fire({
@@ -76,9 +75,9 @@ export class MainCalendarComponent implements OnInit {
               data => {
                 console.log(data);
                 this.calendarComponent
-                .getApi()
-                .getEventById(String(info.event.id))
-                .remove();
+                  .getApi()
+                  .getEventById(String(info.event.id))
+                  .remove();
                 Swal.fire({
                   text: '已刪除',
                   icon: 'success',
@@ -195,10 +194,9 @@ export class MainCalendarComponent implements OnInit {
 
           this.calendarEvents = events;
         }
-        console.log(events);
+
       }
     );
-
 
   }
 

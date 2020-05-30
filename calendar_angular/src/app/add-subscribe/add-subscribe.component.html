@@ -28,9 +28,9 @@
           <div class="url form-group row">
             <label for="static" class="top col-form-label">URL：</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" #URL>
             </div>
-            <img src="../assets/images/file_copy-black-18dp.svg">
+            <img src="../assets/images/file_copy-black-18dp.svg" (click)="copyInputMessage(URL)">
           </div>
         </div>
       </div>

@@ -19,11 +19,4 @@ export class ShareDataService {
     return this.subject.asObservable();
   }
 
-  sendToken(token: any) {
-    this.resToken = token;
-  }
-
-  getToken(): string {
-    return this.resToken;
-  }
 }

@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
-import { ShareDataService } from '../services/share-data.service';
 import { AuthService } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
 
@@ -23,7 +22,6 @@ export class IndexComponent implements OnInit {
   constructor(
     private router: Router,
     public tokenService: TokenService,
-    private shareDataService: ShareDataService,
     private authService: AuthService,
   ) { }
 
@@ -34,6 +32,7 @@ export class IndexComponent implements OnInit {
       (result) => {
         this.authService.authState.subscribe((user) => {
           this.authToken = user.authToken;
+          localStorage.setItem('access_token', user.authToken);
           this.loggedIn = (user != null);
           console.log(this.authToken);
           console.log(this.loggedIn);
@@ -43,8 +42,8 @@ export class IndexComponent implements OnInit {
           this.tokenService.postToken(token).subscribe(
             data => {
               this.resToken = data.token;
+              localStorage.setItem('refresh_token', data.token);
               console.log(data.token);
-              this.shareDataService.sendToken(data.token);
               this.router.navigate(['/calendar']);
             },
             error => {
