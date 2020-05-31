@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
 import { AuthService } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 @Component({
   selector: 'app-index',
@@ -25,11 +26,32 @@ export class IndexComponent implements OnInit {
     private authService: AuthService,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   signInWithGoogle() {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (result) => {
+        let timerInterval;
+        Swal.fire({
+          title: 'Logging in',
+          timer: 500,
+          onBeforeOpen: () => {
+            Swal.showLoading(),
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent();
+              if (content) {
+                const b = content.querySelector('b');
+                if (b) {
+                  b.textContent = Swal.getTimerLeft();
+                }
+              }
+            }, 100);
+          },
+          onClose: () => {
+            clearInterval(timerInterval);
+            this.router.navigate(['/calendar']);
+          }
+        });
         this.authService.authState.subscribe((user) => {
           this.authToken = user.authToken;
           localStorage.setItem('access_token', user.authToken);
@@ -44,7 +66,6 @@ export class IndexComponent implements OnInit {
               this.resToken = data.token;
               localStorage.setItem('refresh_token', data.token);
               console.log(data.token);
-              this.router.navigate(['/calendar']);
             },
             error => {
               console.log(error);

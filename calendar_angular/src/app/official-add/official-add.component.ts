@@ -10,6 +10,10 @@ import { CalendarService } from '../services/calendar.service';
 })
 export class OfficialAddComponent implements OnInit {
   datas = [];
+  selectedValue;
+  years = [];
+  result;
+  showDatas = [];
 
   constructor(
     private router: Router,
@@ -19,10 +23,39 @@ export class OfficialAddComponent implements OnInit {
   ngOnInit(): void {
     this.calendarService.getEvents().subscribe(
       data => {
-        console.log(data);
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
           this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+          this.years.push(Number(data[i].startAt.substr(0, 4)) - 1911, Number(data[i].endAt.substr(0, 4)) - 1911);
+        }
+        // tslint:disable-next-line: only-arrow-functions
+        this.result = this.years.filter(function (element, index, arr) {
+          return arr.indexOf(element) === index;
+        });
+        // tslint:disable-next-line: only-arrow-functions
+        this.result.sort(function (a, b) {
+          return b - a;
+        });
+      }
+    );
+  }
+
+  onChange() {
+    this.showDatas = [];
+    this.calendarService.getEvents().subscribe(
+      data => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          if (Number(data[i].startAt.substr(0, 4)) - 1911 === this.selectedValue) {
+            // this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            // console.log(this.showDatas);
+            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+          } else if (Number(data[i].endAt.substr(0, 4)) - 1911 === this.selectedValue) {
+            // this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            // console.log(this.showDatas);
+            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            console.log('aaa');
+          }
         }
       }
     );
