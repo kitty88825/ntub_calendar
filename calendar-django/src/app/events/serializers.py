@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from app.users.models import User
+from app.users.handlers import get_match
 
 from .models import Attachment, Event, Participant
 
@@ -79,13 +80,19 @@ class EventSerializer(serializers.ModelSerializer):
         if not participants:
             return
 
-        users = User.objects.filter(email__in=participants)
+        in_user_model = User.objects.values_list('email', flat=True) \
+                            .filter(email__in=participants)
+
+        for email in set(participants) - set(in_user_model):
+            if get_match(email) is not None:
+                User.objects.create(username=email, email=email)
+
         Participant.objects.bulk_create(
             [Participant(
                 event=event,
                 user=user,
                 role=Participant.RoleChoice.participants,
-            ) for user in users],
+            ) for user in User.objects.filter(email__in=participants)],
         )
 
     def create(self, validated_data):
