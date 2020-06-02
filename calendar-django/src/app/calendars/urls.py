@@ -22,7 +22,7 @@ from .views import CalendarViewSet, SubscriptionViewSet
 
 router = DefaultRouter(False)
 router.register('', CalendarViewSet)
-router.register('subscription/', SubscriptionViewSet)
+router.register('subscription', SubscriptionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -8,11 +8,12 @@ from app.users.models import User
 from .models import Calendar, Permission, Subscription
 from .serializers import CalendarSerializer
 from .serializers import SubscriptionSerializer
+from .permission import IsStaffUserEditOnly
 
 
 class CalendarViewSet(ModelViewSet):
     serializer_class = CalendarSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffUserEditOnly]
     queryset = Calendar.objects.all()
 
     def get_queryset(self):
