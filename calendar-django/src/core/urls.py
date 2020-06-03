@@ -23,6 +23,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from app.events.feed import EventFeed
+
 
 api_urlpatterns = [
     path('user/', include('app.users.urls')),
@@ -40,6 +42,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('feed/', EventFeed()),
     path('api/v1/', include(api_urlpatterns)),
     path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
