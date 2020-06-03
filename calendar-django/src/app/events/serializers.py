@@ -71,11 +71,12 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
     def create_participant_for_event(self, event, user, participants):
-        Participant.objects.create(
-            event=event,
-            user=user,
-            role=Participant.RoleChoice.editors,
-        )
+        if not Participant.objects.filter(user=user, event=event):
+            Participant.objects.create(
+                event=event,
+                user=user,
+                role=Participant.RoleChoice.editors,
+            )
 
         if not participants:
             return
@@ -112,6 +113,12 @@ class UpdateAttachmentSerializer(EventSerializer):
         required=False,
     )
 
+    remove_users = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+    )
+
     class Meta:
         model = Event
         fields = (
@@ -125,9 +132,16 @@ class UpdateAttachmentSerializer(EventSerializer):
             'attachments',
             'calendars',
             'remove_files',
+            'user',
+            'participants',
+            'remove_users',
+            'participant_set',
         )
 
     def update(self, instance, validated_data):
+        user = validated_data.pop('user')
+        participants = validated_data.pop('participants', None)
+        remove_users = validated_data.pop('remove_users', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
         event = super().update(instance, validated_data)
@@ -137,5 +151,9 @@ class UpdateAttachmentSerializer(EventSerializer):
                 .filter(id__in=remove_files, event=event) \
                 .delete()
 
+        if remove_users:
+            Participant.objects.filter(id__in=remove_users, event=event, role=Participant.RoleChoice.participants).delete()  # noqa: E501
+
+        self.create_participant_for_event(event, user, participants)
         self.create_attachment_for_event(event, files)
         return event

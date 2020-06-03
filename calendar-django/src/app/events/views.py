@@ -18,3 +18,6 @@ class EventViewSet(ModelViewSet):
 
     def perform_create(self, serializers):
         serializers.save(user=self.request.user)
+
+    def perform_update(self, serializers):
+        serializers.save(user=self.request.user)
