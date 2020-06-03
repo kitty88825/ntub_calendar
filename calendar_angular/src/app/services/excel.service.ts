@@ -1,25 +1,28 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
+import * as moment from 'moment';
 
-@Injectable({
-  providedIn: 'root'
-})
+const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const EXCEL_EXTENSION = '.xlsx';
+// Let's make some changes to this empty array
+
+@Injectable()
 export class ExcelService {
-
   constructor() { }
+  mappedJson = [];
+  public exportAsExcelFile(json: any[]): void {
+    /****************
+    * Let's make some changes in our data
+    */
+    this.mappedJson = json.map(item => {
+      console.log(item);
+      return {
+        Eid: item.eid,
+        Ename: item.ename,
+        EDate: item.edate ? moment(item.edate).format('YYYY-MM-DD') : 'N/A'
+      };
+    });
 
-  public importFromFile(bstr: string): XLSX.AOA2SheetOpts {
-    /* read workbook */
-    const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-
-    /* grab first sheet */
-    const wsname: string = wb.SheetNames[0];
-    const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-    /* save data */
-    const data =  (XLSX.utils.sheet_to_json(ws, { header: 1 })) as XLSX.AOA2SheetOpts;
-
-    return data;
   }
 
 }

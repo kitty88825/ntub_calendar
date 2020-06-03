@@ -2,20 +2,20 @@
   <app-navbar></app-navbar>
   <div class="content">
     <div class="title">
-      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-schedule']">編輯行程</button>
+      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-schedule']">修改行程</button>
     </div>
     <div class="jumbotron">
       <div class="form-group row">
         <label for="static" class="top col-form-label">選擇行事曆</label>
         <div class="col-sm-8">
           <div class="pretty p-default p-curve p-thick">
-            <input type="checkbox" checked />
+            <input type="checkbox" checked/>
             <div class="state">
               <label class="add">學校行事曆</label>
             </div>
           </div>
           <div class="pretty p-default p-curve p-thick">
-            <input type="checkbox" checked />
+            <input type="checkbox" />
             <div class="state">
               <label class="add">教務處</label>
             </div>
@@ -31,8 +31,7 @@
       <div class="form-group row">
         <label for="static" class="top col-form-label">開始時間：</label>
         <div class="col-md-4">
-          <input type="text" [(ngModel)]="addStartDate" class="date form-control" bsDatepicker
-            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+          <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #startDate>
         </div>
         <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar">
 
@@ -43,7 +42,7 @@
         <label for="static" class="top col-form-label">結束時間：</label>
         <div class="col-md-4">
           <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-            [(ngModel)]="addEndDate">
+            #endDate>
         </div>
         <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar">
 

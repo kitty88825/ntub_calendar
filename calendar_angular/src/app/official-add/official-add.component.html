@@ -9,18 +9,16 @@
           </select>
         </div>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#">學年度</a>
+          <span class="nav-link disabled">學年度</span>
         </li>
       </ul>
     </div>
     <div class="container">
-      <div class="table">
+      <div class="table" #table>
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">行程名稱</th>
-              <th scope="col">開始</th>
-              <th scope="col">結束</th>
+              <th scope="col" *ngFor="let name of header">{{name}}</th>
             </tr>
           </thead>
           <tbody>

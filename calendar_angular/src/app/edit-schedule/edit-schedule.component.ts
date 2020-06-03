@@ -22,10 +22,8 @@ export class EditScheduleComponent implements OnInit {
   fileName = [];
   title = '';
   addStart = '';
-  addStartDate = '';
   addSTime = '';
   addEnd = '';
-  addEndDate = '';
   location = '';
   description = '';
   id = 0;
@@ -44,6 +42,8 @@ export class EditScheduleComponent implements OnInit {
 
   @ViewChild('addStartTime') addStartTime: NgbTimepicker;
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
+  @ViewChild('startDate') startDate: ElementRef;
+  @ViewChild('endDate') endDate: ElementRef;
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
@@ -55,13 +55,13 @@ export class EditScheduleComponent implements OnInit {
         this.id = data.message.id;
         this.title = data.message.title;
         this.addStart = data.message.startAt;
-        this.addStartDate = this.addStart.substring(0, 10);
+        this.startDate.nativeElement.value = this.addStart.substring(0, 10);
         const sHour = this.addStart.substring(11, 13);
         this.addStartTime.model.hour = Number(sHour);
         const sMinute = this.addStart.substring(14, 16);
         this.addStartTime.model.minute = Number(sMinute);
         this.addEnd = data.message.endAt;
-        this.addEndDate = this.addEnd.substring(0, 10);
+        this.endDate.nativeElement.value = this.addEnd.substring(0, 10);
         const eHour = this.addEnd.substring(11, 13);
         this.addEndTime.model.hour = Number(eHour);
         const eMinute = this.addEnd.substring(14, 16);
@@ -119,10 +119,11 @@ export class EditScheduleComponent implements OnInit {
 
 
   update() {
+    console.log(this.startDate.nativeElement.value);
     this.formData.append('title', this.title);
-    this.formData.append('start_at', this.addStartDate + 'T' + this.addStartTime.model.hour + ':'
+    this.formData.append('start_at', this.startDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
-    this.formData.append('end_at', this.addEndDate + 'T' + this.addEndTime.model.hour + ':'
+    this.formData.append('end_at', this.endDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
       + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
     this.formData.append('calendars', [1].toString());
 

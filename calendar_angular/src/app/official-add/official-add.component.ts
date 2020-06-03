@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { CalendarService } from '../services/calendar.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-official-add',
@@ -14,19 +14,34 @@ export class OfficialAddComponent implements OnInit {
   years = [];
   result;
   showDatas = [];
+  header = ['行程名稱', '開始日期', '結束日期'];
+  output = [];
 
   constructor(
-    private router: Router,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
   ) { }
+
+  @ViewChild('table', { read: ElementRef }) table: ElementRef;
+
 
   ngOnInit(): void {
     this.calendarService.getEvents().subscribe(
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
-          this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-          this.years.push(Number(data[i].startAt.substr(0, 4)) - 1911, Number(data[i].endAt.substr(0, 4)) - 1911);
+          if (Number(data[i].startAt.substr(5, 2)) < 8){
+            this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1912, Number(data[i].endAt.substr(0, 4)) - 1911);
+          } else if (Number(data[i].endAt.substr(5, 2)) < 8) {
+            this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1911, Number(data[i].endAt.substr(0, 4)) - 1912);
+          } else if (Number(data[i].startAt.substr(5, 2)) < 8 && Number(data[i].endAt.substr(5, 2)) < 8) {
+            this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1912, Number(data[i].endAt.substr(0, 4)) - 1912);
+          } else {
+            this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1911, Number(data[i].endAt.substr(0, 4)) - 1911);
+          }
         }
         // tslint:disable-next-line: only-arrow-functions
         this.result = this.years.filter(function (element, index, arr) {
@@ -46,15 +61,14 @@ export class OfficialAddComponent implements OnInit {
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
-          if (Number(data[i].startAt.substr(0, 4)) - 1911 === this.selectedValue) {
-            // this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-            // console.log(this.showDatas);
+          if (Number(data[i].startAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
             this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-          } else if (Number(data[i].endAt.substr(0, 4)) - 1911 === this.selectedValue) {
-            // this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-            // console.log(this.showDatas);
+          } else if (Number(data[i].endAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
             this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-            console.log('aaa');
+          } else if (Number(data[i].startAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) < 8) {
+            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+          } else if (Number(data[i].endAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].endAt.substr(5, 2)) < 8) {
+            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
           }
         }
       }
@@ -64,16 +78,20 @@ export class OfficialAddComponent implements OnInit {
 
   // 匯出
   daochu() {
+    this.output.push(this.header);
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.showDatas.length; i++) {
+      this.output.push(this.showDatas[i]);
+    }
+    console.log(this.output);
     /* generate worksheet */
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.datas);
-    const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.datas);
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.output);
 
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.utils.book_append_sheet(wb, ws2, 'Sheet2');
 
-    console.log(wb);
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
     /* save to file */
     XLSX.writeFile(wb, 'demo.xlsx');
   }

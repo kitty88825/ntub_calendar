@@ -5,11 +5,11 @@
       <div class="form-group col-sm-4">
         <div class="input-group">
           <div class="custom-file">
-            <input type="file" (change)="onFileChange($event)" multiple="false" />
+            <input type="file" class="file" (change)="onFileChange($event)" accept=".xlsx"/>
           </div>
         </div>
       </div>
-      <label for="static" class="top col-form-label">行事曆</label>
+      <label for="static" class="top col-form-label">新增行事曆名稱</label>
       <div class="col-sm-2">
         <input type="text" class="form-control" [(ngModel)]="calendars">
       </div>
@@ -19,13 +19,11 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">行程名稱</th>
-              <th scope="col">開始日期</th>
-              <th scope="col">結束日期</th>
+              <th scope="col" *ngFor="let name of header">{{name}}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of data">
+            <tr *ngFor="let row of datas">
               <td *ngFor="let val of row">
                 {{val}}
               </td>

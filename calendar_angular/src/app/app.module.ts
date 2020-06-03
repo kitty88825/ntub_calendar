@@ -24,9 +24,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpBodyInterceptor } from './interceptors/http-body.interceptor';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
-import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
-import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
-
+import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
 
 const config = new AuthServiceConfig([
   {
