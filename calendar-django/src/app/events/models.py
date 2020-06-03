@@ -18,6 +18,9 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+    def link(self):
+        return f'/event/{self.id}'
+
 
 class Attachment(models.Model):
     def attachment_path(instance, filename):
