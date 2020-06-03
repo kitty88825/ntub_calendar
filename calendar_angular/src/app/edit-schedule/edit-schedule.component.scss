@@ -23,6 +23,7 @@
     z-index         : 2;
     background-color: white;
     color           : black;
+    letter-spacing:  2px;
   }
 
   .date {
@@ -72,7 +73,8 @@
     margin  : -20px 25% 20px 25%;
     z-index : 1;
     height  : fit-content;
-    background-color: #eee;
+    background-color: white;
+    box-shadow  : 0px 15px 22px 0px rgba(0, 0, 0, 0.75);
   }
 
   .input-group {

@@ -29,12 +29,12 @@ export class OfficialAddComponent implements OnInit {
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
-          if (Number(data[i].startAt.substr(5, 2)) < 8){
+          if (Number(data[i].startAt.substr(5, 2)) < 8) {
             this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1912, Number(data[i].endAt.substr(0, 4)) - 1911);
+            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1912);
           } else if (Number(data[i].endAt.substr(5, 2)) < 8) {
             this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-            this.years.push(Number(data[i].startAt.substr(0, 4)) - 1911, Number(data[i].endAt.substr(0, 4)) - 1912);
+            this.years.push(Number(data[i].endAt.substr(0, 4)) - 1912);
           } else if (Number(data[i].startAt.substr(5, 2)) < 8 && Number(data[i].endAt.substr(5, 2)) < 8) {
             this.datas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
             this.years.push(Number(data[i].startAt.substr(0, 4)) - 1912, Number(data[i].endAt.substr(0, 4)) - 1912);

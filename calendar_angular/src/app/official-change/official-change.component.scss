@@ -4,7 +4,7 @@
     height          : 100%;
     position        : relative;
     min-width       : 320px;
-    background-color: #FBFCEE;
+    background-color: white;
     margin-top      : 80px;
   }
 
@@ -22,6 +22,7 @@
     width           : 60%;
     height          : fit-content;
     background-color: white;
+    box-shadow: -2px 3px 23px -5px rgba(0,0,0,0.75);
   }
 
   .table {
