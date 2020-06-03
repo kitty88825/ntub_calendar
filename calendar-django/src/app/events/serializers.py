@@ -88,6 +88,10 @@ class EventSerializer(serializers.ModelSerializer):
             if get_match(email) is not None:
                 User.objects.create(username=email, email=email)
 
+        for user_email in User.objects.filter(email__in=participants):
+            if user_email.participant_set.filter(event=event):
+                participants.remove(user_email.email)
+
         Participant.objects.bulk_create(
             [Participant(
                 event=event,
