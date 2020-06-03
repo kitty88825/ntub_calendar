@@ -3,7 +3,7 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { CalendarService } from '../services/calendar.service';
 import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, ValidatorFn, AbstractControl, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-add-schedule',
@@ -19,15 +19,16 @@ export class AddScheduleComponent implements OnInit {
   uploadForm: FormGroup;
   formData = new FormData();
   fileName = [];
+  sendEmailForm: FormGroup;
+  emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
+  invalidEmails = [];
+  isCollapsed = true;
 
   constructor(
     private router: Router,
     public calendarService: CalendarService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) { }
-
-  isCollapsed = true;
-
 
   @ViewChild('addTitle') addTitle: ElementRef;
   @ViewChild('addStartDate') addStartDate: ElementRef;
@@ -36,10 +37,15 @@ export class AddScheduleComponent implements OnInit {
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
   @ViewChild('description') description: ElementRef;
   @ViewChild('location') location: ElementRef;
+  @ViewChild('user') user: ElementRef;
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
       profile: ['']
+    });
+
+    this.sendEmailForm = this.formBuilder.group({
+      toAddress: ['', Validators.pattern(this.emailPattern)]
     });
   }
 
@@ -62,6 +68,33 @@ export class AddScheduleComponent implements OnInit {
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < files.length; i++) {
       this.formData.append('files', files[i]);
+    }
+  }
+
+  send(value) {
+    if (value.toAddress.length !== 0) {
+      const emails = this.sendEmailForm.value.toAddress.split(',');
+      console.log(emails);
+      this.invalidEmails.push(emails);
+      console.log(this.invalidEmails);
+      this.formData.append('users', emails);
+    } else {
+      Swal.fire({
+        text: '請輸入Google信箱',
+        icon: 'error',
+      });
+    }
+    this.sendEmailForm.reset();
+  }
+
+  removeAddUser(index) {
+    this.invalidEmails.splice(index, 1);
+    const users = this.formData.getAll('users');
+    users.splice(index, 1);
+    this.formData.delete('users');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < users.length; i++) {
+      this.formData.append('files', users[i]);
     }
   }
 

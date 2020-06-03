@@ -27,8 +27,8 @@
   }
 
   .date {
-    width: 130px;
-    z-index: 30;
+    position: relative;
+    z-index : 10;
   }
 
   .timepicker {
@@ -42,7 +42,7 @@
 
   img.calendar {
     position: relative;
-    margin-left: -60px;
+    margin-left: -40px;
     z-index: 20;
   }
 
@@ -65,6 +65,12 @@
 
   textarea.form-control {
     width: 90%;
+  }
+
+  .deleteBtn {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
   }
 
   .jumbotron {
@@ -101,6 +107,33 @@
     margin-left: 10%;
   }
 
+  .users {
+    margin-left: 20%;
+  }
+
+  .users li {
+    display: flex;
+  }
+
+  .file li {
+    display: flex;
+  }
+
+  form.email {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .addUserBtn {
+    border-radius   : 3px;
+    background-color: white;
+    border          : #ccc solid 1px;
+  }
+
+  img.head {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 @media screen and (max-width:480px) {

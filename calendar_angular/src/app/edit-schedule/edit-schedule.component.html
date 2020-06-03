@@ -31,23 +31,23 @@
       <div class="form-group row">
         <label for="static" class="top col-form-label">開始時間：</label>
         <div class="col-md-4">
-          <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #startDate>
+          <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+            #startDate required>
         </div>
         <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar">
-
         <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-          class="timepicker" #addStartTime></ngb-timepicker>
+          class="timepicker" #addStartTime required></ngb-timepicker>
       </div>
       <div class="form-group row">
         <label for="static" class="top col-form-label">結束時間：</label>
         <div class="col-md-4">
           <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-            #endDate>
+            #endDate required>
         </div>
         <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar">
 
         <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-          class="timepicker" #addEndTime></ngb-timepicker>
+          class="timepicker" #addEndTime required></ngb-timepicker>
 
       </div>
       <div class="form-group row">
@@ -66,10 +66,24 @@
         </div>
         <div class="form-group row">
           <label for="static" class="top col-form-label">參與人員：</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control">
-          </div>
+          <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="col-sm-8 email">
+            <div>
+              <input type="email" class="email form-control" #user placeholder="新增邀請對象" formControlName="toAddress">
+            </div>
+            <input type="submit" value="邀請" class="addUserBtn" [disabled]="!sendEmailForm.valid">
+          </form>
         </div>
+        <ul class="users">
+          <li *ngFor="let name of invalidEmails;let index = index">
+            <div class="head">
+              <img src="../../assets/images/person-24px.svg">
+            </div>
+            {{name}}
+            <div class="deleteBtn">
+              <img src="../../assets/images/delete-black-18dp.svg" (click)="removeAddUser(index)">
+            </div>
+          </li>
+        </ul>
         <div class="form-group">
           <label for="exampleTextarea" class="top">事由：</label>
           <textarea class="form-control" id="exampleTextarea" rows="3" [(ngModel)]="description"></textarea>
@@ -86,7 +100,9 @@
         <ul class="file">
           <li *ngFor="let name of fileName; let index = index">
             {{name}}
-            <button mat-icon-button (click)="removeSelectedFile(index)">delete</button>
+            <div class="deleteBtn" (click)="removeSelectedFile(index)">
+              <img src="../../assets/images/delete-black-18dp.svg">
+            </div>
           </li>
         </ul>
       </div>

@@ -59,6 +59,9 @@ export class OfficialChangeComponent implements OnInit {
           data => {
             console.log(data);
           },
+          error => {
+            console.log(error);
+          }
         );
         Swal.fire({
           text: '新增成功',

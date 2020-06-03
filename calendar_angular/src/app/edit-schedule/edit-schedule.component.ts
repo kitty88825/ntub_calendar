@@ -3,7 +3,7 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { CalendarService } from '../services/calendar.service';
 import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShareDataService } from '../services/share-data.service';
 
 @Component({
@@ -26,9 +26,13 @@ export class EditScheduleComponent implements OnInit {
   addEnd = '';
   location = '';
   description = '';
+  users = [];
   id = 0;
   deleteId;
   filesId;
+  sendEmailForm: FormGroup;
+  emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
+  invalidEmails = [];
 
   constructor(
     private router: Router,
@@ -48,6 +52,10 @@ export class EditScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
       profile: ['']
+    });
+
+    this.sendEmailForm = this.formBuilder.group({
+      toAddress: ['', Validators.pattern(this.emailPattern)]
     });
 
     this.shareDataService.getMessage().subscribe(
@@ -75,6 +83,34 @@ export class EditScheduleComponent implements OnInit {
         }
       }
     );
+  }
+
+  send(value) {
+    if (value.toAddress.length !== 0) {
+      const emails = this.sendEmailForm.value.toAddress.split(',');
+      console.log(emails);
+      this.invalidEmails.push(emails);
+      console.log(this.invalidEmails);
+      this.formData.append('users', emails);
+    } else {
+      Swal.fire({
+        text: '請輸入Google信箱',
+        icon: 'error',
+      });
+    }
+    this.sendEmailForm.reset();
+  }
+
+
+  removeAddUser(index) {
+    this.invalidEmails.splice(index, 1);
+    const users = this.formData.getAll('users');
+    users.splice(index, 1);
+    this.formData.delete('users');
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < users.length; i++) {
+      this.formData.append('files', users[i]);
+    }
   }
 
   fileSelected(event) {
