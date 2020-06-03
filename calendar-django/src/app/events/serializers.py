@@ -156,7 +156,12 @@ class UpdateAttachmentSerializer(EventSerializer):
                 .delete()
 
         if remove_users:
-            Participant.objects.filter(id__in=remove_users, event=event, role=Participant.RoleChoice.participants).delete()  # noqa: E501
+            Participant.objects \
+                .filter(
+                    id__in=remove_users,
+                    event=event,
+                    role=Participant.RoleChoice.participants) \
+                .delete()
 
         self.create_participant_for_event(event, user, participants)
         self.create_attachment_for_event(event, files)
