@@ -18,9 +18,16 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
+    email = serializers.SerializerMethodField()
+
     class Meta:
         model = Participant
-        fields = ('id', 'user')
+        fields = ('id', 'user', 'email')
+
+    def get_email(self, participant):
+        print('-'*30)
+        print(participant.user)
+        return str(participant.user.email)
 
 
 class EventSerializer(serializers.ModelSerializer):
