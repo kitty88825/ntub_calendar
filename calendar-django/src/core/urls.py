@@ -42,7 +42,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('feed/', EventFeed()),
+    path('feed/<str:code>/', EventFeed(), name='ical'),
     path('api/v1/', include(api_urlpatterns)),
     path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),

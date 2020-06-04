@@ -1,4 +1,9 @@
 from django_ical.views import ICalFeed
+from django.db.models import Q
+
+from rest_framework.generics import get_object_or_404
+
+from app.users.models import User
 
 from .models import Event
 
@@ -11,8 +16,17 @@ class EventFeed(ICalFeed):
     timezone = 'UTC+8'
     file_name = "event.ics"
 
-    def items(self):
-        return Event.objects.all()
+    def get_object(self, request, code, *args, **kwargs):
+        user = get_object_or_404(User, code=code)
+        return Event.objects \
+            .filter(
+                Q(calendars__subscription__user=user) |
+                Q(participant__user=user),
+            ) \
+            .distinct()
+
+    def items(self, obj):
+        return obj
 
     def item_title(self, item):
         return item.title

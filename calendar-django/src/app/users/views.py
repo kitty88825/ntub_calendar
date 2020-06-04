@@ -2,11 +2,12 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from requests.exceptions import HTTPError
 
-from .serializers import LoginSerializer
+from .serializers import LoginSerializer, UserSerializer
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
 
@@ -40,3 +41,13 @@ class AccountView(GenericViewSet):
     @property
     def inc_auth(self):
         return self.api_client()
+
+    @action(['GET'], detail=False, permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(instance=request.user)
+        return Response(serializer.data)
+
+    def get_serializer_class(self):
+        if self.action == 'me':
+            return UserSerializer
+        return super().get_serializer_class()
