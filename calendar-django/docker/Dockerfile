@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
   liblzma-dev \
   libpq-dev
 
-RUN pip install --upgrade --no-cache-dir pip setuptools uwsgi
+RUN pip install --upgrade --no-cache-dir pip setuptools uwsgi psycopg2
 
 COPY Pipfile .
 COPY Pipfile.lock .
