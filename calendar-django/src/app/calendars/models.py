@@ -22,8 +22,8 @@ class Subscription(models.Model):
 
 class Permission(models.Model):
     role_choice = [
-        ('r', '可看'),
-        ('w', '可讀'),
+        ('r', '可讀'),
+        ('w', '可寫'),
     ]
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE)
