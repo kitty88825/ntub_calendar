@@ -12,7 +12,7 @@ class CalendarSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ('calendar',)
+        fields = ('id', 'calendar',)
         ready_only_fields = ('id', 'user')
 
 
@@ -25,9 +25,8 @@ class SubscriptionCreateSerializer(serializers.Serializer):
         user = validated_data['user']
         calendar_ids = validated_data['calendar']
         calendars = Calendar.objects.filter(id__in=calendar_ids)
-
         Subscription.objects.bulk_create(
-            [Subscription(user=user, calendar=id) for id in calendars],  # noqa: 501
+            [Subscription(user=user, calendar=id) for id in calendars],
         )
 
         return validated_data
