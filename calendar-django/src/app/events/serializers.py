@@ -25,8 +25,6 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'email')
 
     def get_email(self, participant):
-        print('-'*30)
-        print(participant.user)
         return str(participant.user.email)
 
 

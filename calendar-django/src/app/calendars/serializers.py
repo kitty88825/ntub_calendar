@@ -10,10 +10,15 @@ class CalendarSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = Subscription
-        fields = ('id', 'calendar',)
+        fields = ('id', 'calendar', 'name')
         ready_only_fields = ('id', 'user')
+
+    def get_name(self, subscription):
+        return str(subscription.calendar.name)
 
 
 class SubscriptionCreateSerializer(serializers.Serializer):
@@ -28,5 +33,4 @@ class SubscriptionCreateSerializer(serializers.Serializer):
         Subscription.objects.bulk_create(
             [Subscription(user=user, calendar=id) for id in calendars],
         )
-
         return validated_data
