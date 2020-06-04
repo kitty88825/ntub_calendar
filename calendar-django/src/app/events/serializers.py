@@ -134,7 +134,6 @@ class UpdateAttachmentSerializer(EventSerializer):
             'attachments',
             'calendars',
             'remove_files',
-            'user',
             'participants',
             'remove_users',
             'participant_set',
