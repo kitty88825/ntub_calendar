@@ -30,6 +30,8 @@ services:
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     ports:
       - "8000:8000"
+    depends_on:
+      - db
   nginx:
     image: nginx:alpine
     restart: always
