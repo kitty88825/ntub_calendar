@@ -7,20 +7,16 @@
     <div class="jumbotron">
       <div class="form-group row">
         <label for="static" class="top col-form-label">選擇行事曆</label>
-        <div class="col-sm-8">
-          <div class="pretty p-default p-curve p-thick">
-            <input type="checkbox" />
-            <div class="state">
-              <label class="add">學校行事曆</label>
+        <ul class="calendar">
+          <li *ngFor="let calendar of calendars">
+            <div class="pretty p-default p-curve p-thick">
+              <input type="checkbox" [(ngModel)]="calendar.isChecked" (change)="changeSelection()"/>
+              <div class="state">
+                <label class="mine">{{calendar.name}}</label>
+              </div>
             </div>
-          </div>
-          <div class="pretty p-default p-curve p-thick">
-            <input type="checkbox" />
-            <div class="state">
-              <label class="add">教務處</label>
-            </div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
       <div class="form-group row">
         <label for="static" class="top col-form-label">新增標題：</label>
@@ -98,7 +94,7 @@
           </div>
         </div>
         <ul class="file">
-          <li *ngFor="let name of fileName;let index = index">
+          <li *ngFor="let name of fileName; let index = index">
             {{name}}
             <div class="deleteBtn" (click)="removeSelectedFile(index)">
               <img src="../../assets/images/delete-black-18dp.svg">

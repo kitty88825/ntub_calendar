@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
-import { CalendarService } from '../services/calendar.service';
+import { EventService } from '../services/event.service';
 import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
-import { Validators, ValidatorFn, AbstractControl, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { CalendarService } from '../services/calendar.service';
 
 @Component({
   selector: 'app-add-schedule',
@@ -23,11 +24,14 @@ export class AddScheduleComponent implements OnInit {
   emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
   invalidEmails = [];
   isCollapsed = true;
+  calendars = [];
+  selectedItemsList = [];
 
   constructor(
     private router: Router,
-    public calendarService: CalendarService,
+    public eventService: EventService,
     private formBuilder: FormBuilder,
+    private calendarService: CalendarService
   ) { }
 
   @ViewChild('addTitle') addTitle: ElementRef;
@@ -47,6 +51,35 @@ export class AddScheduleComponent implements OnInit {
     this.sendEmailForm = this.formBuilder.group({
       toAddress: ['', Validators.pattern(this.emailPattern)]
     });
+
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          this.calendars.push({ id: data[i].id, name: data[i].name, isChecked: false });
+        }
+      }
+    );
+  }
+
+  changeSelection() {
+    this.fetchSelectedItems();
+    this.fetchCheckedIDs();
+  }
+
+  fetchSelectedItems() {
+    this.selectedItemsList = this.calendars.filter((value, index) => {
+      return value.isChecked;
+    });
+  }
+
+  fetchCheckedIDs() {
+    this.calendars.forEach((value, index) => {
+      if (value.isChecked === true) {
+        this.formData.append('calendars', value.id);
+      }
+    });
+
   }
 
   fileSelected(event) {
@@ -77,7 +110,7 @@ export class AddScheduleComponent implements OnInit {
       console.log(emails);
       this.invalidEmails.push(emails);
       console.log(this.invalidEmails);
-      this.formData.append('users', emails);
+      this.formData.append('participants', emails);
     } else {
       Swal.fire({
         text: '請輸入Google信箱',
@@ -89,12 +122,12 @@ export class AddScheduleComponent implements OnInit {
 
   removeAddUser(index) {
     this.invalidEmails.splice(index, 1);
-    const users = this.formData.getAll('users');
+    const users = this.formData.getAll('participants');
     users.splice(index, 1);
-    this.formData.delete('users');
+    this.formData.delete('participants');
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < users.length; i++) {
-      this.formData.append('files', users[i]);
+      this.formData.append('participants', users[i]);
     }
   }
 
@@ -105,14 +138,11 @@ export class AddScheduleComponent implements OnInit {
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
     this.formData.append('end_at', this.addEndDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
       + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
-    for (let i = 1; i < 4; i++) {
-      this.formData.append('calendars', [1].toString());
-    }
 
     this.formData.append('description', this.description.nativeElement.value);
     this.formData.append('location', this.location.nativeElement.value);
 
-    this.calendarService.postEvent(this.formData).subscribe(
+    this.eventService.postEvent(this.formData).subscribe(
       data => {
         console.log(data);
         Swal.fire({

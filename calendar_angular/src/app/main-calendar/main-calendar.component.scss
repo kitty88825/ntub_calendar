@@ -34,7 +34,7 @@
   }
 
   .pretty {
-    margin-left: 50px;
+    margin-left: 40px;
     margin-top : 10px;
   }
 
@@ -58,6 +58,11 @@
     background-color: white;
   }
 
+  ul {
+    margin-top: 20%;
+    margin-left: 5%;
+  }
+
   .bar {
     float : left;
     width : 20%;
@@ -75,10 +80,6 @@
   }
 
 
-  a.nav-link {
-    color: black;
-  }
-
   .content {
     margin-bottom: 20px;
   }
@@ -86,6 +87,10 @@
   .form-inline {
     width      : 210px;
     margin-left: 60px;
+  }
+
+  .calendarSub {
+    margin-top: 60%;
   }
 
 }

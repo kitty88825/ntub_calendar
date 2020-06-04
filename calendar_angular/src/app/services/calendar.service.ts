@@ -2,6 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Event } from '../models/event.model';
 import { Observable } from 'rxjs';
+import { Calendar } from '../models/calendar.models';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 export class CalendarService {
 
   resToken = '';
-  serverIp = 'http://127.0.0.1:8000/api/v1/';
+  serverIp = 'http://157.230.247.25/api/v1/calendar/';
   reqHeader;
 
 
@@ -21,24 +22,24 @@ export class CalendarService {
     });
   }
 
-  postEvent(formData: any): Observable<any> {
-    return this.http.post<any>(this.serverIp + 'event/', formData, { headers: this.reqHeader });
+  // postCalendar(formData: any): Observable<any> {
+  //   return this.http.post<any>(this.serverIp + 'calendars', formData, { headers: this.reqHeader });
+  // }
+
+  // deleteEvent(id: number): Observable<Event> {
+  //   return this.http.delete<Event>(`${this.serverIp}event/${id}`, {headers: this.reqHeader});
+  // }
+
+  getCalendar(): Observable<Calendar[]> {
+    return this.http.get<Calendar[]>(this.serverIp + 'calendars', { headers: this.reqHeader });
   }
 
-  deleteEvent(id: number): Observable<Event> {
-    return this.http.delete<Event>(`${this.serverIp}event/${id}`, {headers: this.reqHeader});
-  }
+  // getEvent(id: number): Observable<Event> {
+  //   return this.http.get<Event>(`${this.serverIp}event/${id}`, { headers: this.reqHeader });
+  // }
 
-  getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.serverIp + 'event/', { headers: this.reqHeader });
-  }
-
-  getEvent(id: number): Observable<Event> {
-    return this.http.get<Event>(`${this.serverIp}event/${id}`, { headers: this.reqHeader });
-  }
-
-  patchEvent(id: number, formData: any): Observable<Event> {
-    return this.http.patch<Event>(`${this.serverIp}event/${id}`, formData, { headers: this.reqHeader });
-  }
+  // patchEvent(id: number, formData: any): Observable<Event> {
+  //   return this.http.patch<Event>(`${this.serverIp}event/${id}`, formData, { headers: this.reqHeader });
+  // }
 
 }

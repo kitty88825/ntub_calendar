@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as jsPDF from 'jspdf';
 
-
-
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',

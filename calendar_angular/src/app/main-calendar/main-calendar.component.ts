@@ -6,9 +6,11 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
-import { CalendarService } from '../services/calendar.service';
+import { EventService } from '../services/event.service';
 import { Event } from '../models/event.model';
 import { ShareDataService } from '../services/share-data.service';
+import { CalendarService } from '../services/calendar.service';
+import { SubscriptionService } from '../services/subscription.service';
 declare var $: any;
 
 @Component({
@@ -23,11 +25,15 @@ export class MainCalendarComponent implements OnInit {
   put;
   title;
   calendars = [];
+  myCalendars = [];
+  mySub = [];
 
   constructor(
     private router: Router,
-    private calendarService: CalendarService,
+    private eventService: EventService,
     private shareDataService: ShareDataService,
+    private calendarService: CalendarService,
+    private subscriptionService: SubscriptionService
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -36,13 +42,7 @@ export class MainCalendarComponent implements OnInit {
   calendarWeekends = true;
   calendarEvents: EventInput[];
 
-  eventTypes: any[] = [
-    { title: 'type1', id: 1, selected: true },
-    { title: 'type2', id: 2, selected: true },
-    { title: 'type3', id: 3, selected: true },
-    { title: 'type4', id: 4, selected: true },
-    { title: 'type5', id: 5, selected: true },
-  ];
+  eventTypes = [];
 
   hiddenCalendarEvents: Event[] = [];
 
@@ -71,7 +71,7 @@ export class MainCalendarComponent implements OnInit {
         }).then((result) => {
           if (result.value) {
             // -----------------------------deleteEvent
-            this.calendarService.deleteEvent(info.event.id).subscribe(
+            this.eventService.deleteEvent(info.event.id).subscribe(
               data => {
                 console.log(data);
                 this.calendarComponent
@@ -93,7 +93,7 @@ export class MainCalendarComponent implements OnInit {
           }
         });
       } else if (result.value) {
-        this.calendarService.getEvent(info.event.id).subscribe(
+        this.eventService.getEvent(info.event.id).subscribe(
           data => {
             console.log(data);
             this.put = data;
@@ -135,6 +135,8 @@ export class MainCalendarComponent implements OnInit {
       calendarEvents
         .filter(calendarEvent => {
           if (calendarEvent.calendars.length === 1) {
+            console.log(calendarEvent.calendars);
+            console.log(eventType.id);
             return calendarEvent.calendars.includes(eventType.id);
           } else if (calendarEvent.calendars.length > 1) {
             let count = 0;
@@ -181,7 +183,7 @@ export class MainCalendarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.calendarService.getEvents().subscribe(
+    this.eventService.getEvents().subscribe(
       data => {
         const events = [];
         // tslint:disable-next-line: prefer-for-of
@@ -195,6 +197,26 @@ export class MainCalendarComponent implements OnInit {
           this.calendarEvents = events;
         }
 
+      }
+    );
+
+    this.calendarService.getCalendar().subscribe(
+      result => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < result.length; j++) {
+          this.myCalendars.push({ id: result[j].id, name: result[j].name });
+          this.eventTypes.push({ title: 'type' + result[j].id, id: result[j].id, selected: true });
+        }
+      }
+    );
+
+    this.subscriptionService.getSubscription().subscribe(
+      data => {
+        console.log(data);
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          this.mySub.push({ id: data[i].id, name: data[i].name, calendar: data[i].calendar });
+        }
       }
     );
 

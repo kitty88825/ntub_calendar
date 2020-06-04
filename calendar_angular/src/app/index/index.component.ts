@@ -13,8 +13,6 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 })
 export class IndexComponent implements OnInit {
 
-  serverIp = 'http://127.0.0.1:8000/api/v1/';
-
   public isMenuCollapsed = true;
   resToken = '';
   authToken;

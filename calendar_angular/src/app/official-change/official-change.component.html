@@ -9,10 +9,16 @@
           </div>
         </div>
       </div>
-      <label for="static" class="top col-form-label">新增行事曆名稱</label>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" [(ngModel)]="calendars">
-      </div>
+      <ul class="nav">
+        <li class="nav-item">
+          <span class="nav-link disabled">選擇行事曆</span>
+        </li>
+        <div class="form-group">
+          <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
+            <option *ngFor="let calendar of result" [ngValue]="calendar">{{calendar}}</option>
+          </select>
+        </div>
+      </ul>
     </div>
     <div class="container">
       <div class="table">

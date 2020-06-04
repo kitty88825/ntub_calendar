@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
-import { CalendarService } from '../services/calendar.service';
+import { EventService } from '../services/event.service';
 import { DatePipe } from '@angular/common';
+import { CalendarService } from '../services/calendar.service';
 
 type AOA = any[];
 
@@ -22,23 +23,36 @@ export class OfficialChangeComponent implements OnInit {
   header = ['行程名稱', '開始日期', '結束日期'];
   input = [];
   istrue = 0;
+  selectedValue;
+  result = [];
+  calendar = [];
 
   // tslint:disable-next-line: member-ordering
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
   constructor(
     private router: Router,
-    private datePipe: DatePipe,
+    private eventService: EventService,
     private calendarService: CalendarService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          this.result.push(data[i].name);
+          this.calendar.push([data[i].id, data[i].name]);
+        }
+      }
+    );
+  }
 
   add() {
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.datas.length; i++) {
       if (typeof this.datas[i][0] === 'string' && this.datas[i][1].length === 10 &&
-        this.datas[i][2].length === 10 && [this.calendars].toString().length !== 0) {
+        this.datas[i][2].length === 10 && this.selectedValue.length !== 0) {
         this.istrue = this.istrue + 1;
       } else {
         Swal.fire({
@@ -49,13 +63,18 @@ export class OfficialChangeComponent implements OnInit {
     }
 
     if (this.istrue === this.datas.length) {
+      this.calendarService.getCalendar().subscribe(
+        data => {
+          console.log(data);
+        }
+      );
+
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.datas.length; i++) {
         this.formData.append('title', this.datas[i][0]);
         this.formData.append('start_at', this.datas[i][1] + 'T00:00:00+08:00');
         this.formData.append('end_at', this.datas[i][2] + 'T00:00:00+08:00');
-        this.formData.append('calendars', [this.calendars].toString());
-        this.calendarService.postEvent(this.formData).subscribe(
+        this.eventService.postEvent(this.formData).subscribe(
           data => {
             console.log(data);
           },
@@ -79,6 +98,15 @@ export class OfficialChangeComponent implements OnInit {
       }
     }
 
+  }
+
+  onChange() {
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.calendar.length; i++) {
+      if (this.selectedValue === this.calendar[i][1]) {
+        this.formData.append('calendars', this.calendar[i][0]);
+      }
+    }
   }
 
   onFileChange(evt: any) {

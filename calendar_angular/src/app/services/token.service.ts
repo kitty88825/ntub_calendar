@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TokenService {
-  serverIp = 'http://127.0.0.1:8000/api/v1/user/';
+  serverIp = 'http://157.230.247.25/api/v1/user/';
 
   constructor(
     public http: HttpClient,

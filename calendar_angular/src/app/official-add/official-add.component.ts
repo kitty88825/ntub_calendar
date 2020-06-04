@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as XLSX from 'xlsx';
-import { CalendarService } from '../services/calendar.service';
-import * as moment from 'moment';
+import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-official-add',
@@ -12,20 +11,20 @@ export class OfficialAddComponent implements OnInit {
   datas = [];
   selectedValue;
   years = [];
-  result;
+  result = [];
   showDatas = [];
   header = ['行程名稱', '開始日期', '結束日期'];
   output = [];
 
   constructor(
-    private calendarService: CalendarService,
+    private eventService: EventService,
   ) { }
 
   @ViewChild('table', { read: ElementRef }) table: ElementRef;
 
 
   ngOnInit(): void {
-    this.calendarService.getEvents().subscribe(
+    this.eventService.getEvents().subscribe(
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
@@ -57,7 +56,7 @@ export class OfficialAddComponent implements OnInit {
 
   onChange() {
     this.showDatas = [];
-    this.calendarService.getEvents().subscribe(
+    this.eventService.getEvents().subscribe(
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {

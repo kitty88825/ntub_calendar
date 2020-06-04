@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
-import { CalendarService } from '../services/calendar.service';
+import { EventService } from '../services/event.service';
 import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShareDataService } from '../services/share-data.service';
+import { CalendarService } from '../services/calendar.service';
 
 @Component({
   selector: 'app-edit-schedule',
@@ -32,13 +33,17 @@ export class EditScheduleComponent implements OnInit {
   filesId;
   sendEmailForm: FormGroup;
   emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
-  invalidEmails = [];
+  calendars = [];
+  selectedItemsList = [];
+  isCheckedCalendars = [];
+  userEmail = [];
 
   constructor(
     private router: Router,
-    public calendarService: CalendarService,
+    public eventService: EventService,
     private formBuilder: FormBuilder,
-    private shareDataService: ShareDataService
+    private shareDataService: ShareDataService,
+    private calendarService: CalendarService
   ) { }
 
   isCollapsed = true;
@@ -60,6 +65,7 @@ export class EditScheduleComponent implements OnInit {
 
     this.shareDataService.getMessage().subscribe(
       data => {
+        console.log(data);
         this.id = data.message.id;
         this.title = data.message.title;
         this.addStart = data.message.startAt;
@@ -77,20 +83,61 @@ export class EditScheduleComponent implements OnInit {
         this.location = data.message.location;
         this.description = data.message.description;
         // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.message.participantSet.length; i++) {
+          this.userEmail.push(data.message.participantSet[i].email);
+        }
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < data.message.calendars.length; j++) {
+          this.isCheckedCalendars.push(data.message.calendars[j]);
+        }
+        this.calendarService.getCalendar().subscribe(
+          result => {
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < result.length; i++) {
+              if (this.isCheckedCalendars.includes(result[i].id)) {
+                this.calendars.push({ id: result[i].id, name: result[i].name, isChecked: true });
+              } else {
+                this.calendars.push({ id: result[i].id, name: result[i].name, isChecked: false });
+              }
+            }
+          }
+        );
+        // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.message.attachments.length; i++) {
           this.fileName.push(data.message.attachments[i].filename);
           this.formData.append('filesId', data.message.attachments[i].id);
         }
       }
     );
+
+  }
+
+  changeSelection() {
+    this.fetchSelectedItems();
+    this.fetchCheckedIDs();
+  }
+
+  fetchSelectedItems() {
+    this.selectedItemsList = this.calendars.filter((value, index) => {
+      return value.isChecked;
+    });
+  }
+
+  fetchCheckedIDs() {
+    this.calendars.forEach((value, index) => {
+      if (value.isChecked === true) {
+        this.formData.append('calendars', value.id);
+      }
+    });
+
   }
 
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
       console.log(emails);
-      this.invalidEmails.push(emails);
-      console.log(this.invalidEmails);
+      this.userEmail.push(emails);
+      console.log(this.userEmail);
       this.formData.append('users', emails);
     } else {
       Swal.fire({
@@ -103,7 +150,7 @@ export class EditScheduleComponent implements OnInit {
 
 
   removeAddUser(index) {
-    this.invalidEmails.splice(index, 1);
+    this.userEmail.splice(index, 1);
     const users = this.formData.getAll('users');
     users.splice(index, 1);
     this.formData.delete('users');
@@ -155,18 +202,16 @@ export class EditScheduleComponent implements OnInit {
 
 
   update() {
-    console.log(this.startDate.nativeElement.value);
     this.formData.append('title', this.title);
     this.formData.append('start_at', this.startDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
     this.formData.append('end_at', this.endDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
       + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
-    this.formData.append('calendars', [1].toString());
 
     this.formData.append('description', this.description);
     this.formData.append('location', this.location);
 
-    this.calendarService.patchEvent(this.id, this.formData).subscribe(
+    this.eventService.patchEvent(this.id, this.formData).subscribe(
       data => {
         console.log(data);
         Swal.fire({

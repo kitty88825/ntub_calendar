@@ -6,39 +6,29 @@
         <input class="form-control mr-sm-2" type="text" placeholder="Search" [(ngModel)]="searchText"
           [ngModelOptions]="{standalone: true}">
       </form>
-      <div class="title">
-        <button type="button" class="btn btn-outline-secondary" [routerLink]="['/my-subscribe']">我的訂閱</button>
+      <div class="calendarBar">
+        <div class="title">
+          <button type="button" class="btn btn-outline-secondary">我的行事曆</button>
+        </div>
+        <div class="container">
+          <div class="pretty p-default p-curve p-thick" *ngFor="let calendar of myCalendars">
+            <input type="checkbox" (click)="displayType(eventTypes[0])" checked />
+            <div class="state">
+              <label class="add">{{calendar.name}}</label>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="container">
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" (click)='displayType(eventTypes[0])' checked />
-          <div class="state">
-            <label class="add">教務處</label>
-          </div>
+      <div class="calendarSub">
+        <div class="title">
+          <button type="button" class="btn btn-outline-secondary">我的訂閱</button>
         </div>
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" (click)='displayType(eventTypes[1])' checked />
-          <div class="state">
-            <label class="add">圖書館</label>
-          </div>
-        </div>
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" (click)='displayType(eventTypes[2])' checked />
-          <div class="state">
-            <label class="add">總務處</label>
-          </div>
-        </div>
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" (click)='displayType(eventTypes[3])' checked />
-          <div class="state">
-            <label class="add">資訊管理系</label>
-          </div>
-        </div>
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" (click)='displayType(eventTypes[4])' checked />
-          <div class="state">
-            <label class="add">學校行事曆</label>
-          </div>
+        <div class="container">
+          <ul>
+            <li class="state"  *ngFor="let sub of mySub">
+              <label class="add">{{sub.name}}</label>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -48,7 +38,7 @@
       center: 'title',
       right: 'next'
     }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
-施ㄍ        (eventClick)="eventClick($event)" (eventRender)="eventRender($event)">
+        (eventClick)="eventClick($event)" (eventRender)="eventRender($event)">
       </full-calendar>
     </div>
   </div>

@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
 import { AddSubscribeComponent } from './add-subscribe/add-subscribe.component';
-import { MySubscribeComponent } from './my-subscribe/my-subscribe.component';
 import { ExportComponent } from './export/export.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
@@ -42,7 +41,6 @@ export function provideConfig() {
     AppComponent,
     AddScheduleComponent,
     AddSubscribeComponent,
-    MySubscribeComponent,
     ExportComponent,
     OfficialAddComponent,
     OfficialChangeComponent,
