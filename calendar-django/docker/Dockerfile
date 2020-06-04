@@ -7,12 +7,11 @@ ENV LANG=en_US.UTF-8 \
 RUN apt-get update && apt-get install -y \
   build-essential \
   libsasl2-dev \
-  pipenv \
   python3-dev \
   liblzma-dev \
   libpq-dev
 
-RUN pip install --upgrade --no-cache-dir pip setuptools uwsgi psycopg2
+RUN pip install --upgrade --no-cache-dir pip setuptools uwsgi pipenv
 
 COPY Pipfile .
 COPY Pipfile.lock .
