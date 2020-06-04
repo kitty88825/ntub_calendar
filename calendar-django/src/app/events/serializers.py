@@ -30,7 +30,6 @@ class EventSerializer(serializers.ModelSerializer):
         required=False,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    user = serializers.CharField(write_only=True, required=False)
     participants = serializers.ListField(
         child=serializers.EmailField(),
         write_only=True,
@@ -50,7 +49,6 @@ class EventSerializer(serializers.ModelSerializer):
             'files',
             'attachments',
             'calendars',
-            'user',
             'participants',
             'participant_set',
         )
