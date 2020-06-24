@@ -1,47 +1,404 @@
-<!-- <div class="head">
-  <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
-    <div class="container">
-      <a class="navbar-brand"><img src="../../assets/images/一訂行_藕粉.png" style="width: 35px; height: 35px;"></a>
-      <button class="navbar-toggler collapsed" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div [ngbCollapse]="isMenuCollapsed" class="navbar-collapse collapse">
-        <button (click)="signInWithGoogle()" class="loginBtn loginBtn--google">
-          Login with Google
-        </button>
+<header class="header">
+  <h1 class="header__title">
+    <i class="material-icons header__icon">
+      history_toggle_off
+    </i>
+    <span class=" header__name">
+      一訂行
+    </span>
+  </h1>
+  <nav class="header__navbar">
+    <ul class="header__function">
+      <li>
+        <a href="https://hackmd.io/zV5mB8HnTGqZwZ6_Cz47mg?view" target="_blank">
+          <i class="material-icons">
+            help_outline
+          </i>
+        </a>
+      </li>
+    </ul>
+    <div class="header__person">
+      <div class="header__person-name" (click)="signInWithGoogle()">登入</div>
+    </div>
+  </nav>
+</header>
+<main>
+  <aside class="aside">
+    <div class="date-picker">
+      <full-calendar #calendar [header]="{
+        left: 'prev',
+        center: 'title',
+        right: 'next'
+      }" [plugins]="calendarPlugins" [weekends]="calendarWeekends">
+      </full-calendar>
+    </div>
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          行政單位
+          <i class="material-icons item-categories__arrow">
+            arrow_left
+          </i>
+        </div>
+        <ul class="item-categories__list">
+          <li>
+            <i class="material-icons item-categories__checkbox">
+              check_box_outline_blank
+            </i>
+            <div class="item-categories__item">教務處</div>
+            <span class="item-categories__status" style="background-color:rgb(152, 174, 74)"></span>
+          </li>
+          <li>
+            <i style="color:#439B91" class="material-icons item-categories__checkbox">
+              check_box
+            </i>
+            <div class="item-categories__item">教務處</div>
+            <span class="item-categories__status" style="background-color:#439B91"></span>
+          </li>
+          <li>
+            <i class="material-icons item-categories__checkbox">
+              check_box_outline_blank
+            </i>
+            <div class="item-categories__item">教務處</div>
+            <span class="item-categories__status" style="background-color: #439B91"></span>
+          </li>
+          <li>
+            <i class="material-icons item-categories__checkbox">
+              check_box_outline_blank
+            </i>
+            <div class="item-categories__item">教務處</div>
+            <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+          </li>
+          <li>
+            <i class="material-icons item-categories__checkbox">
+              check_box_outline_blank
+            </i>
+            <div class="item-categories__item">教務處</div>
+            <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+          </li>
+          <li>
+            <i class="material-icons item-categories__checkbox">
+              check_box_outline_blank
+            </i>
+            <div class="item-categories__item">教務處</div>
+            <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <div class="item-categories__title">
+          行政單位
+          <i class="material-icons item-categories__arrow">
+            arrow_left
+          </i>
+        </div>
+      </li>
+      <li>
+        <div class="item-categories__title">
+          行政單位
+          <i class="material-icons item-categories__arrow">
+            arrow_left
+          </i>
+        </div>
+      </li>
+    </ul>
+  </aside>
+  <article>
+    <section class="container" *ngIf="data.current == '1'">
+      <div class="view">
+        <input type="text" placeholder="keyword" class="searchbox">
+        <span>
+          <i class="material-icons">
+            search
+          </i>
+        </span>
+        <ul class="view_item">
+          <li class="view_item-btn" (click)="setCurrent(1)" [ngClass]="{'active': data.current == '1'}">
+            <i class="material-icons">
+              view_headline
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(2)">
+            <i class="material-icons">
+              view_stream
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(3)">
+            <i class="material-icons">
+              view_module
+            </i>
+            <hr>
+          </li>
+        </ul>
       </div>
-    </div>
-  </div>
-  <div class="content">
-    <div class="teach">
-      <img class="pic" src="../../assets/images/使用說明.bmp">
-    </div>
-  </div>
-</div> -->
-
-<div class="wrap">
-  <div class="content-left"></div>
-  <div class="content-right"></div>
-</div>
-<div class="card">
-  <div class="card-left">
-    <span class="welcome">Welcome</span>
-    <img class="left" src="../../assets/images/index-pic.jpg">
-  </div>
-  <div class="card-right">
-    <div class="title">
-      <img class="logo" src="../../assets/images/一訂行_藕粉.png">
-      <span class="title-name">一訂行</span>
-    </div>
-    <div class="login" (click)="signInWithGoogle()" >
-      <div class="loginBtn loginBtn--google">
-        使用Google登入
+      <ul class="event-list">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">發布日期</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>Women’s Vintage Peacoat</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li class="event-list__phase">
+          第二週
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>Women’s Vintage Peacoat</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+      </ul>
+    </section>
+    <section class="container" *ngIf="data.current == '2'">
+      <div class="view">
+        <input type="text" placeholder="keyword" class="searchbox">
+        <span>
+          <i class="material-icons">
+            search
+          </i>
+        </span>
+        <ul class="view_item">
+          <li class="view_item-btn" (click)="setCurrent(1)">
+            <i class="material-icons">
+              view_headline
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(2)" [ngClass]="{'active': data.current == '2'}">
+            <i class="material-icons">
+              view_stream
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(3)">
+            <i class="material-icons">
+              view_module
+            </i>
+            <hr>
+          </li>
+        </ul>
       </div>
-    </div>
-    <a href="https://hackmd.io/zV5mB8HnTGqZwZ6_Cz47mg?view" target="_blank">
-    <div class="user-teach">
-      <span class="user">使用者手冊</span>
-    </div>
-    </a>
-  </div>
-</div>
+      <ul class="event-list event-list--small">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">發布日期</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>Women’s Vintage Peacoat</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>Women’s Vintage Peacoat</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li>
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
+              eros pulvinar a. Donec ac metus sed
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+      </ul>
+    </section>
+    <section class="container" *ngIf="data.current == '3'">
+      <div class="view">
+        <input type="text" placeholder="keyword" class="searchbox">
+        <span>
+          <i class="material-icons">
+            search
+          </i>
+        </span>
+        <ul class="view_item">
+          <li class="view_item-btn" (click)="setCurrent(1)">
+            <i class="material-icons">
+              view_headline
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(2)">
+            <i class="material-icons">
+              view_stream
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(3)" [ngClass]="{'active': data.current == '3'}">
+            <i class="material-icons">
+              view_module
+            </i>
+            <hr>
+          </li>
+        </ul>
+      </div>
+      <ul class="event-list event-list--grid">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">發布日期</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li class="event-list__card">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>Women’s Vintage Peacoat</span>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li class="event-list__card">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li class="event-list__card">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+        <li class="event-list__card">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            Women’s Vintage Peacoat
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+          </div>
+          <div class="event-list__date">2020/09/05(四)</div>
+        </li>
+      </ul>
+    </section>
+  </article>
+</main>

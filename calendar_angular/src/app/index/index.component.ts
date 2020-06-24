@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
 import { AuthService } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-index',
@@ -17,12 +19,20 @@ export class IndexComponent implements OnInit {
   resToken = '';
   authToken;
   loggedIn: boolean;
+  data = {
+    current: '1'
+  };
 
   constructor(
     private router: Router,
     public tokenService: TokenService,
     private authService: AuthService,
   ) { }
+
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
+
+  calendarPlugins = [dayGridPlugin];
+  calendarWeekends = true;
 
   ngOnInit() { }
 
@@ -31,19 +41,19 @@ export class IndexComponent implements OnInit {
       (result) => {
         let timerInterval;
         Swal.fire({
-          title: 'Logging in',
-          timer: 1000,
+          title: 'Loggin in',
+          timer: 1500,
           onBeforeOpen: () => {
             Swal.showLoading(),
-            timerInterval = setInterval(() => {
-              const content = Swal.getContent();
-              if (content) {
-                const b = content.querySelector('b');
-                if (b) {
-                  b.textContent = Swal.getTimerLeft();
+              timerInterval = setInterval(() => {
+                const content = Swal.getContent();
+                if (content) {
+                  const b = content.querySelector('b');
+                  if (b) {
+                    b.textContent = Swal.getTimerLeft();
+                  }
                 }
-              }
-            }, 100);
+              }, 100);
           },
           onClose: () => {
             clearInterval(timerInterval);
@@ -72,6 +82,11 @@ export class IndexComponent implements OnInit {
         });
       }
     );
+  }
+
+  setCurrent(param) {
+    this.data.current = param;
+    console.log(param);
   }
 
 }

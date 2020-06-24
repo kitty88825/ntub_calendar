@@ -63,12 +63,13 @@ body {
 }
 
 .fc-toolbar h2 {
-  color: black;
+  color    : black;
+  font-size: 20px;
 }
 
 .fc-scroller {
   background-color: white;
-  box-shadow: 1px 13px 23px -15px rgba(0,0,0,0.75);
+  box-shadow      : 1px 13px 23px -15px rgba(0, 0, 0, 0.75);
 }
 
 .fc-listYear-view td:nth-child(1) {
@@ -110,7 +111,7 @@ body {
   background-color: #2C3E50;
 }
 
-.btn-primary:hover{
+.btn-primary:hover {
   border-color    : #0C2032;
   background-color: #0C2032;
 }
@@ -119,9 +120,39 @@ body {
 .btn-primary:not(:disabled):not(.disabled):active,
 .show>.btn-primary.dropdown-toggle {
   background-color: #42586E;
-  border-color: #42586E;
+  border-color    : #42586E;
 }
 
+.fc-day-header span{
+  font-size: 13px;
+}
+
+.fc-prev-button,
+.fc-next-button {
+  width           : 30px;
+  height          : 30px;
+  background-color: #439B91;
+  border-color    : #439B91;
+}
+
+.fc-icon-chevron-right {
+  margin-top: -15px;
+  margin-left: -8px;
+}
+
+.fc-icon-chevron-left {
+  margin-top: -15px;
+  margin-left: -8px;
+}
+
+.fc-dayGrid-view .fc-body .fc-row {
+  min-height: 2em;
+  font-size: 10px;
+}
+
+.fc-unthemed td.fc-today {
+  background: #F0F0F0;
+}
 
 
 @media screen and (max-width:480px) {
