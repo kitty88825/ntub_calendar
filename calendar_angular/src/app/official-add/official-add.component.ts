@@ -13,8 +13,9 @@ export class OfficialAddComponent implements OnInit {
   years = [];
   result = [];
   showDatas = [];
-  header = ['行程名稱', '開始日期', '結束日期'];
+  header = ['發布標題', '內容概要', '開始日期', '結束日期'];
   output = [];
+  isCollapsed = false;
 
   constructor(
     private eventService: EventService,
@@ -61,13 +62,13 @@ export class OfficialAddComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
           if (Number(data[i].startAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
-            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.showDatas.push([data[i].title,  data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
           } else if (Number(data[i].endAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
-            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
           } else if (Number(data[i].startAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) < 8) {
-            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
           } else if (Number(data[i].endAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].endAt.substr(5, 2)) < 8) {
-            this.showDatas.push([data[i].title, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
           }
         }
       }

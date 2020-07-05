@@ -36,69 +36,58 @@
       <li>
         <div class="item-categories__title active">
           行政單位
-          <i class="material-icons item-categories__arrow">
-            arrow_left
-          </i>
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
         </div>
-        <ul class="item-categories__list">
-          <li>
-            <i class="material-icons item-categories__checkbox">
-              check_box_outline_blank
-            </i>
-            <div class="item-categories__item">教務處</div>
-            <span class="item-categories__status" style="background-color:rgb(152, 174, 74)"></span>
-          </li>
-          <li>
-            <i style="color:#439B91" class="material-icons item-categories__checkbox">
-              check_box
-            </i>
-            <div class="item-categories__item">教務處</div>
-            <span class="item-categories__status" style="background-color:#439B91"></span>
-          </li>
-          <li>
-            <i class="material-icons item-categories__checkbox">
-              check_box_outline_blank
-            </i>
-            <div class="item-categories__item">教務處</div>
-            <span class="item-categories__status" style="background-color: #439B91"></span>
-          </li>
-          <li>
-            <i class="material-icons item-categories__checkbox">
-              check_box_outline_blank
-            </i>
-            <div class="item-categories__item">教務處</div>
-            <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
-          </li>
-          <li>
-            <i class="material-icons item-categories__checkbox">
-              check_box_outline_blank
-            </i>
-            <div class="item-categories__item">教務處</div>
-            <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
-          </li>
-          <li>
-            <i class="material-icons item-categories__checkbox">
-              check_box_outline_blank
-            </i>
-            <div class="item-categories__item">教務處</div>
-            <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <div class="item-categories__title">
-          行政單位
-          <i class="material-icons item-categories__arrow">
-            arrow_left
-          </i>
-        </div>
-      </li>
-      <li>
-        <div class="item-categories__title">
-          行政單位
-          <i class="material-icons item-categories__arrow">
-            arrow_left
-          </i>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <li>
+              <i class="material-icons item-categories__checkbox">
+                check_box_outline_blank
+              </i>
+              <div class="item-categories__item">教務處</div>
+              <span class="item-categories__status" style="background-color:rgb(152, 174, 74)"></span>
+            </li>
+            <li>
+              <i style="color:#439B91" class="material-icons item-categories__checkbox">
+                check_box
+              </i>
+              <div class="item-categories__item">教務處</div>
+              <span class="item-categories__status" style="background-color:#439B91"></span>
+            </li>
+            <li>
+              <i class="material-icons item-categories__checkbox">
+                check_box_outline_blank
+              </i>
+              <div class="item-categories__item">教務處</div>
+              <span class="item-categories__status" style="background-color: #439B91"></span>
+            </li>
+            <li>
+              <i class="material-icons item-categories__checkbox">
+                check_box_outline_blank
+              </i>
+              <div class="item-categories__item">教務處</div>
+              <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+            </li>
+            <li>
+              <i class="material-icons item-categories__checkbox">
+                check_box_outline_blank
+              </i>
+              <div class="item-categories__item">教務處</div>
+              <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+            </li>
+            <li>
+              <i class="material-icons item-categories__checkbox">
+                check_box_outline_blank
+              </i>
+              <div class="item-categories__item">教務處</div>
+              <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+            </li>
+          </ul>
         </div>
       </li>
     </ul>
@@ -138,7 +127,7 @@
           <div class="event-list__title">發布標題</div>
           <div class="event-list__content">內容概要</div>
           <div class="event-list__office">發布單位</div>
-          <div class="event-list__date">發布日期</div>
+          <div class="event-list__date">開始日期</div>
         </li>
         <li class="event-list__phase">
           第一週
@@ -146,7 +135,7 @@
         <li>
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat</span>
+            <span>Meeting</span>
           </div>
           <div class="event-list__content">
             <div class="event-list__text">
@@ -162,7 +151,7 @@
         <li>
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
+            <span>Women’s Vintage Peacoa Women’s Vintage Peacoat</span>
           </div>
           <div class="event-list__content">
             <div class="event-list__text">
@@ -197,7 +186,7 @@
         <li>
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
+            <span>Women’s Vintage Peacoat</span>
           </div>
           <div class="event-list__content">
             <div class="event-list__text">
@@ -246,7 +235,7 @@
           <div class="event-list__title">發布標題</div>
           <div class="event-list__content">內容概要</div>
           <div class="event-list__office">發布單位</div>
-          <div class="event-list__date">發布日期</div>
+          <div class="event-list__date">開始日期</div>
         </li>
         <li class="event-list__phase">
           第一週
@@ -353,7 +342,7 @@
         <li class="event-list__header">
           <div class="event-list__title">發布標題</div>
           <div class="event-list__office">發布單位</div>
-          <div class="event-list__date">發布日期</div>
+          <div class="event-list__date">開始日期</div>
         </li>
         <li class="event-list__phase">
           第一週
@@ -361,7 +350,7 @@
         <li class="event-list__card">
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat</span>
+            <span>Women’s Vintage Peacoat Women’s Vintage Peacoat</span>
           </div>
           <div class="event-list__office">
             <span class="event-list__tag" style="background-color:#439B91">圖書館</span>

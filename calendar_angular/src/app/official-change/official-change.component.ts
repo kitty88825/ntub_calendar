@@ -20,12 +20,13 @@ export class OfficialChangeComponent implements OnInit {
   formData = new FormData();
   calendars = '';
   datas = [];
-  header = ['行程名稱', '開始日期', '結束日期'];
+  header = ['發布標題', '內容概要', '開始日期', '結束日期'];
   input = [];
   istrue = 0;
   selectedValue;
   result = [];
   calendar = [];
+  isCollapsed = false;
 
   // tslint:disable-next-line: member-ordering
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
@@ -72,8 +73,9 @@ export class OfficialChangeComponent implements OnInit {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.datas.length; i++) {
         this.formData.append('title', this.datas[i][0]);
-        this.formData.append('start_at', this.datas[i][1] + 'T00:00:00+08:00');
-        this.formData.append('end_at', this.datas[i][2] + 'T00:00:00+08:00');
+        this.formData.append('description', this.datas[i][1]);
+        this.formData.append('start_at', this.datas[i][2] + 'T00:00:00+08:00');
+        this.formData.append('end_at', this.datas[i][3] + 'T00:00:00+08:00');
         this.eventService.postEvent(this.formData).subscribe(
           data => {
             console.log(data);
@@ -134,7 +136,7 @@ export class OfficialChangeComponent implements OnInit {
       this.data = XLSX.utils.sheet_to_json(ws, { dateNF: 'yyyy-MM-dd', header: 0, raw: false });
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.data.length; i++) {
-        this.datas.push([this.data[i].行程名稱, this.data[i].開始日期, this.data[i].結束日期]);
+        this.datas.push([this.data[i].發布標題, this.data[i].內容概要, this.data[i].開始日期, this.data[i].結束日期]);
       }
 
       if (this.datas.length === 0) {

@@ -23,9 +23,10 @@ export class AddScheduleComponent implements OnInit {
   sendEmailForm: FormGroup;
   emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
   invalidEmails = [];
-  isCollapsed = true;
+  isCollapsed = false;
   calendars = [];
   selectedItemsList = [];
+  isOpen = false;
 
   constructor(
     private router: Router,

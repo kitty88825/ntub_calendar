@@ -3,8 +3,6 @@
 @import '~@fullcalendar/core/main.css';
 @import '~@fullcalendar/daygrid/main.css';
 
-@import '~pretty-checkbox/src/pretty-checkbox.scss';
-
 
 html,
 body {
@@ -15,13 +13,18 @@ body {
   font-family     : 'Noto Sans TC', sans-serif;
 }
 
-.pretty .state label:before {
-  border-color: black;
+.fc-event-container {
+  cursor: pointer;
 }
 
-.pretty.p-default input:checked~.state label:after {
-  border-color    : black;
-  background-color: black !important;
+.fc-content {
+  background-color: #439B91;
+}
+
+.fc-event,
+.fc-event-dot {
+  border          : none;
+  background-color: unset !important;
 }
 
 .bg-light {
@@ -30,7 +33,7 @@ body {
 }
 
 .theme-green .bs-datepicker-head {
-  background-color: rgb(48, 48, 48);
+  background-color: #439B91;
 }
 
 .theme-green .bs-datepicker-body table td.week span {
@@ -52,14 +55,6 @@ body {
   color         : black;
   letter-spacing: 4px;
   margin-right  : 10px;
-}
-
-.fc-listYear-view td {
-  border-style: none;
-}
-
-.fc-list-view {
-  border: none;
 }
 
 .fc-toolbar h2 {
@@ -123,7 +118,7 @@ body {
   border-color    : #42586E;
 }
 
-.fc-day-header span{
+.fc-day-header span {
   font-size: 13px;
 }
 
@@ -136,24 +131,36 @@ body {
 }
 
 .fc-icon-chevron-right {
-  margin-top: -15px;
+  margin-top : -15px;
   margin-left: -8px;
 }
 
 .fc-icon-chevron-left {
-  margin-top: -15px;
+  margin-top : -15px;
   margin-left: -8px;
 }
 
 .fc-dayGrid-view .fc-body .fc-row {
   min-height: 2em;
-  font-size: 10px;
+  font-size : 10px;
 }
 
 .fc-unthemed td.fc-today {
   background: #F0F0F0;
 }
 
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu.show {
+  border    : 2px #EBEBEB solid;
+  margin-top: 10px;
+}
+
+a.dropdown-item {
+  padding: 5px !important;
+}
 
 @media screen and (max-width:480px) {
   .completer-holder {

@@ -17,6 +17,8 @@ export class AddSubscribeComponent implements OnInit {
   userURL = '';
   isCheckedId = [];
   dataCalendar = [];
+  isCollapsed = false;
+  mySub = [];
 
   constructor(
     private router: Router,
@@ -27,11 +29,11 @@ export class AddSubscribeComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptionService.getSubscription().subscribe(
       data => {
-        console.log(data);
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
           this.dataCalendar.push(data[i].calendar);
           this.isCheckedId.push(data[i].id);
+          this.mySub.push({ id: data[i].id, name: data[i].name, calendar: data[i].calendar });
         }
         this.calendarService.getCalendar().subscribe(
           result => {
@@ -73,26 +75,24 @@ export class AddSubscribeComponent implements OnInit {
   }
 
   changeSelection() {
+
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.isCheckedId.length; i++) {
       this.subscriptionService.deleteEvent(this.isCheckedId[i]).subscribe(
         data => {
+          console.log(data);
           this.isCheckedId = [];
         }
       );
     }
-    this.fetchSelectedItems();
+
     this.fetchCheckedIDs();
   }
 
-  fetchSelectedItems() {
-    this.selectedItemsList = this.calendars.filter((value, index) => {
-      return value.isChecked;
-    });
-  }
-
   fetchCheckedIDs() {
+    this.formData.delete('calendar');
     this.calendars.forEach((value, index) => {
+      console.log(value.isChecked);
       if (value.isChecked === true) {
         this.formData.append('calendar', value.id);
       }
@@ -100,38 +100,48 @@ export class AddSubscribeComponent implements OnInit {
 
   }
 
-  add() {
+  creat() {
+    this.mySub = [];
+
     this.subscriptionService.postSubscription(this.formData).subscribe(
       data => {
         console.log(data);
-        this.subscriptionService.getSubscription().subscribe(
-          result => {
-            console.log(result);
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < result.length; i++) {
-              this.isCheckedId.push(result[i].id);
-            }
-          });
       },
       error => {
         console.log(error);
       }
     );
-  }
 
-  logout() {
+    this.subscriptionService.getSubscription().subscribe(
+      result => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < result.length; j++) {
+          this.isCheckedId.push(result[j].id);
+          this.mySub.push({ id: result[j].id, name: result[j].name, calendar: result[j].calendar });
+        }
+      }
+    );
+
+    let timerInterval;
     Swal.fire({
-      text: '是否確定要登出？',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#aaa',
-      confirmButtonText: '確定',
-      cancelButtonText: '取消'
-    }).then((result) => {
-      if (result.value) {
-        this.router.navigate(['/login']);
+      title: '正 在 產 生 URL',
+      timer: 800,
+      onBeforeOpen: () => {
+        Swal.showLoading(),
+          timerInterval = setInterval(() => {
+            const content = Swal.getContent();
+            if (content) {
+              const b = content.querySelector('b');
+              if (b) {
+                b.textContent = Swal.getTimerLeft();
+              }
+            }
+          }, 100);
+      },
+      onClose: () => {
+        clearInterval(timerInterval);
       }
     });
   }
+
 }

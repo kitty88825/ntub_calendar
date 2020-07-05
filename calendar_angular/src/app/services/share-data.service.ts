@@ -9,7 +9,6 @@ export class ShareDataService {
   constructor() { }
 
   private subject = new Subject<any>();
-  private resToken = '';
 
   sendMessage(message: any) {
     this.subject.next({ message });

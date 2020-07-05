@@ -280,7 +280,9 @@ $transition_log  :800ms;
 
     i {
       color: $color_icon;
+      cursor: pointer;
     }
+
 
     &__title {
       display        : flex;
@@ -289,7 +291,6 @@ $transition_log  :800ms;
       padding        : $content-size_left-right/1.5 0;
       border-bottom  : $color_border solid 1px;
       font-size      : 1.2rem;
-      cursor         : pointer;
 
       &:hover,
       &.active {
@@ -440,8 +441,13 @@ $transition_log  :800ms;
         }
       }
 
+      .event-list__title {
+        width: fit-content;
+        margin: 0px auto;
+      }
+
       li.event-list__card {
-        display: inline-block;
+        display   : inline-block;
         width     : 31%;
         margin    : 0;
         text-align: center;
@@ -483,15 +489,17 @@ $transition_log  :800ms;
     }
 
     &__title {
-      flex: 1 0px;
+      display: flex;
+      flex   : 2;
     }
 
     &__radius {
       display      : inline-block;
       margin-right : $content-size_top-bottom;
-      width        : 10px;
+      min-width    : 10px;
       height       : 10px;
       border-radius: 50%;
+      margin-top   : 8px;
     }
 
     &__content {

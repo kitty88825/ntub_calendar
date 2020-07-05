@@ -22,6 +22,7 @@ export class IndexComponent implements OnInit {
   data = {
     current: '1'
   };
+  isCollapsed = false;
 
   constructor(
     private router: Router,
@@ -62,6 +63,7 @@ export class IndexComponent implements OnInit {
         });
         this.authService.authState.subscribe((user) => {
           this.authToken = user.authToken;
+          localStorage.setItem('userName', user.name);
           localStorage.setItem('access_token', user.authToken);
           this.loggedIn = (user != null);
           console.log(this.authToken);
