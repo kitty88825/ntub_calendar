@@ -1,0 +1,111 @@
+<!-- <div class="wrap">
+  <app-navbar></app-navbar>
+  <div class="content">
+    <div class="bar row">
+      <div class="form-group col-sm-4">
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" class="file" (change)="onFileChange($event)" accept=".xlsx"/>
+          </div>
+        </div>
+      </div>
+      <ul class="nav">
+        <li class="nav-item">
+          <span class="nav-link disabled">選擇行事曆</span>
+        </li>
+        <div class="form-group">
+          <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
+            <option *ngFor="let calendar of result" [ngValue]="calendar">{{calendar}}</option>
+          </select>
+        </div>
+      </ul>
+    </div>
+    <div class="container">
+      <div class="table">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" *ngFor="let name of header">{{name}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of datas">
+              <td *ngFor="let val of row">
+                {{val}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
+        </label>
+        <label class="btn btn-primary">
+          <input type="checkbox" autocomplete="off" (click)="add()"> 建立
+        </label>
+      </div>
+    </div>
+  </div>
+</div> -->
+<app-navbar></app-navbar>
+<main>
+  <aside class="aside">
+    <div>
+      <label class="chooseFile">
+        <i class="material-icons">
+          folder
+          </i>
+        <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
+        選擇檔案
+      </label>
+    </div>
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          選擇加入行事曆
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <div class="form-group">
+              <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
+                <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
+              </select>
+            </div>
+          </ul>
+        </div>
+      </li>
+    </ul>
+    <div class="submit" (click)="add()">
+      建立行程
+    </div>
+  </aside>
+  <article>
+    <section class="container">
+      <ul class="event-list">
+        <div class="table">
+          <table class="table table-hover">
+            <thead class="event-list__header">
+              <tr>
+                <th scope="col" *ngFor="let name of header">{{name}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of datas">
+                <td *ngFor="let val of row">
+                  {{val}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ul>
+    </section>
+  </article>
+</main>

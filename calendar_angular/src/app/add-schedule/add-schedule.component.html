@@ -1,0 +1,256 @@
+<!-- <div class="wrap">
+  <app-navbar></app-navbar>
+  <div class="content">
+    <div class="title">
+      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-schedule']">新增行程</button>
+    </div>
+    <div class="jumbotron">
+      <div class="form-group row">
+        <label for="static" class="top col-form-label">選擇行事曆</label>
+        <ul class="calendar">
+          <li *ngFor="let calendar of calendars">
+            <div class="pretty p-default p-curve p-thick">
+              <input type="checkbox" [(ngModel)]="calendar.isChecked" (change)="changeSelection()"/>
+              <div class="state">
+                <label class="mine">{{calendar.name}}</label>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="form-group row">
+        <label for="static" class="top col-form-label">新增標題：</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" #addTitle (keyup)="0" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="static" class="top col-form-label">開始時間：</label>
+        <div class="col-md-4">
+          <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+            #addStartDate required>
+        </div>
+        <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar">
+        <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
+          class="timepicker" #addStartTime required></ngb-timepicker>
+      </div>
+      <div class="form-group row">
+        <label for="static" class="top col-form-label">結束時間：</label>
+        <div class="col-md-4">
+          <input type="text" class="date form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+            #addEndDate required>
+        </div>
+        <img src="../assets/images/calendar_today-black-18dp.svg" class="calendar">
+
+        <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
+          class="timepicker" #addEndTime required></ngb-timepicker>
+
+      </div>
+      <div class="form-group row">
+        <button type="button" class="down btn btn-primary disabled" (click)="isCollapsed = !isCollapsed"
+          [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">進階
+        </button>
+      </div>
+      <hr>
+      <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+        <div class="form-group row">
+          <label for="static" class="top col-form-label">地點：</label>
+          <div class="two col-sm-8">
+            <input type="text" class="location-form form-control" #location>
+          </div>
+          <img src="../assets/images/edit_location-black-18dp.svg" class="location">
+        </div>
+        <div class="form-group row">
+          <label for="static" class="top col-form-label">參與人員：</label>
+          <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="col-sm-8 email">
+            <div>
+              <input type="email" class="email form-control" #user placeholder="新增邀請對象" formControlName="toAddress">
+            </div>
+            <input type="submit" value="邀請" class="addUserBtn" [disabled]="!sendEmailForm.valid">
+          </form>
+        </div>
+        <ul class="users">
+          <li *ngFor="let name of invalidEmails;let index = index">
+            <div class="head">
+              <img src="../../assets/images/person-24px.svg">
+            </div>
+            {{name}}
+            <div class="deleteBtn">
+              <img src="../../assets/images/delete-black-18dp.svg" (click)="removeAddUser(index)">
+            </div>
+          </li>
+        </ul>
+        <div class="form-group">
+          <label for="exampleTextarea" class="top">事由：</label>
+          <textarea class="form-control" id="exampleTextarea" rows="3" #description></textarea>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="inputGroupFile02" name="profile"
+                (change)="fileSelected($event)" multiple="multiple">
+              <label class="custom-file-label" for="inputGroupFile02">選擇檔案</label>
+            </div>
+          </div>
+        </div>
+        <ul class="file">
+          <li *ngFor="let name of fileName; let index = index">
+            {{name}}
+            <div class="deleteBtn" (click)="removeSelectedFile(index)">
+              <img src="../../assets/images/delete-black-18dp.svg">
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
+        </label>
+        <label class="btn btn-primary">
+          <input type="checkbox" autocomplete="off" (click)="add()"> 新增
+        </label>
+      </div>
+    </div>
+  </div>
+</div> -->
+<app-navbar></app-navbar>
+<main>
+  <aside class="aside">
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          常用行程
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+
+          </ul>
+        </div>
+      </li>
+    </ul>
+    <div class="submit">
+      建立行程
+    </div>
+  </aside>
+  <article>
+    <section class="container">
+      <div class="add__title">
+        <h1>新增標題</h1>
+        <input type="text" #addTitle (keyup)="0" required>
+      </div>
+      <div class="add__calendar">
+        <i class="material-icons">
+          event_available
+        </i>
+        <h2>選擇行事曆</h2>
+        <ul class="add__calendar__list">
+          <li *ngFor="let calendar of calendars">
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="calendar.isChecked"
+                (change)="changeSelection()">{{calendar.name}}
+              <span class="checkmark"></span>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="add__time">
+        <i class="material-icons">
+          access_time
+        </i>
+        <h2>開始時間：</h2>
+        <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+          #addStartDate required>
+        <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
+          class="timepicker" #addStartTime required></ngb-timepicker>
+      </div>
+      <div class="add__time">
+        <i class="material-icons">
+          access_time
+        </i>
+        <h2>結束時間：</h2>
+        <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate
+          required>
+        <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
+          class="timepicker" #addEndTime required></ngb-timepicker>
+      </div>
+      <div class="add__more">
+        <button type="button" class="btn btn-primary disabled" (click)="isOpen = !isOpen" [attr.aria-expanded]="!isOpen"
+          aria-controls="collapseBasic">進階
+        </button>
+      </div>
+      <hr>
+      <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+        <div class="add__location">
+          <i class="material-icons">
+            place
+          </i>
+          <h2>地點：</h2>
+          <input type="text" class="location form-control" #location>
+          <div class="add__participant">
+            <i class="material-icons">
+              people
+            </i>
+            <h2>參與人員：</h2>
+            <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="email">
+              <div>
+                <input type="email" class="form-control" #user placeholder="輸入邀請對象Email" formControlName="toAddress">
+              </div>
+              <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid">
+              <label class="button-primary">
+                <span>邀請</span>
+              </label>
+            </form>
+          </div>
+        </div>
+        <div class="add__description">
+          <i class="material-icons">
+            subject
+          </i>
+          <h2>事由：</h2>
+          <textarea class="form-control" id="exampleTextarea" rows="3" #description placeholder="新增說明"></textarea>
+          <div class="all_participants" placeholder="參與對象">
+            <ul>
+              <li *ngFor="let name of invalidEmails;let index = index">
+                <i class="material-icons">
+                  person
+                </i>
+                <h2>{{name}}</h2>
+                <i class="material-icons" (click)="removeAddUser(index)">
+                  delete
+                </i>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="add__file">
+          <i class="material-icons">
+            attach_file
+          </i>
+          <h2>附件：</h2>
+          <div class="custom-file">
+            <input id="customFileInput" type="file" (change)="fileSelected($event)" multiple="multiple">
+            <label for="customFileInput" class="button-primary">
+              <span>選擇檔案</span>
+            </label>
+          </div>
+        </div>
+        <div class="add__all__files">
+          <ul class="file">
+            <li *ngFor="let name of fileName; let index = index">
+              <h2>{{name}}</h2>
+              <i class="material-icons" (click)="removeSelectedFile(index)">
+                delete
+              </i>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </article>
+</main>

@@ -1,0 +1,254 @@
+<!-- <div class="wrap">
+  <app-navbar></app-navbar>
+  <div class="content">
+    <div class="bar">
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" [(ngModel)]="searchText"
+          [ngModelOptions]="{standalone: true}">
+      </form>
+      <div class="calendarBar">
+        <div class="title">
+          <button type="button" class="btn btn-outline-secondary">我的行事曆</button>
+        </div>
+        <div class="container">
+          <div class="pretty p-default p-curve p-thick" *ngFor="let calendar of myCalendars">
+            <input type="checkbox" (click)="displayType(eventTypes[0])" checked />
+            <div class="state">
+              <label class="add">{{calendar.name}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="calendarSub">
+        <div class="title">
+          <button type="button" class="btn btn-outline-secondary">我的訂閱</button>
+        </div>
+        <div class="container">
+          <ul>
+            <li class="state"  *ngFor="let sub of mySub">
+              <label class="add">{{sub.name}}</label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="calendar">
+      <full-calendar #calendar defaultView="listYear" [header]="{
+      left: 'prev',
+      center: 'title',
+      right: 'next'
+    }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
+        (eventClick)="eventClick($event)" (eventRender)="eventRender($event)">
+      </full-calendar>
+    </div>
+  </div>
+</div> -->
+<app-navbar></app-navbar>
+<main>
+  <aside class="aside">
+    <div class="date-picker">
+      <full-calendar #calendar [header]="{
+        left: 'prev',
+        center: 'title',
+        right: 'next'
+      }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
+          (eventClick)="eventClick($event)">
+        </full-calendar>
+    </div>
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          行政單位
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <li *ngFor="let sub of mySub; let i = index">
+              <label class="container">
+                <input type="checkbox" class="material-icons item-categories__checkbox"
+                  (click)="displayType(eventTypes[i])" checked>{{sub.name}}
+                <span class="checkmark"></span>
+              </label>
+              <span class="item-categories__status" style="background-color:rgb(152, 174, 74)"></span>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </aside>
+  <article>
+    <section class="container" *ngIf="data.current == '1'">
+      <div class="view">
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
+        <span>
+          <i class="material-icons">
+            search
+          </i>
+        </span>
+        <ul class="view_item">
+          <li class="view_item-btn" (click)="setCurrent(1)" [ngClass]="{'active': data.current == '1'}">
+            <i class="material-icons">
+              view_headline
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(2)">
+            <i class="material-icons">
+              view_stream
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(3)">
+            <i class="material-icons">
+              view_module
+            </i>
+            <hr>
+          </li>
+        </ul>
+      </div>
+      <ul class="event-list">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li *ngFor="let calendar of calendarEvents | appFilter: searchText">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>{{calendar.title}}</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              {{calendar.description}}
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">{{calendar.name}}</span>
+          </div>
+          <div class="event-list__date">{{calendar.startDate}}</div>
+        </li>
+        <li class="event-list__phase">
+          第二週
+        </li>
+      </ul>
+    </section>
+    <section class="container" *ngIf="data.current == '2'">
+      <div class="view">
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
+        <span>
+          <i class="material-icons">
+            search
+          </i>
+        </span>
+        <ul class="view_item">
+          <li class="view_item-btn" (click)="setCurrent(1)">
+            <i class="material-icons">
+              view_headline
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(2)" [ngClass]="{'active': data.current == '2'}">
+            <i class="material-icons">
+              view_stream
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(3)">
+            <i class="material-icons">
+              view_module
+            </i>
+            <hr>
+          </li>
+        </ul>
+      </div>
+      <ul class="event-list event-list--small">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li *ngFor="let calendar of calendarEvents | appFilter:searchText">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>{{calendar.title}}</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              {{calendar.description}}
+            </div>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">{{calendar.name}}</span>
+          </div>
+          <div class="event-list__date">{{calendar.startDate}}</div>
+        </li>
+        <li class="event-list__phase">
+          第二週
+        </li>
+      </ul>
+    </section>
+    <section class="container" *ngIf="data.current == '3'">
+      <div class="view">
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
+        <span>
+          <i class="material-icons">
+            search
+          </i>
+        </span>
+        <ul class="view_item">
+          <li class="view_item-btn" (click)="setCurrent(1)">
+            <i class="material-icons">
+              view_headline
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(2)">
+            <i class="material-icons">
+              view_stream
+            </i>
+            <hr>
+          </li>
+          <li class="view_item-btn" (click)="setCurrent(3)" [ngClass]="{'active': data.current == '3'}">
+            <i class="material-icons">
+              view_module
+            </i>
+            <hr>
+          </li>
+        </ul>
+      </div>
+      <ul class="event-list event-list--grid">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li class="event-list__phase">
+          第一週
+        </li>
+        <li class="event-list__card" *ngFor="let calendar of calendarEvents | appFilter:searchText">
+          <div class="event-list__title">
+            <span class="event-list__radius" style="background-color:#439B91"></span>
+            <span>{{calendar.title}}</span>
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" style="background-color:#439B91">{{calendar.name}}</span>
+          </div>
+          <div class="event-list__date">{{calendar.startDate}}</div>
+        </li>
+      </ul>
+    </section>
+  </article>
+</main>

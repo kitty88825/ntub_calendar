@@ -1,0 +1,80 @@
+<!-- <div class="head">
+  <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+    <div class="container">
+      <a [routerLink]="['/calendar']" class="navbar-brand"><img src="../../../assets/images/一訂行_藕粉.png" style="width: 35px; height: 35px;"></a>
+      <button class="navbar-toggler collapsed" type="button"  (click)="isMenuCollapsed = !isMenuCollapsed">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+          <li ngbDropdown class="nav-item dropdown" *ngIf="official">
+            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+              aria-expanded="false" ngbDropdownToggle><img src="../assets/images/launch-24px.svg" placement="bottom" ngbTooltip="匯入匯出" style="width: 20px; height: 20px;"></a>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <a class="dropdown-item" [routerLink]="['/official-add']" ngbDropdownItem>匯出修改</a>
+              <a class="dropdown-item" [routerLink]="['/official-change']" ngbDropdownItem>匯入建立</a>
+            </div>
+          </li>
+          <li class="nav-item" placement="bottom" ngbTooltip="新增行程">
+            <a class="nav-link" [routerLink]="['/add-schedule']" (click)="isMenuCollapsed = true"><img src="../assets/images/add_box-black-18dp.svg"></a>
+          </li>
+          <li class="nav-item" placement="bottom" ngbTooltip="新增訂閱">
+            <a class="nav-link" [routerLink]="['/add-subscribe']" (click)="isMenuCollapsed = true"><img src="../assets/images/star-black-18dp.svg"></a>
+          </li>
+          <li class="nav-item" placement="bottom" ngbTooltip="匯出PDF">
+            <a class="nav-link" [routerLink]="['/export']" (click)="isMenuCollapsed = true"><img
+                src="../assets/images/picture_as_pdf-black-18dp.svg"></a>
+          </li>
+          <li class="nav-item" placement="bottom" ngbTooltip="登出">
+            <a class="nav-link" (click)="logout()" type="button"><img
+                src="../assets/images/power_settings_new-black-18dp.svg"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div> -->
+<header class="header">
+  <h1 class="header__title" [routerLink]="['/calendar']" >
+    <i class="material-icons header__icon">
+      history_toggle_off
+    </i>
+    <span class=" header__name">
+      一訂行
+    </span>
+  </h1>
+  <nav class="header__navbar">
+    <ul class="header__function">
+      <li ngbDropdown class="nav-item dropdown">
+        <i class="material-icons" ngbDropdownToggle>
+          launch
+        </i>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <a class="dropdown-item" [routerLink]="['/official-add']" ngbDropdownItem>匯出修改</a>
+          <a class="dropdown-item" [routerLink]="['/official-change']" ngbDropdownItem>匯入建立</a>
+          <a class="dropdown-item" [routerLink]="['/export']" ngbDropdownItem>匯出PDF</a>
+        </div>
+      </li>
+      <li>
+        <a href="https://hackmd.io/zV5mB8HnTGqZwZ6_Cz47mg?view" target="_blank">
+          <i class="material-icons">
+            help_outline
+          </i>
+        </a>
+      </li>
+      <li>
+        <i class="material-icons" [routerLink]="['/add-subscribe']">
+          bookmarks
+        </i>
+      </li>
+      <li>
+        <i class="material-icons" [routerLink]="['/add-schedule']">
+          queue
+        </i>
+      </li>
+    </ul>
+    <div class="header__person">
+      <div class="header__avatar" (click)="logout()">{{userName}}</div>
+    </div>
+  </nav>
+</header>

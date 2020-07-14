@@ -1,0 +1,97 @@
+<!-- <div class="wrap">
+  <app-navbar></app-navbar>
+  <div class="content">
+    <div class="title">
+      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/add-subscribe']">新增訂閱</button>
+    </div>
+    <div class="jumbotron">
+      <div class="form-group">
+        <label for="static" class="top col-form-label">勾選欲訂閱的項目：</label>
+      </div>
+      <div class="form-group row " *ngFor="let calendar of calendars">
+        <div class="pretty p-default p-curve p-thick">
+          <input type="checkbox" [(ngModel)]="calendar.isChecked" (change)="changeSelection()"/>
+          <div class="state">
+            <label class="mine">{{calendar.name}}</label>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div id="collapseManual" #collapse="bs-collapse" [collapse]="isOpen">
+        <div class="well well-lg card card-block card-header">
+          <div class="url form-group row">
+            <label for="static" class="top col-form-label">URL：</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" #URL [(ngModel)]="userURL">
+            </div>
+            <img src="../assets/images/file_copy-black-18dp.svg" (click)="copyInputMessage(URL)">
+          </div>
+        </div>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/user-calendar']"> 取消
+        </label>
+        <label class="btn btn-primary">
+          <input type="checkbox" autocomplete="off" (click)="collapse.show(); add()" aria-controls="collapseManual"> 確定
+        </label>
+      </div>
+    </div>
+  </div>
+</div> -->
+<app-navbar></app-navbar>
+<main>
+  <aside class="aside">
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          我的訂閱
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <li *ngFor="let sub of mySub; let i = index">
+              <label class="container">
+                <input type="checkbox" class="material-icons item-categories__checkbox" checked disabled>{{sub.name}}
+                <span class="checkmark"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+    <div class="submit" (click)="collapse.show(); creat()" aria-controls="collapseManual">
+      產生URL
+    </div>
+    <hr>
+    <div id="collapseManual" #collapse="bs-collapse" [collapse]="isOpen">
+      <div class="well well-lg card card-block card-header">
+        <div class="url form-group row">
+          <label for="static" class="title col-form-label">URL：</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" #URL [(ngModel)]="userURL">
+          </div>
+          <img src="../assets/images/file_copy-black-18dp.svg" (click)="copyInputMessage(URL)" class="copyPic">
+        </div>
+      </div>
+    </div>
+  </aside>
+  <article>
+    <section class="container">
+      <ul class="event-list">
+        <div class="form-group row " *ngFor="let calendar of calendars">
+          <label class="container">
+            <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="calendar.isChecked"
+              (change)="changeSelection()">{{calendar.name}}
+            <span class="checkmark"></span>
+          </label>
+        </div>
+      </ul>
+    </section>
+  </article>
+</main>

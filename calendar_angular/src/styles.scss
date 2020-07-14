@@ -1,0 +1,170 @@
+/* You can add global styles to this file, and also import other style files */
+// @import 'bootswatch/dist/sketchy/bootstrap.min.css';
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+
+
+html,
+body {
+  width           : 100%;
+  height          : 100%;
+  margin          : 0;
+  background-color: white;
+  font-family     : 'Noto Sans TC', sans-serif;
+}
+
+.fc-event-container {
+  cursor: pointer;
+}
+
+.fc-content {
+  background-color: #439B91;
+}
+
+.fc-event,
+.fc-event-dot {
+  border          : none;
+  background-color: unset !important;
+}
+
+.bg-light {
+  background-color: white !important;
+  box-shadow      : 2px 6px 17px -16px rgba(0, 0, 0, 0.75);
+}
+
+.theme-green .bs-datepicker-head {
+  background-color: #439B91;
+}
+
+.theme-green .bs-datepicker-body table td.week span {
+  display: none;
+}
+
+.table-active,
+.table-active>th,
+.table-active>td {
+  background-color: #eee;
+}
+
+.fc-ltr .fc-list-heading-main {
+  color         : black;
+  letter-spacing: 4px;
+}
+
+.fc-ltr .fc-list-heading-alt {
+  color         : black;
+  letter-spacing: 4px;
+  margin-right  : 10px;
+}
+
+.fc-toolbar h2 {
+  color    : black;
+  font-size: 20px;
+}
+
+.fc-scroller {
+  background-color: white;
+  box-shadow      : 1px 13px 23px -15px rgba(0, 0, 0, 0.75);
+}
+
+.fc-listYear-view td:nth-child(1) {
+  padding-left: 10px;
+}
+
+.fc-list-item-time {
+  letter-spacing: 4px;
+}
+
+.fc-list-item-title a {
+  letter-spacing: 1px;
+  margin-left   : 10px;
+}
+
+.card-header {
+  border-style    : unset;
+  background-color: unset;
+}
+
+.btn-outline-primary {
+  color       : #2C3E50;
+  border-color: #2C3E50;
+}
+
+.btn-outline-primary:hover {
+  background-color: #2C3E50;
+  border-color    : #2C3E50;
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+  border-color    : #2C3E50;
+  background-color: #2C3E50;
+}
+
+.btn-primary {
+  border-color    : #2C3E50;
+  background-color: #2C3E50;
+}
+
+.btn-primary:hover {
+  border-color    : #0C2032;
+  background-color: #0C2032;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show>.btn-primary.dropdown-toggle {
+  background-color: #42586E;
+  border-color    : #42586E;
+}
+
+.fc-day-header span {
+  font-size: 13px;
+}
+
+.fc-prev-button,
+.fc-next-button {
+  width           : 30px;
+  height          : 30px;
+  background-color: #439B91;
+  border-color    : #439B91;
+}
+
+.fc-icon-chevron-right {
+  margin-top : -15px;
+  margin-left: -8px;
+}
+
+.fc-icon-chevron-left {
+  margin-top : -15px;
+  margin-left: -8px;
+}
+
+.fc-dayGrid-view .fc-body .fc-row {
+  min-height: 2em;
+  font-size : 10px;
+}
+
+.fc-unthemed td.fc-today {
+  background: #F0F0F0;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu.show {
+  border    : 2px #EBEBEB solid;
+  margin-top: 10px;
+}
+
+a.dropdown-item {
+  padding: 5px !important;
+}
+
+@media screen and (max-width:480px) {
+  .completer-holder {
+    margin-left: 15%;
+  }
+
+}
