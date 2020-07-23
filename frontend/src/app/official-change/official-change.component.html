@@ -51,15 +51,6 @@
 <app-navbar></app-navbar>
 <main>
   <aside class="aside">
-    <div>
-      <label class="chooseFile">
-        <i class="material-icons">
-          folder
-          </i>
-        <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
-        選擇檔案
-      </label>
-    </div>
     <ul class="item-categories">
       <li>
         <div class="item-categories__title active">
@@ -82,6 +73,15 @@
         </div>
       </li>
     </ul>
+    <div>
+      <label class="chooseFile">
+        <i class="material-icons">
+          folder
+          </i>
+        <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
+        選擇檔案
+      </label>
+    </div>
     <div class="submit" (click)="add()">
       建立行程
     </div>

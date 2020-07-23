@@ -37,6 +37,7 @@ export class EditScheduleComponent implements OnInit {
   selectedItemsList = [];
   isCheckedCalendars = [];
   userEmail = [];
+  isOpen = false;
 
   constructor(
     private router: Router,

@@ -25,6 +25,7 @@ import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
+import { UserTeachComponent } from './user-teach/user-teach.component';
 
 const config = new AuthServiceConfig([
   {
@@ -48,7 +49,8 @@ export function provideConfig() {
     MainCalendarComponent,
     NavbarComponent,
     EditScheduleComponent,
-    FilterPipe
+    FilterPipe,
+    UserTeachComponent
   ],
   imports: [
     BrowserModule,

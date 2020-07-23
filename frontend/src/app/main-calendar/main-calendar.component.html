@@ -52,8 +52,8 @@
         center: 'title',
         right: 'next'
       }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
-          (eventClick)="eventClick($event)">
-        </full-calendar>
+        (eventClick)="eventClick($event)">
+      </full-calendar>
     </div>
     <ul class="item-categories">
       <li>
@@ -117,6 +117,7 @@
           <div class="event-list__content">內容概要</div>
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
+          <div class="event-list__edit">行程管理</div>
         </li>
         <li class="event-list__phase">
           第一週
@@ -135,6 +136,14 @@
             <span class="event-list__tag" style="background-color:#439B91">{{calendar.name}}</span>
           </div>
           <div class="event-list__date">{{calendar.startDate}}</div>
+          <div class="event-list__edit">
+            <i class="material-icons">
+              edit
+            </i>
+            <i class="material-icons" (click)="delete(calendar)">
+              delete
+            </i>
+          </div>
         </li>
         <li class="event-list__phase">
           第二週

@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { EventService } from '../services/event.service';
+import { SubscriptionService } from '../services/subscription.service';
+import { data } from 'jquery';
+
 
 @Component({
   selector: 'app-official-add',
@@ -16,9 +19,13 @@ export class OfficialAddComponent implements OnInit {
   header = ['發布標題', '內容概要', '開始日期', '結束日期'];
   output = [];
   isCollapsed = false;
+  subName = [];
+  selectCalendar;
+  calendarId = [];
 
   constructor(
     private eventService: EventService,
+    private subscriptionService: SubscriptionService
   ) { }
 
   @ViewChild('table', { read: ElementRef }) table: ElementRef;
@@ -26,6 +33,7 @@ export class OfficialAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventService.getEvents().subscribe(
+      // tslint:disable-next-line: no-shadowed-variable
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
@@ -53,22 +61,58 @@ export class OfficialAddComponent implements OnInit {
         });
       }
     );
+
+    this.subscriptionService.getSubscription().subscribe(
+      result => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < result.length; j++) {
+          this.subName.push(result[j].name);
+        }
+      }
+    );
+
   }
 
   onChange() {
     this.showDatas = [];
-    this.eventService.getEvents().subscribe(
-      data => {
+    this.calendarId = [];
+    this.subscriptionService.getSubscription().subscribe(
+      result => {
         // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-          if (Number(data[i].startAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
-            this.showDatas.push([data[i].title,  data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-          } else if (Number(data[i].endAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
-            this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-          } else if (Number(data[i].startAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) < 8) {
-            this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
-          } else if (Number(data[i].endAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].endAt.substr(5, 2)) < 8) {
-            this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+        for (let j = 0; j < result.length; j++) {
+          if (this.selectCalendar === result[j].name) {
+            this.calendarId.push({ calendar: result[j].calendar, name: result[j].name });
+            this.eventService.getEvents().subscribe(
+              item => {
+                // tslint:disable-next-line: prefer-for-of
+                for (let k = 0; k < item.length; k++) {
+                  if (this.calendarId[0].calendar === item[k].calendars[0]) {
+                    this.showDatas.push([item[k].title, item[k].description, item[k].startAt.substr(0, 10), item[k].endAt.substr(0, 10)]);
+                  }
+                }
+              }
+            );
+          }
+        }
+      }
+    );
+    this.eventService.getEvents().subscribe(
+      // tslint:disable-next-line: no-shadowed-variable
+      data => {
+        if (this.selectCalendar || this.selectedValue) {
+          console.log('yes');
+        } else if (!this.selectCalendar) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < data.length; i++) {
+            if (Number(data[i].startAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
+              this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            } else if (Number(data[i].endAt.substr(0, 4)) - 1911 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) > 7) {
+              this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            } else if (Number(data[i].startAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].startAt.substr(5, 2)) < 8) {
+              this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            } else if (Number(data[i].endAt.substr(0, 4)) - 1912 === this.selectedValue && Number(data[i].endAt.substr(5, 2)) < 8) {
+              this.showDatas.push([data[i].title, data[i].description, data[i].startAt.substr(0, 10), data[i].endAt.substr(0, 10)]);
+            }
           }
         }
       }

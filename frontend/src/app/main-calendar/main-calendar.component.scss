@@ -574,7 +574,11 @@ $transition_log  :800ms;
       opacity  : 0.5;
     }
 
-    &__office,
+    &__office {
+      flex     : 1 0px;
+      font-size: 0.9rem;
+    }
+
     &__date {
       flex     : 0.7 0px;
       font-size: 0.9rem;
@@ -584,6 +588,12 @@ $transition_log  :800ms;
       padding      : $content-size_top-bottom/1.5 $content-size_left-right;
       border-radius: 20px;
       color        : $color_white;
+    }
+
+    &__edit {
+      i {
+        cursor: pointer;
+      }
     }
   }
 

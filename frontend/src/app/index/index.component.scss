@@ -1,31 +1,4 @@
-$color_accent      : #439B91;
-$color_white       : #FFFFFF;
-$color_border      :#EBEBEB;
-$color_icon        :#BCBCCB;
-$color_text        :#4d4f5c;
-$color_text-light  :#A3A6B4;
-$color_primary     :#FCFCFC;
-$color_table-header:#F5F6FA;
-$color_table-phase :#F0F0F0;
-
-
-$height_header:70px;
-
-$width_aside:300px;
-
-$content-size_left-right:20px;
-$content-size_top-bottom:10px;
-
-$z-index_first :1000;
-$z-index_second:900;
-
-$box-shadow           :0px -2px 5px 1px #b0b0b0;
-$box-shadow--left     :-2px 0px 5px 1px #d7d7d7;
-$box-shadow--container:0px 0px 5px 0px #ececec;
-
-
-$transition_short:300ms;
-$transition_log  :800ms;
+@import '../../styles.scss';
 
 @media screen {
 
@@ -133,19 +106,6 @@ $transition_log  :800ms;
     display: block;
   }
 
-  a {
-    text-decoration: none;
-    color          : $color_icon;
-  }
-
-  a:hover {
-    color: $color_accent;
-  }
-
-  body {
-    line-height: 1;
-  }
-
   ol,
   ul {
     list-style: none;
@@ -164,9 +124,10 @@ $transition_log  :800ms;
     content: none;
   }
 
-  table {
-    border-collapse: collapse;
-    border-spacing : 0;
+  img {
+    width: 30px;
+    height: 30px;
+    margin-top: $content-size_top-bottom;
   }
 
   .date-picker {
@@ -279,7 +240,7 @@ $transition_log  :800ms;
   .item-categories {
 
     i {
-      color: $color_icon;
+      color : $color_icon;
       cursor: pointer;
     }
 
@@ -362,7 +323,7 @@ $transition_log  :800ms;
       margin-right : $content-size_left-right/1.2;
       padding-right: $content-size_left-right/1.2;
       border-right : $color_border solid 1px;
-      font-size    : 2.2rem;
+      font-size    : 1.5rem;
     }
 
     &__name {
@@ -386,6 +347,7 @@ $transition_log  :800ms;
 
         i {
           font-size: 1.4rem;
+          outline   : none;
         }
       }
     }
@@ -442,7 +404,7 @@ $transition_log  :800ms;
       }
 
       .event-list__title {
-        width: fit-content;
+        width : fit-content;
         margin: 0px auto;
       }
 
@@ -524,31 +486,6 @@ $transition_log  :800ms;
     }
   }
 
-  .material-icons {
-    font-family   : 'Material Icons';
-    font-weight   : normal;
-    font-style    : normal;
-    font-size     : 24px;
-    /* Preferred icon size */
-    display       : inline-block;
-    line-height   : 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap     : normal;
-    white-space   : nowrap;
-    direction     : ltr;
-
-    /* Support for all WebKit browsers. */
-    -webkit-font-smoothing: antialiased;
-    /* Support for Safari and Chrome. */
-    text-rendering        : optimizeLegibility;
-
-    /* Support for Firefox. */
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Support for IE. */
-    font-feature-settings: 'liga';
-  }
 
 
 }

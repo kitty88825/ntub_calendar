@@ -8,6 +8,7 @@ import { OfficialChangeComponent } from './official-change/official-change.compo
 import { IndexComponent } from './index/index.component';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
+import { UserTeachComponent } from './user-teach/user-teach.component';
 
 
 const routes: Routes = [
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'export', component: ExportComponent },
   { path: 'official-add', component: OfficialAddComponent },
   { path: 'official-change', component: OfficialChangeComponent },
-  { path: 'edit-schedule', component: EditScheduleComponent}
+  { path: 'edit-schedule', component: EditScheduleComponent },
+  { path: 'user-teach', component: UserTeachComponent }
 ];
 
 @NgModule({

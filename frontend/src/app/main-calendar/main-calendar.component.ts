@@ -77,6 +77,8 @@ export class MainCalendarComponent implements OnInit {
             this.eventService.deleteEvent(info.event.id).subscribe(
               data => {
                 console.log(data);
+                const index = this.calendarEvents.indexOf(info.id);
+                this.calendarEvents.splice(index, 1);
                 this.calendarComponent
                   .getApi()
                   .getEventById(String(info.event.id))
@@ -238,6 +240,48 @@ export class MainCalendarComponent implements OnInit {
   setCurrent(param) {
     this.data.current = param;
     console.log(param);
+  }
+
+  delete(info) {
+    console.log(info.title);
+    Swal.fire({
+      text: '確定要刪除「' + info.title + '」?',
+      showCancelButton: true,
+      icon: 'warning',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '確定',
+      cancelButtonText: '取消'
+      // tslint:disable-next-line: no-shadowed-variable
+    }).then((result) => {
+      if (result.value) {
+        // -----------------------------deleteEvent
+        this.eventService.deleteEvent(info.id).subscribe(
+          data => {
+            const index = this.calendarEvents.indexOf(info.id);
+            this.calendarEvents.splice(index, 1);
+            this.calendarComponent
+            .getApi()
+            .getEventById(String(info.id))
+            .remove();
+            Swal.fire({
+              text: '已刪除',
+              icon: 'success',
+            });
+          },
+          error => {
+            Swal.fire({
+              text: '刪除失敗',
+              icon: 'error',
+            });
+          }
+        );
+      }
+    });
+  }
+
+  edit() {
+
   }
 
 

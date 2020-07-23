@@ -1,0 +1,308 @@
+@import '../../styles.scss';
+
+@media screen {
+
+  html,
+  body,
+  div,
+  span,
+  applet,
+  object,
+  iframe,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  blockquote,
+  pre,
+  a,
+  abbr,
+  acronym,
+  address,
+  big,
+  cite,
+  code,
+  del,
+  dfn,
+  em,
+  img,
+  ins,
+  kbd,
+  q,
+  s,
+  samp,
+  small,
+  strike,
+  strong,
+  sub,
+  sup,
+  tt,
+  var,
+  b,
+  u,
+  i,
+  center,
+  dl,
+  dt,
+  dd,
+  ol,
+  ul,
+  li,
+  fieldset,
+  form,
+  label,
+  legend,
+  table,
+  caption,
+  tbody,
+  tfoot,
+  thead,
+  tr,
+  th,
+  td,
+  article,
+  aside,
+  canvas,
+  details,
+  embed,
+  figure,
+  figcaption,
+  footer,
+  header,
+  hgroup,
+  menu,
+  nav,
+  output,
+  ruby,
+  section,
+  summary,
+  time,
+  mark,
+  audio,
+  video {
+    margin        : 0;
+    padding       : 0;
+    border        : 0;
+    font-size     : 100%;
+    font          : inherit;
+    vertical-align: baseline;
+  }
+
+  /* HTML5 display-role reset for older browsers */
+  article,
+  aside,
+  details,
+  figcaption,
+  figure,
+  footer,
+  header,
+  hgroup,
+  menu,
+  nav,
+  section {
+    display: block;
+  }
+
+  ol,
+  ul {
+    list-style: none;
+  }
+
+  blockquote,
+  q {
+    quotes: none;
+  }
+
+
+  blockquote:before,
+  blockquote:after,
+  q:before,
+  q:after {
+    content: '';
+    content: none;
+  }
+
+  article {
+    padding-top : $height_header;
+    padding-left: $width_aside;
+
+    section.container {
+      width           : 92%;
+      margin          : $content-size_left-right;
+      padding         : $content-size_left-right;
+      background-color: $color_white;
+      box-shadow      : $box-shadow--container;
+
+      h2 {
+        font-size  : 30px;
+        font-weight: 800;
+      }
+
+      h3 {
+        display       : flex;
+        align-items   : center;
+        letter-spacing: 1px;
+        margin-bottom : $content-size_top-bottom;
+
+        i {
+          margin-right: $content-size_left-right/2;
+        }
+      }
+
+      .teach {
+        margin-top    : $content-size_top-bottom*3;
+        letter-spacing: 1px;
+
+        h4 {
+          display    : flex;
+          align-items: center;
+
+          span {
+            background-color: black;
+            color           : white;
+            padding         : $content-size_left-right/2.5;
+            margin-right    : $content-size_left-right/2;
+          }
+        }
+
+        .line {
+          width           : 2px;
+          height          : 50px;
+          background-color: black;
+          margin-left     : $content-size_left-right*1.5;
+        }
+      }
+
+    }
+
+    section.title {
+      width           : 92%;
+      margin          : $content-size_left-right;
+      margin-top      : $content-size_top-bottom*4;
+      padding         : $content-size_left-right;
+      background-color: $color_accent;
+      box-shadow      : $box-shadow--container;
+      display         : flex;
+      align-items     : center;
+      justify-content : center;
+      color           : white;
+      font-size       : 25px;
+      letter-spacing  : 2px;
+    }
+
+  }
+
+  .aside {
+    position        : fixed;
+    z-index         : $z-index_second;
+    overflow        : auto;
+    box-sizing      : border-box;
+    margin-top      : $height_header;
+    padding         : $content-size_top-bottom $content-size_left-right;
+    width           : $width_aside;
+    height          : calc(100vh - #{$height_header});
+    background-color: $color_white;
+    box-shadow      : $box-shadow--left;
+
+    .item-categories {
+
+      li {
+        font-size     : 20px;
+        letter-spacing: 2px;
+        width         : 50%;
+        margin-left   : auto;
+        margin-right  : auto;
+        margin-top    : $content-size_top-bottom*2;
+        cursor        : pointer;
+        display       : flex;
+        align-items   : center;
+
+        i {
+          margin-right: $content-size_left-right/2;
+          font-size   : 1em;
+        }
+      }
+
+      li:hover {
+        color: $color_accent;
+      }
+
+      li.active {
+        color        : $color_accent;
+        border-bottom: solid $color_accent 2px;
+      }
+    }
+  }
+
+  .header {
+    position        : fixed;
+    z-index         : $z-index_first;
+    display         : flex;
+    align-items     : center;
+    justify-content : space-between;
+    box-sizing      : border-box;
+    padding         : 0 $content-size_left-right;
+    width           : 100%;
+    height          : $height_header;
+    background-color: $color_white;
+    box-shadow      : $box-shadow;
+
+    &__title {
+      display    : inline-flex;
+      align-items: center;
+      color      : $color_accent;
+      cursor     : pointer;
+      outline    : none;
+    }
+
+    &__icon {
+      margin-right : $content-size_left-right/1.2;
+      padding-right: $content-size_left-right/1.2;
+      border-right : $color_border solid 1px;
+      font-size    : 1.5rem;
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+      margin-top: $content-size_top-bottom;
+    }
+
+    &__name {
+      font-size: 1.3rem;
+    }
+
+    &__navbar {
+      display    : inline-flex;
+      align-items: center;
+    }
+
+    &__person {
+      display     : flex;
+      align-items : center;
+      padding-left: $content-size_left-right/1.2;
+      border-left : $color_border solid 1px;
+      color       : $color_icon;
+      cursor      : pointer;
+    }
+
+    &__avatar {
+      display        : flex;
+      align-items    : center;
+      justify-content: center;
+      width          : 90px;
+      height         : 36px;
+      outline        : none;
+      color          : $color_text;
+    }
+
+  }
+
+
+}
+
+
+@media screen and (max-width:480px) {}

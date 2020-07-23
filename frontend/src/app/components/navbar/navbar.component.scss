@@ -203,6 +203,12 @@ $transition_log  :800ms;
       font-size    : 2.2rem;
     }
 
+    img {
+      width: 30px;
+      height: 30px;
+      margin-top: $content-size_top-bottom;
+    }
+
     &__name {
       font-size: 1.3rem;
     }

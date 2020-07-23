@@ -1,7 +1,7 @@
 <header class="header">
   <h1 class="header__title">
-    <i class="material-icons header__icon">
-      history_toggle_off
+    <i class="header__icon">
+      <img src="../../assets/images/一訂行_湖水綠.png">
     </i>
     <span class=" header__name">
       一訂行
@@ -10,11 +10,9 @@
   <nav class="header__navbar">
     <ul class="header__function">
       <li>
-        <a href="https://hackmd.io/zV5mB8HnTGqZwZ6_Cz47mg?view" target="_blank">
-          <i class="material-icons">
-            help_outline
-          </i>
-        </a>
+        <i class="material-icons" [routerLink]="['/user-teach']">
+          help_outline
+        </i>
       </li>
     </ul>
     <div class="header__person">
