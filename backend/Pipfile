@@ -16,6 +16,7 @@ drf-yasg = "*"
 django-ical = "*"
 djangorestframework-camel-case = "*"
 django-cors-headers = "*"
+djangorestframework-jwt = "*"
 psycopg2-binary = "*"
 
 [requires]
