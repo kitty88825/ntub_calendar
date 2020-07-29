@@ -1,12 +1,9 @@
-from django.contrib.auth.models import Group
+from django.db.models import Q
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
 
-from app.users.models import User
-
-from .models import Calendar, Permission, Subscription
+from .models import Calendar, Subscription
 from .serializers import (
     CalendarSerializer,
     SubscriptionSerializer,
@@ -21,12 +18,11 @@ class CalendarViewSet(ModelViewSet):
     queryset = Calendar.objects.all()
 
     def get_queryset(self):
-        user = User.objects.get(id=self.request.user.id)
-        group_id = list(user.groups.values_list('id', flat=True))
-        group = list(Group.objects.values_list('name', flat=True).filter(id__in=group_id))  # noqa 501
-        calendar_id = list(Permission.objects.values_list('calendar_id', flat=True).filter(group_id__in=group_id))  # noqa 501
-        queryset = Calendar.objects.filter(id__in=calendar_id)
-        return queryset
+        if self.request.user.id:
+            return Calendar.objects \
+                .filter(
+                    Q(permission__group__user=self.request.user.id),
+                )
 
 
 class SubscriptionViewSet(ModelViewSet):
