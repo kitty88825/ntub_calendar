@@ -34,7 +34,7 @@ class AccountView(GenericViewSet):
         user_data = self.inc_auth.current_user(token)
         user = update_user(user_data)
 
-        user_token = Token.objects.get(user=user)
+        user_token, created = Token.objects.get_or_create(user=user)
 
         return Response(dict(email=user.email, token=user_token.key), status=status.HTTP_200_OK)  # noqa: E501
 
