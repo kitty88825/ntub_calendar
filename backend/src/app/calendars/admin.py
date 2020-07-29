@@ -5,7 +5,7 @@ from .models import Calendar, Subscription, Permission
 
 @admin.register(Calendar)
 class CalendarAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'description', 'display')
 
 
 @admin.register(Subscription)
