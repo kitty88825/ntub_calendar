@@ -21,8 +21,12 @@ class CalendarViewSet(ModelViewSet):
         if self.request.user.id:
             return Calendar.objects \
                 .filter(
-                    Q(permission__group__user=self.request.user.id),
-                )
+                    Q(permission__group__user=self.request.user.id) |
+                    Q(display='public'),
+                ) \
+                .distinct()
+        else:
+            return Calendar.objects.filter(display='public')
 
 
 class SubscriptionViewSet(ModelViewSet):
