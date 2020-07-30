@@ -10,7 +10,7 @@ class Calendar(models.Model):
         ('private', '不公開'),
     ]
     name = models.CharField(max_length=50, unique=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, default="")
     display = models.CharField(
         max_length=10,
         choices=display_choice,
