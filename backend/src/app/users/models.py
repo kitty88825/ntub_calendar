@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.authtoken.models import Token
 
@@ -10,8 +11,15 @@ import uuid
 
 
 class User(AbstractUser):
+    class RoleChoice(models.TextChoices):
+        teacher = 'teacher', _('老師')
+        student = 'student', _('學生')
+        unknow = 'unknow', _('不知名')
+        system = 'system', _('系統管理者')
     email = models.EmailField(unique=True)
     code = models.UUIDField(default=uuid.uuid4, editable=False)
+    role = models.CharField(
+        max_length=15, choices=RoleChoice.choices, default='unknow')
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
