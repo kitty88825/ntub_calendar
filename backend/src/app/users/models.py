@@ -22,15 +22,10 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class CommonMeeting(models.Model):
     title = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='creator_users')
+    participant = models.ManyToManyField(
+        User, related_name='participant_users')
 
     def __str__(self):
         return self.title
-
-
-class CommonParticipant(models.Model):
-    common_meeting = models.ForeignKey(CommonMeeting, on_delete=models.CASCADE)
-    participant = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ['common_meeting', 'participant']
