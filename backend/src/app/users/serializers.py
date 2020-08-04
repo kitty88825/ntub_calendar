@@ -25,4 +25,4 @@ class CommonMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommonMeeting
         fields = ('id', 'title', 'creator', 'participant')
-        ready_only_fields = ('id',)
+        read_only_fields = ('id', 'creator')
