@@ -1,4 +1,4 @@
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -7,9 +7,14 @@ from rest_framework import status
 
 from requests.exceptions import HTTPError
 
-from .serializers import LoginSerializer, UserSerializer
+from .serializers import (
+    LoginSerializer,
+    UserSerializer,
+    CommonMeetingSerializer,
+)
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
+from .models import CommonMeeting
 
 from rest_framework.authtoken.models import Token
 
@@ -51,3 +56,9 @@ class AccountView(GenericViewSet):
         if self.action == 'me':
             return UserSerializer
         return super().get_serializer_class()
+
+
+class CommonMeetingView(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = CommonMeeting.objects.all()
+    serializer_class = CommonMeetingSerializer
