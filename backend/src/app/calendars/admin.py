@@ -15,4 +15,4 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
-    list_display = ('group', 'calendar', 'role')
+    list_display = ('calendar', 'group', 'role', 'authority')
