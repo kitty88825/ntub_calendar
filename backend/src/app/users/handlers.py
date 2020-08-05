@@ -8,6 +8,15 @@ from .models import User
 from typing import List
 
 
+def add_role(user: User, role: str):
+    if not role:
+        return
+
+    user_role = User.objects.get(username=user)
+    user_role.role = role
+    user_role.save()
+
+
 def update_group(user: User, data: dict) -> None:
     if not data:
         return
@@ -30,6 +39,7 @@ def update_user(data: dict) -> User:
     user, created = User.objects.update_or_create(username=snake_res.pop('username'), defaults=snake_res)  # noqa: E501
 
     update_group(user, data['groups'])
+    add_role(user, data['role'])
 
     return user
 

@@ -18,6 +18,7 @@ def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
     return {
+        'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
 
@@ -44,7 +45,7 @@ class AccountView(GenericViewSet):
 
         access_token = get_tokens_for_user(user)
 
-        return Response(dict(email=user.email, token=access_token), status=status.HTTP_200_OK)  # noqa: E501
+        return Response(dict(email=user.email, staff=user.is_staff, token=access_token), status=status.HTTP_200_OK)  # noqa: E501
 
     @property
     def inc_auth(self):

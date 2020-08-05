@@ -6,11 +6,13 @@ from .models import User, CommonMeeting, CommonParticipant
 
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
-    list_display = ('username', 'email', 'code')
+    list_display = ('username', 'email', 'code', 'role')
     fieldsets = AuthUserAdmin.fieldsets + (
+        ('role', {'fields': ('role',)}),
         ('url', {'fields': ('code',)}),
     )
     add_fieldsets = AuthUserAdmin.add_fieldsets + (
+        ('role', {'fields': ('role',)}),
         ('url', {'fields': ('code',)}),
     )
     readonly_fields = ('code',)

@@ -20,8 +20,6 @@ from django.conf.urls.static import static
 
 from rest_framework import permissions
 
-from rest_framework_simplejwt.views import TokenObtainPairView
-
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -49,8 +47,6 @@ urlpatterns = [
     path('api/v1/', include(api_urlpatterns)),
     path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # noqa501
-
 ]
 
 if settings.DEBUG:
