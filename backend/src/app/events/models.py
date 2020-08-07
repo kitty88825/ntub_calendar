@@ -6,6 +6,10 @@ from app.users.models import User
 
 
 class Event(models.Model):
+    class NatureChoice(models.TextChoices):
+        meeting = 'meeting', _('會議')
+        event = 'event', _('行程')
+
     title = models.CharField('行程名稱', max_length=50)
     start_at = models.DateTimeField('開始時間')
     end_at = models.DateTimeField('結束時間')
@@ -13,7 +17,8 @@ class Event(models.Model):
     create_at = models.DateTimeField('建立時間', auto_now_add=True)
     update_at = models.DateTimeField('更新時間', auto_now=True)
     location = models.TextField('地點', null=True, blank=True)
-    calendars = models.ManyToManyField(Calendar)
+    calendars = models.ManyToManyField(Calendar, blank=True)
+    nature = models.CharField(max_length=15, choices=NatureChoice.choices)
 
     def __str__(self):
         return self.title

@@ -16,7 +16,7 @@ class AttachmentInlineAdmin(admin.TabularInline):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     inlines = (AttachmentInlineAdmin,)
-    list_display = ('id', 'title', 'create_at', 'update_at')
+    list_display = ('id', 'title', 'create_at', 'update_at', 'nature')
 
 
 @admin.register(Participant)

@@ -5,8 +5,18 @@ from app.users.models import User
 
 
 class Calendar(models.Model):
+    display_choice = [
+        ('public', '公開'),
+        ('private', '不公開'),
+    ]
     name = models.CharField(max_length=50, unique=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, default="")
+    display = models.CharField(
+        max_length=10,
+        choices=display_choice,
+        blank=False,
+        null=False,
+    )
 
     def __str__(self):
         return self.name

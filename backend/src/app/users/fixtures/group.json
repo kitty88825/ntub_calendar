@@ -3,7 +3,7 @@
     "model": "auth.group",
     "pk": 1,
     "fields": {
-      "name": "student",
+      "name": "祕書室",
       "permissions": []
     }
   },
@@ -11,7 +11,7 @@
     "model": "auth.group",
     "pk": 2,
     "fields": {
-      "name": "teacher",
+      "name": "副校長室",
       "permissions": []
     }
   },
@@ -19,7 +19,7 @@
     "model": "auth.group",
     "pk": 3,
     "fields": {
-      "name": "祕書室",
+      "name": "校長室",
       "permissions": []
     }
   },
@@ -27,7 +27,7 @@
     "model": "auth.group",
     "pk": 4,
     "fields": {
-      "name": "副校長室",
+      "name": "軍訓室",
       "permissions": []
     }
   },
@@ -35,7 +35,7 @@
     "model": "auth.group",
     "pk": 5,
     "fields": {
-      "name": "校長室",
+      "name": "主計室",
       "permissions": []
     }
   },
@@ -43,7 +43,7 @@
     "model": "auth.group",
     "pk": 6,
     "fields": {
-      "name": "軍訓室",
+      "name": "人事室",
       "permissions": []
     }
   },
@@ -51,7 +51,7 @@
     "model": "auth.group",
     "pk": 7,
     "fields": {
-      "name": "主計室",
+      "name": "圖書館",
       "permissions": []
     }
   },
@@ -59,7 +59,7 @@
     "model": "auth.group",
     "pk": 8,
     "fields": {
-      "name": "人事室",
+      "name": "總務處",
       "permissions": []
     }
   },
@@ -67,7 +67,7 @@
     "model": "auth.group",
     "pk": 9,
     "fields": {
-      "name": "圖書館",
+      "name": "專科進修學校",
       "permissions": []
     }
   },
@@ -75,7 +75,7 @@
     "model": "auth.group",
     "pk": 10,
     "fields": {
-      "name": "總務處",
+      "name": "空中進修學院",
       "permissions": []
     }
   },
@@ -83,7 +83,7 @@
     "model": "auth.group",
     "pk": 11,
     "fields": {
-      "name": "專科進修學校",
+      "name": "校務研究中心",
       "permissions": []
     }
   },
@@ -91,7 +91,7 @@
     "model": "auth.group",
     "pk": 12,
     "fields": {
-      "name": "空中進修學院",
+      "name": "教學發展中心",
       "permissions": []
     }
   },
@@ -99,7 +99,7 @@
     "model": "auth.group",
     "pk": 13,
     "fields": {
-      "name": "校務研究中心",
+      "name": "學生事務處",
       "permissions": []
     }
   },
@@ -107,7 +107,7 @@
     "model": "auth.group",
     "pk": 14,
     "fields": {
-      "name": "教學發展中心",
+      "name": "國際事務處",
       "permissions": []
     }
   },
@@ -115,7 +115,7 @@
     "model": "auth.group",
     "pk": 15,
     "fields": {
-      "name": "學生事務處",
+      "name": "研究發展處",
       "permissions": []
     }
   },
@@ -123,7 +123,7 @@
     "model": "auth.group",
     "pk": 16,
     "fields": {
-      "name": "國際事務處",
+      "name": "教務處",
       "permissions": []
     }
   },
@@ -131,7 +131,7 @@
     "model": "auth.group",
     "pk": 17,
     "fields": {
-      "name": "研究發展處",
+      "name": "資訊與網路中心",
       "permissions": []
     }
   },
@@ -139,7 +139,7 @@
     "model": "auth.group",
     "pk": 18,
     "fields": {
-      "name": "教務處",
+      "name": "體育室",
       "permissions": []
     }
   },
@@ -147,7 +147,7 @@
     "model": "auth.group",
     "pk": 19,
     "fields": {
-      "name": "資訊與網路中心",
+      "name": "通識教育中心",
       "permissions": []
     }
   },
@@ -155,7 +155,7 @@
     "model": "auth.group",
     "pk": 20,
     "fields": {
-      "name": "體育室",
+      "name": "商品創意經營系",
       "permissions": []
     }
   },
@@ -163,7 +163,7 @@
     "model": "auth.group",
     "pk": 21,
     "fields": {
-      "name": "通識教育中心",
+      "name": "商業設計管理系",
       "permissions": []
     }
   },
@@ -171,7 +171,7 @@
     "model": "auth.group",
     "pk": 22,
     "fields": {
-      "name": "商品創意經營系",
+      "name": "數位多媒體設計系",
       "permissions": []
     }
   },
@@ -179,7 +179,7 @@
     "model": "auth.group",
     "pk": 23,
     "fields": {
-      "name": "商業設計管理系",
+      "name": "創意設計與經營研究所",
       "permissions": []
     }
   },
@@ -187,7 +187,7 @@
     "model": "auth.group",
     "pk": 24,
     "fields": {
-      "name": "數位多媒體設計系",
+      "name": "創新經營學院",
       "permissions": []
     }
   },
@@ -195,7 +195,7 @@
     "model": "auth.group",
     "pk": 25,
     "fields": {
-      "name": "創意設計與經營研究所",
+      "name": "資訊與決策科學研究所",
       "permissions": []
     }
   },
@@ -203,7 +203,7 @@
     "model": "auth.group",
     "pk": 26,
     "fields": {
-      "name": "創新經營學院",
+      "name": "應用外語系",
       "permissions": []
     }
   },
@@ -211,29 +211,13 @@
     "model": "auth.group",
     "pk": 27,
     "fields": {
-      "name": "資訊與決策科學研究所",
-      "permissions": []
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 28,
-    "fields": {
-      "name": "應用外語系",
-      "permissions": []
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 28,
-    "fields": {
       "name": "資訊管理系",
       "permissions": []
     }
   },
   {
     "model": "auth.group",
-    "pk": 29,
+    "pk": 28,
     "fields": {
       "name": "企業管理系(所)",
       "permissions": []
@@ -241,7 +225,7 @@
   },
   {
     "model": "auth.group",
-    "pk": 30,
+    "pk": 29,
     "fields": {
       "name": "管理學院",
       "permissions": []
@@ -249,7 +233,7 @@
   },
   {
     "model": "auth.group",
-    "pk": 31,
+    "pk": 30,
     "fields": {
       "name": "貿易實務法律暨談判碩士學位學程",
       "permissions": []
@@ -257,7 +241,7 @@
   },
   {
     "model": "auth.group",
-    "pk": 32,
+    "pk": 31,
     "fields": {
       "name": "國際商務系(所)",
       "permissions": []
@@ -265,7 +249,7 @@
   },
   {
     "model": "auth.group",
-    "pk": 33,
+    "pk": 32,
     "fields": {
       "name": "財務金融系(所)",
       "permissions": []
@@ -273,7 +257,7 @@
   },
   {
     "model": "auth.group",
-    "pk": 34,
+    "pk": 33,
     "fields": {
       "name": "會計資訊系(所)",
       "permissions": []
@@ -281,25 +265,9 @@
   },
   {
     "model": "auth.group",
-    "pk": 35,
+    "pk": 34,
     "fields": {
       "name": "財經學院",
-      "permissions": []
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 36,
-    "fields": {
-      "name": "unknow",
-      "permissions": []
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 37,
-    "fields": {
-      "name": "system",
       "permissions": []
     }
   }

@@ -6,7 +6,7 @@ from .models import Calendar, Subscription
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'description', 'display')
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -15,7 +15,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = ('id', 'calendar', 'name')
-        ready_only_fields = ('id', 'user')
+        read_only_fields = ('id', 'user')
 
     def get_name(self, subscription):
         return str(subscription.calendar.name)

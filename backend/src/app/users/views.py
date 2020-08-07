@@ -5,13 +5,22 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from requests.exceptions import HTTPError
 
 from .serializers import LoginSerializer, UserSerializer
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
 
-from rest_framework.authtoken.models import Token
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
 
 class AccountView(GenericViewSet):
@@ -34,9 +43,9 @@ class AccountView(GenericViewSet):
         user_data = self.inc_auth.current_user(token)
         user = update_user(user_data)
 
-        user_token, created = Token.objects.get_or_create(user=user)
+        access_token = get_tokens_for_user(user)
 
-        return Response(dict(email=user.email, token=user_token.key), status=status.HTTP_200_OK)  # noqa: E501
+        return Response(dict(email=user.email, staff=user.is_staff, token=access_token), status=status.HTTP_200_OK)  # noqa: E501
 
     @property
     def inc_auth(self):
