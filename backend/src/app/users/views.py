@@ -65,3 +65,7 @@ class CommonMeetingView(ModelViewSet):
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)
+
+    def get_queryset(self):
+        if self.request.user:
+            return CommonMeeting.objects.filter(creator=self.request.user)
