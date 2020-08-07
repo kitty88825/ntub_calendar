@@ -62,3 +62,6 @@ class CommonMeetingView(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = CommonMeeting.objects.all()
     serializer_class = CommonMeetingSerializer
+
+    def perform_create(self, serializers):
+        serializers.save(creator=self.request.user)
