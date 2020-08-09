@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 
 from rest_framework import permissions
 
+from rest_framework_simplejwt.views import TokenRefreshView
+
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -47,6 +49,8 @@ urlpatterns = [
     path('api/v1/', include(api_urlpatterns)),
     path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
+    # token refresh
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:
