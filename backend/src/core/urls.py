@@ -32,13 +32,14 @@ api_urlpatterns = [
     path('user/', include('app.users.urls')),
     path('event/', include('app.events.urls')),
     path('calendar/', include('app.calendars.urls')),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 schema_view = get_schema_view(
    openapi.Info(
       title="NTUB Calendar",
       default_version='v1',
-      description="臺台北商業大學 專題組別：109405",
+      description="臺北商業大學 專題組別：109405",
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
@@ -49,8 +50,6 @@ urlpatterns = [
     path('api/v1/', include(api_urlpatterns)),
     path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
-    # token refresh
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:
