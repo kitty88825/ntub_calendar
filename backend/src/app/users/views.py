@@ -1,4 +1,4 @@
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -9,9 +9,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from requests.exceptions import HTTPError
 
-from .serializers import LoginSerializer, UserSerializer
+from .serializers import (
+    LoginSerializer,
+    UserSerializer,
+    CommonMeetingSerializer,
+)
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
+from .models import CommonMeeting
 
 
 def get_tokens_for_user(user):
@@ -60,3 +65,16 @@ class AccountView(GenericViewSet):
         if self.action == 'me':
             return UserSerializer
         return super().get_serializer_class()
+
+
+class CommonMeetingView(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = CommonMeeting.objects.all()
+    serializer_class = CommonMeetingSerializer
+
+    def perform_create(self, serializers):
+        serializers.save(creator=self.request.user)
+
+    def get_queryset(self):
+        if self.request.user:
+            return CommonMeeting.objects.filter(creator=self.request.user)

@@ -12,7 +12,6 @@ class User(AbstractUser):
         student = 'student', _('學生')
         unknow = 'unknow', _('不知名')
         system = 'system', _('系統管理者')
-
     email = models.EmailField(unique=True)
     code = models.UUIDField(default=uuid.uuid4, editable=False)
     role = models.CharField(
@@ -21,15 +20,10 @@ class User(AbstractUser):
 
 class CommonMeeting(models.Model):
     title = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='creator_users')
+    participant = models.ManyToManyField(
+        User, related_name='participant_users')
 
     def __str__(self):
         return self.title
-
-
-class CommonParticipant(models.Model):
-    common_meeting = models.ForeignKey(CommonMeeting, on_delete=models.CASCADE)
-    participant = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ['common_meeting', 'participant']

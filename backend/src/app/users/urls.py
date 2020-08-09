@@ -17,11 +17,12 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from .views import AccountView
+from .views import AccountView, CommonMeetingView
 
 
 router = DefaultRouter(False)
 router.register('', AccountView, 'sign_account')
+router.register('common', CommonMeetingView)
 
 urlpatterns = [
     path('', include(router.urls)),
