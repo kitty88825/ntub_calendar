@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { AuthService } from 'angularx-social-login';
-import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
-
 
 @Component({
   selector: 'app-navbar',
@@ -23,7 +21,6 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName').substr(0, 1);
-    console.log(this.userName);
   }
 
   logout() {
@@ -38,10 +35,10 @@ export class NavbarComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.authService.signOut();
-        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('loggin');
         this.router.navigate(['/index']);
       }
-    });
-  }
+    });  }
 
 }

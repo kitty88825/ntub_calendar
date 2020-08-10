@@ -31,6 +31,7 @@ body {
 
 .fc-content {
   background-color: #439B91;
+  height: 5px;
 }
 
 .fc-event,
@@ -168,6 +169,7 @@ body {
 .dropdown-menu.show {
   border    : 2px #EBEBEB solid;
   margin-top: 10px;
+  margin-left: -60px;
 }
 
 a.dropdown-item {

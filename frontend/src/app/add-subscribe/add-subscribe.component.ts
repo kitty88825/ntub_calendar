@@ -37,6 +37,7 @@ export class AddSubscribeComponent implements OnInit {
         }
         this.calendarService.getCalendar().subscribe(
           result => {
+            console.log(result);
             // tslint:disable-next-line: prefer-for-of
             for (let j = 0; j < result.length; j++) {
               if (this.dataCalendar.includes(result[j].id)) {
@@ -56,7 +57,6 @@ export class AddSubscribeComponent implements OnInit {
     this.subscriptionService.getURL().subscribe(
       data => {
         this.userURL = data.url;
-        console.log(this.userURL);
       }
     );
   }

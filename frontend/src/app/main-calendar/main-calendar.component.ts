@@ -30,13 +30,16 @@ export class MainCalendarComponent implements OnInit {
     current: '1'
   };
   isCollapsed = false;
+  showModal: boolean;
+  events = [];
+  event; eventTitle; eventStart; eventEnd; eventDesc; eventOffice;
 
   constructor(
     private router: Router,
     private eventService: EventService,
     private shareDataService: ShareDataService,
     private calendarService: CalendarService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -51,64 +54,20 @@ export class MainCalendarComponent implements OnInit {
 
 
   eventClick(info) {
-    Swal.fire({
-      text: '請選擇要執行的動作',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#aaa',
-      confirmButtonText: '編輯',
-      cancelButtonText: '刪除',
-      allowOutsideClick: false
-    }).then((result) => {
-      if (!result.value) {
-        Swal.fire({
-          text: '確定要刪除「' + info.event.title + '」?',
-          showCancelButton: true,
-          icon: 'warning',
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '確定',
-          cancelButtonText: '取消'
-          // tslint:disable-next-line: no-shadowed-variable
-        }).then((result) => {
-          if (result.value) {
-            // -----------------------------deleteEvent
-            this.eventService.deleteEvent(info.event.id).subscribe(
-              data => {
-                console.log(data);
-                const index = this.calendarEvents.indexOf(info.id);
-                this.calendarEvents.splice(index, 1);
-                this.calendarComponent
-                  .getApi()
-                  .getEventById(String(info.event.id))
-                  .remove();
-                Swal.fire({
-                  text: '已刪除',
-                  icon: 'success',
-                });
-              },
-              error => {
-                Swal.fire({
-                  text: '你沒有刪除權限唷！',
-                  icon: 'error',
-                });
-              }
-            );
-          }
-        });
-      } else if (result.value) {
-        this.eventService.getEvent(info.event.id).subscribe(
-          data => {
-            console.log(data);
-            this.put = data;
-            this.title = data.title;
-            this.shareDataService.sendMessage(this.put);
-          }
-        );
-        this.router.navigate(['/edit-schedule']);
+    this.showModal = true; // Show-Hide Modal
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.events.length; i++) {
+      if (String(this.events[i].id) === String(info.event.id)) {
+        this.event = this.events[i];
+        this.eventTitle = this.events[i].title;
+        this.eventStart = this.events[i].startDate + ' ' + this.events[i].sTime;
+        this.eventEnd = this.events[i].endDate + ' ' + this.events[i].eTime;
+        this.eventDesc = this.events[i].description;
+        this.eventOffice = this.events[i].name;
       }
-    });
+    }
+
   }
 
   displayType(eventType: any): void {
@@ -199,7 +158,7 @@ export class MainCalendarComponent implements OnInit {
 
     this.eventService.getEvents().subscribe(
       data => {
-        const events = [];
+        console.log(data);
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
 
@@ -208,15 +167,18 @@ export class MainCalendarComponent implements OnInit {
             // tslint:disable-next-line: prefer-for-of
             for (let k = 0; k < data[i].calendars.length; k++) {
               if (this.mySub[j].calendar === data[i].calendars[k]) {
-                events.push({
+                this.events.push({
                   id: data[i].id, title: data[i].title, start: data[i].startAt, name: this.mySub[j].name,
-                  end: data[i].endAt, calendars: data[i].calendars, startDate: data[i].startAt.substr(0, 10)
+                  end: data[i].endAt, calendars: data[i].calendars, startDate: data[i].startAt.substr(0, 10),
+                  endDate: data[i].endAt.substr(0, 10), description: data[i].description,
+                  sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16)
                 });
               }
             }
           }
         }
-        events.sort(function (a, b) {
+        // tslint:disable-next-line: only-arrow-functions
+        this.events.sort(function (a, b) {
           const startA = a.start.toUpperCase(); // ignore upper and lowercase
           const startB = b.start.toUpperCase(); // ignore upper and lowercase
           if (startA < startB) {
@@ -230,7 +192,7 @@ export class MainCalendarComponent implements OnInit {
           return 0;
         });
 
-        this.calendarEvents = events;
+        this.calendarEvents = this.events;
 
       }
     );
@@ -261,9 +223,9 @@ export class MainCalendarComponent implements OnInit {
             const index = this.calendarEvents.indexOf(info.id);
             this.calendarEvents.splice(index, 1);
             this.calendarComponent
-            .getApi()
-            .getEventById(String(info.id))
-            .remove();
+              .getApi()
+              .getEventById(String(info.id))
+              .remove();
             Swal.fire({
               text: '已刪除',
               icon: 'success',
@@ -280,9 +242,20 @@ export class MainCalendarComponent implements OnInit {
     });
   }
 
-  edit() {
-
+  edit(info) {
+    this.eventService.getEvent(info.id).subscribe(
+      data => {
+        console.log(data);
+        this.put = data;
+        this.title = data.title;
+        this.shareDataService.sendMessage(this.put);
+      }
+    );
+    this.router.navigate(['/edit-schedule']);
   }
 
+  hide() {
+    this.showModal = false;
+  }
 
 }

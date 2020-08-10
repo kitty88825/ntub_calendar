@@ -1,48 +1,3 @@
-<!-- <div class="wrap">
-  <app-navbar></app-navbar>
-  <div class="content">
-    <div class="bar">
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" [(ngModel)]="searchText"
-          [ngModelOptions]="{standalone: true}">
-      </form>
-      <div class="calendarBar">
-        <div class="title">
-          <button type="button" class="btn btn-outline-secondary">我的行事曆</button>
-        </div>
-        <div class="container">
-          <div class="pretty p-default p-curve p-thick" *ngFor="let calendar of myCalendars">
-            <input type="checkbox" (click)="displayType(eventTypes[0])" checked />
-            <div class="state">
-              <label class="add">{{calendar.name}}</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="calendarSub">
-        <div class="title">
-          <button type="button" class="btn btn-outline-secondary">我的訂閱</button>
-        </div>
-        <div class="container">
-          <ul>
-            <li class="state"  *ngFor="let sub of mySub">
-              <label class="add">{{sub.name}}</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="calendar">
-      <full-calendar #calendar defaultView="listYear" [header]="{
-      left: 'prev',
-      center: 'title',
-      right: 'next'
-    }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
-        (eventClick)="eventClick($event)" (eventRender)="eventRender($event)">
-      </full-calendar>
-    </div>
-  </div>
-</div> -->
 <app-navbar></app-navbar>
 <main>
   <aside class="aside">
@@ -137,7 +92,7 @@
           </div>
           <div class="event-list__date">{{calendar.startDate}}</div>
           <div class="event-list__edit">
-            <i class="material-icons">
+            <i class="material-icons" (click)="edit(calendar)">
               edit
             </i>
             <i class="material-icons" (click)="delete(calendar)">
@@ -260,4 +215,28 @@
       </ul>
     </section>
   </article>
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal_dialog">
+      <div class="modal_content">
+        <div class="modal_header">
+          <i class="material-icons" (click)="hide()">
+            cancel
+          </i>
+        </div>
+        <div class="modal_body">
+          <h3>行程名稱：{{eventTitle}}</h3>
+          <h3>開始時間：{{eventStart}}</h3>
+          <h3>結束時間：{{eventEnd}}</h3>
+          <h3>內容概要：{{eventDesc}}</h3>
+          <h3>發布單位：{{eventOffice}}</h3>
+        </div>
+        <div class="modal_footer">
+          <button class="edit" (click)="edit(event)">編輯</button>
+          <button class="delete" (click)="delete(event)">刪除</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>

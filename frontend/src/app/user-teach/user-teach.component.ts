@@ -11,9 +11,12 @@ export class UserTeachComponent implements OnInit {
     current: '1'
   };
 
+  loggin;
+
   constructor() { }
 
   ngOnInit(): void {
+    this.loggin = localStorage.getItem('loggin');
   }
 
   setCurrent(param) {

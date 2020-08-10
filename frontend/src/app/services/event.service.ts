@@ -10,7 +10,8 @@ export class EventService {
 
 
   resToken = '';
-  serverIp = 'http://157.230.247.25/api/v1/';
+  // serverIp = 'http://157.230.247.25/api/v1/';
+  serverIp = 'http://140.131.114.144/api/v1/';
   reqHeader;
 
 
@@ -18,16 +19,16 @@ export class EventService {
     private http: HttpClient,
   ) {
     this.reqHeader = new HttpHeaders({
-      Authorization: 'token ' + localStorage.getItem('refresh_token')
+      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
     });
   }
 
   postEvent(formData: any): Observable<any> {
-    return this.http.post<any>(this.serverIp + 'event/', formData, { headers: this.reqHeader });
+    return this.http.post<any>(this.serverIp + 'event/', formData);
   }
 
   deleteEvent(id: number): Observable<Event> {
-    return this.http.delete<Event>(`${this.serverIp}event/${id}`, {headers: this.reqHeader});
+    return this.http.delete<Event>(`${this.serverIp}event/${id}`);
   }
 
   getEvents(): Observable<Event[]> {
@@ -39,7 +40,7 @@ export class EventService {
   }
 
   patchEvent(id: number, formData: any): Observable<Event> {
-    return this.http.patch<Event>(`${this.serverIp}event/${id}`, formData, { headers: this.reqHeader });
+    return this.http.patch<Event>(`${this.serverIp}event/${id}`, formData);
   }
 
 }

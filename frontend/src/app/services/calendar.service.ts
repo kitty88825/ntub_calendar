@@ -10,7 +10,8 @@ import { Calendar } from '../models/calendar.models';
 export class CalendarService {
 
   resToken = '';
-  serverIp = 'http://157.230.247.25/api/v1/calendar/';
+  // serverIp = 'http://157.230.247.25/api/v1/calendar/';
+  serverIp = 'http://140.131.114.144/api/v1/calendar/';
   reqHeader;
 
 
@@ -31,7 +32,7 @@ export class CalendarService {
   // }
 
   getCalendar(): Observable<Calendar[]> {
-    return this.http.get<Calendar[]>(this.serverIp + 'calendars', { headers: this.reqHeader });
+    return this.http.get<Calendar[]>(this.serverIp + 'calendars');
   }
 
   // getEvent(id: number): Observable<Event> {

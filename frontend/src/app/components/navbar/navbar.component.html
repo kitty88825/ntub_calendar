@@ -20,21 +20,23 @@
         </div>
       </li>
       <li>
-        <a href="https://hackmd.io/zV5mB8HnTGqZwZ6_Cz47mg?view" target="_blank">
-          <i class="material-icons" [routerLink]="['/user-teach']">
-            help_outline
-          </i>
-        </a>
+        <i class="material-icons" [routerLink]="['/user-teach']">
+          help_outline
+        </i>
       </li>
       <li>
         <i class="material-icons" [routerLink]="['/add-subscribe']">
           bookmarks
         </i>
       </li>
-      <li>
-        <i class="material-icons" [routerLink]="['/add-schedule']">
+      <li ngbDropdown class="nav-item dropdown">
+        <i class="material-icons" ngbDropdownToggle>
           queue
         </i>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <a class="dropdown-item" [routerLink]="['/add-schedule']" ngbDropdownItem>新增行程</a>
+          <a class="dropdown-item" [routerLink]="['/meeting']" ngbDropdownItem>查看會議</a>
+        </div>
       </li>
     </ul>
     <div class="header__person">

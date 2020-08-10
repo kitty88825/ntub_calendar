@@ -1,3 +1,4 @@
+import { MeetingComponent } from './meeting/meeting.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
@@ -21,7 +22,8 @@ const routes: Routes = [
   { path: 'official-add', component: OfficialAddComponent },
   { path: 'official-change', component: OfficialChangeComponent },
   { path: 'edit-schedule', component: EditScheduleComponent },
-  { path: 'user-teach', component: UserTeachComponent }
+  { path: 'user-teach', component: UserTeachComponent },
+  { path: 'meeting', component: MeetingComponent}
 ];
 
 @NgModule({

@@ -1,3 +1,4 @@
+import { TokenInterceptor } from './interceptors/token.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -26,6 +27,8 @@ import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
 import { UserTeachComponent } from './user-teach/user-teach.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { MeetingComponent } from './meeting/meeting.component';
 
 const config = new AuthServiceConfig([
   {
@@ -50,7 +53,8 @@ export function provideConfig() {
     NavbarComponent,
     EditScheduleComponent,
     FilterPipe,
-    UserTeachComponent
+    UserTeachComponent,
+    MeetingComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +71,14 @@ export function provideConfig() {
     NgbModule,
     HttpClientModule,
     ReactiveFormsModule,
-    SocialLoginModule
+    SocialLoginModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: function tokenGetter() {
+          return localStorage.getItem('access_token');
+        },
+      }
+    })
   ],
   providers: [
     {
@@ -78,7 +89,8 @@ export function provideConfig() {
     {
       provide: AuthServiceConfig,
       useFactory: provideConfig
-    }
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

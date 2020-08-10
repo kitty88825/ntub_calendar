@@ -349,6 +349,11 @@
           font-size: 1.4rem;
           outline   : none;
         }
+
+        i:hover {
+          color:$color_accent;
+          transition: $transition_short;
+        }
       }
     }
 

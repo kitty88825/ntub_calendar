@@ -7,6 +7,8 @@ import { GoogleLoginProvider } from 'angularx-social-login';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { CalendarService } from '../services/calendar.service';
+import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-index',
@@ -28,6 +30,8 @@ export class IndexComponent implements OnInit {
     private router: Router,
     public tokenService: TokenService,
     private authService: AuthService,
+    private calendarService: CalendarService,
+    private eventService: EventService,
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -35,32 +39,18 @@ export class IndexComponent implements OnInit {
   calendarPlugins = [dayGridPlugin];
   calendarWeekends = true;
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        console.log(data);
+      }
+    );
+  }
 
-  signInWithGoogle() {
-    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
+  async signInWithGoogle() {
+    await this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (result) => {
         let timerInterval;
-        Swal.fire({
-          title: 'Loggin in',
-          timer: 1500,
-          onBeforeOpen: () => {
-            Swal.showLoading(),
-              timerInterval = setInterval(() => {
-                const content = Swal.getContent();
-                if (content) {
-                  const b = content.querySelector('b');
-                  if (b) {
-                    b.textContent = Swal.getTimerLeft();
-                  }
-                }
-              }, 100);
-          },
-          onClose: () => {
-            clearInterval(timerInterval);
-            this.router.navigate(['/calendar']);
-          }
-        });
         this.authService.authState.subscribe((user) => {
           this.authToken = user.authToken;
           localStorage.setItem('userName', user.name);
@@ -68,28 +58,52 @@ export class IndexComponent implements OnInit {
           this.loggedIn = (user != null);
           console.log(this.authToken);
           console.log(this.loggedIn);
+          localStorage.setItem('loggin', String(this.loggedIn));
           const token: Token = {
             accessToken: this.authToken,
           };
           this.tokenService.postToken(token).subscribe(
             data => {
-              this.resToken = data.token;
-              localStorage.setItem('refresh_token', data.token);
               console.log(data.token);
+              this.resToken = data.token.access;
+              localStorage.setItem('res_access_token', this.resToken);
+              localStorage.setItem('res_refresh_token', data.token.refresh);
             },
             error => {
               console.log(error);
             }
           );
+          Swal.fire({
+            title: 'Loggin in...',
+            timer: 2000,
+            onBeforeOpen: () => {
+              Swal.showLoading(),
+                timerInterval = setInterval(() => {
+                  const content = Swal.getContent();
+                  if (content) {
+                    const b = content.querySelector('b');
+                    if (b) {
+                      b.textContent = Swal.getTimerLeft();
+                    }
+                  }
+                }, 100);
+            },
+            onClose: () => {
+              clearInterval(timerInterval);
+            }
+          });
         });
+
       }
     );
+    this.router.navigate(['/calendar']);
   }
 
   setCurrent(param) {
     this.data.current = param;
     console.log(param);
   }
+
 
 }
 

@@ -9,14 +9,15 @@ import { URL } from '../models/URL.model';
 })
 export class SubscriptionService {
   resToken = '';
-  serverIp = 'http://157.230.247.25/api/v1/';
+  // serverIp = 'http://157.230.247.25/api/v1/';
+  serverIp = 'http://140.131.114.144/api/v1/';
   reqHeader;
 
   constructor(
     private http: HttpClient,
   ) {
     this.reqHeader = new HttpHeaders({
-      Authorization: 'token ' + localStorage.getItem('refresh_token')
+      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
     });
   }
 
