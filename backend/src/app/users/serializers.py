@@ -39,7 +39,7 @@ class CommonMeetingSerializer(serializers.ModelSerializer):
 
 
 class CreateCommonMeetingSerializer(CommonMeetingSerializer):
-    emails = serializers.ListSerializer(
+    emails = serializers.ListField(
         child=serializers.EmailField(),
         write_only=True,
         required=True,
