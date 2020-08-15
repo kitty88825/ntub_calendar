@@ -69,6 +69,11 @@ class CreateCommonMeetingSerializer(CommonMeetingSerializer):
 
 
 class UpdateCommonMeetingSerializer(CreateCommonMeetingSerializer):
+    emails = serializers.ListField(
+        child=serializers.EmailField(),
+        write_only=True,
+        required=False,
+    )
     remove_emails = serializers.ListField(
         child=serializers.EmailField(),
         write_only=True,

@@ -76,7 +76,7 @@ class CommonMeetingView(ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'create':
             serializer_class = CreateCommonMeetingSerializer
-        elif self.action == 'partial_update':
+        elif self.action == 'partial_update' or self.action == 'update':
             serializer_class = UpdateCommonMeetingSerializer
         else:
             serializer_class = CommonMeetingSerializer
