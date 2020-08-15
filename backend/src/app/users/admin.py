@@ -6,7 +6,7 @@ from .models import User, CommonMeeting
 
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
-    list_display = ('username', 'email', 'code', 'role')
+    list_display = ('id', 'username', 'email', 'code', 'role')
     fieldsets = AuthUserAdmin.fieldsets + (
         ('role', {'fields': ('role',)}),
         ('url', {'fields': ('code',)}),

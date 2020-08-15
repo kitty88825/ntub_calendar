@@ -13,6 +13,8 @@ from .serializers import (
     LoginSerializer,
     UserSerializer,
     CommonMeetingSerializer,
+    CreateCommonMeetingSerializer,
+    UpdateCommonMeetingSerializer,
 )
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
@@ -70,7 +72,15 @@ class AccountView(GenericViewSet):
 class CommonMeetingView(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = CommonMeeting.objects.all()
-    serializer_class = CommonMeetingSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            serializer_class = CreateCommonMeetingSerializer
+        elif self.action == 'partial_update' or self.action == 'update':
+            serializer_class = UpdateCommonMeetingSerializer
+        else:
+            serializer_class = CommonMeetingSerializer
+        return serializer_class
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)
