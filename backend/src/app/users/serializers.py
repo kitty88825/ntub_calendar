@@ -3,6 +3,7 @@ from django.shortcuts import reverse
 from rest_framework import serializers
 
 from .models import User, CommonMeeting
+from .handlers import get_match
 
 
 class LoginSerializer(serializers.Serializer):
@@ -26,3 +27,30 @@ class CommonMeetingSerializer(serializers.ModelSerializer):
         model = CommonMeeting
         fields = ('id', 'title', 'creator', 'participant')
         read_only_fields = ('id', 'creator')
+
+
+class CreateCommonMeetingSerializer(CommonMeetingSerializer):
+    emails = serializers.ListSerializer(
+        child=serializers.EmailField(),
+        write_only=True,
+        required=True,
+    )
+
+    class Meta:
+        model = CommonMeeting
+        fields = ('id', 'title', 'creator', 'participant', 'emails')
+        read_only_fields = ('id', 'creator', 'participant')
+
+    def create(self, validated_data):
+        emails = validated_data.pop('emails')
+        common_meeting = CommonMeeting.objects.create(**validated_data)
+        for email in emails:
+            if get_match(email) is not None:
+                username, domain = email.split('@')
+                user, created = User.objects \
+                    .get_or_create(
+                        username=username,
+                        email=email,
+                    )
+                common_meeting.participant.add(user)
+        return common_meeting
