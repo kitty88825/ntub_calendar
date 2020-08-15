@@ -50,9 +50,7 @@ class CreateCommonMeetingSerializer(CommonMeetingSerializer):
         fields = ('id', 'title', 'creator', 'participant', 'emails')
         read_only_fields = ('id', 'creator', 'participant')
 
-    def create(self, validated_data):
-        emails = validated_data.pop('emails')
-        common_meeting = CommonMeeting.objects.create(**validated_data)
+    def create_participant_for_common(self, common_meeting, emails):
         for email in emails:
             if get_match(email) is not None:
                 username, domain = email.split('@')
@@ -62,4 +60,44 @@ class CreateCommonMeetingSerializer(CommonMeetingSerializer):
                         email=email,
                     )
                 common_meeting.participant.add(user)
+
+    def create(self, validated_data):
+        emails = validated_data.pop('emails')
+        common_meeting = CommonMeeting.objects.create(**validated_data)
+        self.create_participant_for_common(common_meeting, emails)
+        return common_meeting
+
+
+class UpdateCommonMeetingSerializer(CreateCommonMeetingSerializer):
+    remove_emails = serializers.ListField(
+        child=serializers.EmailField(),
+        write_only=True,
+        required=False,
+    )
+
+    class Meta:
+        model = CommonMeeting
+        fields = (
+            'id',
+            'title',
+            'creator',
+            'participant',
+            'emails',
+            'remove_emails',
+        )
+        read_only_fields = ('id', 'creator', 'participant')
+
+    def update(self, instance, validated_data):
+        emails = validated_data.pop('emails', None)
+        remove_emails = validated_data.pop('remove_emails', None)
+        common_meeting = super().update(instance, validated_data)
+        if emails:
+            self.create_participant_for_common(common_meeting, emails)
+
+        if remove_emails:
+            for email in remove_emails:
+                common_meeting.participant \
+                    .remove(
+                        User.objects.get(email=email).id)
+
         return common_meeting
