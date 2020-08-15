@@ -23,10 +23,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommonMeetingSerializer(serializers.ModelSerializer):
+    creator = serializers.SerializerMethodField()
+    participant = serializers.SerializerMethodField()
+
     class Meta:
         model = CommonMeeting
         fields = ('id', 'title', 'creator', 'participant')
         read_only_fields = ('id', 'creator')
+
+    def get_creator(self, common_meeting):
+        return str(common_meeting.creator.email)
+
+    def get_participant(self, common_meeting):
+        return list(common_meeting.participant.values_list('email', flat=True))
 
 
 class CreateCommonMeetingSerializer(CommonMeetingSerializer):
