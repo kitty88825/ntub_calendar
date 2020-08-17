@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { MainCalendarComponent } from './../main-calendar/main-calendar.component';
 import { TokenService } from './../services/token.service';
 import { Injectable } from '@angular/core';
@@ -11,7 +12,8 @@ import { catchError, tap, switchMap } from 'rxjs/operators';
 export class TokenInterceptor implements HttpInterceptor {
 
   constructor(
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router: Router
   ) { }
 
   refreshingAccessToken: boolean;
@@ -26,7 +28,7 @@ export class TokenInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         console.log(error);
 
-        if (error.status === 401) {
+        if (error.status === 401 && localStorage.getItem('loggin') === 'true') {
           // 401 error so we are unauthorized
 
           // refresh the access token
@@ -42,6 +44,13 @@ export class TokenInterceptor implements HttpInterceptor {
               console.log(err);
             }
           );
+        } else if (localStorage.getItem('loggin') === null) {
+          alert('請先登入系統');
+          this.router.navigate(['/index']);
+        } else if (error.status === 403) {
+          alert('請使用北商google帳號登入');
+          this.router.navigate(['/index']);
+          window.location.reload();
         }
 
         return throwError(error);

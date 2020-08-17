@@ -519,34 +519,59 @@
   }
 
   .modal_dialog {
-    width           : 40%;
-    height          : 350px;
-    margin-left     : auto;
-    margin-right    : auto;
+    width           : 35%;
+    height          : fit-content;
+    margin-left     : 23%;
     background-color: $color_white;
-    margin-top      : $content-size_top-bottom*10;
+    margin-top      : $content-size_top-bottom*13;
     border-radius   : 10px;
     box-shadow      : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
 
     .modal_header {
+      padding-top : $content-size_top-bottom;
+      text-align  : right;
+      margin-right: $content-size_left-right/2;
+
       i {
-        height      : 20px;
-        width       : 20px;
-        float       : right;
+        height: 20px;
+        width : 20px;
+        cursor: pointer;
+      }
+
+      i:not(:last-child) {
         margin-right: $content-size_left-right/2;
-        margin-top  : $content-size_top-bottom;
-        cursor      : pointer;
       }
 
       i:hover {
-        color: $color_accent;
+        color     : $color_accent;
         transition: $transition_short;
       }
     }
 
     .modal_body {
-      h3 {
+      width       : 90%;
+      margin-left : auto;
+      margin-right: auto;
 
+      h3 {
+        display    : flex;
+        align-items: center;
+
+        i {
+          color: $color_icon;
+        }
+
+        span {
+          margin-left: $content-size_left-right/2;
+        }
+      }
+
+      h3:not(:first-child) {
+        margin-top: 5px;
+      }
+
+      h3:last-child {
+        padding-bottom: $content-size_top-bottom*2;
       }
     }
   }

@@ -221,20 +221,47 @@
     <div class="modal_dialog">
       <div class="modal_content">
         <div class="modal_header">
+          <i class="material-icons" (click)="edit(event)">
+            edit
+          </i>
+          <i class="material-icons" (click)="delete(event)">
+            delete
+          </i>
           <i class="material-icons" (click)="hide()">
             cancel
           </i>
         </div>
         <div class="modal_body">
-          <h3>行程名稱：{{eventTitle}}</h3>
-          <h3>開始時間：{{eventStart}}</h3>
-          <h3>結束時間：{{eventEnd}}</h3>
-          <h3>內容概要：{{eventDesc}}</h3>
-          <h3>發布單位：{{eventOffice}}</h3>
-        </div>
-        <div class="modal_footer">
-          <button class="edit" (click)="edit(event)">編輯</button>
-          <button class="delete" (click)="delete(event)">刪除</button>
+          <h3>
+            <i class="material-icons">
+              title
+            </i>
+            <span>行程名稱：{{eventTitle}}</span>
+          </h3>
+          <h3>
+            <i class="material-icons">
+              schedule
+            </i>
+            <span>開始時間：{{eventStart}}</span>
+          </h3>
+          <h3>
+            <i class="material-icons">
+              schedule
+            </i>
+            <span>結束時間：{{eventEnd}}</span>
+          </h3>
+          <h3>
+            <i class="material-icons">
+              subject
+            </i>
+            <span>內容概要：{{eventDesc}}</span>
+          </h3>
+          <h3>
+            <i class="material-icons">
+              groups
+            </i>
+            <span>發布單位：{{eventOffice}}</span>
+          </h3>
         </div>
       </div>
     </div>

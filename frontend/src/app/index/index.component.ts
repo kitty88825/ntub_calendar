@@ -50,7 +50,6 @@ export class IndexComponent implements OnInit {
   async signInWithGoogle() {
     await this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (result) => {
-        let timerInterval;
         this.authService.authState.subscribe((user) => {
           this.authToken = user.authToken;
           localStorage.setItem('userName', user.name);
@@ -73,35 +72,50 @@ export class IndexComponent implements OnInit {
               console.log(error);
             }
           );
-          Swal.fire({
-            title: 'Loggin in...',
-            timer: 2000,
-            onBeforeOpen: () => {
-              Swal.showLoading(),
-                timerInterval = setInterval(() => {
-                  const content = Swal.getContent();
-                  if (content) {
-                    const b = content.querySelector('b');
-                    if (b) {
-                      b.textContent = Swal.getTimerLeft();
-                    }
-                  }
-                }, 100);
-            },
-            onClose: () => {
-              clearInterval(timerInterval);
-            }
-          });
         });
-
       }
     );
-    this.router.navigate(['/calendar']);
+    let timerInterval;
+    Swal.fire({
+      title: 'Loggin in...',
+      timer: 2000,
+      onBeforeOpen: () => {
+        Swal.showLoading(),
+          timerInterval = setInterval(() => {
+            const content = Swal.getContent();
+            if (content) {
+              const b = content.querySelector('b');
+              if (b) {
+                b.textContent = Swal.getTimerLeft();
+              }
+            }
+          }, 100);
+      },
+      onClose: () => {
+        clearInterval(timerInterval);
+        if (localStorage.getItem('res_access_token') != null) {
+          this.router.navigate(['/calendar']);
+        } else {
+          window.location.reload();
+          if (localStorage.getItem('res_access_token') != null) {
+            this.router.navigate(['/calendar']);
+          }
+        }
+      }
+    });
   }
 
   setCurrent(param) {
     this.data.current = param;
     console.log(param);
+  }
+
+  logout() {
+    this.authService.signOut();
+    localStorage.removeItem('res_refresh_token');
+    localStorage.removeItem('res_access_token');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('loggin');
   }
 
 
