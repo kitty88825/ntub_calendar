@@ -56,7 +56,7 @@
       <div class="container__name">
         <span class="title">會議名稱：</span>
         <span class="meetName">{{lookMeetName}}</span>
-        <div class="submit">
+        <div class="submit" (click)="edit()">
           <i class="material-icons">
             done_all
           </i>
@@ -80,31 +80,26 @@
         </form>
       </div>
       <div class="container__equipment">
-        <div class="origin">
-          <input type="checkbox" class="material-icons" checked>全選
+        <label class="origin">
+          <input type="checkbox" class="material-icons" (change)="oldCheckUncheckAll()" [(ngModel)]="oldMasterSelected">全選
           <span class="checkmark"></span>
-          <i class="material-icons">
-            delete
-          </i>
-        </div>
-        <div class="new">
-          <input type="checkbox" class="material-icons" checked>全選
+        </label>
+        <label class="new">
+          <input type="checkbox" class="material-icons" (change)="newCheckUncheckAll()" [(ngModel)]="newMasterSelected">全選
           <span class="checkmark"></span>
-          <i class="material-icons">
-            delete
-          </i>
-        </div>
+        </label>
       </div>
       <div class="container__body">
         <div class="origin__participants">
           <ul>
-            <li *ngFor="let participants of participants;let index = index">
+            <li *ngFor="let participant of allParticipants;let index = index">
               <div class="participants__block">
-                <div class="participants__checkbox">
-                  <input type="checkbox" class="material-icons" checked>
+                <label class="participants__checkbox">
+                  <input type="checkbox" class="material-icons" [(ngModel)]="participant.isChecked"
+                    (change)="changeSelection()">
                   <span class="checkmark"></span>
-                </div>
-                <h2>{{participants}}</h2>
+                </label>
+                <h2>{{participant.participants}}</h2>
               </div>
             </li>
           </ul>
@@ -113,11 +108,12 @@
           <ul>
             <li *ngFor="let name of oldInvalidEmails;let index = index">
               <div class="participants__block">
-                <div class="participants__checkbox">
-                  <input type="checkbox" class="material-icons" checked>
+                <label class="participants__checkbox">
+                  <input type="checkbox" class="material-icons" [(ngModel)]="name.isChecked"
+                  (change)="changeSelection()">
                   <span class="checkmark"></span>
-                </div>
-                <h2>{{name}}</h2>
+                </label>
+                <h2>{{name.email}}</h2>
               </div>
             </li>
           </ul>
@@ -146,24 +142,22 @@
         </form>
       </div>
       <div class="container__equipment">
-        <div class="origin">
-          <input type="checkbox" class="material-icons" checked>全選
+        <label class="origin">
+          <input type="checkbox" class="material-icons" (change)="addCheckUncheckAll()" [(ngModel)]="addMasterSelected">全選
           <span class="checkmark"></span>
-          <i class="material-icons">
-            delete
-          </i>
-        </div>
+        </label>
       </div>
       <div class="container__body">
         <div class="participants">
           <ul>
             <li *ngFor="let name of newInvalidEmails;let index = index">
               <div class="participants__block">
-                <div class="participants__checkbox">
-                  <input type="checkbox" class="material-icons" checked>
+                <label class="participants__checkbox">
+                  <input type="checkbox" class="material-icons" [(ngModel)]="name.isChecked"
+                  (change)="changeSelection()">
                   <span class="checkmark"></span>
-                </div>
-                <h2>{{name}}</h2>
+                </label>
+                <h2>{{name.email}}</h2>
               </div>
             </li>
           </ul>

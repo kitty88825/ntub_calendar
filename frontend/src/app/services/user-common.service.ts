@@ -30,4 +30,9 @@ export class UserCommonService {
   deleteCommonUser(id: number): Observable<UserCommon> {
     return this.http.delete<UserCommon>(`${this.serverIp}user/common/${id}`, { headers: this.reqHeader });
   }
+
+  patchCommonUser(id: number, formData: any): Observable<UserCommon> {
+    return this.http.patch<UserCommon>(`${this.serverIp}user/common/${id}`, formData, { headers: this.reqHeader });
+  }
+
 }

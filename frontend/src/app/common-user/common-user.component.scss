@@ -365,6 +365,10 @@
     border  : 2px solid $color_border;
   }
 
+  .checkmark:hover {
+    background-color: $color_icon;
+  }
+
   /* When the checkbox is checked, add a blue background */
   .origin input:checked~.checkmark,
   .new input:checked~.checkmark,
