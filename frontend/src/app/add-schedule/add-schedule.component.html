@@ -81,10 +81,10 @@
             <h2>參與人員：</h2>
             <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="email">
               <div>
-                <input type="email" class="form-control" #user placeholder="輸入邀請對象Email" formControlName="toAddress">
+                <input type="email" class="form-control" placeholder="輸入邀請對象Email" formControlName="toAddress">
               </div>
               <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid">
-              <label class="button-primary">
+              <label class="button-primary" >
                 <span>邀請</span>
               </label>
             </form>

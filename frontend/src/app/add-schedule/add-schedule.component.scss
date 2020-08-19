@@ -1,31 +1,4 @@
-$color_accent      : #439B91;
-$color_white       : #FFFFFF;
-$color_border      :#EBEBEB;
-$color_icon        :#BCBCCB;
-$color_text        :#4d4f5c;
-$color_text-light  :#A3A6B4;
-$color_primary     :#FCFCFC;
-$color_table-header:#F5F6FA;
-$color_table-phase :#F0F0F0;
-$color_form_control:#D0D6DC;
-
-$height_header:70px;
-
-$width_aside:300px;
-
-$content-size_left-right:20px;
-$content-size_top-bottom:10px;
-
-$z-index_first :1000;
-$z-index_second:900;
-
-$box-shadow           :0px -2px 5px 1px #b0b0b0;
-$box-shadow--left     :-2px 0px 5px 1px #d7d7d7;
-$box-shadow--container:0px 0px 5px 0px #ececec;
-
-
-$transition_short:300ms;
-$transition_log  :800ms;
+@import '../../styles.scss';
 
 @media screen {
 

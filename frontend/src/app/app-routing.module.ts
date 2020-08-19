@@ -1,3 +1,4 @@
+import { CommonUserComponent } from './common-user/common-user.component';
 import { MeetingComponent } from './meeting/meeting.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -23,7 +24,8 @@ const routes: Routes = [
   { path: 'official-change', component: OfficialChangeComponent },
   { path: 'edit-schedule', component: EditScheduleComponent },
   { path: 'user-teach', component: UserTeachComponent },
-  { path: 'meeting', component: MeetingComponent}
+  { path: 'meeting', component: MeetingComponent },
+  { path: 'common-user', component: CommonUserComponent }
 ];
 
 @NgModule({

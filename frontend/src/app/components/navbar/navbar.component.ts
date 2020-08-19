@@ -41,6 +41,7 @@ export class NavbarComponent implements OnInit {
         localStorage.removeItem('loggin');
         this.router.navigate(['/index']);
       }
-    });  }
+    });
+  }
 
 }

@@ -1,0 +1,193 @@
+import { Router } from '@angular/router';
+import { UserCommon } from './../models/user-common';
+import { UserCommonService } from './../services/user-common.service';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { Component, OnInit } from '@angular/core';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+
+@Component({
+  selector: 'app-common-user',
+  templateUrl: './common-user.component.html',
+  styleUrls: ['./common-user.component.scss']
+})
+export class CommonUserComponent implements OnInit {
+  isCollapsed = false;
+  isOpened = false;
+  meetName = '';
+  look = true;
+  new = !this.look;
+  lookMeetName = '';
+  formData = new FormData();
+  oldSendEmailForm: FormGroup;
+  newSendEmailForm: FormGroup;
+  emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
+  oldInvalidEmails = [];
+  newInvalidEmails = [];
+  uploadForm: FormGroup;
+  allMeetings = [];
+  participants;
+  deleteId;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private userCommonService: UserCommonService
+  ) { }
+
+  ngOnInit(): void {
+    this.uploadForm = this.formBuilder.group({
+      profile: ['']
+    });
+
+    this.oldSendEmailForm = this.formBuilder.group({
+      toAddress: ['', Validators.pattern(this.emailPattern)]
+    });
+
+    this.newSendEmailForm = this.formBuilder.group({
+      toAddress: ['', Validators.pattern(this.emailPattern)]
+    });
+
+    this.userCommonService.getCommonUsers().subscribe(
+      data => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          this.allMeetings.push({
+            title: data[i].title,
+            id: data[i].id, participant: data[i].participant
+          });
+        }
+
+        this.lookMeetName = this.allMeetings[0].title;
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.allMeetings.length; i++) {
+          if (this.lookMeetName === this.allMeetings[i].title) {
+            this.participants = this.allMeetings[i].participant;
+          }
+        }
+        console.log(this.allMeetings);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  addMeetName() {
+    this.formData.delete('emails');
+    if (this.meetName.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        text: '請輸入新會議名稱',
+      });
+    } else if (this.meetName.length > 0) {
+      this.look = false;
+      this.new = true;
+    }
+  }
+
+  deleteOrigin() {
+    Swal.fire({
+      icon: 'warning',
+      text: '是否確定刪除「' + this.lookMeetName + '」?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '確定',
+      cancelButtonText: '取消'
+    }).then((result) => {
+      if (result.value) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.allMeetings.length; i++) {
+          if (this.allMeetings[i].title === this.lookMeetName) {
+            this.deleteId = this.allMeetings[i].id;
+          }
+        }
+        this.userCommonService.deleteCommonUser(this.deleteId).subscribe(
+          data => {
+            console.log(data);
+            Swal.fire({
+              icon: 'success',
+              text: '刪除成功！',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: '確定',
+            }).then((res) => {
+              window.location.reload();
+            });
+          },
+          error => {
+            console.log(error);
+            Swal.fire({
+              icon: 'error',
+              text: '刪除失敗！',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: '確定',
+            }).then((res) => {
+              window.location.reload();
+            });
+          }
+        );
+      }
+    });
+  }
+
+  change(info) {
+    this.formData.delete('emails');
+    this.meetName = '';
+    this.participants = null;
+    this.look = true;
+    this.new = false;
+    this.lookMeetName = info.target.value;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.allMeetings.length; i++) {
+      if (this.lookMeetName === this.allMeetings[i].title) {
+        this.participants = this.allMeetings[i].participant;
+      }
+    }
+    console.log(this.participants);
+  }
+
+  oldSend(value) {
+    if (value.toAddress.length !== 0) {
+      const emails = this.oldSendEmailForm.value.toAddress.split(',');
+      console.log(emails);
+      this.oldInvalidEmails.push(emails);
+      console.log(this.oldInvalidEmails);
+      this.formData.append('emails', emails);
+    }
+    this.oldSendEmailForm.reset();
+  }
+
+  newSend(value) {
+    if (value.toAddress.length !== 0) {
+      const emails = this.newSendEmailForm.value.toAddress.split(',');
+      console.log(emails);
+      this.newInvalidEmails.push(emails);
+      console.log(this.newInvalidEmails);
+      this.formData.append('emails', emails);
+    }
+    this.newSendEmailForm.reset();
+  }
+
+  submit() {
+    this.formData.append('title', this.meetName);
+    this.userCommonService.postCommonUser(this.formData).subscribe(
+      data => {
+        Swal.fire({
+          icon: 'success',
+          text: '新增成功',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          window.location.reload();
+        });
+      }, error => {
+        Swal.fire({
+          icon: 'error',
+          text: '新增失敗',
+        });
+        console.log(error);
+      }
+    );
+  }
+
+}

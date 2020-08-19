@@ -40,7 +40,15 @@
       </li>
     </ul>
     <div class="header__person">
-      <div class="header__avatar" (click)="logout()">{{userName}}</div>
+      <ul>
+        <li ngbDropdown class="nav-item dropdown">
+          <div class="header__avatar" ngbDropdownToggle>{{userName}}</div>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <a class="dropdown-item" [routerLink]="['/common-user']" ngbDropdownItem>常用參與人員</a>
+            <a class="dropdown-item" ngbDropdownItem (click)="logout()">登出</a>
+          </div>
+        </li>
+      </ul>
     </div>
   </nav>
 </header>

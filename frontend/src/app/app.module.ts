@@ -29,6 +29,7 @@ import { GoogleLoginProvider } from 'angularx-social-login';
 import { UserTeachComponent } from './user-teach/user-teach.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { MeetingComponent } from './meeting/meeting.component';
+import { CommonUserComponent } from './common-user/common-user.component';
 
 const config = new AuthServiceConfig([
   {
@@ -54,7 +55,8 @@ export function provideConfig() {
     EditScheduleComponent,
     FilterPipe,
     UserTeachComponent,
-    MeetingComponent
+    MeetingComponent,
+    CommonUserComponent
   ],
   imports: [
     BrowserModule,

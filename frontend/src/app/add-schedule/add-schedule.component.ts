@@ -42,7 +42,6 @@ export class AddScheduleComponent implements OnInit {
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
   @ViewChild('description') description: ElementRef;
   @ViewChild('location') location: ElementRef;
-  @ViewChild('user') user: ElementRef;
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
@@ -112,11 +111,6 @@ export class AddScheduleComponent implements OnInit {
       this.invalidEmails.push(emails);
       console.log(this.invalidEmails);
       this.formData.append('participants', emails);
-    } else {
-      Swal.fire({
-        text: '請輸入Google信箱',
-        icon: 'error',
-      });
     }
     this.sendEmailForm.reset();
   }

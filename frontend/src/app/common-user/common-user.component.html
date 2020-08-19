@@ -1,0 +1,174 @@
+<app-navbar></app-navbar>
+
+<main>
+  <aside class="aside">
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          <div class="title">
+            <i class="material-icons">
+              group
+            </i>
+            <span>查看常用參與人員</span>
+          </div>
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <select class="form-control" id="exampleSelect1" (click)="change($event)">
+              <option *ngFor="let all of allMeetings">{{all.title}}</option>
+            </select>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="item-categories__title active">
+          <div class="title">
+            <i class="material-icons">
+              add
+            </i>
+            <span>新增會議參與人員</span>
+          </div>
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isOpened = !isOpened"
+              [attr.aria-expanded]="!isOpened" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isOpened" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <span>請輸入新會議名稱：</span>
+            <input type="text" class="form-control" [(ngModel)]="meetName" value={{meetName}}>
+            <div class="addMeet" (click)="addMeetName()">新增</div>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </aside>
+  <article>
+    <section class="container" *ngIf="look === true">
+      <div class="container__name">
+        <span class="title">會議名稱：</span>
+        <span class="meetName">{{lookMeetName}}</span>
+        <div class="submit">
+          <i class="material-icons">
+            done_all
+          </i>
+          <span>確定</span>
+        </div>
+        <div class="delete" (click)="deleteOrigin()">
+          <i class="material-icons">
+            clear
+          </i>
+          <span>刪除</span>
+        </div>
+      </div>
+      <hr>
+      <div class="container__header">
+        <span>新增參與對象：</span>
+        <form [formGroup]="oldSendEmailForm" (ngSubmit)="oldSend(oldSendEmailForm.value)" class="email">
+          <div>
+            <input type="email" class="addEmail" placeholder="輸入邀請對象Email" formControlName="toAddress">
+          </div>
+          <input type="submit" class="addUserBtn" [disabled]="!oldSendEmailForm.valid" value="新增">
+        </form>
+      </div>
+      <div class="container__equipment">
+        <div class="origin">
+          <input type="checkbox" class="material-icons" checked>全選
+          <span class="checkmark"></span>
+          <i class="material-icons">
+            delete
+          </i>
+        </div>
+        <div class="new">
+          <input type="checkbox" class="material-icons" checked>全選
+          <span class="checkmark"></span>
+          <i class="material-icons">
+            delete
+          </i>
+        </div>
+      </div>
+      <div class="container__body">
+        <div class="origin__participants">
+          <ul>
+            <li *ngFor="let participants of participants;let index = index">
+              <div class="participants__block">
+                <div class="participants__checkbox">
+                  <input type="checkbox" class="material-icons" checked>
+                  <span class="checkmark"></span>
+                </div>
+                <h2>{{participants}}</h2>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="new__participants">
+          <ul>
+            <li *ngFor="let name of oldInvalidEmails;let index = index">
+              <div class="participants__block">
+                <div class="participants__checkbox">
+                  <input type="checkbox" class="material-icons" checked>
+                  <span class="checkmark"></span>
+                </div>
+                <h2>{{name}}</h2>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="container" *ngIf="new === true">
+      <div class="container__name">
+        <span class="title">會議名稱：</span>
+        <input type="text" class="meetName" value={{meetName}} [(ngModel)]="meetName" required>
+        <div class="submit" (click)="submit()">
+          <i class="material-icons">
+            done_all
+          </i>
+          <span>確定</span>
+        </div>
+      </div>
+      <hr>
+      <div class="container__header">
+        <span>新增參與對象：</span>
+        <form [formGroup]="newSendEmailForm" (ngSubmit)="newSend(newSendEmailForm.value)" class="email">
+          <div>
+            <input type="email" class="addEmail" placeholder="輸入邀請對象Email" formControlName="toAddress">
+          </div>
+          <input type="submit" class="addUserBtn" [disabled]="!newSendEmailForm.valid" value="新增">
+        </form>
+      </div>
+      <div class="container__equipment">
+        <div class="origin">
+          <input type="checkbox" class="material-icons" checked>全選
+          <span class="checkmark"></span>
+          <i class="material-icons">
+            delete
+          </i>
+        </div>
+      </div>
+      <div class="container__body">
+        <div class="participants">
+          <ul>
+            <li *ngFor="let name of newInvalidEmails;let index = index">
+              <div class="participants__block">
+                <div class="participants__checkbox">
+                  <input type="checkbox" class="material-icons" checked>
+                  <span class="checkmark"></span>
+                </div>
+                <h2>{{name}}</h2>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </article>
+</main>
