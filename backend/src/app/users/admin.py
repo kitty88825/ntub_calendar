@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 
-from .models import User, CommonMeeting
+from .models import User, CommonParticipant
 
 
 @admin.register(User)
@@ -18,7 +18,7 @@ class UserAdmin(AuthUserAdmin):
     readonly_fields = ('code',)
 
 
-@admin.register(CommonMeeting)
-class CommonMeetingAdmin(admin.ModelAdmin):
+@admin.register(CommonParticipant)
+class CommonParticipantAdmin(admin.ModelAdmin):
     list_display = ('title', 'creator')
-    filter_horizontal = admin.ModelAdmin.filter_vertical + ('participant', )
+    filter_horizontal = admin.ModelAdmin.filter_vertical + ('participant',)

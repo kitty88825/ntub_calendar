@@ -270,5 +270,13 @@
       "name": "財經學院",
       "permissions": []
     }
+  },
+  {
+    "model": "auth.group",
+    "pk": 35,
+    "fields": {
+      "name": "開發人員",
+      "permissions": []
+    }
   }
 ]

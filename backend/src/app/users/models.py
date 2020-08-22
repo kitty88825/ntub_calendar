@@ -1,29 +1,35 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from django.utils.translation import gettext_lazy as _
-
-import uuid
+from .choices import RoleChoice
 
 
 class User(AbstractUser):
-    class RoleChoice(models.TextChoices):
-        teacher = 'teacher', _('老師')
-        student = 'student', _('學生')
-        unknow = 'unknow', _('不知名')
-        system = 'system', _('系統管理者')
     email = models.EmailField(unique=True)
-    code = models.UUIDField(default=uuid.uuid4, editable=False)
+    code = models.UUIDField(default=uuid.uuid4, editable=True)
     role = models.CharField(
-        max_length=15, choices=RoleChoice.choices, default='unknow')
+        max_length=15,
+        choices=RoleChoice.choices,
+        default=RoleChoice.unknow,
+    )
+
+    def __str__(self):
+        return self.email
 
 
-class CommonMeeting(models.Model):
-    title = models.CharField(max_length=255)
+class CommonParticipant(models.Model):
+    title = models.CharField('會議名稱', max_length=255)
     creator = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='creator_users')
+        User,
+        on_delete=models.CASCADE,
+        related_name='common_participant_creators',
+    )
     participant = models.ManyToManyField(
-        User, related_name='participant_users')
+        User,
+        related_name='common_participant_participants',
+    )
 
     def __str__(self):
         return self.title

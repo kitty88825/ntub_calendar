@@ -1,18 +1,13 @@
 from django.contrib import admin
 
-from .models import Calendar, Subscription, Permission
+from .models import Calendar, CalendarPermission
 
 
 @admin.register(Calendar)
 class CalendarAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'display')
+    list_display = ('id', 'name', 'description', 'display')
 
 
-@admin.register(Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'calendar')
-
-
-@admin.register(Permission)
-class PermissionAdmin(admin.ModelAdmin):
-    list_display = ('calendar', 'group', 'role', 'authority')
+@admin.register(CalendarPermission)
+class CalendarPermissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'calendar', 'group', 'role', 'authority')
