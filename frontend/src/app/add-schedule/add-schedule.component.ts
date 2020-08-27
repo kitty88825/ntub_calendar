@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
+import { UserCommonService } from './../services/user-common.service';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -27,12 +28,19 @@ export class AddScheduleComponent implements OnInit {
   calendars = [];
   selectedItemsList = [];
   isOpen = false;
+  isSubmitted = false;
+  isMeet = true;
+  isSchedule = !this.isMeet;
+  attribute = '';
+  allCommonUser = [];
+  addCommonUser = [];
 
   constructor(
     private router: Router,
     public eventService: EventService,
     private formBuilder: FormBuilder,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private userCommonService: UserCommonService
   ) { }
 
   @ViewChild('addTitle') addTitle: ElementRef;
@@ -57,6 +65,15 @@ export class AddScheduleComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
           this.calendars.push({ id: data[i].id, name: data[i].name, isChecked: false });
+        }
+      }
+    );
+
+    this.userCommonService.getCommonUsers().subscribe(
+      res => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < res.length; j++) {
+          this.allCommonUser.push({ title: res[j].title, participants: res[j].participant });
         }
       }
     );
@@ -107,27 +124,28 @@ export class AddScheduleComponent implements OnInit {
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
-      console.log(emails);
       this.invalidEmails.push(emails);
       console.log(this.invalidEmails);
-      this.formData.append('participants', emails);
+      // this.formData.append('participants', emails);
     }
     this.sendEmailForm.reset();
   }
 
   removeAddUser(index) {
     this.invalidEmails.splice(index, 1);
-    const users = this.formData.getAll('participants');
-    users.splice(index, 1);
-    this.formData.delete('participants');
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < users.length; i++) {
-      this.formData.append('participants', users[i]);
-    }
+    // const users = this.formData.getAll('participants');
+    // users.splice(index, 1);
+    // this.formData.delete('participants');
+    // // tslint:disable-next-line: prefer-for-of
+    // for (let i = 0; i < users.length; i++) {
+    //   this.formData.append('participants', users[i]);
+    // }
+    console.log(this.invalidEmails);
   }
 
 
   add() {
+    this.formData.append('attributes', this.attribute);
     this.formData.append('title', this.addTitle.nativeElement.value);
     this.formData.append('start_at', this.addStartDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
@@ -136,6 +154,16 @@ export class AddScheduleComponent implements OnInit {
 
     this.formData.append('description', this.description.nativeElement.value);
     this.formData.append('location', this.location.nativeElement.value);
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.invalidEmails.length; i++) {
+      this.formData.append('participants', this.invalidEmails[i]);
+    }
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let j = 0; j < this.addCommonUser[0].length; j++) {
+      this.formData.append('participants', this.addCommonUser[0][j]);
+    }
+
 
     this.eventService.postEvent(this.formData).subscribe(
       data => {
@@ -171,6 +199,42 @@ export class AddScheduleComponent implements OnInit {
         });
       }
     );
+  }
+
+  meet(value) {
+
+    if (value.target.checked === true) {
+      this.isSchedule = false;
+      this.attribute = value.target.value;
+    } else {
+      this.isSchedule = true;
+      this.attribute = '行程';
+    }
+    console.log(this.attribute);
+  }
+
+  schedule(value) {
+
+    if (value.target.checked === true) {
+      this.isMeet = false;
+      this.attribute = value.target.value;
+    } else {
+      this.isMeet = true;
+      this.attribute = '會議';
+    }
+    console.log(this.attribute);
+  }
+
+  commonUser(info) {
+    this.addCommonUser = [];
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.allCommonUser.length; i++) {
+      if (info.target.value === this.allCommonUser[i].title) {
+        this.addCommonUser.push(this.allCommonUser[i].participants);
+      }
+    }
+
+    console.log(this.addCommonUser);
   }
 
 }

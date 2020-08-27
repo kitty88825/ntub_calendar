@@ -7,4 +7,5 @@ export interface Event {
   location?: string;
   calendars: number[];
   files?: File;
+  attribute: string;
 }

@@ -1,30 +1,38 @@
 <app-navbar></app-navbar>
 <main>
-  <aside class="aside">
-    <ul class="item-categories">
-      <li>
-        <div class="item-categories__title active">
-          常用行程
-          <div class="form-group row">
-            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-              arrow_left
-            </i>
-          </div>
-        </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-          <ul class="item-categories__list">
-
-          </ul>
-        </div>
-      </li>
-    </ul>
-  </aside>
   <article>
     <section class="container">
+      <div class="submit" (click)="add()">
+        <i class="material-icons">
+          done_all
+        </i>
+        <span>建立</span>
+      </div>
       <div class="add__title">
         <h1>新增標題</h1>
         <input type="text" placeholder="請輸入標題" #addTitle (keyup)="0" required>
+      </div>
+      <div class="add__attributes">
+        <i class="material-icons">
+          edit_attributes
+        </i>
+        <h2>行程屬性：</h2>
+        <ul>
+          <li>
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="會議"
+              (change)="meet($event)">會議
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
+                value="行程" (change)="schedule($event)">行程
+              <span class="checkmark"></span>
+            </label>
+          </li>
+        </ul>
       </div>
       <div class="add__calendar">
         <i class="material-icons">
@@ -73,7 +81,7 @@
             place
           </i>
           <h2>地點：</h2>
-          <input type="text" class="location form-control" #location>
+          <input type="text" class="location form-control" #location placeholder="新增地點">
           <div class="add__participant">
             <i class="material-icons">
               people
@@ -84,10 +92,16 @@
                 <input type="email" class="form-control" placeholder="輸入邀請對象Email" formControlName="toAddress">
               </div>
               <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid">
-              <label class="button-primary" >
+              <label class="button-primary">
                 <span>邀請</span>
               </label>
             </form>
+          </div>
+          <div class="add__common-user">
+            <i class="material-icons">
+              person_add
+            </i>
+            <h2>常用參與人員：</h2>
           </div>
         </div>
         <div class="add__description">
@@ -108,6 +122,13 @@
                 </i>
               </li>
             </ul>
+          </div>
+          <div class="all_common-user">
+            <select class="form-control" (change)="commonUser($event)">
+              <option></option>
+              <option *ngFor="let name of allCommonUser">{{name.title}}</option>
+            </select>
+            <input type="button" class="form-control" value="建議時間">
           </div>
         </div>
         <div class="add__file">
@@ -132,9 +153,6 @@
             </li>
           </ul>
         </div>
-      </div>
-      <div class="submit" (click)="add()">
-        建立
       </div>
     </section>
   </article>
