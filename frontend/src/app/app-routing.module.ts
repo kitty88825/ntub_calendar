@@ -1,3 +1,4 @@
+import { OpenDataComponent } from './open-data/open-data.component';
 import { CommonUserComponent } from './common-user/common-user.component';
 import { MeetingComponent } from './meeting/meeting.component';
 import { NgModule } from '@angular/core';
@@ -25,7 +26,8 @@ const routes: Routes = [
   { path: 'edit-schedule', component: EditScheduleComponent },
   { path: 'user-teach', component: UserTeachComponent },
   { path: 'meeting', component: MeetingComponent },
-  { path: 'common-user', component: CommonUserComponent }
+  { path: 'common-user', component: CommonUserComponent },
+  { path: 'opendata', component: OpenDataComponent }
 ];
 
 @NgModule({

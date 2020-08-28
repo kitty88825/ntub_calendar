@@ -30,6 +30,7 @@ import { UserTeachComponent } from './user-teach/user-teach.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { MeetingComponent } from './meeting/meeting.component';
 import { CommonUserComponent } from './common-user/common-user.component';
+import { OpenDataComponent } from './open-data/open-data.component';
 
 const config = new AuthServiceConfig([
   {
@@ -56,7 +57,8 @@ export function provideConfig() {
     FilterPipe,
     UserTeachComponent,
     MeetingComponent,
-    CommonUserComponent
+    CommonUserComponent,
+    OpenDataComponent
   ],
   imports: [
     BrowserModule,

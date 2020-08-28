@@ -191,6 +191,10 @@
         }
       }
 
+      .openDataBtn:hover {
+        background-color:rgba($color: $color_icon, $alpha: 0.5);
+      }
+
       span {
         position   : absolute;
         color      : $color_icon;
