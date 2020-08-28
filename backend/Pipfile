@@ -17,6 +17,7 @@ django-ical = "*"
 django-cors-headers = "*"
 drf-yasg = "*"
 psycopg2-binary = "*"
+djangorestframework-camel-case = "*"
 
 [requires]
 python_version = "3.8"
