@@ -33,6 +33,7 @@ export class MainCalendarComponent implements OnInit {
   showModal: boolean;
   events = [];
   event; eventTitle; eventStart; eventEnd; eventDesc; eventOffice;
+  calendarName = [];
 
   constructor(
     private router: Router,
@@ -64,7 +65,7 @@ export class MainCalendarComponent implements OnInit {
         this.eventStart = this.events[i].startDate + ' ' + this.events[i].sTime;
         this.eventEnd = this.events[i].endDate + ' ' + this.events[i].eTime;
         this.eventDesc = this.events[i].description;
-        this.eventOffice = this.events[i].name;
+        this.eventOffice = this.events[i].calendars;
       }
     }
 
@@ -158,25 +159,19 @@ export class MainCalendarComponent implements OnInit {
 
     this.eventService.getEvents().subscribe(
       data => {
-        console.log(data);
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
 
-          // tslint:disable-next-line: prefer-for-of
-          for (let j = 0; j < this.mySub.length; j++) {
-            // tslint:disable-next-line: prefer-for-of
-            for (let k = 0; k < data[i].calendars.length; k++) {
-              if (this.mySub[j].calendar === data[i].calendars[k]) {
-                this.events.push({
-                  id: data[i].id, title: data[i].title, start: data[i].startAt, name: this.mySub[j].name,
-                  end: data[i].endAt, calendars: data[i].calendars, startDate: data[i].startAt.substr(0, 10),
-                  endDate: data[i].endAt.substr(0, 10), description: data[i].description,
-                  sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16)
-                });
-              }
-            }
-          }
+          this.events.push({
+            id: data[i].id, title: data[i].title, start: data[i].startAt, calendars: data[i].calendars,
+            end: data[i].endAt, name: data[i].calendars, startDate: data[i].startAt.substr(0, 10),
+            endDate: data[i].endAt.substr(0, 10), description: data[i].description,
+            sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16)
+          });
+
         }
+
+
         // tslint:disable-next-line: only-arrow-functions
         this.events.sort(function (a, b) {
           const startA = a.start.toUpperCase(); // ignore upper and lowercase
@@ -191,6 +186,8 @@ export class MainCalendarComponent implements OnInit {
           // names must be equal
           return 0;
         });
+
+        console.log(this.events);
 
         this.calendarEvents = this.events;
 

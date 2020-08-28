@@ -9,6 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarService } from '../services/calendar.service';
 import { EventService } from '../services/event.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-index',
@@ -21,10 +22,15 @@ export class IndexComponent implements OnInit {
   resToken = '';
   authToken;
   loggedIn: boolean;
+  showModal: boolean;
   data = {
     current: '1'
   };
   isCollapsed = false;
+  showDatas = [];
+  header = ['學年度', '設立別', '學校類別', '學校代碼', '學校名稱', '學期別', '起始日期', '結束日期', '性質', '類別', '對象', '說明'
+  ];
+  output = [];
 
   constructor(
     private router: Router,
@@ -117,6 +123,36 @@ export class IndexComponent implements OnInit {
     localStorage.removeItem('res_access_token');
     localStorage.removeItem('access_token');
     localStorage.removeItem('loggin');
+  }
+
+  // 匯出
+  daochu(info) {
+    console.log(info);
+    this.output.push(this.header);
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.showDatas.length; i++) {
+      this.output.push(this.showDatas[i]);
+    }
+    console.log(this.output);
+    /* generate worksheet */
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.output);
+
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, 'demo.' + info.target.innerText);
+  }
+
+
+  hide() {
+    this.showModal = false;
+  }
+
+  openData() {
+    this.showModal = true;
   }
 
 

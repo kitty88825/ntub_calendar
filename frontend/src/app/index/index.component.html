@@ -99,6 +99,12 @@
             search
           </i>
         </span>
+        <div class="openDataBtn"  (click)="openData()">
+          <h3>OpenData</h3>
+          <i class="material-icons">
+            get_app
+          </i>
+        </div>
         <ul class="view_item">
           <li class="view_item-btn" (click)="setCurrent(1)" [ngClass]="{'active': data.current == '1'}">
             <i class="material-icons">
@@ -207,6 +213,12 @@
             search
           </i>
         </span>
+        <div class="openDataBtn">
+          <h3>OpenData</h3>
+          <i class="material-icons">
+            get_app
+          </i>
+        </div>
         <ul class="view_item">
           <li class="view_item-btn" (click)="setCurrent(1)">
             <i class="material-icons">
@@ -315,6 +327,12 @@
             search
           </i>
         </span>
+        <div class="openDataBtn">
+          <h3>OpenData</h3>
+          <i class="material-icons">
+            get_app
+          </i>
+        </div>
         <ul class="view_item">
           <li class="view_item-btn" (click)="setCurrent(1)">
             <i class="material-icons">
@@ -388,4 +406,29 @@
       </ul>
     </section>
   </article>
+    <!-- Creates the bootstrap modal where the image will appear -->
+    <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal_dialog">
+      <div class="modal_content">
+        <div class="modal_header">
+          <i class="material-icons" (click)="hide()">
+            cancel
+          </i>
+        </div>
+        <div class="modal_body">
+          <span>下載格式：</span>
+          <div class="item" (click)="daochu($event)">
+            <h4>csv</h4>
+          </div>
+          <div class="item" (click)="daochu($event)">
+            <h4>xlsx</h4>
+          </div>
+          <div class="item" (click)="daochu($event)">
+            <h4>xls</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>

@@ -283,6 +283,7 @@ export class CommonUserComponent implements OnInit {
   }
 
   fetchCheckedIDs() {
+    this.formData.delete('remove_emails');
     this.allParticipants.forEach((value, index) => {
       if (value.isChecked === false) {
         this.formData.append('remove_emails', value.participants);

@@ -210,10 +210,9 @@
     .item-categories {
 
       .item-block {
-        display         : inline-block;
         background-color: white;
-        width           : 45%;
-        height          : 100px;
+        width           : 90%;
+        height          : 50px;
         margin-left     : $content-size_left-right/2;
         margin-top      : $content-size_top-bottom/2;
         cursor          : pointer;
@@ -221,11 +220,11 @@
         box-shadow      : -1px 0px 5px -1px rgba(0, 0, 0, 0.24);
 
         li {
-          font-size     : 25px;
+          font-size     : 24px;
           letter-spacing: 2px;
           font-weight   : 400;
-          margin-left   : $content-size_left-right/2;
-          margin-top    : -$content-size_top-bottom/2;
+          text-align: center;
+          margin-top: -$content-size_top-bottom;
         }
 
       }

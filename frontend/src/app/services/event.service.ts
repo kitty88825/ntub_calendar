@@ -35,6 +35,10 @@ export class EventService {
     return this.http.get<Event[]>(this.serverIp + 'event/', { headers: this.reqHeader });
   }
 
+  openGetEvents(): Observable<Event[]> {
+    return this.http.get<Event[]>(this.serverIp + 'event/');
+  }
+
   getEvent(id: number): Observable<Event> {
     return this.http.get<Event>(`${this.serverIp}event/${id}`, { headers: this.reqHeader });
   }
