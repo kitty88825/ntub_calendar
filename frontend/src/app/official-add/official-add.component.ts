@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { EventService } from '../services/event.service';
 import { SubscriptionService } from '../services/subscription.service';
-import { data } from 'jquery';
-
 
 @Component({
   selector: 'app-official-add',

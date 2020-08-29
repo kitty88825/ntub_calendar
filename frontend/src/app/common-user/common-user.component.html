@@ -20,7 +20,7 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <ul class="item-categories__list">
-            <select class="form-control" id="exampleSelect1" (click)="change($event)">
+            <select class="form-control" id="exampleSelect1" (change)="change($event)">
               <option *ngFor="let all of allMeetings">{{all.title}}</option>
             </select>
           </ul>

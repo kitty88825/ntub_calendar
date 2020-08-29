@@ -74,9 +74,6 @@
           <div class="event-list__date">開始日期</div>
           <div class="event-list__edit">行程管理</div>
         </li>
-        <li class="event-list__phase">
-          第一週
-        </li>
         <li *ngFor="let calendar of calendarEvents | appFilter: searchText">
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
@@ -99,9 +96,6 @@
               delete
             </i>
           </div>
-        </li>
-        <li class="event-list__phase">
-          第二週
         </li>
       </ul>
     </section>
@@ -141,9 +135,6 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li class="event-list__phase">
-          第一週
-        </li>
         <li *ngFor="let calendar of calendarEvents | appFilter:searchText">
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
@@ -158,9 +149,6 @@
             <span class="event-list__tag" style="background-color:#439B91">{{calendar.name}}</span>
           </div>
           <div class="event-list__date">{{calendar.startDate}}</div>
-        </li>
-        <li class="event-list__phase">
-          第二週
         </li>
       </ul>
     </section>
@@ -198,9 +186,6 @@
           <div class="event-list__title">發布標題</div>
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
-        </li>
-        <li class="event-list__phase">
-          第一週
         </li>
         <li class="event-list__card" *ngFor="let calendar of calendarEvents | appFilter:searchText">
           <div class="event-list__title">

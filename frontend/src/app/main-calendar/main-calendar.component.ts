@@ -1,7 +1,5 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import bootstrapPlugin from '@fullcalendar/bootstrap';
-import listPlugin from '@fullcalendar/list';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -45,7 +43,7 @@ export class MainCalendarComponent implements OnInit {
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
 
-  calendarPlugins = [dayGridPlugin, bootstrapPlugin, listPlugin];
+  calendarPlugins = [dayGridPlugin];
   calendarWeekends = true;
   calendarEvents: EventInput[];
 

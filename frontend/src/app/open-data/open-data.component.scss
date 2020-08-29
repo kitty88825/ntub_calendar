@@ -155,55 +155,25 @@
 
       .event-list {
 
-        li {
-          display    : flex;
-          align-items: center;
-          flex-flow  : row nowrap;
-          line-height: 1.5;
+        .table thead th {
+          padding: 10px;
+        }
 
-          &:not(.event-list__header):not(.event-list__phase) {
-            min-height   : 5rem;
-            border-bottom: $color_border solid 1px;
-          }
-
-          &:nth-last-child(1) {
-            border-bottom: none !important;
-          }
-
-          >div {
-            padding: $content-size_top-bottom $content-size_left-right;
-          }
+        .table td {
+          padding: 10px;
         }
 
         &__header {
           background-color: $color_table-header;
           color           : $color_text-light;
-          font-size       : 0.9rem;
+          font-size       : 1rem;
         }
 
-        &__startDate {
-          flex: 1 0px;
+        &__phase {
+          padding  : $content-size_top-bottom $content-size_left-right;
+          font-size: 0.9rem;
         }
 
-        &__endDate {
-          flex: 1 0px;
-        }
-
-        &__attribute {
-          flex: 0.5 0px;
-        }
-
-        &__category {
-          flex: 0.5 0px;
-        }
-
-        &__object {
-          flex: 0.5 0px;
-        }
-
-        &__description {
-          flex: 1 0px;
-        }
       }
     }
 

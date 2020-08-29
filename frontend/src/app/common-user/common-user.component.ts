@@ -1,5 +1,3 @@
-import { Router } from '@angular/router';
-import { UserCommon } from './../models/user-common';
 import { UserCommonService } from './../services/user-common.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Component, OnInit } from '@angular/core';
@@ -35,7 +33,6 @@ export class CommonUserComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
     private userCommonService: UserCommonService
   ) {
     this.oldMasterSelected = true;
@@ -147,6 +144,8 @@ export class CommonUserComponent implements OnInit {
   }
 
   change(info) {
+    this.oldMasterSelected = true;
+    this.newMasterSelected = true;
     this.allParticipants = [];
     this.formData.delete('emails');
     this.meetName = '';

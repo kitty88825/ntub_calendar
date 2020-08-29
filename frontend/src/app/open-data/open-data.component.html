@@ -61,17 +61,22 @@
   <article>
     <section class="container">
       <ul class="event-list">
-        <li class="event-list__header">
-          <div class="event-list__startDate">發布日期</div>
-          <div class="event-list__endDate">結束日期</div>
-          <div class="event-list__attribute">性質</div>
-          <div class="event-list__category">類別</div>
-          <div class="event-list__object">對象</div>
-          <div class="event-list__description">說明</div>
-        </li>
-        <li>
-
-        </li>
+        <div class="table" #table>
+          <table class="table table-hover">
+            <thead class="event-list__header">
+              <tr>
+                <th scope="col" *ngFor="let name of header">{{name}}</th>
+              </tr>
+            </thead>
+            <tbody class="event-list_phase">
+              <tr *ngFor="let row of showDatas">
+              <td *ngFor="let val of row">
+                {{val}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </ul>
     </section>
   </article>
