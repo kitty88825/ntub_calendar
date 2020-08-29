@@ -1,0 +1,246 @@
+@import '../../styles.scss';
+
+@media screen {
+
+  html,
+  body,
+  div,
+  span,
+  applet,
+  object,
+  iframe,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  blockquote,
+  pre,
+  a,
+  abbr,
+  acronym,
+  address,
+  big,
+  cite,
+  code,
+  del,
+  dfn,
+  em,
+  img,
+  ins,
+  kbd,
+  q,
+  s,
+  samp,
+  small,
+  strike,
+  strong,
+  sub,
+  sup,
+  tt,
+  var,
+  b,
+  u,
+  i,
+  center,
+  dl,
+  dt,
+  dd,
+  ol,
+  ul,
+  li,
+  fieldset,
+  form,
+  label,
+  legend,
+  table,
+  caption,
+  tbody,
+  tfoot,
+  thead,
+  tr,
+  th,
+  td,
+  article,
+  aside,
+  canvas,
+  details,
+  embed,
+  figure,
+  figcaption,
+  footer,
+  header,
+  hgroup,
+  menu,
+  nav,
+  output,
+  ruby,
+  section,
+  summary,
+  time,
+  mark,
+  audio,
+  video {
+    margin        : 0;
+    padding       : 0;
+    border        : 0;
+    font-size     : 100%;
+    font          : inherit;
+    vertical-align: baseline;
+  }
+
+  /* HTML5 display-role reset for older browsers */
+  article,
+  aside,
+  details,
+  figcaption,
+  figure,
+  footer,
+  header,
+  hgroup,
+  menu,
+  nav,
+  section {
+    display: block;
+  }
+
+  a {
+    text-decoration: none;
+    color          : $color_icon;
+  }
+
+  a:hover {
+    color: $color_accent;
+  }
+
+  body {
+    line-height: 1;
+  }
+
+  ol,
+  ul {
+    list-style: none;
+  }
+
+  blockquote,
+  q {
+    quotes: none;
+  }
+
+  blockquote:before,
+  blockquote:after,
+  q:before,
+  q:after {
+    content: '';
+    content: none;
+  }
+
+  article {
+    padding-top: $height_header;
+    letter-spacing: 1px;
+
+    section.container {
+      width           : 90%;
+      margin          : $content-size_left-right auto;
+      margin-top      : $content-size_top-bottom*4;
+      padding         : $content-size_left-right;
+      background-color: $color_white;
+      box-shadow      : $box-shadow--container;
+
+      h3 {
+        width       : 88%;
+        margin-left : auto;
+        margin-right: auto;
+        font-weight : 600;
+        font-size: 17px;
+      }
+
+      .date-range {
+        width       : 88%;
+        margin-left : auto;
+        margin-right: auto;
+        margin-top  : $content-size_top-bottom;
+        display     : flex;
+        align-items : center;
+
+        .year {
+          width: 10%;
+        }
+
+        .month,
+        .day {
+          width      : 6%;
+          margin-left: $content-size_left-right;
+        }
+
+        .point {
+          font-weight : 600;
+          margin-left : $content-size_left-right*2;
+          margin-right: $content-size_left-right*2;
+        }
+
+        span {
+          margin-left: $content-size_left-right/2;
+        }
+      }
+    }
+
+    section.body {
+      width           : 89%;
+      margin          : $content-size_left-right auto;
+      margin-top      : $content-size_top-bottom;
+      padding         : $content-size_left-right;
+      background-color: $color_white;
+      box-shadow      : $box-shadow--container;
+
+      .category {
+        display: flex;
+        width  : 90%;
+        margin : $content-size_top-bottom 5%;
+
+        &__item {
+          width      : 30%;
+          margin-left: $content-size_left-right;
+
+          h2 {
+            font-size  : 19px;
+            font-weight: 550;
+          }
+
+          hr {
+            height      : 3px;
+            margin-top  : 3px;
+            border-color: $color_icon;
+          }
+
+          .item-title {
+            display         : flex;
+            width           : 100%;
+            background-color: $color_icon;
+            color           : white;
+            margin-top      : -10px;
+            padding         : 5px;
+
+            &__date {
+              width: 25%;
+            }
+
+            &__time {
+              width: 25%;
+            }
+
+            &__name {
+              width: 50%;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+}
+
+@media screen and (max-width:480px) {}
