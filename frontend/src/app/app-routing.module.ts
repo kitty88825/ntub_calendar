@@ -1,3 +1,4 @@
+import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { OpenDataComponent } from './open-data/open-data.component';
 import { CommonUserComponent } from './common-user/common-user.component';
 import { MeetingComponent } from './meeting/meeting.component';
@@ -27,7 +28,8 @@ const routes: Routes = [
   { path: 'user-teach', component: UserTeachComponent },
   { path: 'meeting', component: MeetingComponent },
   { path: 'common-user', component: CommonUserComponent },
-  { path: 'opendata', component: OpenDataComponent }
+  { path: 'opendata', component: OpenDataComponent },
+  { path: 'add-calendar', component: AddCalendarComponent }
 ];
 
 @NgModule({

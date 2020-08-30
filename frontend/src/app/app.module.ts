@@ -31,6 +31,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { MeetingComponent } from './meeting/meeting.component';
 import { CommonUserComponent } from './common-user/common-user.component';
 import { OpenDataComponent } from './open-data/open-data.component';
+import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 
 const config = new AuthServiceConfig([
   {
@@ -58,7 +59,8 @@ export function provideConfig() {
     UserTeachComponent,
     MeetingComponent,
     CommonUserComponent,
-    OpenDataComponent
+    OpenDataComponent,
+    AddCalendarComponent
   ],
   imports: [
     BrowserModule,

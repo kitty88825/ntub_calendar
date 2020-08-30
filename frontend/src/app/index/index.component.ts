@@ -85,7 +85,7 @@ export class IndexComponent implements OnInit {
 
     Swal.fire({
       title: 'Loggin in...',
-      timer: 4000,
+      timer: 5000,
       onBeforeOpen: () => {
         Swal.showLoading(),
           timerInterval = setInterval(() => {
