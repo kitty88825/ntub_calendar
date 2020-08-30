@@ -14,35 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-from rest_framework import permissions
-
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="NTUB Calendar",
-      default_version='v2',
-      description="臺北商業大學 資訊管理系 專題組別：109405",
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
-
-api_urlpatterns = [
-    path('user/', include('app.users.urls')),
-
-]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
-    path('', include(api_urlpatterns)),
 ]
 
 if settings.DEBUG:
