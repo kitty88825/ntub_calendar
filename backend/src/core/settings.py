@@ -161,6 +161,13 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200',
 ]
 
+# REST_FRAMEWORK
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),  # noqa: E501
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
