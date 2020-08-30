@@ -1,1 +1,61 @@
-<p>add-calendar works!</p>
+<app-navbar></app-navbar>
+<main>
+  <aside class="aside">
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          <div class="name">
+            <i class="material-icons">
+              add
+            </i>
+            <span>新增行事曆</span>
+          </div>
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <div class="form-group">
+              <h2>新增行事曆名稱：</h2>
+              <input type="text" placeholder="輸入行事曆名稱" class="form-control calendar">
+              <h2>行事曆權限：</h2>
+              <div class="attribute">
+                <label class="container">
+                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="公開"
+                  (change)="meet($event)">公開
+                  <span class="checkmark"></span>
+                </label>
+                <label class="container">
+                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
+                  value="不公開" (change)="schedule($event)">不公開
+                <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="addCalendar" (click)="addCalendar()">新增</div>
+            </div>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </aside>
+  <article>
+    <section class="container">
+      <ul class="category">
+        <li class="category__block">
+          <span>公開</span>
+          <hr>
+          <div class="item-block"></div>
+        </li>
+        <li class="category__block">
+          <span>不公開</span>
+          <hr>
+          <div class="item-block"></div>
+        </li>
+      </ul>
+    </section>
+  </article>
+</main>
