@@ -129,6 +129,30 @@
     padding-top : $height_header;
     padding-left: $width_aside;
 
+    section.alert {
+      width           : 96%;
+      margin          : $content-size_left-right;
+      padding         : 7px;
+      background-color: $color_white;
+      box-shadow      : $box-shadow--container;
+      display: flex;
+      align-items: center;
+
+      span {
+        margin-left: $content-size_left-right/2;
+        letter-spacing: 1px;
+      }
+
+      i:nth-last-child(1) {
+        margin-left: auto;
+        cursor: pointer;
+      }
+
+      i:hover {
+        color:$color_accent;
+      }
+    }
+
     section.container {
       width           : 96%;
       margin          : $content-size_left-right;

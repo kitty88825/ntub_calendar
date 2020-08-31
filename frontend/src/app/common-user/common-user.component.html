@@ -52,6 +52,15 @@
     </ul>
   </aside>
   <article>
+    <section class="alert" *ngIf="isAlert === true">
+      <i class="material-icons">
+        error
+      </i>
+      <span>將參與人員前方勾選取消即視為刪除</span>
+      <i class="material-icons" (click)="alert()">
+        clear
+      </i>
+    </section>
     <section class="container" *ngIf="look === true">
       <div class="container__name">
         <span class="title">會議名稱：</span>

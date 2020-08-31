@@ -30,6 +30,7 @@ export class CommonUserComponent implements OnInit {
   oldMasterSelected: boolean;
   newMasterSelected: boolean;
   addMasterSelected: boolean;
+  isAlert = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -316,6 +317,10 @@ export class CommonUserComponent implements OnInit {
     }
 
     this.changeSelection();
+  }
+
+  alert() {
+    this.isAlert = false;
   }
 
 }

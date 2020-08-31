@@ -32,6 +32,7 @@ import { MeetingComponent } from './meeting/meeting.component';
 import { CommonUserComponent } from './common-user/common-user.component';
 import { OpenDataComponent } from './open-data/open-data.component';
 import { AddCalendarComponent } from './add-calendar/add-calendar.component';
+import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
 
 const config = new AuthServiceConfig([
   {
@@ -60,7 +61,8 @@ export function provideConfig() {
     MeetingComponent,
     CommonUserComponent,
     OpenDataComponent,
-    AddCalendarComponent
+    AddCalendarComponent,
+    AddCalendarUnstaffComponent
   ],
   imports: [
     BrowserModule,

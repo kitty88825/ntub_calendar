@@ -253,6 +253,10 @@
         font-size: 17px;
       }
 
+      h2.staff {
+        margin-top: $content-size_top-bottom*2;
+      }
+
       .attribute {
         display: flex;
         align-items: center;
