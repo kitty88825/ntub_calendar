@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,8 +10,6 @@ import { URL } from '../models/URL.model';
 })
 export class SubscriptionService {
   resToken = '';
-  // serverIp = 'http://157.230.247.25/api/v1/';
-  serverIp = 'http://140.131.114.144/api/v1/';
   reqHeader;
 
   constructor(
@@ -22,18 +21,18 @@ export class SubscriptionService {
   }
 
   postSubscription(formData: any): Observable<any> {
-    return this.http.post<any>(this.serverIp + 'calendar/subscription', formData, { headers: this.reqHeader });
+    return this.http.post<any>(environment.serverIp + 'calendar/subscription', formData, { headers: this.reqHeader });
   }
 
   getSubscription(): Observable<Subscription[]> {
-    return this.http.get<Subscription[]>(this.serverIp + 'calendar/subscription', { headers: this.reqHeader });
+    return this.http.get<Subscription[]>(environment.serverIp + 'calendar/subscription', { headers: this.reqHeader });
   }
 
   deleteEvent(id: number): Observable<Subscription> {
-    return this.http.delete<Subscription>(`${this.serverIp}calendar/subscription/${id}`, { headers: this.reqHeader });
+    return this.http.delete<Subscription>(`${environment.serverIp}calendar/subscription/${id}`, { headers: this.reqHeader });
   }
 
   getURL(): Observable<any> {
-    return this.http.get<any>(this.serverIp + 'user/me', { headers: this.reqHeader });
+    return this.http.get<any>(environment.serverIp + 'user/me', { headers: this.reqHeader });
   }
 }

@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Event } from '../models/event.model';
@@ -10,8 +11,6 @@ import { Calendar } from '../models/calendar.models';
 export class CalendarService {
 
   resToken = '';
-  // serverIp = 'http://157.230.247.25/api/v1/calendar/';
-  serverIp = 'http://140.131.114.144/api/v1/calendar/';
   reqHeader;
 
 
@@ -32,7 +31,7 @@ export class CalendarService {
   // }
 
   getCalendar(): Observable<Calendar[]> {
-    return this.http.get<Calendar[]>(this.serverIp + 'calendars');
+    return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars');
   }
 
   // getEvent(id: number): Observable<Event> {

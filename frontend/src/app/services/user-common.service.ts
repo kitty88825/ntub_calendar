@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { UserCommon } from './../models/user-common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -7,7 +8,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserCommonService {
-  serverIp = 'http://140.131.114.144/api/v1/';
   reqHeader;
 
 
@@ -20,19 +20,19 @@ export class UserCommonService {
   }
 
   postCommonUser(formData: any): Observable<any> {
-    return this.http.post<any>(this.serverIp + 'user/common', formData, { headers: this.reqHeader });
+    return this.http.post<any>(environment.serverIp + 'user/common', formData, { headers: this.reqHeader });
   }
 
   getCommonUsers(): Observable<UserCommon[]> {
-    return this.http.get<UserCommon[]>(this.serverIp + 'user/common', { headers: this.reqHeader });
+    return this.http.get<UserCommon[]>(environment.serverIp + 'user/common', { headers: this.reqHeader });
   }
 
   deleteCommonUser(id: number): Observable<UserCommon> {
-    return this.http.delete<UserCommon>(`${this.serverIp}user/common/${id}`, { headers: this.reqHeader });
+    return this.http.delete<UserCommon>(`${environment.serverIp}user/common/${id}`, { headers: this.reqHeader });
   }
 
   patchCommonUser(id: number, formData: any): Observable<UserCommon> {
-    return this.http.patch<UserCommon>(`${this.serverIp}user/common/${id}`, formData, { headers: this.reqHeader });
+    return this.http.patch<UserCommon>(`${environment.serverIp}user/common/${id}`, formData, { headers: this.reqHeader });
   }
 
 }
