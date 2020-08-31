@@ -1,53 +1,15 @@
-<!-- <div class="wrap">
-  <app-navbar></app-navbar>
-  <div class="content">
-    <div class="bar">
-      <ul class="nav">
-        <div class="form-group">
-          <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-            <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
-          </select>
-        </div>
-        <li class="nav-item">
-          <span class="nav-link disabled">學年度</span>
-        </li>
-      </ul>
-    </div>
-    <div class="container">
-      <div class="table" #table>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col" *ngFor="let name of header">{{name}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of showDatas">
-            <td *ngFor="let val of row">
-              {{val}}
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-primary active">
-          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
-        </label>
-        <label class="btn btn-primary">
-          <input type="checkbox" autocomplete="off" (click)="daochu()"> 匯出
-        </label>
-      </div>
-    </div>
-  </div>
-</div> -->
 <app-navbar></app-navbar>
 <main>
   <aside class="aside">
     <ul class="item-categories">
       <li>
         <div class="item-categories__title active">
-          選擇行事曆
+          <div class="name">
+            <i class="material-icons">
+              toggle_off
+            </i>
+            <span>選擇匯出時段</span>
+          </div>
           <div class="form-group row">
             <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
               [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
@@ -58,12 +20,28 @@
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <ul class="item-categories__list">
             <div class="form-group">
-              <select class="form-control" id="exampleSelect1" [(ngModel)]="selectCalendar" (change)="onChange()">
+              <h1>選擇行事曆：</h1>
+              <select class="form-control calendar" id="exampleSelect1" [(ngModel)]="selectCalendar" (change)="onChange()">
                 <option *ngFor="let sub of subName" [ngValue]="sub">{{sub}}</option>
               </select>
-              <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-                <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
-              </select>
+              <div class="start">
+                <select class="form-control year" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
+                  <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
+                </select>
+                <span>年</span>
+                <select class="form-control month">
+                </select>
+                <select class="form-control day"></select>
+              </div>
+              <h2>至</h2>
+              <div class="end">
+                <select class="form-control year" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
+                  <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
+                </select>
+                <span>年</span>
+                <select class="form-control month"></select>
+                <select class="form-control day"></select>
+              </div>
             </div>
           </ul>
         </div>
@@ -85,10 +63,10 @@
             </thead>
             <tbody class="event-list_phase">
               <tr *ngFor="let row of showDatas">
-              <td *ngFor="let val of row">
-                {{val}}
-              </td>
-            </tr>
+                <td *ngFor="let val of row">
+                  {{val}}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

@@ -14,7 +14,7 @@ export class OfficialAddComponent implements OnInit {
   years = [];
   result = [];
   showDatas = [];
-  header = ['發布標題', '內容概要', '開始日期', '結束日期'];
+  header = ['發布標題', '內容概要', '發布單位', '開始日期', '結束日期'];
   output = [];
   isCollapsed = false;
   subName = [];
@@ -85,7 +85,8 @@ export class OfficialAddComponent implements OnInit {
                 // tslint:disable-next-line: prefer-for-of
                 for (let k = 0; k < item.length; k++) {
                   if (this.calendarId[0].calendar === item[k].calendars[0]) {
-                    this.showDatas.push([item[k].title, item[k].description, item[k].startAt.substr(0, 10), item[k].endAt.substr(0, 10)]);
+                    this.showDatas.push([item[k].title, item[k].description, this.selectCalendar,
+                       item[k].startAt.substr(0, 10), item[k].endAt.substr(0, 10)]);
                   }
                 }
               }
