@@ -21,17 +21,17 @@
           <ul class="item-categories__list">
             <div class="form-group">
               <h2>新增行事曆名稱：</h2>
-              <input type="text" placeholder="輸入行事曆名稱" class="form-control calendar">
+              <input type="text" placeholder="輸入行事曆名稱" class="form-control calendar" [(ngModel)]="calendarName">
               <h2 class="staff">行事曆權限：</h2>
               <div class="attribute">
                 <label class="container">
-                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="公開"
+                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="public"
                   (change)="meet($event)">公開
                   <span class="checkmark"></span>
                 </label>
                 <label class="container">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
-                  value="不公開" (change)="schedule($event)">不公開
+                  value="private" (change)="schedule($event)">不公開
                 <span class="checkmark"></span>
                 </label>
               </div>

@@ -18,20 +18,20 @@ export class CalendarService {
     private http: HttpClient,
   ) {
     this.reqHeader = new HttpHeaders({
-      Authorization: 'token ' + localStorage.getItem('refresh_token')
+      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
     });
   }
 
-  // postCalendar(formData: any): Observable<any> {
-  //   return this.http.post<any>(this.serverIp + 'calendars', formData, { headers: this.reqHeader });
-  // }
+  postCalendar(formData: any): Observable<any> {
+    return this.http.post<any>(environment.serverIp + 'calendar/calendars', formData, { headers: this.reqHeader });
+  }
 
   // deleteEvent(id: number): Observable<Event> {
   //   return this.http.delete<Event>(`${this.serverIp}event/${id}`, {headers: this.reqHeader});
   // }
 
   getCalendar(): Observable<Calendar[]> {
-    return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars');
+    return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars', { headers: this.reqHeader });
   }
 
   // getEvent(id: number): Observable<Event> {

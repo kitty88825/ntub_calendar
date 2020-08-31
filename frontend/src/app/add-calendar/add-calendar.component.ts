@@ -1,3 +1,6 @@
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { CalendarService } from './../services/calendar.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -9,11 +12,24 @@ export class AddCalendarComponent implements OnInit {
   isCollapsed = false;
   isMeet = true;
   isSchedule = !this.isMeet;
-  attribute = '';
+  attribute = 'public';
+  calendarName = '';
+  formData = new FormData();
 
-  constructor() { }
+  constructor(
+    private calendarService: CalendarService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   meet(value) {
@@ -23,9 +39,8 @@ export class AddCalendarComponent implements OnInit {
       this.attribute = value.target.value;
     } else {
       this.isSchedule = true;
-      this.attribute = '不公開';
+      this.attribute = 'private';
     }
-    console.log(this.attribute);
   }
 
   schedule(value) {
@@ -35,13 +50,30 @@ export class AddCalendarComponent implements OnInit {
       this.attribute = value.target.value;
     } else {
       this.isMeet = true;
-      this.attribute = '公開';
+      this.attribute = 'public';
     }
-    console.log(this.attribute);
   }
 
   addCalendar() {
-
+    this.formData.append('name', this.calendarName);
+    this.formData.append('display', this.attribute);
+    this.calendarService.postCalendar(this.formData).subscribe(
+      data => {
+        Swal.fire({
+          text: '新增成功',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '返回首頁',
+        }).then((result) => {
+          if (result.value) {
+            this.router.navigate(['/calendar']);
+          }
+        });
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
 }
