@@ -6,11 +6,26 @@
         <i class="material-icons">
           notifications
         </i>
-        <h1>親愛的使用者您好，您目前沒有權限新增行事曆，填寫用途即可進行申請。</h1>
+        <h1>親愛的使用者您好，您目前沒有權限新增行事曆，填寫表單即可進行申請。</h1>
       </div>
       <div class="form">
         <h2>行事曆名稱：</h2>
         <input type="text" class="form-control">
+        <h2>描述：</h2>
+        <textarea class="form-control"></textarea>
+        <div class="attribute">
+          <h2>行事曆權限：</h2>
+          <label class="container">
+            <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="public"
+            (change)="meet($event)">公開
+            <span class="checkmark"></span>
+          </label>
+          <label class="container">
+            <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
+            value="private" (change)="schedule($event)">不公開
+          <span class="checkmark"></span>
+          </label>
+        </div>
         <h2>用途：</h2>
         <textarea class="form-control content"></textarea>
       </div>

@@ -253,6 +253,11 @@
         font-size: 17px;
       }
 
+      textarea {
+        min-height: 100px;
+        margin-top: $content-size_top-bottom;
+      }
+
       h2.staff {
         margin-top: $content-size_top-bottom*2;
       }

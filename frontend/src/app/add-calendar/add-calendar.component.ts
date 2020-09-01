@@ -15,6 +15,7 @@ export class AddCalendarComponent implements OnInit {
   attribute = 'public';
   calendarName = '';
   formData = new FormData();
+  description = '';
 
   constructor(
     private calendarService: CalendarService,
@@ -56,6 +57,7 @@ export class AddCalendarComponent implements OnInit {
 
   addCalendar() {
     this.formData.append('name', this.calendarName);
+    this.formData.append('description', this.description);
     this.formData.append('display', this.attribute);
     this.calendarService.postCalendar(this.formData).subscribe(
       data => {
