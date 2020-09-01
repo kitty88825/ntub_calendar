@@ -20,7 +20,7 @@ export class OfficialChangeComponent implements OnInit {
   formData = new FormData();
   calendars = '';
   datas = [];
-  header = ['發布標題', '內容概要', '開始日期', '結束日期'];
+  header = ['發布標題', '內容概要', '發布單位', '開始日期', '結束日期'];
   input = [];
   istrue = 0;
   selectedValue;
@@ -148,6 +148,10 @@ export class OfficialChangeComponent implements OnInit {
 
     };
     reader.readAsBinaryString(target.files[0]);
+  }
+
+  addCalendar() {
+    this.router.navigate(['/add-calendar']);
   }
 
 

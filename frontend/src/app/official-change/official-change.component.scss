@@ -143,18 +143,20 @@
   }
 
   .chooseFile {
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    height          : 50px;
-    background-color: $color_accent;
-    color :white;
-    margin          : $content-size_top-bottom 0;
-    cursor          : pointer;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    height         : 50px;
+    border         : $color_form-control 1px solid;
+    margin         : $content-size_top-bottom*2 0;
+    cursor         : pointer;
+    border-radius  : 5px;
+    letter-spacing: 1px;
+  }
 
-    i {
-      margin-right: $content-size_left-right/2;
-    }
+  .chooseFile:hover {
+    background-color: $color_icon;
+    color: white;
   }
 
   .submit {
@@ -164,7 +166,7 @@
     height          : 50px;
     background-color: $color_accent;
     color           : white;
-    margin          : $content-size_top-bottom 0;
+    margin          : $content-size_top-bottom*2 0;
     cursor          : pointer;
   }
 
@@ -216,6 +218,15 @@
       &.active {
         .item-categories__arrow {
           transform: rotate(-90deg);
+        }
+      }
+
+      .name {
+        display: flex;
+        align-items: center;
+
+        span {
+          margin-left: $content-size_left-right/2;
         }
       }
     }
@@ -299,20 +310,22 @@
       }
     }
 
-    &__checkbox {
-      margin-right: $content-size_left-right/2;
+    h3 {
+      width: 37%;
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 600;
+      color: $color_text;
+      letter-spacing: 1px;
+      cursor: pointer;
     }
 
-    &__item {
-      flex: auto;
+    h3:hover {
+      color: $color_accent;
+      border-bottom: $color_accent 1px solid;
     }
 
-    &__status {
-      margin-top   : -$content-size_top-bottom;
-      width        : 10px;
-      height       : 10px;
-      border-radius: 50%;
-    }
+
   }
 
   body {

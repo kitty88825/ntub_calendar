@@ -116,10 +116,10 @@
   }
 
   .form-control:focus {
-    border-color: none;
-    box-shadow: none;
+    border-color      : none;
+    box-shadow        : none;
     -webkit-box-shadow: none;
-    outline: $color_form_control auto 5px;
+    outline           : $color_form_control auto 5px;
   }
 
   blockquote,
@@ -244,7 +244,7 @@
         }
 
         &__title {
-          display: inline-flex;
+          display   : inline-flex;
           margin-top: $content-size_top-bottom*(-1);
 
           h1 {
@@ -413,7 +413,7 @@
         }
 
         &__common-user {
-          display: flex;
+          display    : flex;
           margin-left: $content-size_left-right*2;
         }
 
@@ -421,7 +421,7 @@
           display: flex;
 
           textarea {
-            width: 300px;
+            width     : 300px;
             min-height: 50px;
           }
 
@@ -435,7 +435,7 @@
           }
 
           .all_common-user {
-            margin-left  : $content-size_left-right*2;
+            margin-left: $content-size_left-right*2;
 
             select {
               width: 210px;
@@ -517,7 +517,7 @@
 
         i {
           margin-left: $content-size_left-right/3;
-          color: white;
+          color      : white;
         }
 
         span {
