@@ -20,5 +20,5 @@ class UserAdmin(AuthUserAdmin):
 
 @admin.register(CommonParticipant)
 class CommonParticipantAdmin(admin.ModelAdmin):
-    list_display = ('title', 'creator')
+    list_display = ('id', 'title', 'creator')
     filter_horizontal = admin.ModelAdmin.filter_vertical + ('participant',)
