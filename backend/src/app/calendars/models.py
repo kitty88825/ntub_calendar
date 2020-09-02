@@ -34,7 +34,7 @@ class CalendarPermission(models.Model):
         '權限',
         max_length=10,
         choices=AuthorityChoice.choices,
-        default=AuthorityChoice.read
+        default=AuthorityChoice.read,
     )
 
     class Meta:
