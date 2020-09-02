@@ -35,3 +35,44 @@ class CommonParticipantSerializer(serializers.ModelSerializer):
 
     def get_participant(self, common):
         return common.participant.values_list('email', flat=True)
+
+
+class CreateCommonParticipantSerializer(CommonParticipantSerializer):
+    emails = serializers.ListField(
+        child=serializers.EmailField(),
+        write_only=True,
+        required=True,
+    )
+
+    class Meta(CommonParticipantSerializer.Meta):
+        fields = ('id', 'title', 'creator', 'participant', 'emails')
+        read_only_fields = ('id', 'creator', 'participant')
+
+    def create_participant_for_common(self, common, emails):
+        for email in emails:
+            username, domin = email.split('@')
+            if domin == 'ntub.edu.tw':
+                user, created = User.objects. \
+                    get_or_create(
+                        username=username,
+                        email=email,
+                    )
+                common.participant.add(user)
+
+    def create(self, validated_data):
+        emails = validated_data.pop('emails')
+        common_participant = CommonParticipant.objects.create(**validated_data)
+        self.create_participant_for_common(common_participant, emails)
+        return common_participant
+
+
+class UpdateCommonParticipantSerializer(CreateCommonParticipantSerializer):
+    def update(self, instance, validated_data):
+        emails = validated_data.pop('emails')
+        CommonParticipant.participant.through \
+            .objects.filter(commonparticipant=instance) \
+            .delete()
+
+        common_participant = super().update(instance, validated_data)
+        self.create_participant_for_common(common_participant, emails)
+        return common_participant
