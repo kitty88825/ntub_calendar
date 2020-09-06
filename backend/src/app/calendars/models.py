@@ -15,14 +15,18 @@ class Calendar(models.Model):
         default=DisplayChoice.private,
     )
     subscribers = models.ManyToManyField(User, blank=True)
-    permission = models.ManyToManyField(Group, through='CalendarPermission')
+    groups = models.ManyToManyField(Group, through='CalendarPermission')
 
     def __str__(self):
         return self.name
 
 
 class CalendarPermission(models.Model):
-    calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE)
+    calendar = models.ForeignKey(
+        Calendar,
+        on_delete=models.CASCADE,
+        related_name='permissions',
+    )
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     role = models.CharField(
         '使用者身份',
