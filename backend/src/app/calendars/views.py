@@ -1,3 +1,11 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from .models import Calendar
+from .serializers import CalendarSerializer
+from .permission import IsStaffUserEditOnly
+
+
+class CalendarViewSet(ModelViewSet):
+    queryset = Calendar.objects.all()
+    serializer_class = CalendarSerializer
+    permission_classes = [IsStaffUserEditOnly]
