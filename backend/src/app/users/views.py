@@ -13,6 +13,8 @@ from .serializers import (
     LoginSerializer,
     UserSerializer,
     CommonParticipantSerializer,
+    CreateCommonParticipantSerializer,
+    UpdateCommonParticipantSerializer,
 )
 from .models import CommonParticipant
 from .inc_auth_api import IncAuthClient
@@ -73,13 +75,21 @@ class AccountView(GenericViewSet):
 
 class CommonParticipantViewSet(ModelViewSet):
     queryset = CommonParticipant.objects.all()
-    serializer_class = CommonParticipantSerializer
     permission_classes = [IsAuthenticated]
 
     # 只回傳使用者建立的 CommonParticipant
     def get_queryset(self):
         if self.request.user:
             return CommonParticipant.objects.filter(creator=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            serializer_class = CreateCommonParticipantSerializer
+        elif self.action == 'partial_update' or 'update':
+            serializer_class = UpdateCommonParticipantSerializer
+        else:
+            serializer_class = CommonParticipantSerializer
+        return serializer_class
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)
