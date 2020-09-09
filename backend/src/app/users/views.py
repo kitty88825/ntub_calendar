@@ -13,8 +13,6 @@ from .serializers import (
     LoginSerializer,
     UserSerializer,
     CommonParticipantSerializer,
-    CreateCommonParticipantSerializer,
-    UpdateCommonParticipantSerializer,
 )
 from .models import CommonParticipant
 from .inc_auth_api import IncAuthClient
@@ -23,6 +21,7 @@ from .handlers import update_user
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
+
     return {
         'access': str(refresh.access_token),
         'refresh': str(refresh),
@@ -54,8 +53,8 @@ class AccountView(GenericViewSet):
             dict(
                 email=user.email,
                 staff=user.is_staff,
-                token=access_token
-            ), status=status.HTTP_200_OK
+                token=access_token,
+            ), status=status.HTTP_200_OK,
         )
 
     @property
@@ -65,31 +64,25 @@ class AccountView(GenericViewSet):
     @action(['GET'], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(instance=request.user)
+
         return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.action == 'me':
             return UserSerializer
+
         return super().get_serializer_class()
 
 
 class CommonParticipantViewSet(ModelViewSet):
     queryset = CommonParticipant.objects.all()
+    serializer_class = CommonParticipantSerializer
     permission_classes = [IsAuthenticated]
 
     # 只回傳使用者建立的 CommonParticipant
     def get_queryset(self):
         if self.request.user:
             return CommonParticipant.objects.filter(creator=self.request.user)
-
-    def get_serializer_class(self):
-        if self.action == 'create':
-            serializer_class = CreateCommonParticipantSerializer
-        elif self.action == 'partial_update' or 'update':
-            serializer_class = UpdateCommonParticipantSerializer
-        else:
-            serializer_class = CommonParticipantSerializer
-        return serializer_class
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)
