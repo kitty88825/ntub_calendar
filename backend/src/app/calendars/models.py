@@ -42,7 +42,7 @@ class CalendarPermission(models.Model):
     )
 
     class Meta:
-        unique_together = ['group', 'calendar']
+        unique_together = ['group', 'calendar', 'role']
 
     def __str__(self):
-        return self.role
+        return f'{self.id},{self.calendar.name}/{self.group.name}/{self.role}'
