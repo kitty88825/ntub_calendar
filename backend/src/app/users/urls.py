@@ -17,13 +17,16 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from .views import AccountView, CommonMeetingView
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from .views import AccountView, CommonParticipantViewSet
 
 
 router = DefaultRouter(False)
 router.register('', AccountView, 'sign_account')
-router.register('common', CommonMeetingView)
+router.register('common', CommonParticipantViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('refresh', TokenRefreshView.as_view(), name='token_refresh'),
 ]

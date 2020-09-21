@@ -51,6 +51,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_yasg',
     'corsheaders',
+    'django_extensions',
 ]
 
 LOCAL_APPS = [
@@ -60,13 +61,6 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
-# REST_FRAMEWORK
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -168,7 +162,14 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200',
 ]
 
+# REST_FRAMEWORK
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),  # noqa: E501
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }

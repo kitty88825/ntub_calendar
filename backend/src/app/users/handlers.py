@@ -8,15 +8,6 @@ from .models import User
 from typing import List
 
 
-def add_role(user: User, role: str):
-    if not role:
-        return
-
-    user_role = User.objects.get(username=user)
-    user_role.role = role
-    user_role.save()
-
-
 def update_group(user: User, data: dict) -> None:
     if not data:
         return
@@ -28,18 +19,21 @@ def update_group(user: User, data: dict) -> None:
 
 @atomic
 def update_user(data: dict) -> User:
-
-    fields = ['username',
-              'email',
-              'last_name',
-              'first_name',
-              'is_active',
-              'last_login']
+    fields = [
+        'email',
+        'last_name',
+        'first_name',
+        'is_active',
+        'role',
+    ]
     snake_res = {key: value for key, value in data.items() if key in fields}
-    user, created = User.objects.update_or_create(username=snake_res.pop('username'), defaults=snake_res)  # noqa: E501
+    user, created = User.objects. \
+        update_or_create(
+            email=snake_res.pop('email'),
+            defaults=snake_res,
+        )
 
     update_group(user, data['groups'])
-    add_role(user, data['role'])
 
     return user
 

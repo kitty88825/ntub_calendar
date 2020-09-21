@@ -1,18 +1,19 @@
 from django.contrib import admin
 
-from .models import Calendar, Subscription, Permission
+from .models import Calendar, CalendarPermission
+
+
+class CalendarPermissionInlineAdmin(admin.TabularInline):
+    model = CalendarPermission
 
 
 @admin.register(Calendar)
 class CalendarAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'display')
+    inlines = (CalendarPermissionInlineAdmin,)
+    list_display = ('id', 'name', 'description', 'display')
+    filter_vertical = admin.ModelAdmin.filter_vertical + ('subscribers',)
 
 
-@admin.register(Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'calendar')
-
-
-@admin.register(Permission)
-class PermissionAdmin(admin.ModelAdmin):
-    list_display = ('calendar', 'group', 'role', 'authority')
+@admin.register(CalendarPermission)
+class CalendarPermissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'calendar', 'group', 'role', 'authority')
