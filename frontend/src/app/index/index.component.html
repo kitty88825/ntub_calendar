@@ -43,47 +43,9 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <ul class="item-categories__list">
-            <li>
-              <i class="material-icons item-categories__checkbox">
-                check_box_outline_blank
-              </i>
-              <div class="item-categories__item">教務處</div>
-              <span class="item-categories__status" style="background-color:rgb(152, 174, 74)"></span>
-            </li>
-            <li>
-              <i style="color:#439B91" class="material-icons item-categories__checkbox">
-                check_box
-              </i>
-              <div class="item-categories__item">教務處</div>
-              <span class="item-categories__status" style="background-color:#439B91"></span>
-            </li>
-            <li>
-              <i class="material-icons item-categories__checkbox">
-                check_box_outline_blank
-              </i>
-              <div class="item-categories__item">教務處</div>
-              <span class="item-categories__status" style="background-color: #439B91"></span>
-            </li>
-            <li>
-              <i class="material-icons item-categories__checkbox">
-                check_box_outline_blank
-              </i>
-              <div class="item-categories__item">教務處</div>
-              <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
-            </li>
-            <li>
-              <i class="material-icons item-categories__checkbox">
-                check_box_outline_blank
-              </i>
-              <div class="item-categories__item">教務處</div>
-              <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
-            </li>
-            <li>
-              <i class="material-icons item-categories__checkbox">
-                check_box_outline_blank
-              </i>
-              <div class="item-categories__item">教務處</div>
-              <span class="item-categories__status" style="background-color: rgb(143, 67, 155)"></span>
+            <li *ngFor="let calendarInfo of openCalendar">
+              <span class="item-categories__status" [style.background-color]="calendarInfo.tag"></span>
+              <div class="item-categories__item">{{calendarInfo.name}}</div>
             </li>
           </ul>
         </div>
@@ -99,7 +61,7 @@
             search
           </i>
         </span>
-        <div class="openDataBtn"  (click)="openData()">
+        <div class="openDataBtn" (click)="openData()">
           <h3>OpenData</h3>
           <i class="material-icons">
             get_app
@@ -133,64 +95,10 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li class="event-list__phase">
-          第一週
-        </li>
         <li>
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
             <span>Meeting</span>
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li>
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoa Women’s Vintage Peacoat</span>
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li class="event-list__phase">
-          第二週
-        </li>
-        <li>
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat</span>
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li>
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat</span>
           </div>
           <div class="event-list__content">
             <div class="event-list__text">
@@ -246,60 +154,6 @@
           <div class="event-list__content">內容概要</div>
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
-        </li>
-        <li class="event-list__phase">
-          第一週
-        </li>
-        <li>
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat</span>
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li>
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li class="event-list__phase">
-          第一週
-        </li>
-        <li>
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat</span>
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
         </li>
         <li>
           <div class="event-list__title">
@@ -360,39 +214,6 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li class="event-list__phase">
-          第一週
-        </li>
-        <li class="event-list__card">
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Women’s Vintage Peacoat Women’s Vintage Peacoat</span>
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li class="event-list__card">
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
-        <li class="event-list__card">
-          <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
-          </div>
-          <div class="event-list__date">2020/09/05(四)</div>
-        </li>
         <li class="event-list__card">
           <div class="event-list__title">
             <span class="event-list__radius" style="background-color:#439B91"></span>
@@ -406,8 +227,8 @@
       </ul>
     </section>
   </article>
-    <!-- Creates the bootstrap modal where the image will appear -->
-    <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal_dialog">
       <div class="modal_content">

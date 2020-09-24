@@ -34,6 +34,10 @@ export class CalendarService {
     return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars', { headers: this.reqHeader });
   }
 
+  fGetCalendar(): Observable<Calendar[]> {
+    return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars');
+  }
+
   // getEvent(id: number): Observable<Event> {
   //   return this.http.get<Event>(`${this.serverIp}event/${id}`, { headers: this.reqHeader });
   // }

@@ -31,6 +31,7 @@ export class IndexComponent implements OnInit {
   header = ['學年度', '設立別', '學校類別', '學校代碼', '學校名稱', '學期別', '起始日期', '結束日期', '性質', '類別', '對象', '說明'
   ];
   output = [];
+  openCalendar = [];
 
   constructor(
     private router: Router,
@@ -45,12 +46,30 @@ export class IndexComponent implements OnInit {
   calendarPlugins = [dayGridPlugin];
   calendarWeekends = true;
 
+  color = this.getRandomColor();
+
+  getRandomColor() {
+    const letters = '0123456789ABCDEF'.split('');
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color = color + letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
   ngOnInit() {
-    this.calendarService.getCalendar().subscribe(
+    this.calendarService.fGetCalendar().subscribe(
       data => {
-        console.log(data);
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          this.color = this.getRandomColor();
+          // tslint:disable-next-line: max-line-length
+          this.openCalendar.push({ id: data[i].id, name: data[i].name, description: data[i].description, display: data[i].display, tag: this.color });
+        }
       }
     );
+
+    console.log(this.openCalendar);
   }
 
   async signInWithGoogle() {
@@ -73,6 +92,12 @@ export class IndexComponent implements OnInit {
               this.resToken = data.token.access;
               localStorage.setItem('res_access_token', this.resToken);
               localStorage.setItem('res_refresh_token', data.token.refresh);
+
+              if (localStorage.getItem('res_access_token') != null) {
+                this.router.navigate(['/calendar']);
+              } else if (localStorage.getItem('res_access_token') === null) {
+                alert('請重新登入！');
+              }
             },
             error => {
               console.log(error);
@@ -81,35 +106,35 @@ export class IndexComponent implements OnInit {
         });
       }
     );
-    let timerInterval;
+    // let timerInterval;
 
-    Swal.fire({
-      title: 'Loggin in...',
-      timer: 5000,
-      onBeforeOpen: () => {
-        Swal.showLoading(),
-          timerInterval = setInterval(() => {
-            const content = Swal.getContent();
-            if (content) {
-              const b = content.querySelector('b');
-              if (b) {
-                b.textContent = Swal.getTimerLeft();
-              }
-            }
-          }, 100);
-      },
-      onClose: () => {
-        clearInterval(timerInterval);
-        if (localStorage.getItem('res_access_token') != null) {
-          this.router.navigate(['/calendar']);
-        } else {
-          window.location.reload();
-          if (localStorage.getItem('res_access_token') != null) {
-            this.router.navigate(['/calendar']);
-          }
-        }
-      }
-    });
+    // Swal.fire({
+    //   title: 'Loggin in...',
+    //   timer: 5000,
+    //   onBeforeOpen: () => {
+    //     Swal.showLoading(),
+    //       timerInterval = setInterval(() => {
+    //         const content = Swal.getContent();
+    //         if (content) {
+    //           const b = content.querySelector('b');
+    //           if (b) {
+    //             b.textContent = Swal.getTimerLeft();
+    //           }
+    //         }
+    //       }, 100);
+    //   },
+    //   onClose: () => {
+    //     clearInterval(timerInterval);
+    //     if (localStorage.getItem('res_access_token') != null) {
+    //       this.router.navigate(['/calendar']);
+    //     } else {
+    //       window.location.reload();
+    //       if (localStorage.getItem('res_access_token') != null) {
+    //         this.router.navigate(['/calendar']);
+    //       }
+    //     }
+    //   }
+    // });
   }
 
   setCurrent(param) {
