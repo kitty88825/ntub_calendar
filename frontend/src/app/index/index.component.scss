@@ -154,6 +154,13 @@
     .view {
       display: flex;
 
+      .prev, .next {
+        color: $color_accent;
+        cursor: pointer;
+        margin-top: $content-size_top-bottom/2;
+        font-size: 27px;
+      }
+
       .searchbox {
         margin-top   : $content-size_top-bottom/2;
         border-radius: 5px;
