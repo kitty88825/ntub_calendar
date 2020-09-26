@@ -57,7 +57,7 @@ class CommonParticipantSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         emails = validated_data.pop('emails')
         common_participant = CommonParticipant.objects.create(**validated_data)
-        self.create_participant_for_common(common_participant, emails)
+        self.create_participant_from_common(common_participant, emails)
 
         return common_participant
 
