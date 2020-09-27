@@ -31,6 +31,7 @@ export class CommonUserComponent implements OnInit {
   newMasterSelected: boolean;
   addMasterSelected: boolean;
   isAlert = true;
+  hasCommonUser = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -56,29 +57,39 @@ export class CommonUserComponent implements OnInit {
 
     this.userCommonService.getCommonUsers().subscribe(
       data => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-          this.allMeetings.push({
-            title: data[i].title,
-            id: data[i].id, participant: data[i].participant
-          });
+
+        if (data.length === 0) {
+          this.hasCommonUser = false;
+        } else if (data.length > 0) {
+          this.hasCommonUser = true;
         }
 
-        this.lookMeetName = this.allMeetings[0].title;
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.allMeetings.length; i++) {
-          if (this.lookMeetName === this.allMeetings[i].title) {
-            this.participants = this.allMeetings[i].participant;
-            // tslint:disable-next-line: prefer-for-of
-            for (let j = 0; j < this.participants.length; j++) {
-              this.allParticipants.push({
-                id: this.allMeetings[i].id,
-                participants: this.participants[j],
-                isChecked: true
-              });
+        if (data.length > 0) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < data.length; i++) {
+            this.allMeetings.push({
+              title: data[i].title,
+              id: data[i].id, participant: data[i].participant
+            });
+          }
+
+          this.lookMeetName = this.allMeetings[0].title;
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.allMeetings.length; i++) {
+            if (this.lookMeetName === this.allMeetings[i].title) {
+              this.participants = this.allMeetings[i].participant;
+              // tslint:disable-next-line: prefer-for-of
+              for (let j = 0; j < this.participants.length; j++) {
+                this.allParticipants.push({
+                  id: this.allMeetings[i].id,
+                  participants: this.participants[j],
+                  isChecked: true
+                });
+              }
             }
           }
         }
+
       },
       error => {
         console.log(error);
@@ -87,6 +98,7 @@ export class CommonUserComponent implements OnInit {
   }
 
   addMeetName() {
+    this.hasCommonUser = true;
     this.formData.delete('emails');
     if (this.meetName.length === 0) {
       Swal.fire({
@@ -192,6 +204,7 @@ export class CommonUserComponent implements OnInit {
   }
 
   submit() {
+    console.log(this.newInvalidEmails);
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.newInvalidEmails.length; i++) {
       if (this.newInvalidEmails[i].isChecked === true) {
