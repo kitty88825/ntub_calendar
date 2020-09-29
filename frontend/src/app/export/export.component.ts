@@ -1,5 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import * as jsPDF from 'jspdf';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import { FullCalendarComponent } from '@fullcalendar/angular';
+import { EventInput } from '@fullcalendar/core';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { Router } from '@angular/router';
+import { EventService } from '../services/event.service';
+import { Event } from '../models/event.model';
+import { ShareDataService } from '../services/share-data.service';
+import { CalendarService } from '../services/calendar.service';
+import { SubscriptionService } from '../services/subscription.service';
 
 @Component({
   selector: 'app-export',
@@ -9,11 +19,186 @@ import * as jsPDF from 'jspdf';
 
 export class ExportComponent implements OnInit {
 
+  user = true;
+  official = !this.user;
+  searchText = '';
+  put;
+  title;
+  calendars = [];
+  myCalendars = [];
+  mySub = [];
+  data = {
+    current: '1'
+  };
+  isCollapsed = false;
+  showModal: boolean;
+  events = [];
+  event; eventTitle; eventStart; eventEnd; eventDesc; eventOffice;
+  calendarName = [];
   doc;
 
+  constructor(
+    private router: Router,
+    private eventService: EventService,
+    private shareDataService: ShareDataService,
+    private calendarService: CalendarService,
+    private subscriptionService: SubscriptionService,
+  ) { }
+
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
+
+  calendarPlugins = [dayGridPlugin];
+  calendarWeekends = true;
+  calendarEvents: EventInput[];
+
+  eventTypes = [];
+
+  hiddenCalendarEvents: Event[] = [];
+
+  eventClick(info) {
+    this.showModal = true; // Show-Hide Modal
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.events.length; i++) {
+      if (String(this.events[i].id) === String(info.event.id)) {
+        this.event = this.events[i];
+        this.eventTitle = this.events[i].title;
+        this.eventStart = this.events[i].startDate + ' ' + this.events[i].sTime;
+        // this.eventEnd = this.events[i].endDate + ' ' + this.events[i].eTime;
+        this.eventDesc = this.events[i].description;
+        // this.eventOffice = this.events[i].calendars;
+      }
+    }
+
+  }
+
+  displayType(eventType: any): void {
+
+    eventType.selected = !eventType.selected;
+    const calendarEvents = this.calendarEvents.slice(); // a clone
+
+    if (eventType.selected === true) {
+      const calendarEventsToShow: any[] = [];
+
+      // Show
+      this.hiddenCalendarEvents
+        .filter(calendarEvent => calendarEvent.calendars.includes(eventType.id))
+        .forEach(calendarEvent => {
+          calendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
+          calendarEventsToShow.push(calendarEvent.id);
+        });
+
+
+      calendarEventsToShow.forEach(calendarEventToShow => {
+        const index = this.hiddenCalendarEvents.findIndex(hiddenCalendarEvent => hiddenCalendarEvent.id === calendarEventToShow);
+        this.hiddenCalendarEvents.splice(index, 1);
+      });
+
+    } else {
+      const calendarEventsToHide: any[] = [];
+
+      // Hide
+      calendarEvents
+        .filter(calendarEvent => {
+          if (calendarEvent.calendars.length === 1) {
+            return calendarEvent.calendars.includes(eventType.id);
+          } else if (calendarEvent.calendars.length > 1) {
+            let count = 0;
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < calendarEvent.calendars.length; i++) {
+              // tslint:disable-next-line: prefer-for-of
+              for (let j = 0; j < this.eventTypes.length; j++) {
+                if (calendarEvent.calendars[i] === this.eventTypes[j].id && this.eventTypes[j].selected === false) {
+                  count++;
+                  if (count === calendarEvent.calendars.length) {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        })
+        .forEach(calendarEvent => {
+          if (this.calendarComponent.getApi().getEventById(String(calendarEvent.id))) {
+            this.calendarComponent
+              .getApi()
+              .getEventById(String(calendarEvent.id))
+              .remove();
+          }
+
+          this.hiddenCalendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
+          calendarEventsToHide.push(calendarEvent.id);
+        });
+
+      calendarEventsToHide.forEach(calendarEventToHide => {
+        const index = calendarEvents.findIndex(calendarEvent => calendarEvent.id === calendarEventToHide);
+        calendarEvents.splice(index, 1);
+      });
+    }
+    this.calendarEvents = calendarEvents; // reassign the array
+  }
+
   ngOnInit(): void {
+    // 登入系統 
+    // this.calendarService.getCalendar().subscribe(
+    //   result => {
+    //     // tslint:disable-next-line: prefer-for-of
+    //     for (let j = 0; j < result.length; j++) {
+    //       this.myCalendars.push({ id: result[j].id, name: result[j].name });
+    //     }
+    //   }
+    // );
+
+    // this.subscriptionService.getSubscription().subscribe(
+    //   data => {
+    //     // tslint:disable-next-line: prefer-for-of
+    //     for (let i = 0; i < data.length; i++) {
+    //       this.mySub.push({ id: data[i].id, name: data[i].name, calendar: data[i].calendar });
+    //       this.eventTypes.push({ title: 'type' + data[i].calendar, id: data[i].calendar, selected: true });
+    //     }
+    //   }
+    // );
+
+    // this.eventService.getEvents().subscribe(
+    //   data => {
+    //     // tslint:disable-next-line: prefer-for-of
+    //     for (let i = 0; i < data.length; i++) {
+
+    //       this.events.push({
+    //         id: data[i].id, title: data[i].title, start: data[i].startAt, calendars: data[i].calendars,
+    //         end: data[i].endAt, name: data[i].calendars, startDate: data[i].startAt.substr(0, 10),
+    //         endDate: data[i].endAt.substr(0, 10), description: data[i].description,
+    //         sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16)
+    //       });
+
+    //     }
+
+
+    //     // tslint:disable-next-line: only-arrow-functions
+    //     this.events.sort(function (a, b) {
+    //       const startA = a.start.toUpperCase(); // ignore upper and lowercase
+    //       const startB = b.start.toUpperCase(); // ignore upper and lowercase
+    //       if (startA < startB) {
+    //         return -1;
+    //       }
+    //       if (startA > startB) {
+    //         return 1;
+    //       }
+
+    //       // names must be equal
+    //       return 0;
+    //     });
+
+    //     console.log(this.events);
+
+    //     this.calendarEvents = this.events;
+
+    //   }
+    // );
+
     this.doc = new jsPDF('l', 'pt', 'a4');
     this.doc.setFont('jf');
+    this.doc.
 
     // horizontal line
     this.doc.setLineWidth(3);
@@ -193,12 +378,10 @@ export class ExportComponent implements OnInit {
     this.doc.text('六', 232, 96);
     this.doc.text('日間學制行事摘要', 350, 96);
     this.doc.text('進修學制行事摘要', 630, 96);
-    console.log(this.doc);
-  }
-
-
-  savePdf() {
-    this.doc.save('demo.pdf');
   }
 }
+
+// savePdf() {
+
+// }
 
