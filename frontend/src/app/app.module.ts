@@ -34,6 +34,7 @@ import { OpenDataComponent } from './open-data/open-data.component';
 import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
 
+
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,

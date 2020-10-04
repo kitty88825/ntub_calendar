@@ -60,7 +60,7 @@
               學校行事曆網站連結
             </label>
           </div>
-          <h2>行政單位</h2>
+          <h2>匯出行事曆</h2>
           <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
                 <ul class="item-categories__list">
                   <li *ngFor="let sub of mySub; let i = index">
@@ -78,14 +78,14 @@
     <!-- <div class="download" value="Download PDF" onclick="savePdf()">
         下載
       </div> -->
-    <div class="download" >  
+    <div class="download" (click)="savePdf()" >  
       下載
-      <!-- (click)="savePdf()" -->
     </div>
   </aside>
   <article>
-    <section class="container">
-      <!-- <ul class="event-list">
+    <section #screen id="screen" class="container">
+      <!-- 你好 -->
+       <!-- <ul class="event-list">
           <div class="table">
             <table class="table table-hover">
               <thead class="event-list__header">
@@ -102,14 +102,14 @@
               </tbody>
             </table>
           </div>
-        </ul>
+        </ul> -->
         <ul class="event-list">
             <li class="event-list__header">
               <div class="event-list__title">發布標題</div>
               <div class="event-list__content">內容概要</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li *ngFor="let calendar of calendarEvents | appFilter: searchText">
+            <!-- <li *ngFor="let calendar of calendarEvents | appFilter: searchText">
               <div class="event-list__title">
                 <span>{{calendar.title}}</span>
               </div>
@@ -119,8 +119,12 @@
                 </div>
               </div>
               <div class="event-list__date">{{calendar.startDate}}</div>
-            </li>
-          </ul> -->
+            </li> -->
+          </ul> 
     </section>
+    <div id="nodownload">
+      <img #canvas>
+      <a #downloadLink></a>
+    </div>
   </article>
 </main>

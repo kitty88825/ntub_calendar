@@ -295,6 +295,10 @@
     cursor          : pointer;
   }
 
+  #nodownload{
+    display: none;
+  }
+
   article {
     padding-top : $height_header;
     padding-left: $width_aside;
