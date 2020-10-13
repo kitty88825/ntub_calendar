@@ -43,7 +43,7 @@ api_urlpatterns = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
-    path('', include(api_urlpatterns)),
+    path('api/v2/', include(api_urlpatterns)),
 ]
 
 if settings.DEBUG:
