@@ -17,9 +17,19 @@ class CalendarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Calendar
-        fields = ('id', 'name', 'description', 'display', 'permissions')
+        fields = (
+            'id',
+            'name',
+            'description',
+            'display',
+            'color',
+            'permissions',
+        )
         read_only_fields = ('id',)
-        extra_kwargs = {'display': {'required': True}}
+        extra_kwargs = {
+            'display': {'required': True},
+            'color': {'required': True},
+        }
 
     def create_permissions(self, calendar, permissions):
         CalendarPermission.objects.bulk_create(
