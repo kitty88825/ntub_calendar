@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import Group
 
+from colorfield import fields
+
 from app.users.models import User
 
 from .choices import DisplayChoice, RoleChoice, AuthorityChoice
@@ -16,6 +18,7 @@ class Calendar(models.Model):
     )
     subscribers = models.ManyToManyField(User, blank=True)
     groups = models.ManyToManyField(Group, through='CalendarPermission')
+    color = fields.ColorField(default='#FF0000')
 
     def __str__(self):
         return self.name

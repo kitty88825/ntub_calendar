@@ -10,7 +10,7 @@ class CalendarPermissionInlineAdmin(admin.TabularInline):
 @admin.register(Calendar)
 class CalendarAdmin(admin.ModelAdmin):
     inlines = (CalendarPermissionInlineAdmin,)
-    list_display = ('id', 'name', 'description', 'display')
+    list_display = ('id', 'name', 'description', 'display', 'color')
     filter_vertical = admin.ModelAdmin.filter_vertical + ('subscribers',)
 
 

@@ -53,6 +53,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'django_extensions',
     'django_filters',
+    'colorfield',
 ]
 
 LOCAL_APPS = [

@@ -20,6 +20,7 @@ djangorestframework-camel-case = "*"
 django-extensions = "*"
 django-filter = "*"
 drf-yasg = "*"
+django-colorfield = "*"
 
 [requires]
 python_version = "3.8"
