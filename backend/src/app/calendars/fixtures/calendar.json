@@ -1,0 +1,317 @@
+[
+  {
+    "model": "calendars.calendar",
+    "pk": 1,
+    "fields": {
+      "name": "祕書室",
+      "description": "",
+      "display": "private"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 2,
+    "fields": {
+      "name": "副校長室",
+      "description": "",
+      "display": "private"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 3,
+    "fields": {
+      "name": "校長室",
+      "description": "",
+      "display": "private"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 4,
+    "fields": {
+      "name": "軍訓室",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 5,
+    "fields": {
+      "name": "主計室",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 6,
+    "fields": {
+      "name": "人事室",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 7,
+    "fields": {
+      "name": "圖書館",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 8,
+    "fields": {
+      "name": "總務處",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 9,
+    "fields": {
+      "name": "專科進修學校",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 10,
+    "fields": {
+      "name": "空中進修學院",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 11,
+    "fields": {
+      "name": "校務研究中心",
+      "description": "",
+      "display": "private"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 12,
+    "fields": {
+      "name": "教學發展中心",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 13,
+    "fields": {
+      "name": "學生事務處",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 14,
+    "fields": {
+      "name": "國際事務處",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 15,
+    "fields": {
+      "name": "研究發展處",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 16,
+    "fields": {
+      "name": "教務處",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 17,
+    "fields": {
+      "name": "資訊與網路中心",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 18,
+    "fields": {
+      "name": "體育室",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 19,
+    "fields": {
+      "name": "通識教育中心",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 20,
+    "fields": {
+      "name": "商品創意經營系",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 21,
+    "fields": {
+      "name": "商業設計管理系",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 22,
+    "fields": {
+      "name": "數位多媒體設計系",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 23,
+    "fields": {
+      "name": "創意設計與經營研究所",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 24,
+    "fields": {
+      "name": "創新經營學院",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 25,
+    "fields": {
+      "name": "資訊與決策科學研究所",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 26,
+    "fields": {
+      "name": "應用外語系",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 27,
+    "fields": {
+      "name": "資訊管理系",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 28,
+    "fields": {
+      "name": "企業管理系(所)",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 29,
+    "fields": {
+      "name": "管理學院",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 30,
+    "fields": {
+      "name": "貿易實務法律暨談判碩士學位學程",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 31,
+    "fields": {
+      "name": "國際商務系(所)",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 32,
+    "fields": {
+      "name": "財務金融系(所)",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 33,
+    "fields": {
+      "name": "會計資訊系(所)",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 33,
+    "fields": {
+      "name": "會計資訊系(所)",
+      "description": "",
+      "display": "public"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 34,
+    "fields": {
+      "name": "財經學院",
+      "description": "",
+      "display": "public"
+    }
+  }
+]
