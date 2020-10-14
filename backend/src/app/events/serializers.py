@@ -38,6 +38,7 @@ class EventSerializer(serializers.ModelSerializer):
         required=False,
     )
     participant_set = ParticipantSerializer(many=True, read_only=True)
+    calendars = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Event
@@ -61,6 +62,9 @@ class EventSerializer(serializers.ModelSerializer):
             'attachments',
             'participant_set',
         )
+
+    def get_calendars(self, event):
+        return event.calendars.values()
 
     def create_attachment_for_event(self, event, files):
         if not files:
@@ -107,6 +111,7 @@ class EventSerializer(serializers.ModelSerializer):
         event = super().create(validated_data)
         self.create_attachment_for_event(event, files)
         self.create_participant_for_event(event, user, participants)
+
         return event
 
 
@@ -164,4 +169,5 @@ class UpdateAttachmentSerializer(EventSerializer):
 
         self.create_participant_for_event(event, user, participants)
         self.create_attachment_for_event(event, files)
+
         return event
