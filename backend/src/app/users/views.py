@@ -81,8 +81,9 @@ class CommonParticipantViewSet(ModelViewSet):
 
     # 只回傳使用者建立的 CommonParticipant
     def get_queryset(self):
-        if self.request.user:
-            return CommonParticipant.objects.filter(creator=self.request.user)
+        creator = self.request.user
+        if creator:
+            return CommonParticipant.objects.filter(creator=creator.id)
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)

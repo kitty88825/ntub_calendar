@@ -23,6 +23,8 @@ from drf_yasg import openapi
 
 from rest_framework import permissions
 
+from app.events.feed import EventFeed
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -37,12 +39,14 @@ schema_view = get_schema_view(
 api_urlpatterns = [
     path('user/', include('app.users.urls')),
     path('calendar/', include('app.calendars.urls')),
+    path('event/', include('app.events.urls')),
 ]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
-    path('', include(api_urlpatterns)),
+    path('api/v2/', include(api_urlpatterns)),
+    path('feed/<str:code>/', EventFeed(), name='ical'),
 ]
 
 if settings.DEBUG:

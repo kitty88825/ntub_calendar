@@ -11,14 +11,15 @@ ipython = "*"
 [packages]
 django = "*"
 django-environ = "*"
-djangorestframework = "*"
+djangorestframework = "==3.11.2"
 djangorestframework-simplejwt = "*"
 django-ical = "*"
 django-cors-headers = "*"
-drf-yasg = "*"
 psycopg2-binary = "*"
 djangorestframework-camel-case = "*"
 django-extensions = "*"
+django-filter = "*"
+drf-yasg = "*"
 
 [requires]
 python_version = "3.8"
