@@ -6,7 +6,7 @@ from app.users.handlers import get_match
 from .models import Event, EventParticipant, EventAttachment
 
 
-class AttachmentSerializer(serializers.ModelSerializer):
+class EventAttachmentSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
 
     class Meta:
@@ -17,7 +17,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return str(attachment.file).split('/')[-1]
 
 
-class ParticipantSerializer(serializers.ModelSerializer):
+class EventParticipantSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email', read_only=True)
 
     class Meta:
@@ -31,13 +31,16 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
-    attachments = AttachmentSerializer(many=True, read_only=True)
+    eventattachment_set = EventAttachmentSerializer(many=True, read_only=True)
     participants = serializers.ListField(
         child=serializers.EmailField(),
         write_only=True,
         required=False,
     )
-    participant_set = ParticipantSerializer(many=True, read_only=True)
+    eventparticipant_set = EventParticipantSerializer(
+        many=True,
+        read_only=True,
+    )
     calendars = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -50,17 +53,17 @@ class EventSerializer(serializers.ModelSerializer):
             'description',
             'location',
             'files',
-            'attachments',
+            'eventattachment_set',
             'calendars',
             'participants',
-            'participant_set',
+            'eventparticipant_set',
         )
         read_only_fields = (
             'id',
             'create_at',
             'update_at',
-            'attachments',
-            'participant_set',
+            'eventattachment_set',
+            'eventparticipant_set',
         )
 
     def get_calendars(self, event):
@@ -138,12 +141,12 @@ class UpdateAttachmentSerializer(EventSerializer):
             'description',
             'location',
             'files',
-            'attachments',
+            'eventattachment_set',
             'calendars',
             'remove_files',
             'participants',
             'remove_users',
-            'participant_set',
+            'eventparticipant_set',
         )
 
     def update(self, instance, validated_data):

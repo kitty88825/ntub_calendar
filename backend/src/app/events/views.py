@@ -17,8 +17,13 @@ class EventViewSet(ModelViewSet):
     def get_queryset(self):
         public_calendar = Calendar.objects.filter(display='public')
         if self.request.user.is_authenticated:
-            user_group = User.objects.filter(id=self.request.user.id).values('groups')  # noqa 501
-            calendar_id = CalendarPermission.objects.values('calendar').filter(group__in=user_group)  # noqa 501
+            user_group = User.objects \
+                .filter(id=self.request.user.id) \
+                .values('groups')
+            calendar_id = CalendarPermission.objects \
+                .values('calendar') \
+                .filter(group__in=user_group)
+
             return Event.objects \
                 .filter(
                     Q(calendars__in=calendar_id) |
