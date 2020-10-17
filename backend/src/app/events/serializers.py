@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from app.calendars.serializers import CalendarSerializer
 from app.users.models import User
 from app.users.handlers import get_match
 
@@ -17,12 +18,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return str(attachment.file).split('/')[-1]
 
 
-class ParticipantSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source='user.email', read_only=True)
-
+class EventParticipantSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EventParticipant
-        fields = ('id', 'user', 'email')
+        model = User
+        fields = ('id', 'email')
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -32,13 +31,13 @@ class EventSerializer(serializers.ModelSerializer):
         required=False,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    participants = serializers.ListField(
+    emails = serializers.ListField(
         child=serializers.EmailField(),
         write_only=True,
         required=False,
     )
-    participant_set = ParticipantSerializer(many=True, read_only=True)
-    calendars = serializers.SerializerMethodField(read_only=True)
+    calendars = CalendarSerializer(many=True, read_only=True)
+    participants = EventParticipantSerializer(many=True, read_only=True)
 
     class Meta:
         model = Event
@@ -52,19 +51,16 @@ class EventSerializer(serializers.ModelSerializer):
             'files',
             'attachments',
             'calendars',
+            'emails',
             'participants',
-            'participant_set',
         )
         read_only_fields = (
             'id',
             'create_at',
             'update_at',
             'attachments',
-            'participant_set',
+            'participants',
         )
-
-    def get_calendars(self, event):
-        return event.calendars.values()
 
     def create_attachment_for_event(self, event, files):
         if not files:
@@ -107,10 +103,10 @@ class EventSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = validated_data.pop('user')
         files = validated_data.pop('files', None)
-        participants = validated_data.pop('participants', None)
+        emails = validated_data.pop('emails', None)
         event = super().create(validated_data)
         self.create_attachment_for_event(event, files)
-        self.create_participant_for_event(event, user, participants)
+        self.create_participant_for_event(event, user, emails)
 
         return event
 
@@ -141,14 +137,14 @@ class UpdateAttachmentSerializer(EventSerializer):
             'attachments',
             'calendars',
             'remove_files',
-            'participants',
+            'emails',
             'remove_users',
-            'participant_set',
+            'participants',
         )
 
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
-        participants = validated_data.pop('participants', None)
+        emails = validated_data.pop('emails', None)
         remove_users = validated_data.pop('remove_users', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
@@ -167,7 +163,7 @@ class UpdateAttachmentSerializer(EventSerializer):
                     role=EventParticipant.RoleChoice.participants) \
                 .delete()
 
-        self.create_participant_for_event(event, user, participants)
+        self.create_participant_for_event(event, user, emails)
         self.create_attachment_for_event(event, files)
 
         return event
