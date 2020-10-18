@@ -24,22 +24,31 @@ class Event(models.Model):
         default=NatureChoice.event,
     )
     calendars = models.ManyToManyField(Calendar, blank=True)
-    subscribers = models.ManyToManyField(User, blank=True)
+    subscribers = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name='subscribe_events',
+    )
     participants = models.ManyToManyField(
         User,
         through='EventParticipant',
-        related_name='participant_users',
+        related_name='participate_events',
     )
 
     def __str__(self):
         return self.title
 
+    @property
     def link(self):
         return f'/event/{self.id}'
 
 
 class EventAttachment(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='attachments',
+    )
     file = models.FileField('檔案位置', upload_to=event_attachment_path)
 
     def __str__(self):
@@ -48,7 +57,10 @@ class EventAttachment(models.Model):
 
 class EventParticipant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE,)
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+    )
     role = models.CharField(
         '身份',
         max_length=15,

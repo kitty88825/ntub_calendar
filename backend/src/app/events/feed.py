@@ -40,4 +40,4 @@ class EventFeed(ICalFeed):
         return item.start_at
 
     def item_link(self, item):
-        return item.link()
+        return item.link
