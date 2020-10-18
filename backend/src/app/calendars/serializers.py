@@ -50,3 +50,7 @@ class CalendarSerializer(serializers.ModelSerializer):
         self.create_permissions(calendar, permissions)
 
         return calendar
+
+
+class SubscribeCalendarSerializer(serializers.Serializer):
+    calendars = serializers.ListField(child=serializers.IntegerField())
