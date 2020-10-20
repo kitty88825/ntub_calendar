@@ -2,42 +2,31 @@ from django.db.models import Q
 
 from rest_framework.viewsets import ModelViewSet
 
-from app.calendars.models import CalendarPermission, Calendar
-from app.calendars.permission import IsStaffUserEditOnly
-from app.users.models import User
-
 from .models import Event
-from .serializers import EventSerializer, UpdateAttachmentSerializer
+from .serializers import EventSerializer, UpdateEventAttachmentSerializer
 
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.prefetch_related('attachments')
-    permission_classes = [IsStaffUserEditOnly]
 
     def get_queryset(self):
-        public_calendar = Calendar.objects.filter(display='public')
         if self.request.user.is_authenticated:
-            user_group = User.objects \
-                .filter(id=self.request.user.id) \
-                .values('groups')
-            calendar_id = CalendarPermission.objects \
-                .values('calendar') \
-                .filter(group__in=user_group)
-
             return Event.objects \
                 .filter(
-                    Q(calendars__in=calendar_id) |
-                    Q(calendars__in=public_calendar),
+                    Q(calendars__groups__in=self.request.user.groups.all()) |
+                    Q(calendars__display='public') |
+                    Q(participants=self.request.user.id),
                 ) \
                 .distinct()
         else:
-            return Event.objects.filter(calendars__in=public_calendar)
+            return Event.objects.filter(calendars__display='public').distinct()
 
     def get_serializer_class(self):
-        if self.action == 'partial_update':
-            serializer_class = UpdateAttachmentSerializer
+        if self.action == 'partial_update' or self.action == 'update':
+            serializer_class = UpdateEventAttachmentSerializer
         else:
             serializer_class = EventSerializer
+
         return serializer_class
 
     def perform_create(self, serializers):

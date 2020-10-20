@@ -2,9 +2,14 @@ from rest_framework import serializers
 
 from app.calendars.serializers import CalendarSerializer
 from app.users.models import User
-from app.users.handlers import get_match
 
 from .models import Event, EventParticipant, EventAttachment
+from .choices import RoleChoice
+
+
+def validate_ntub_email(email: str):
+    if not email.endswith('@ntub.edu.tw'):
+        raise serializers.ValidationError('This is not a ntub email.')
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -30,12 +35,12 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
-    attachments = AttachmentSerializer(many=True, read_only=True)
     emails = serializers.ListField(
-        child=serializers.EmailField(),
+        child=serializers.EmailField(validators=[validate_ntub_email]),
         write_only=True,
         required=False,
     )
+    attachments = AttachmentSerializer(many=True, read_only=True)
     calendars = CalendarSerializer(many=True, read_only=True)
     participants = EventParticipantSerializer(many=True, read_only=True)
 
@@ -58,11 +63,9 @@ class EventSerializer(serializers.ModelSerializer):
             'id',
             'create_at',
             'update_at',
-            'attachments',
-            'participants',
         )
 
-    def create_attachment_for_event(self, event, files):
+    def create_attachment_from_event(self, event, files):
         if not files:
             return
 
@@ -70,34 +73,24 @@ class EventSerializer(serializers.ModelSerializer):
             [EventAttachment(event=event, file=file) for file in files],
         )
 
-    def create_participant_for_event(self, event, user, participants):
-        if not EventParticipant.objects.filter(user=user, event=event):
-            EventParticipant.objects.create(
-                event=event,
-                user=user,
-                role=EventParticipant.RoleChoice.editors,
-            )
-
-        if not participants:
+    def create_participant_from_event(self, event, user, emails):
+        if not emails:
             return
 
-        in_user_model = User.objects.values_list('email', flat=True) \
-                            .filter(email__in=participants)
+        EventParticipant.objects.get_or_create(
+            event=event,
+            user=user,
+            role=RoleChoice.editors,
+        )
 
-        for email in set(participants) - set(in_user_model):
-            if get_match(email) is not None:
-                User.objects.create(username=email, email=email)
+        in_db_emails = User.objects \
+            .filter(email__in=emails) \
+            .values_list('email', flat=True)
 
-        for user_email in User.objects.filter(email__in=participants):
-            if user_email.participant_set.filter(event=event):
-                participants.remove(user_email.email)
-
-        EventParticipant.objects.bulk_create(
-            [EventParticipant(
-                event=event,
-                user=user,
-                role=EventParticipant.RoleChoice.participants,
-            ) for user in User.objects.filter(email__in=participants)],
+        new_emails = set(emails) - set(in_db_emails)
+        User.objects.bulk_create([User(email=email) for email in new_emails])
+        event.participants.add(
+            *User.objects.filter(email__in=emails),
         )
 
     def create(self, validated_data):
@@ -105,20 +98,14 @@ class EventSerializer(serializers.ModelSerializer):
         files = validated_data.pop('files', None)
         emails = validated_data.pop('emails', None)
         event = super().create(validated_data)
-        self.create_attachment_for_event(event, files)
-        self.create_participant_for_event(event, user, emails)
+        self.create_attachment_from_event(event, files)
+        self.create_participant_from_event(event, user, emails)
 
         return event
 
 
-class UpdateAttachmentSerializer(EventSerializer):
+class UpdateEventAttachmentSerializer(EventSerializer):
     remove_files = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False,
-    )
-
-    remove_users = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True,
         required=False,
@@ -138,14 +125,12 @@ class UpdateAttachmentSerializer(EventSerializer):
             'calendars',
             'remove_files',
             'emails',
-            'remove_users',
             'participants',
         )
 
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
         emails = validated_data.pop('emails', None)
-        remove_users = validated_data.pop('remove_users', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
         event = super().update(instance, validated_data)
@@ -155,15 +140,13 @@ class UpdateAttachmentSerializer(EventSerializer):
                 .filter(id__in=remove_files, event=event) \
                 .delete()
 
-        if remove_users:
-            EventParticipant.objects \
-                .filter(
-                    id__in=remove_users,
-                    event=event,
-                    role=EventParticipant.RoleChoice.participants) \
-                .delete()
+        Event.participants.through \
+            .objects \
+            .filter(event=event, role='participants') \
+            .exclude(user__email__in=emails) \
+            .delete()
 
-        self.create_participant_for_event(event, user, emails)
-        self.create_attachment_for_event(event, files)
+        self.create_attachment_from_event(event, files)
+        self.create_participant_from_event(event, user, emails)
 
         return event
