@@ -30,14 +30,27 @@ body {
 }
 
 .fc-content {
-  background-color: #439B91;
+  // background-color: #439B91;
+  background-color: unset !important;
   height: 5px;
+}
+
+.page-item.active .page-link {
+  background-color: $color_accent;
+  border-color: $color_accent;
+}
+
+.page-link {
+  color: $color_accent;
+}
+
+.page-link:hover {
+  color: $color_accent;
 }
 
 .fc-event,
 .fc-event-dot {
   border          : none;
-  background-color: unset !important;
 }
 
 .bg-light {

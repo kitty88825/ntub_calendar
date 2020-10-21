@@ -3,4 +3,5 @@ export interface Calendar {
   name: string;
   display: string;
   description?: string;
+  color: string;
 }

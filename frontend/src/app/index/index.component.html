@@ -27,41 +27,24 @@
         left: 'prev',
         center: 'title',
         right: 'next'
-      }" [plugins]="calendarPlugins" [weekends]="calendarWeekends">
+      }" [plugins]="calendarPlugins" [weekends]="calendarWeekends"
+        [events]="calendarEvents | appFilter : searchText | appFilter: searchTextSmall | appFilter:searchTextGrid"
+        (eventClick)="eventClick($event)">
       </full-calendar>
     </div>
-    <ul class="item-categories">
-      <li>
-        <div class="item-categories__title active">
-          行政單位
-          <div class="form-group row">
-            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-              arrow_left
-            </i>
-          </div>
-        </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-          <ul class="item-categories__list">
-            <li *ngFor="let calendarInfo of openCalendar">
-              <span class="item-categories__status" [style.background-color]="calendarInfo.tag"></span>
-              <div class="item-categories__item">{{calendarInfo.name}}</div>
-            </li>
-          </ul>
-        </div>
+
+    <ul class="item-categories__list">
+      <li *ngFor="let calendarInfo of openCalendar">
+        <span class="item-categories__status" [style.background-color]="calendarInfo.color"></span>
+        <div class="item-categories__item">{{calendarInfo.name}}</div>
       </li>
     </ul>
   </aside>
   <article>
     <section class="container" *ngIf="data.current == '1'">
       <div class="view">
-        <i class="prev material-icons">
-          arrow_left
-        </i>
-        <i class="next material-icons">
-          arrow_right
-        </i>
-        <input type="text" placeholder="keyword" class="searchbox">
+        <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
         <span>
           <i class="material-icons">
             search
@@ -101,27 +84,28 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li>
+        <li
+          *ngFor="let event of events | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            <span>Meeting</span>
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span>{{event.title}}</span>
           </div>
           <div class="event-list__content">
             <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
+              {{event.description}}
             </div>
           </div>
           <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
           </div>
-          <div class="event-list__date">2020/09/05(四)</div>
+          <div class="event-list__date">{{event.startDate}}</div>
         </li>
       </ul>
     </section>
     <section class="container" *ngIf="data.current == '2'">
       <div class="view">
-        <input type="text" placeholder="keyword" class="searchbox">
+        <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
         <span>
           <i class="material-icons">
             search
@@ -161,27 +145,23 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li>
+        <li
+          *ngFor="let event of events | appFilter: searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium mauris lectus, ac mattis
-              eros pulvinar a. Donec ac metus sed
-            </div>
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            {{event.title}}
           </div>
           <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+            <span class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</span>
           </div>
-          <div class="event-list__date">2020/09/05(四)</div>
+          <div class="event-list__date">{{event.startDate}}</div>
         </li>
       </ul>
     </section>
     <section class="container" *ngIf="data.current == '3'">
       <div class="view">
-        <input type="text" placeholder="keyword" class="searchbox">
+        <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
         <span>
           <i class="material-icons">
             search
@@ -220,15 +200,16 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li class="event-list__card">
+        <li class="event-list__card"
+          *ngFor="let event of events | appFilter: searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__title">
-            <span class="event-list__radius" style="background-color:#439B91"></span>
-            Women’s Vintage Peacoat
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            {{event.title}}
           </div>
           <div class="event-list__office">
-            <span class="event-list__tag" style="background-color:#439B91">圖書館</span>
+            <span class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</span>
           </div>
-          <div class="event-list__date">2020/09/05(四)</div>
+          <div class="event-list__date">{{event.startDate}}</div>
         </li>
       </ul>
     </section>
@@ -239,7 +220,7 @@
     <div class="modal_dialog">
       <div class="modal_content">
         <div class="modal_header">
-          <i class="material-icons" (click)="hide()">
+          <i class="material-icons" (click)="hideExcel()">
             cancel
           </i>
         </div>
@@ -253,6 +234,69 @@
           </div>
           <div class="item" (click)="daochu($event)">
             <h4>xls</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="event_dialog">
+      <div class="event_content">
+        <div class="event_body">
+          <div class="event_border">
+            <i class="cancel material-icons" (click)="hideEvent()">
+              cancel
+            </i>
+            <div class="event_block">
+              <i class="material-icons">
+                title
+              </i>
+              <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                schedule
+              </i>
+              <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                schedule
+              </i>
+              <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                place
+              </i>
+              <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                subject
+              </i>
+              <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                groups
+              </i>
+              <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                group
+              </i>
+              <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
+            </div>
+            <div class="event_block">
+              <i class="material-icons">
+                attach_file
+              </i>
+              <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div></span>
+            </div>
           </div>
         </div>
       </div>

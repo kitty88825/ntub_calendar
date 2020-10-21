@@ -30,8 +30,12 @@ export class EventService {
     return this.http.delete<Event>(`${environment.serverIp}event/${id}`, { headers: this.reqHeader });
   }
 
+  fGetEvents(): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events');
+  }
+
   getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(environment.serverIp + 'event/', { headers: this.reqHeader });
+    return this.http.get<Event[]>(environment.serverIp + 'event/events', { headers: this.reqHeader });
   }
 
   openGetEvents(): Observable<Event[]> {

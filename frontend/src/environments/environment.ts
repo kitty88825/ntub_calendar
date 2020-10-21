@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  serverIp: 'http://140.131.114.144/'
-  // serverIp = 'http://157.230.247.25/api/v1/';
+  serverIp: 'http://140.131.114.144/api/v2/'
 };
 
 /*

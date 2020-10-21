@@ -185,9 +185,9 @@ export class MainCalendarComponent implements OnInit {
           return 0;
         });
 
-        console.log(this.events);
-
         this.calendarEvents = this.events;
+
+        console.log(this.calendarEvents);
 
       }
     );
