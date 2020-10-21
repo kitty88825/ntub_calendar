@@ -21,7 +21,7 @@ from .views import EventViewSet
 
 
 router = DefaultRouter(False)
-router.register('', EventViewSet)
+router.register('events', EventViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

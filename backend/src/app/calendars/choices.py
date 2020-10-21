@@ -15,5 +15,5 @@ class RoleChoice(models.TextChoices):
 
 
 class AuthorityChoice(models.TextChoices):
-    read = 'read', _('可讀'),
-    write = 'write', _('可寫'),
+    read = 'read', _('可讀')
+    write = 'write', _('可寫')
