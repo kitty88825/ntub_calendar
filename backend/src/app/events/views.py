@@ -4,10 +4,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from .models import Event
 from .serializers import EventSerializer, UpdateEventAttachmentSerializer
+from .permission import HasCalendarPermissionOrParticipant
 
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.prefetch_related('attachments')
+    permission_classes = [HasCalendarPermissionOrParticipant]
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
