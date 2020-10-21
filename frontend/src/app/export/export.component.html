@@ -1,38 +1,3 @@
-<!-- <div class="wrap">
-  <app-navbar></app-navbar>
-  <div class="container">
-    <div class="bar">
-      <span class="badge badge-light">我的行事曆</span>
-      <br>
-      <div class="mine pretty p-default p-curve p-thick">
-        <input type="checkbox"/>
-        <div class="state">
-          <label class="mine">109學年度</label>
-        </div>
-      </div>
-      <hr>
-      <span class="badge badge-light">我的訂閱</span>
-      <div class="card">
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" class="card-checkbox"/>
-          <div class="state">
-            <label class="customize">108學年度</label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content">
-      <div class="card" id="content" #content>
-        <div class="footer">
-          
-          <img src="../assets/images/clear-black-18dp.svg" [routerLink]="['/calendar']">
-          <img src="../assets/images/save_alt-black-18dp.svg" value="Download PDF" (click)="savePdf()">
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <app-navbar></app-navbar>
 <main>
   <aside class="aside">
@@ -54,72 +19,25 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <div>
-            <label class="schoolLink">
-              <input class="file" style="display:none;"
-                onclick="window.open('https://acad.ntub.edu.tw/p/404-1004-37975.php?Lang=zh-tw')">
-              學校行事曆網站連結
-            </label>
           </div>
           <h2>匯出行事曆</h2>
-          <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-                <ul class="item-categories__list">
-                  <li *ngFor="let sub of mySub; let i = index">
-                    <label class="container">
-                      <input type="checkbox" class="material-icons item-categories__checkbox"
-                        (click)="displayType(eventTypes[i])" checked>{{sub.name}}
-                      <span class="checkmark"></span>
-                    </label>
-                  </li>
-                </ul>
-          </div>
+          <!-- 放跟登入後首頁一樣的(公開的、有訂閱的、有編輯權限行事曆)-->
         </div>
       </li>
     </ul>
-    <!-- <div class="download" value="Download PDF" onclick="savePdf()">
-        下載
-      </div> -->
     <div class="download" (click)="savePdf()" >  
       下載
     </div>
   </aside>
   <article>
     <section #screen id="screen" class="container">
-      <!-- 你好 -->
-       <!-- <ul class="event-list">
-          <div class="table">
-            <table class="table table-hover">
-              <thead class="event-list__header">
-                <tr>
-                  <th scope="col" *ngFor="let name of header">{{name}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let row of datas">
-                  <td *ngFor="let val of row">
-                    {{val}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </ul> -->
         <ul class="event-list">
             <li class="event-list__header">
               <div class="event-list__title">發布標題</div>
               <div class="event-list__content">內容概要</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <!-- <li *ngFor="let calendar of calendarEvents | appFilter: searchText">
-              <div class="event-list__title">
-                <span>{{calendar.title}}</span>
-              </div>
-              <div class="event-list__content">
-                <div class="event-list__text">
-                  {{calendar.description}}
-                </div>
-              </div>
-              <div class="event-list__date">{{calendar.startDate}}</div>
-            </li> -->
+            <!--放和首頁一樣行事曆行程-->
           </ul> 
     </section>
     <div id="nodownload">
