@@ -1,6 +1,9 @@
+from django.db.models import Q
+
 from rest_framework import serializers
 
 from app.calendars.serializers import CalendarSerializer
+from app.calendars.models import Calendar
 from app.users.models import User
 
 from .models import Event, EventParticipant, EventAttachment
@@ -40,6 +43,11 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
+    calendars_id = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+    )
     attachments = AttachmentSerializer(many=True, read_only=True)
     calendars = CalendarSerializer(many=True, read_only=True)
     participants = EventParticipantSerializer(many=True, read_only=True)
@@ -54,9 +62,10 @@ class EventSerializer(serializers.ModelSerializer):
             'description',
             'location',
             'files',
+            'emails',
+            'calendars_id',
             'attachments',
             'calendars',
-            'emails',
             'participants',
         )
         read_only_fields = (
@@ -64,6 +73,19 @@ class EventSerializer(serializers.ModelSerializer):
             'create_at',
             'update_at',
         )
+
+    def validate_calendars_id(self, value):
+        user = self.context['request'].user
+        has_calendar_permissions = len(Calendar.objects.filter(
+            Q(id__in=value),
+            Q(permissions__role=user.role),
+            Q(permissions__group__in=user.groups.all()),
+            Q(permissions__authority='write'),
+        ))
+        if len(value) != has_calendar_permissions:
+            raise serializers.ValidationError("You don't have permission.")
+
+        return value
 
     def create_attachment_from_event(self, event, files):
         if not files:
@@ -93,19 +115,34 @@ class EventSerializer(serializers.ModelSerializer):
             *User.objects.filter(email__in=emails),
         )
 
+    def create_calendar_from_event(self, event, calendars_id):
+        if not calendars_id:
+            return
+
+        event.calendars.add(
+            *Calendar.objects.filter(id__in=calendars_id),
+        )
+
     def create(self, validated_data):
         user = validated_data.pop('user')
         files = validated_data.pop('files', None)
         emails = validated_data.pop('emails', None)
+        calendars_id = validated_data.pop('calendars_id', None)
         event = super().create(validated_data)
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
+        self.create_calendar_from_event(event, calendars_id)
 
         return event
 
 
 class UpdateEventAttachmentSerializer(EventSerializer):
     remove_files = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+    )
+    calendars_id = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True,
         required=False,
@@ -121,18 +158,32 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             'description',
             'location',
             'files',
+            'emails',
+            'calendars_id',
+            'remove_files',
             'attachments',
             'calendars',
-            'remove_files',
-            'emails',
             'participants',
         )
+
+    def validate_calendars_id(self, value):
+        user = self.context['request'].user
+        has_calendar_permissions = len(Calendar.objects.filter(
+            Q(id__in=value),
+            Q(permissions__role=user.role),
+            Q(permissions__group__in=user.groups.all()),
+            Q(permissions__authority='write'),
+        ))
+        if len(value) != has_calendar_permissions:
+            raise serializers.ValidationError("You don't have permission.")
+        return value
 
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
         emails = validated_data.pop('emails', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
+        calendars_id = validated_data.pop('calendars_id', None)
         event = super().update(instance, validated_data)
 
         if remove_files:
@@ -146,7 +197,14 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             .exclude(user__email__in=emails) \
             .delete()
 
+        Event.calendars.through \
+            .objects \
+            .filter(event_id=event) \
+            .exclude(calendar_id__in=calendars_id) \
+            .delete()
+
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
+        self.create_calendar_from_event(event, calendars_id)
 
         return event
