@@ -1,3 +1,4 @@
+import { TokenService } from './../services/token.service';
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
@@ -9,6 +10,7 @@ import { Event } from '../models/event.model';
 import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
 import { SubscriptionService } from '../services/subscription.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-main-calendar',
@@ -16,22 +18,32 @@ import { SubscriptionService } from '../services/subscription.service';
   styleUrls: ['./main-calendar.component.scss']
 })
 export class MainCalendarComponent implements OnInit {
+  public pageSize = 9;
   user = true;
   official = !this.user;
   searchText = '';
+  searchTextSmall = '';
+  searchTextGrid = '';
   put;
+  page = 0;
   title;
+  openCalendar = [];
   calendars = [];
-  myCalendars = [];
   mySub = [];
   data = {
     current: '1'
   };
   isCollapsed = false;
-  showModal: boolean;
+  showEvent: boolean;
   events = [];
-  event; eventTitle; eventStart; eventEnd; eventDesc; eventOffice;
+  event; eventTitle; eventStart; eventEnd; eventOffice; eventLocation;
+  eventDescription; eventParticipant; eventFile;
   calendarName = [];
+  todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+  pastEvents = 0;
+  editPermission: boolean;
+  deletePermission: boolean;
+  group = [];
 
   constructor(
     private router: Router,
@@ -39,6 +51,7 @@ export class MainCalendarComponent implements OnInit {
     private shareDataService: ShareDataService,
     private calendarService: CalendarService,
     private subscriptionService: SubscriptionService,
+    private tokenService: TokenService
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -49,24 +62,19 @@ export class MainCalendarComponent implements OnInit {
 
   eventTypes = [];
 
-  hiddenCalendarEvents: Event[] = [];
+  hiddenCalendarEvents = [];
 
 
   eventClick(info) {
-    this.showModal = true; // Show-Hide Modal
-
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.events.length; i++) {
-      if (String(this.events[i].id) === String(info.event.id)) {
-        this.event = this.events[i];
-        this.eventTitle = this.events[i].title;
-        this.eventStart = this.events[i].startDate + ' ' + this.events[i].sTime;
-        this.eventEnd = this.events[i].endDate + ' ' + this.events[i].eTime;
-        this.eventDesc = this.events[i].description;
-        this.eventOffice = this.events[i].calendars;
-      }
-    }
-
+    this.showEvent = true;
+    this.eventTitle = info.event._def.title;
+    this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
+    this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
+    this.eventDescription = info.event._def.extendedProps.description;
+    this.eventOffice = info.event._def.extendedProps.calendar.name;
+    this.eventParticipant = info.event._def.extendedProps.participants;
+    this.eventFile = info.event._def.extendedProps.files.length;
+    this.eventLocation = info.event._def.extendedProps.location;
   }
 
   displayType(eventType: any): void {
@@ -79,7 +87,7 @@ export class MainCalendarComponent implements OnInit {
 
       // Show
       this.hiddenCalendarEvents
-        .filter(calendarEvent => calendarEvent.calendars.includes(eventType.id))
+        .filter(calendarEvent => calendarEvent.calendar.id === eventType.id)
         .forEach(calendarEvent => {
           calendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
           calendarEventsToShow.push(calendarEvent.id);
@@ -97,21 +105,10 @@ export class MainCalendarComponent implements OnInit {
       // Hide
       calendarEvents
         .filter(calendarEvent => {
-          if (calendarEvent.calendars.length === 1) {
-            return calendarEvent.calendars.includes(eventType.id);
-          } else if (calendarEvent.calendars.length > 1) {
-            let count = 0;
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < calendarEvent.calendars.length; i++) {
-              // tslint:disable-next-line: prefer-for-of
-              for (let j = 0; j < this.eventTypes.length; j++) {
-                if (calendarEvent.calendars[i] === this.eventTypes[j].id && this.eventTypes[j].selected === false) {
-                  count++;
-                  if (count === calendarEvent.calendars.length) {
-                    return true;
-                  }
-                }
-              }
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.events.length; i++) {
+            if (this.events[i].calendar.id === eventType.id) {
+              return calendarEvent.calendar.id === eventType.id;
             }
           }
         })
@@ -124,33 +121,52 @@ export class MainCalendarComponent implements OnInit {
           }
 
           this.hiddenCalendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
-          calendarEventsToHide.push(calendarEvent.id);
+          calendarEventsToHide.push(calendarEvent.calendar.id);
         });
 
       calendarEventsToHide.forEach(calendarEventToHide => {
-        const index = calendarEvents.findIndex(calendarEvent => calendarEvent.id === calendarEventToHide);
+        const index = calendarEvents.findIndex(calendarEvent => calendarEvent.calendar.id === calendarEventToHide);
         calendarEvents.splice(index, 1);
       });
     }
-    this.calendarEvents = calendarEvents; // reassign the array
+
+    this.calendarEvents = calendarEvents;
+    this.events = calendarEvents;
+
+    // tslint:disable-next-line: only-arrow-functions
+    this.events.sort(function (a, b) {
+      const startA = a.start.toUpperCase(); // ignore upper and lowercase
+      const startB = b.start.toUpperCase(); // ignore upper and lowercase
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
+    });
   }
 
   ngOnInit() {
+    this.tokenService.getUser().subscribe(
+      re => {
+        this.group = re.groups;
+      }
+    );
+
     this.calendarService.getCalendar().subscribe(
       result => {
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < result.length; j++) {
-          this.myCalendars.push({ id: result[j].id, name: result[j].name });
-        }
-      }
-    );
+          this.openCalendar.push({
+            id: result[j].id, name: result[j].name,
+            description: result[j].description, display: result[j].display,
+            color: result[j].color, permission: result[j].permission
+          });
 
-    this.subscriptionService.getSubscription().subscribe(
-      data => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-          this.mySub.push({ id: data[i].id, name: data[i].name, calendar: data[i].calendar });
-          this.eventTypes.push({ title: 'type' + data[i].calendar, id: data[i].calendar, selected: true });
+          this.eventTypes.push({ title: 'type' + result[j].id, id: result[j].id, selected: true });
         }
       }
     );
@@ -160,15 +176,22 @@ export class MainCalendarComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
 
-          this.events.push({
-            id: data[i].id, title: data[i].title, start: data[i].startAt, calendars: data[i].calendars,
-            end: data[i].endAt, name: data[i].calendars, startDate: data[i].startAt.substr(0, 10),
-            endDate: data[i].endAt.substr(0, 10), description: data[i].description,
-            sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16)
-          });
+          // tslint:disable-next-line: prefer-for-of
+          for (let j = 0; j < data[i].calendars.length; j++) {
+
+            this.events.push({
+              id: data[i].id, title: data[i].title, start: data[i].startAt, calendar: data[i].calendars[j],
+              end: data[i].endAt, startDate: data[i].startAt.substr(0, 10), location: data[i].location,
+              endDate: data[i].endAt.substr(0, 10), description: data[i].description,
+              backgroundColor: data[i].calendars[j].color,
+              sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16),
+              participants: data[i].participants, files: data[i].attachments, permission: false,
+              permissions: data[i].calendars[j].permissions
+            });
+
+          }
 
         }
-
 
         // tslint:disable-next-line: only-arrow-functions
         this.events.sort(function (a, b) {
@@ -187,11 +210,32 @@ export class MainCalendarComponent implements OnInit {
 
         this.calendarEvents = this.events;
 
-        console.log(this.calendarEvents);
+        // tslint:disable-next-line: prefer-for-of
+        for (let k = 0; k < this.events.length; k++) {
+          if (this.events[k].startDate < this.todayDate || this.events[k].endDate < this.todayDate) {
+            this.pastEvents = this.pastEvents + 1;
+          }
+        }
+
+        this.page = Math.ceil(this.pastEvents / 10);
+
+        // tslint:disable-next-line: prefer-for-of
+        for (let k = 0; k < this.group.length; k++) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.events.length; i++) {
+            // tslint:disable-next-line: prefer-for-of
+            for (let j = 0; j < this.events[i].permissions.length; j++) {
+              if (Number(this.group[k]) === this.events[i].permissions[j].group) {
+                this.events[i].permission = true;
+              }
+            }
+          }
+        }
+
+        console.log(this.events);
 
       }
     );
-
   }
 
   setCurrent(param) {
@@ -250,7 +294,7 @@ export class MainCalendarComponent implements OnInit {
   }
 
   hide() {
-    this.showModal = false;
+    this.showEvent = false;
   }
 
 }

@@ -105,7 +105,7 @@
     <section class="container" *ngIf="data.current == '2'">
       <div class="view">
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
-        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
         <span>
           <i class="material-icons">
             search
@@ -161,7 +161,7 @@
     <section class="container" *ngIf="data.current == '3'">
       <div class="view">
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
-        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
+        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
         <span>
           <i class="material-icons">
             search

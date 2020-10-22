@@ -13,6 +13,7 @@ export class NavbarComponent implements OnInit {
   official = !this.user;
   public isMenuCollapsed = true;
   userName = '';
+  staff = '';
 
   constructor(
     private router: Router,
@@ -21,6 +22,8 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName').substr(0, 1);
+
+    this.staff = localStorage.getItem('staff');
   }
 
   logout() {

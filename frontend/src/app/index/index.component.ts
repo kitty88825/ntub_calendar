@@ -1,3 +1,4 @@
+import { ShareDataService } from './../services/share-data.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
@@ -50,6 +51,7 @@ export class IndexComponent implements OnInit {
     private authService: AuthService,
     private calendarService: CalendarService,
     private eventService: EventService,
+    private shareDataService: ShareDataService
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -152,16 +154,14 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('userName', user.name);
           localStorage.setItem('access_token', user.authToken);
           this.loggedIn = (user != null);
-          console.log(this.authToken);
-          console.log(this.loggedIn);
           localStorage.setItem('loggin', String(this.loggedIn));
           const token: Token = {
             accessToken: this.authToken,
           };
           this.tokenService.postToken(token).subscribe(
             data => {
-              console.log(data.token);
               this.resToken = data.token.access;
+              localStorage.setItem('staff', String(data.staff));
               localStorage.setItem('res_access_token', this.resToken);
               localStorage.setItem('res_refresh_token', data.token.refresh);
 
@@ -188,7 +188,16 @@ export class IndexComponent implements OnInit {
               });
 
               if (localStorage.getItem('res_access_token') != null) {
-                this.router.navigate(['/calendar']);
+                this.calendarService.getCalendar().subscribe(
+                  a => {
+                  }
+                );
+                this.eventService.getEvents().subscribe(
+                  res => {
+                  }
+                );
+                return this.router.navigate(['/calendar']);
+
               } else if (localStorage.getItem('res_access_token') === null) {
                 alert('請重新登入！');
               }
@@ -203,7 +212,6 @@ export class IndexComponent implements OnInit {
   }
 
   eventClick(info) {
-    console.log(info);
     this.showEvent = true;
     this.eventTitle = info.event._def.title;
     this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;

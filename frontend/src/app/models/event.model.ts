@@ -5,7 +5,20 @@ export interface Event {
   endAt: string;
   description?: string;
   location?: string;
-  calendars: number[];
+  calendars: [{
+    color: string;
+    description?: string,
+    display: string,
+    id?: number,
+    name: string,
+    permissions: [{
+      authority: string,
+      group: number,
+      groupName: string,
+      id?: number,
+      role: string
+    }]
+  }];
   attachments?: File;
   attribute: string;
   participants?: [];
