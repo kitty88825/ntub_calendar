@@ -121,6 +121,17 @@ export class IndexComponent implements OnInit {
           if (this.events[k].startDate < this.todayDate || this.events[k].endDate < this.todayDate) {
             this.pastEvents = this.pastEvents + 1;
           }
+
+          if (Number(this.events[k].startDate.substr(6, 2)) <= 7) {
+            this.showDatas.push([String(Number(this.events[k].startDate.substr(0, 4)) - 1911),
+              '公立', '技專校院', '0051', '國立台北商業大學', '1', this.events[k].startDate,
+            this.events[k].endDate, '', '', '', this.events[k].title]);
+          } else {
+            this.showDatas.push([String(Number(this.events[k].startDate.substr(0, 4)) - 1911),
+              '公立', '技專校院', '0051', '國立台北商業大學', '2', this.events[k].startDate,
+            this.events[k].endDate, '', '', '', this.events[k].title]);
+          }
+
         }
 
         this.page = Math.ceil(this.pastEvents / 10);
@@ -219,19 +230,33 @@ export class IndexComponent implements OnInit {
 
   // 匯出
   daochu(info) {
-    console.log(info);
+    this.output = [];
     this.output.push(this.header);
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.showDatas.length; i++) {
       this.output.push(this.showDatas[i]);
     }
-    console.log(this.output);
     /* generate worksheet */
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.output);
-
-    /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.output);
+    const wscols = [
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 20 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 30 },
+      { wch: 20 },
+      { wch: 100 },
+    ];
+    ws['!cols'] = wscols;
+
+    /* generate workbook and add the worksheet */
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     /* save to file */
