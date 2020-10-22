@@ -27,7 +27,7 @@ export class EventService {
   }
 
   deleteEvent(id: number): Observable<Event> {
-    return this.http.delete<Event>(`${environment.serverIp}event/${id}`, { headers: this.reqHeader });
+    return this.http.delete<Event>(`${environment.serverIp}event/events/${id}`, { headers: this.reqHeader });
   }
 
   fGetEvents(): Observable<Event[]> {
@@ -43,7 +43,7 @@ export class EventService {
   }
 
   getEvent(id: number): Observable<Event> {
-    return this.http.get<Event>(`${environment.serverIp}event/${id}`, { headers: this.reqHeader });
+    return this.http.get<Event>(`${environment.serverIp}event/events/${id}`, { headers: this.reqHeader });
   }
 
   patchEvent(id: number, formData: any): Observable<Event> {

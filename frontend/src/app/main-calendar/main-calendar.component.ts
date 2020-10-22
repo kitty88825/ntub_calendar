@@ -44,6 +44,11 @@ export class MainCalendarComponent implements OnInit {
   editPermission: boolean;
   deletePermission: boolean;
   group = [];
+  Selected = false;
+  unSelectedItemsList = [];
+  formData = new FormData();
+  deleteData = [];
+  permissionCount = 0;
 
   constructor(
     private router: Router,
@@ -186,7 +191,7 @@ export class MainCalendarComponent implements OnInit {
               backgroundColor: data[i].calendars[j].color,
               sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16),
               participants: data[i].participants, files: data[i].attachments, permission: false,
-              permissions: data[i].calendars[j].permissions
+              permissions: data[i].calendars[j].permissions, isChecked: false
             });
 
           }
@@ -212,7 +217,7 @@ export class MainCalendarComponent implements OnInit {
 
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.events.length; k++) {
-          if (this.events[k].startDate < this.todayDate || this.events[k].endDate < this.todayDate) {
+          if (this.events[k].startDate < this.todayDate && this.events[k].endDate < this.todayDate) {
             this.pastEvents = this.pastEvents + 1;
           }
         }
@@ -231,9 +236,6 @@ export class MainCalendarComponent implements OnInit {
             }
           }
         }
-
-        console.log(this.events);
-
       }
     );
   }
@@ -295,6 +297,86 @@ export class MainCalendarComponent implements OnInit {
 
   hide() {
     this.showEvent = false;
+  }
+
+  checkAll() {
+    this.permissionCount = 0;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.events.length; i++) {
+      if (this.events[i].permission === true) {
+        this.events[i].isChecked = this.Selected;
+        this.permissionCount = this.permissionCount + 1;
+      }
+    }
+
+    this.changeSelection();
+  }
+
+  changeSelection() {
+    this.fetchSelectedItems();
+    this.fetchCheckedIDs();
+
+    if (this.permissionCount === this.deleteData.length) {
+      this.Selected = true;
+    } else {
+      this.Selected = false;
+    }
+
+  }
+
+  fetchSelectedItems() {
+    this.unSelectedItemsList = this.events.filter((value, index) => {
+      return value.isChecked;
+    });
+  }
+
+  fetchCheckedIDs() {
+    this.deleteData.length = 0;
+    // this.formData.delete('remove_emails');
+    this.events.forEach((value, index) => {
+      if (value.isChecked === true) {
+        this.deleteData.push(value.id);
+      }
+    });
+
+    console.log(this.deleteData);
+  }
+
+  deleteAll() {
+    Swal.fire({
+      text: '確定要刪除' + this.deleteData.length + '筆資料?',
+      showCancelButton: true,
+      icon: 'warning',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '確定',
+      cancelButtonText: '取消'
+      // tslint:disable-next-line: no-shadowed-variable
+    }).then((result) => {
+      if (result.value) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.deleteData.length; i++) {
+          this.eventService.deleteEvent(this.deleteData[i]).subscribe(
+            data => {
+              const index = this.calendarEvents.indexOf(this.deleteData[i]);
+              this.calendarEvents.splice(index, 1);
+              this.calendarComponent
+                .getApi()
+                .getEventById(String(this.deleteData[i]))
+                .remove();
+              Swal.fire ({
+                text: '刪除成功',
+                icon: 'success'
+              });
+            }, error => {
+              console.log(error);
+            }
+          );
+        }
+      }
+    });
+
+
   }
 
 }

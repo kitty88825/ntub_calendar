@@ -47,10 +47,12 @@ export class TokenInterceptor implements HttpInterceptor {
         } else if (localStorage.getItem('loggin') === null) {
           alert('請先登入系統');
           this.router.navigate(['/index']);
-        } else if (error.status === 403) {
+        } else if (localStorage.getItem('loggin') === null && error.status === 403) {
           alert('請使用北商google帳號登入');
           this.router.navigate(['/index']);
           window.location.reload();
+        } else if (localStorage.getItem('loggin') != null && error.status === 403) {
+          alert('您沒有權限進行操作');
         }
 
         return throwError(error);

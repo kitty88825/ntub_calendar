@@ -84,8 +84,8 @@ export class EditScheduleComponent implements OnInit {
         this.location = data.message.location;
         this.description = data.message.description;
         // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.message.participantSet.length; i++) {
-          this.userEmail.push(data.message.participantSet[i].email);
+        for (let i = 0; i < data.message.participants.length; i++) {
+          this.userEmail.push(data.message.participants[i].email);
         }
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < data.message.calendars.length; j++) {
