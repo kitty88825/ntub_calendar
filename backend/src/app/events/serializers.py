@@ -76,12 +76,12 @@ class EventSerializer(serializers.ModelSerializer):
 
     def validate_calendars_id(self, value):
         user = self.context['request'].user
-        has_calendar_permissions = len(Calendar.objects.filter(
+        has_calendar_permissions = Calendar.objects.filter(
             Q(id__in=value),
             Q(permissions__role=user.role),
             Q(permissions__group__in=user.groups.all()),
             Q(permissions__authority='write'),
-        ))
+        ).count()
         if len(value) != has_calendar_permissions:
             raise serializers.ValidationError("You don't have permission.")
 
