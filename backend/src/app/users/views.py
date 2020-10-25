@@ -1,13 +1,12 @@
 import uuid
+from django.shortcuts import reverse
 
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-
-from rest_framework import viewsets
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -93,13 +92,15 @@ class CommonParticipantViewSet(ModelViewSet):
         serializers.save(creator=self.request.user)
 
 
-class UrlChangeViewSet(viewsets.ViewSet):
+class UrlChangeViewSet(ViewSet):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
-    def update(self, request, *args, **kwargs):
+    def create(self, request):
         change_uuid = User.objects.get(id=self.request.user.id)
         change_uuid.code = uuid.uuid4()
         change_uuid.save()
 
-        return Response({'code': change_uuid.code})
+        new_url = request.build_absolute_uri(reverse('ical', kwargs=dict(code=change_uuid.code)))
+
+        return Response({'url': new_url})
