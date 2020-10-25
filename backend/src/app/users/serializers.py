@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'code', 'groups', 'url')
+        fields = ('id', 'username', 'email', 'code', 'groups', 'url', 'role')
 
     def get_url(self, user):
         return self.context['request'] \
