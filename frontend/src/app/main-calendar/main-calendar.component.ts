@@ -33,6 +33,7 @@ export class MainCalendarComponent implements OnInit {
   data = {
     current: '1'
   };
+  allEvents = [];
   isCollapsed = false;
   showEvent: boolean;
   events = [];
@@ -40,7 +41,7 @@ export class MainCalendarComponent implements OnInit {
   eventDescription; eventParticipant; eventFile;
   calendarName = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-  pastEvents = 0;
+  pastEvents = [];
   editPermission: boolean;
   deletePermission: boolean;
   group = [];
@@ -49,6 +50,12 @@ export class MainCalendarComponent implements OnInit {
   formData = new FormData();
   deleteData = [];
   permissionCount = 0;
+  pastBtn = false;
+  nowBtn = true;
+  futureEvents = [];
+  future = [];
+  past = [];
+  deleteCount = 0;
 
   constructor(
     private router: Router,
@@ -92,7 +99,31 @@ export class MainCalendarComponent implements OnInit {
 
       // Show
       this.hiddenCalendarEvents
-        .filter(calendarEvent => calendarEvent.calendar.id === eventType.id)
+        .filter(calendarEvent => {
+          // tslint:disable-next-line: prefer-for-of
+          for (let j = 0; j < this.events.length; j++) {
+            if (this.events[j].calendars.length === 1) {
+              if (this.events[j].calendars.id === eventType.id) {
+                return calendarEvent.calendars.id === eventType.id;
+              }
+            } else if (this.events[j].calendars.length > 1) {
+              let count = 0;
+              // tslint:disable-next-line: prefer-for-of
+              for (let i = 0; i < calendarEvent.calendars.length; i++) {
+                // tslint:disable-next-line: prefer-for-of
+                for (let k = 0; k < this.eventTypes.length; k++) {
+                  if (calendarEvent.calendars[i].id === this.eventTypes[k].id && this.eventTypes[k].selected === true) {
+                    count++;
+                    if (count === calendarEvent.calendars.length) {
+                      return true;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        )
         .forEach(calendarEvent => {
           calendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
           calendarEventsToShow.push(calendarEvent.id);
@@ -111,9 +142,25 @@ export class MainCalendarComponent implements OnInit {
       calendarEvents
         .filter(calendarEvent => {
           // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < this.events.length; i++) {
-            if (this.events[i].calendar.id === eventType.id) {
-              return calendarEvent.calendar.id === eventType.id;
+          for (let j = 0; j < this.events.length; j++) {
+            if (this.events[j].calendars.length === 1) {
+              if (this.events[j].calendars.id === eventType.id) {
+                return calendarEvent.calendars.id === eventType.id;
+              }
+            } else if (this.events[j].calendars.length > 1) {
+              let count = 0;
+              // tslint:disable-next-line: prefer-for-of
+              for (let i = 0; i < calendarEvent.calendars.length; i++) {
+                // tslint:disable-next-line: prefer-for-of
+                for (let k = 0; k < this.eventTypes.length; k++) {
+                  if (calendarEvent.calendars[i].id === this.eventTypes[k].id && this.eventTypes[k].selected === false) {
+                    count++;
+                    if (count === calendarEvent.calendars.length) {
+                      return true;
+                    }
+                  }
+                }
+              }
             }
           }
         })
@@ -136,10 +183,13 @@ export class MainCalendarComponent implements OnInit {
     }
 
     this.calendarEvents = calendarEvents;
-    this.events = calendarEvents;
+
+    this.futureEvents = this.calendarEvents.filter(fu => this.future.includes(fu.id));
+
+    this.pastEvents = this.calendarEvents.filter(pa => this.past.includes(pa.id));
 
     // tslint:disable-next-line: only-arrow-functions
-    this.events.sort(function (a, b) {
+    this.futureEvents.sort(function (a, b) {
       const startA = a.start.toUpperCase(); // ignore upper and lowercase
       const startB = b.start.toUpperCase(); // ignore upper and lowercase
       if (startA < startB) {
@@ -152,11 +202,26 @@ export class MainCalendarComponent implements OnInit {
       // names must be equal
       return 0;
     });
+    // tslint:disable-next-line: only-arrow-functions
+    this.pastEvents.sort(function (a, b) {
+      const startA = a.start.toUpperCase(); // ignore upper and lowercase
+      const startB = b.start.toUpperCase(); // ignore upper and lowercase
+      if (startA < startB) {
+        return 1;
+      }
+      if (startA > startB) {
+        return -1;
+      }
+
+      // names must be equal
+      return 0;
+    });
   }
 
   ngOnInit() {
     this.tokenService.getUser().subscribe(
       re => {
+        console.log(re);
         this.group = re.groups;
       }
     );
@@ -188,7 +253,7 @@ export class MainCalendarComponent implements OnInit {
               id: data[i].id, title: data[i].title, start: data[i].startAt, calendar: data[i].calendars[j],
               end: data[i].endAt, startDate: data[i].startAt.substr(0, 10), location: data[i].location,
               endDate: data[i].endAt.substr(0, 10), description: data[i].description,
-              backgroundColor: data[i].calendars[j].color,
+              backgroundColor: data[i].calendars[j].color, calendars: data[i].calendars,
               sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16),
               participants: data[i].participants, files: data[i].attachments, permission: false,
               permissions: data[i].calendars[j].permissions, isChecked: false
@@ -218,11 +283,64 @@ export class MainCalendarComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.events.length; k++) {
           if (this.events[k].startDate < this.todayDate && this.events[k].endDate < this.todayDate) {
-            this.pastEvents = this.pastEvents + 1;
+            this.pastEvents.push(this.events[k]);
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < this.pastEvents.length; i++) {
+              this.past.push(this.pastEvents[i].id);
+            }
+          } else {
+            this.futureEvents.push(this.events[k]);
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < this.futureEvents.length; i++) {
+              this.future.push(this.futureEvents[i].id);
+            }
           }
         }
 
-        this.page = Math.ceil(this.pastEvents / 10);
+        // tslint:disable-next-line: only-arrow-functions
+        this.future = this.future.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
+        });
+
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.past = this.past.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.pastEvents.sort(function (a, b) {
+          const startA = a.start.toUpperCase(); // ignore upper and lowercase
+          const startB = b.start.toUpperCase(); // ignore upper and lowercase
+          if (startA < startB) {
+            return 1;
+          }
+          if (startA > startB) {
+            return -1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.futureEvents.sort(function (a, b) {
+          const startA = a.start.toUpperCase(); // ignore upper and lowercase
+          const startB = b.start.toUpperCase(); // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+
+
+
 
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.group.length; k++) {
@@ -238,11 +356,21 @@ export class MainCalendarComponent implements OnInit {
         }
       }
     );
+
+  }
+
+  changeToPast() {
+    this.pastBtn = true;
+    this.nowBtn = false;
+  }
+
+  changeToNow() {
+    this.pastBtn = false;
+    this.nowBtn = true;
   }
 
   setCurrent(param) {
     this.data.current = param;
-    console.log(param);
   }
 
   delete(info) {
@@ -314,14 +442,6 @@ export class MainCalendarComponent implements OnInit {
 
   changeSelection() {
     this.fetchSelectedItems();
-    this.fetchCheckedIDs();
-
-    if (this.permissionCount === this.deleteData.length) {
-      this.Selected = true;
-    } else {
-      this.Selected = false;
-    }
-
   }
 
   fetchSelectedItems() {
@@ -330,16 +450,74 @@ export class MainCalendarComponent implements OnInit {
     });
   }
 
-  fetchCheckedIDs() {
+  fetchCheckedIDs(info) {
     this.deleteData.length = 0;
-    // this.formData.delete('remove_emails');
-    this.events.forEach((value, index) => {
-      if (value.isChecked === true) {
-        this.deleteData.push(value.id);
-      }
+    this.permissionCount = 0;
+
+
+    if (info.target.checked === true) {
+      this.events.forEach((value, index) => {
+        if (value.calendars.length > 1) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.events.length; i++) {
+            if (this.events[i].id === value.id && value.isChecked === true) {
+              this.events[i].isChecked = true;
+            }
+          }
+          if (value.isChecked === true) {
+            this.deleteData.push(value.id);
+          }
+        } else if (value.calendars.length === 1) {
+          if (value.isChecked === true) {
+            this.deleteData.push(value.id);
+          }
+        }
+      });
+    } else if (info.target.checked === false) {
+      this.events.forEach((value, index) => {
+        if (value.calendars.length > 1) {
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.events.length; i++) {
+            if (this.events[i].id === value.id && value.isChecked === false) {
+              this.events[i].isChecked = false;
+            }
+          }
+          if (value.isChecked === true) {
+            this.deleteData.push(value.id);
+          }
+        } else if (value.calendars.length === 1) {
+          if (value.isChecked === true) {
+            this.deleteData.push(value.id);
+          }
+        }
+      });
+    }
+    this.deleteCount = this.deleteData.length;
+
+    // tslint:disable-next-line: only-arrow-functions
+    this.deleteData = this.deleteData.filter(function (el, i, arr) {
+      return arr.indexOf(el) === i;
     });
 
     console.log(this.deleteData);
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.events.length; i++) {
+
+      if (this.events[i].permission === true) {
+        this.permissionCount = this.permissionCount + 1;
+      }
+
+    }
+    console.log(this.deleteCount);
+    console.log(this.permissionCount);
+
+    if (this.permissionCount === this.deleteCount) {
+      this.Selected = true;
+    } else {
+      this.Selected = false;
+    }
+
   }
 
   deleteAll() {
@@ -364,9 +542,11 @@ export class MainCalendarComponent implements OnInit {
                 .getApi()
                 .getEventById(String(this.deleteData[i]))
                 .remove();
-              Swal.fire ({
+              Swal.fire({
                 text: '刪除成功',
-                icon: 'success'
+                icon: 'success',
+              }).then((res) => {
+                window.location.reload();
               });
             }, error => {
               console.log(error);

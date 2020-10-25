@@ -39,11 +39,14 @@ export class IndexComponent implements OnInit {
   searchTextSmall = '';
   searchTextGrid = '';
   calendar = [];
-  pastEvents = 0;
-  page = 0;
+  pastEvents = [];
+  futureEvents = [];
+  page = 1;
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   eventTitle; eventStart; eventEnd; eventDescription; eventOffice;
   eventParticipant; eventFile; eventLocation;
+  pastBtn = false;
+  nowBtn = true;
 
   constructor(
     private router: Router,
@@ -120,8 +123,10 @@ export class IndexComponent implements OnInit {
 
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.events.length; k++) {
-          if (this.events[k].startDate < this.todayDate || this.events[k].endDate < this.todayDate) {
-            this.pastEvents = this.pastEvents + 1;
+          if (this.events[k].startDate < this.todayDate && this.events[k].endDate < this.todayDate) {
+            this.pastEvents.push(this.events[k]);
+          } else {
+            this.futureEvents.push(this.events[k]);
           }
 
           if (Number(this.events[k].startDate.substr(6, 2)) <= 7) {
@@ -136,7 +141,35 @@ export class IndexComponent implements OnInit {
 
         }
 
-        this.page = Math.ceil(this.pastEvents / 10);
+        // tslint:disable-next-line: only-arrow-functions
+        this.pastEvents.sort(function (a, b) {
+          const startA = a.start.toUpperCase(); // ignore upper and lowercase
+          const startB = b.start.toUpperCase(); // ignore upper and lowercase
+          if (startA < startB) {
+            return 1;
+          }
+          if (startA > startB) {
+            return -1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.futureEvents.sort(function (a, b) {
+          const startA = a.start.toUpperCase(); // ignore upper and lowercase
+          const startB = b.start.toUpperCase(); // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
 
       },
       error => {
@@ -144,6 +177,16 @@ export class IndexComponent implements OnInit {
       }
     );
 
+  }
+
+  changeToPast() {
+    this.pastBtn = true;
+    this.nowBtn = false;
+  }
+
+  changeToNow() {
+    this.pastBtn = false;
+    this.nowBtn = true;
   }
 
   async signInWithGoogle() {
@@ -164,7 +207,6 @@ export class IndexComponent implements OnInit {
               localStorage.setItem('staff', String(data.staff));
               localStorage.setItem('res_access_token', this.resToken);
               localStorage.setItem('res_refresh_token', data.token.refresh);
-
               let timerInterval;
 
               Swal.fire({
@@ -186,19 +228,10 @@ export class IndexComponent implements OnInit {
                   clearInterval(timerInterval);
                 }
               });
-
-              if (localStorage.getItem('res_access_token') != null) {
-                this.calendarService.getCalendar().subscribe(
-                  a => {
-                  }
-                );
-                this.eventService.getEvents().subscribe(
-                  res => {
-                  }
-                );
+              if (this.resToken != null) {
                 return this.router.navigate(['/calendar']);
 
-              } else if (localStorage.getItem('res_access_token') === null) {
+              } else if (this.resToken === null) {
                 alert('請重新登入！');
               }
             },

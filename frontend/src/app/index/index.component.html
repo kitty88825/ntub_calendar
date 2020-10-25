@@ -43,7 +43,13 @@
   <article>
     <section class="container" *ngIf="data.current == '1'">
       <div class="view">
+        <div class="pastBtn" (click)="changeToPast()" *ngIf="pastBtn === false">
+          past
+        </div>
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <div class="nowBtn" (click)="changeToNow()" *ngIf="nowBtn === false">
+          now
+        </div>
         <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
         <span>
           <i class="material-icons">
@@ -77,7 +83,7 @@
           </li>
         </ul>
       </div>
-      <ul class="event-list">
+      <ul class="event-list" *ngIf="pastBtn === false">
         <li class="event-list__header">
           <div class="event-list__title">發布標題</div>
           <div class="event-list__content">內容概要</div>
@@ -85,7 +91,31 @@
           <div class="event-list__date">開始日期</div>
         </li>
         <li
-          *ngFor="let event of events | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          *ngFor="let event of futureEvents | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__title">
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span>{{event.title}}</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              {{event.description}}
+            </div>
+          </div>
+          <div class="event-list__office">
+            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+          </div>
+          <div class="event-list__date">{{event.startDate}}</div>
+        </li>
+      </ul>
+      <ul class="event-list" *ngIf="pastBtn === true">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li
+          *ngFor="let event of pastEvents | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__title">
             <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
             <span>{{event.title}}</span>
@@ -104,7 +134,13 @@
     </section>
     <section class="container" *ngIf="data.current == '2'">
       <div class="view">
+        <div class="pastBtn" (click)="changeToPast()" *ngIf="pastBtn === false">
+          past
+        </div>
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <div class="nowBtn" (click)="changeToNow()" *ngIf="nowBtn === false">
+          now
+        </div>
         <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
         <span>
           <i class="material-icons">
@@ -138,7 +174,7 @@
           </li>
         </ul>
       </div>
-      <ul class="event-list event-list--small">
+      <ul class="event-list event-list--small" *ngIf="pastBtn === false">
         <li class="event-list__header">
           <div class="event-list__title">發布標題</div>
           <div class="event-list__content">內容概要</div>
@@ -146,7 +182,26 @@
           <div class="event-list__date">開始日期</div>
         </li>
         <li
-          *ngFor="let event of events | appFilter: searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          *ngFor="let event of futureEvents | appFilter: searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__title">
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            {{event.title}}
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</span>
+          </div>
+          <div class="event-list__date">{{event.startDate}}</div>
+        </li>
+      </ul>
+      <ul class="event-list event-list--small" *ngIf="pastBtn === true">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li
+          *ngFor="let event of pastEvents | appFilter: searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__title">
             <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
             {{event.title}}
@@ -160,7 +215,13 @@
     </section>
     <section class="container" *ngIf="data.current == '3'">
       <div class="view">
+        <div class="pastBtn" (click)="changeToPast()" *ngIf="pastBtn === false">
+          past
+        </div>
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <div class="nowBtn" (click)="changeToNow()" *ngIf="nowBtn === false">
+          now
+        </div>
         <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
         <span>
           <i class="material-icons">
@@ -194,14 +255,32 @@
           </li>
         </ul>
       </div>
-      <ul class="event-list event-list--grid">
+      <ul class="event-list event-list--grid" *ngIf="pastBtn === false">
         <li class="event-list__header">
           <div class="event-list__title">發布標題</div>
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
         <li class="event-list__card"
-          *ngFor="let event of events | appFilter: searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          *ngFor="let event of futureEvents | appFilter: searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__title">
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            {{event.title}}
+          </div>
+          <div class="event-list__office">
+            <span class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</span>
+          </div>
+          <div class="event-list__date">{{event.startDate}}</div>
+        </li>
+      </ul>
+      <ul class="event-list event-list--grid" *ngIf="pastBtn === true">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li class="event-list__card"
+          *ngFor="let event of pastEvents | appFilter: searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__title">
             <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
             {{event.title}}
@@ -271,7 +350,8 @@
               <i class="material-icons">
                 place
               </i>
-              <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}</div></span>
+              <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
+                </div></span>
             </div>
             <div class="event_block">
               <i class="material-icons">
@@ -295,7 +375,8 @@
               <i class="material-icons">
                 attach_file
               </i>
-              <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div></span>
+              <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
+                </span>
             </div>
           </div>
         </div>

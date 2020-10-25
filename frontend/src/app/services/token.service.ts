@@ -25,7 +25,7 @@ export class TokenService {
   }
 
   refreshToken(token): Observable<any> {
-    return this.http.post<any>(environment.serverIp + 'token/refresh/', token);
+    return this.http.post<any>(environment.serverIp + 'token/refresh', token);
   }
 
   getUser(): Observable<any> {

@@ -155,6 +155,30 @@
     .view {
       display: flex;
 
+      .pastBtn, .nowBtn {
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        border: $color_border 1px solid;
+        padding: $content-size_top-bottom/3 $content-size_left-right/2;
+        cursor: pointer;
+        height: 40px;
+        color: $color_accent;
+        font-size: 10px;
+      }
+
+      .pastBtn {
+        margin-right: $content-size_left-right/2;
+      }
+
+      .nowBtn {
+        margin-left: $content-size_left-right/2;
+      }
+
+      .pastBtn:hover, .nowBtn:hover {
+        background-color: #eeeeee;
+      }
+
       .searchbox {
         margin-top   : $content-size_top-bottom/2;
         border-radius: 5px;
@@ -165,7 +189,7 @@
         position     : relative;
         margin-right : $content-size_left-right;
         transition   : 300ms;
-        margin-left  : 30%;
+        margin-left  : 25%;
         z-index      : 99;
         padding      : $content-size_top-bottom/2 $content-size_left-right/2;
       }

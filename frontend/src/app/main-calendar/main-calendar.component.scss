@@ -167,6 +167,32 @@
     .view {
       display: flex;
 
+      .pastBtn,
+      .nowBtn {
+        display      : flex;
+        align-items  : center;
+        border-radius: 5px;
+        border       : $color_border 1px solid;
+        padding      : $content-size_top-bottom/3 $content-size_left-right/2;
+        cursor       : pointer;
+        height       : 40px;
+        color        : $color_accent;
+        font-size    : 10px;
+      }
+
+      .pastBtn {
+        margin-right: $content-size_left-right/2;
+      }
+
+      .nowBtn {
+        margin-left: $content-size_left-right/2;
+      }
+
+      .pastBtn:hover,
+      .nowBtn:hover {
+        background-color: #eeeeee;
+      }
+
       .searchbox {
         margin-top   : $content-size_top-bottom/2;
         border-radius: 5px;
@@ -177,13 +203,13 @@
         position     : relative;
         margin-right : $content-size_left-right;
         transition   : 300ms;
-        margin-left  : 38%;
+        margin-left  : 33%;
         z-index      : 99;
         padding      : $content-size_top-bottom/2 $content-size_left-right/2;
       }
 
       .deleteBtn {
-        padding-top: $content-size_top-bottom/1.5;
+        padding-top : $content-size_top-bottom/1.5;
         margin-right: $content-size_left-right/2;
 
         i {
@@ -419,14 +445,24 @@
       }
 
       .event-list__header {
-        >div:not(.event-list__title) {
+
+        .event-list__office,
+        .event-list__date {
           display: none;
         }
-      }
 
-      .event-list__title {
-        width : fit-content;
-        margin: 0px auto;
+        .event-list__title {
+          display: flex;
+
+          .event-list__checkbox {
+            margin-top: $content-size_top-bottom/2;
+            left: 0;
+          }
+
+          span.title {
+            margin-left: $content-size_left-right/2;
+          }
+        }
       }
 
       .event-list__office {
@@ -441,6 +477,28 @@
         text-align: center;
         margin    : $content-size_top-bottom $content-size_left-right/2;
         box-shadow: 1px 1px 7px -3px rgba(0, 0, 0, 0.75);
+
+        .event-list__title {
+          width : fit-content;
+          margin: 0px auto;
+        }
+
+        .event-list__checkbox {
+          margin-top: $content-size_top-bottom/2;
+          left: 0;
+        }
+
+        .event-list__checkbox {
+          display: flex;
+
+          i {
+            cursor: pointer;
+            margin-left: $content-size_left-right*9;
+            width: 10px;
+            height: 10px;
+            margin-top: -$content-size_top-bottom/2;
+          }
+        }
       }
     }
 

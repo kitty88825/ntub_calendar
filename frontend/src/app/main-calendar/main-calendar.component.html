@@ -40,7 +40,13 @@
   <article>
     <section class="container" *ngIf="data.current == '1'">
       <div class="view">
+        <div class="pastBtn" (click)="changeToPast()" *ngIf="pastBtn === false">
+          past
+        </div>
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <div class="nowBtn" (click)="changeToNow()" *ngIf="nowBtn === false">
+          now
+        </div>
         <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
         <span>
           <i class="material-icons">
@@ -73,11 +79,11 @@
           </li>
         </ul>
       </div>
-      <ul class="event-list">
+      <ul class="event-list" *ngIf="pastBtn === true">
         <li class="event-list__header">
           <div class="event-list__checkbox">
             <label class="container">
-              <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" [(ngModel)]="Selected">
+              <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" (change)="fetchCheckedIDs($event)" [(ngModel)]="Selected">
               <span class="checkmark"></span>
             </label>
           </div>
@@ -88,11 +94,57 @@
           <div class="event-list__edit">編輯</div>
         </li>
         <li
-          *ngFor="let event of events | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          *ngFor="let event of pastEvents | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
           <div class="event-list__checkbox">
             <label class="container" *ngIf="event.permission === true">
               <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
-              (change)="changeSelection()">
+              (change)="changeSelection()" (change)="fetchCheckedIDs($event);">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="event-list__title">
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span>{{event.title}}</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              {{event.description}}
+            </div>
+          </div>
+          <div class="event-list__office">
+            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+          </div>
+          <div class="event-list__date">{{event.startDate}}</div>
+          <div class="event-list__edit">
+            <i class="material-icons" (click)="edit(event)" *ngIf="event.permission === true">
+              edit
+            </i>
+            <i class="material-icons" (click)="delete(event)" *ngIf="event.permission === true">
+              delete
+            </i>
+          </div>
+        </li>
+      </ul>
+      <ul class="event-list" *ngIf="pastBtn === false">
+        <li class="event-list__header">
+          <div class="event-list__checkbox">
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" (change)="fetchCheckedIDs($event)" [(ngModel)]="Selected">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+          <div class="event-list__edit">編輯</div>
+        </li>
+        <li
+          *ngFor="let event of futureEvents | appFilter: searchText |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__checkbox">
+            <label class="container" *ngIf="event.permission === true">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
+              (change)="changeSelection()"  (change)="fetchCheckedIDs($event);">
               <span class="checkmark"></span>
             </label>
           </div>
@@ -122,13 +174,24 @@
     </section>
     <section class="container" *ngIf="data.current == '2'">
       <div class="view">
+        <div class="pastBtn" (click)="changeToPast()" *ngIf="pastBtn === false">
+          past
+        </div>
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <div class="nowBtn" (click)="changeToNow()" *ngIf="nowBtn === false">
+          now
+        </div>
         <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
         <span>
           <i class="material-icons">
             search
           </i>
         </span>
+        <div class="deleteBtn">
+          <i class="material-icons" (click)="deleteAll()">
+            delete
+          </i>
+        </div>
         <ul class="view_item">
           <li class="view_item-btn" (click)="setCurrent(1)">
             <i class="material-icons">
@@ -150,15 +213,29 @@
           </li>
         </ul>
       </div>
-      <ul class="event-list event-list--small">
+      <ul class="event-list event-list--small" *ngIf="pastBtn === true">
         <li class="event-list__header">
+          <div class="event-list__checkbox">
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()"  (change)="fetchCheckedIDs($event)" [(ngModel)]="Selected">
+              <span class="checkmark"></span>
+            </label>
+          </div>
           <div class="event-list__title">發布標題</div>
           <div class="event-list__content">內容概要</div>
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
+          <div class="event-list__edit">編輯</div>
         </li>
         <li
-          *ngFor="let event of events | appFilter:searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          *ngFor="let event of pastEvents | appFilter:searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__checkbox">
+            <label class="container" *ngIf="event.permission === true">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
+              (change)="changeSelection()"  (change)="fetchCheckedIDs($event);">
+              <span class="checkmark"></span>
+            </label>
+          </div>
           <div class="event-list__title">
             <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
             <span>{{event.title}}</span>
@@ -172,18 +249,83 @@
             <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
+          <div class="event-list__edit">
+            <i class="material-icons" (click)="edit(event)" *ngIf="event.permission === true">
+              edit
+            </i>
+            <i class="material-icons" (click)="delete(event)" *ngIf="event.permission === true">
+              delete
+            </i>
+          </div>
+        </li>
+      </ul>
+      <ul class="event-list event-list--small" *ngIf="pastBtn === false">
+        <li class="event-list__header">
+          <div class="event-list__checkbox">
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" (change)="fetchCheckedIDs($event)" [(ngModel)]="Selected">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+          <div class="event-list__edit">編輯</div>
+        </li>
+        <li
+          *ngFor="let event of futureEvents | appFilter:searchTextSmall  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__checkbox">
+            <label class="container" *ngIf="event.permission === true">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
+              (change)="changeSelection()" (change)="fetchCheckedIDs($event);">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="event-list__title">
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span>{{event.title}}</span>
+          </div>
+          <div class="event-list__content">
+            <div class="event-list__text">
+              {{event.description}}
+            </div>
+          </div>
+          <div class="event-list__office">
+            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+          </div>
+          <div class="event-list__date">{{event.startDate}}</div>
+          <div class="event-list__edit">
+            <i class="material-icons" (click)="edit(event)" *ngIf="event.permission === true">
+              edit
+            </i>
+            <i class="material-icons" (click)="delete(event)" *ngIf="event.permission === true">
+              delete
+            </i>
+          </div>
         </li>
       </ul>
     </section>
     <section class="container" *ngIf="data.current == '3'">
       <div class="view">
+        <div class="pastBtn" (click)="changeToPast()" *ngIf="pastBtn === false">
+          past
+        </div>
         <ngb-pagination class="pagging" [collectionSize]="50" [(page)]="page" [maxSize]="5"></ngb-pagination>
+        <div class="nowBtn" (click)="changeToNow()" *ngIf="nowBtn === false">
+          now
+        </div>
         <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
         <span>
           <i class="material-icons">
             search
           </i>
         </span>
+        <div class="deleteBtn">
+          <i class="material-icons" (click)="deleteAll()">
+            delete
+          </i>
+        </div>
         <ul class="view_item">
           <li class="view_item-btn" (click)="setCurrent(1)">
             <i class="material-icons">
@@ -205,14 +347,69 @@
           </li>
         </ul>
       </div>
-      <ul class="event-list event-list--grid">
+      <ul class="event-list event-list--grid" *ngIf="pastBtn === true">
         <li class="event-list__header">
-          <div class="event-list__title">發布標題</div>
+          <div class="event-list__title">
+            <div class="event-list__checkbox">
+              <label class="container">
+                <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" (change)="fetchCheckedIDs($event)
+                " [(ngModel)]="Selected">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <span class="title">發布標題</span>
+          </div>
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
         <li class="event-list__card"
-          *ngFor="let event of events | appFilter:searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          *ngFor="let event of pastEvents | appFilter:searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__checkbox">
+            <label class="container" *ngIf="event.permission === true">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
+              (change)="changeSelection()" (change)="fetchCheckedIDs($event);">
+              <span class="checkmark"></span>
+            </label>
+            <i class="material-icons"  (click)="edit(event)" *ngIf="event.permission === true">
+              more_horiz
+            </i>
+          </div>
+          <div class="event-list__title">
+            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span>{{event.title}}</span>
+          </div>
+          <div class="event-list__office">
+            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+          </div>
+          <div class="event-list__date">{{event.startDate}}</div>
+        </li>
+      </ul>
+      <ul class="event-list event-list--grid" *ngIf="pastBtn === false">
+        <li class="event-list__header">
+          <div class="event-list__title">
+            <div class="event-list__checkbox">
+              <label class="container">
+                <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" (change)="fetchCheckedIDs($event)" [(ngModel)]="Selected">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <span class="title">發布標題</span>
+          </div>
+          <div class="event-list__office">發布單位</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li class="event-list__card"
+          *ngFor="let event of futureEvents | appFilter:searchTextGrid  |  slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <div class="event-list__checkbox">
+            <label class="container" *ngIf="event.permission === true">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
+              (change)="changeSelection()" (change)="fetchCheckedIDs($event);">
+              <span class="checkmark"></span>
+            </label>
+            <i class="material-icons"  (click)="edit(event)" *ngIf="event.permission === true">
+              more_horiz
+            </i>
+          </div>
           <div class="event-list__title">
             <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
             <span>{{event.title}}</span>
