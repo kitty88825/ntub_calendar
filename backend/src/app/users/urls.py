@@ -19,12 +19,13 @@ from rest_framework.routers import DefaultRouter
 
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from .views import AccountView, CommonParticipantViewSet
+from .views import AccountView, CommonParticipantViewSet, UrlChangeViewSet
 
 
 router = DefaultRouter(False)
 router.register('', AccountView, 'sign_account')
 router.register('common', CommonParticipantViewSet)
+router.register('change', UrlChangeViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
