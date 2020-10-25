@@ -3,7 +3,7 @@ from django.db import models
 from app.calendars.models import Calendar
 from app.users.models import User
 
-from .choices import NatureChoice, RoleChoice
+from .choices import NatureChoice, RoleChoice, ReplyChoice
 
 
 def event_attachment_path(instance, filename):
@@ -66,6 +66,12 @@ class EventParticipant(models.Model):
         max_length=15,
         choices=RoleChoice.choices,
         default=RoleChoice.participants,
+    )
+    reply = models.CharField(
+        '回應',
+        max_length=15,
+        choices=ReplyChoice.choices,
+        default=ReplyChoice.no_reply,
     )
 
     class Meta:

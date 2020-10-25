@@ -31,4 +31,12 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(EventParticipant)
 class EventParticipantAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'user', 'event_id', 'event', 'role')
+    list_display = (
+        'id',
+        'user_id',
+        'user',
+        'event_id',
+        'event',
+        'role',
+        'reply',
+    )
