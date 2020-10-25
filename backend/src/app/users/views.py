@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from rest_framework import viewsets
+
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from requests.exceptions import HTTPError
@@ -16,9 +18,11 @@ from .serializers import (
     UserSerializer,
     CommonParticipantSerializer,
 )
-from .models import CommonParticipant
+from .models import CommonParticipant, User
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
+
+import uuid
 
 
 def get_tokens_for_user(user):
@@ -97,3 +101,14 @@ class CommonParticipantViewSet(ModelViewSet):
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)
+
+
+class UrlChangeViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        change_uuid = User.objects.get(id=self.request.user.id)
+        change_uuid.code = uuid.uuid4()
+        change_uuid.save()
+        return Response({'code': change_uuid.code})

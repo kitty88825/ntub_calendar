@@ -183,26 +183,27 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             if old:
                 new_participants.remove([i for i in old])
 
-            start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
-            end_at = validated_data['end_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
+            if emails is not None:
+                start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
+                end_at = validated_data['end_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
 
-            subject = f'會議邀請：{validated_data["title"]}，{start_at} ~ {end_at}'  # noqa 501
-            html_message = loader.render_to_string(
-                'email.html',
-                {
-                    'title': validated_data["title"],
-                    'start_at': start_at,
-                    'end_at': end_at,
-                    'participants': ",".join(new_participants),
-                }
-            )
-            from_email = env('EMAIL_HOST_USER')
-            recipient_list = new_participants
+                subject = f'會議邀請：{validated_data["title"]}，{start_at} ~ {end_at}'  # noqa 501
+                html_message = loader.render_to_string(
+                    'email.html',
+                    {
+                        'title': validated_data["title"],
+                        'start_at': start_at,
+                        'end_at': end_at,
+                        'participants': ",".join(new_participants),
+                    }
+                )
+                from_email = env('EMAIL_HOST_USER')
+                recipient_list = new_participants
 
-            msg = EmailMultiAlternatives(subject, html_message, from_email, recipient_list)  # noqa 501
-            msg.content_subtype = "html"
+                msg = EmailMultiAlternatives(subject, html_message, from_email, recipient_list)  # noqa 501
+                msg.content_subtype = "html"
 
-            msg.send()
+                msg.send()
 
         Event.participants.through \
             .objects \
