@@ -193,17 +193,19 @@ class UpdateEventAttachmentSerializer(EventSerializer):
                 .filter(id__in=remove_files, event=event) \
                 .delete()
 
-        Event.participants.through \
-            .objects \
-            .filter(event=event, role='participants') \
-            .exclude(user__email__in=emails) \
-            .delete()
+        if emails:
+            Event.participants.through \
+                .objects \
+                .filter(event=event, role='participants') \
+                .exclude(user__email__in=emails) \
+                .delete()
 
-        Event.calendars.through \
-            .objects \
-            .filter(event_id=event) \
-            .exclude(calendar_id__in=calendars_id) \
-            .delete()
+        if calendars_id:
+            Event.calendars.through \
+                .objects \
+                .filter(event_id=event) \
+                .exclude(calendar_id__in=calendars_id) \
+                .delete()
 
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
