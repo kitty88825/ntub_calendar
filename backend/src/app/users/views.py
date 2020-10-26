@@ -1,3 +1,5 @@
+import uuid
+
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -32,6 +34,16 @@ class AccountView(GenericViewSet):
     serializer_class = LoginSerializer
     api_client = IncAuthClient
 
+    def get_serializer_class(self):
+        if self.action == 'me' or self.action == 'update_code':
+            return UserSerializer
+
+        return super().get_serializer_class()
+
+    @property
+    def inc_auth(self):
+        return self.api_client()
+
     @action(['POST'], detail=False)
     def login(self, request: Request) -> Response:
         # 取得 token
@@ -57,21 +69,19 @@ class AccountView(GenericViewSet):
             ), status=status.HTTP_200_OK,
         )
 
-    @property
-    def inc_auth(self):
-        return self.api_client()
-
     @action(['GET'], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(instance=request.user)
 
         return Response(serializer.data)
 
-    def get_serializer_class(self):
-        if self.action == 'me':
-            return UserSerializer
+    @action(['POST'], detail=False, permission_classes=[IsAuthenticated])
+    def update_code(self, request):
+        request.user.code = uuid.uuid4()
+        request.user.save()
+        serializer = self.get_serializer(request.user)
 
-        return super().get_serializer_class()
+        return Response(serializer.data)
 
 
 class CommonParticipantViewSet(ModelViewSet):
