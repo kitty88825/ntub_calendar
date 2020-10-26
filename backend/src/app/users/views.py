@@ -1,7 +1,6 @@
 import uuid
-from django.shortcuts import reverse
 
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -17,7 +16,7 @@ from .serializers import (
     UserSerializer,
     CommonParticipantSerializer,
 )
-from .models import CommonParticipant, User
+from .models import CommonParticipant
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
 
@@ -34,6 +33,16 @@ def get_tokens_for_user(user):
 class AccountView(GenericViewSet):
     serializer_class = LoginSerializer
     api_client = IncAuthClient
+
+    def get_serializer_class(self):
+        if self.action == 'me' or self.action == 'update_code':
+            return UserSerializer
+
+        return super().get_serializer_class()
+
+    @property
+    def inc_auth(self):
+        return self.api_client()
 
     @action(['POST'], detail=False)
     def login(self, request: Request) -> Response:
@@ -60,21 +69,19 @@ class AccountView(GenericViewSet):
             ), status=status.HTTP_200_OK,
         )
 
-    @property
-    def inc_auth(self):
-        return self.api_client()
-
     @action(['GET'], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(instance=request.user)
 
         return Response(serializer.data)
 
-    def get_serializer_class(self):
-        if self.action == 'me':
-            return UserSerializer
+    @action(['POST'], detail=False, permission_classes=[IsAuthenticated])
+    def update_code(self, request):
+        request.user.code = uuid.uuid4()
+        request.user.save()
+        serializer = self.get_serializer(request.user)
 
-        return super().get_serializer_class()
+        return Response(serializer.data)
 
 
 class CommonParticipantViewSet(ModelViewSet):
@@ -90,17 +97,3 @@ class CommonParticipantViewSet(ModelViewSet):
 
     def perform_create(self, serializers):
         serializers.save(creator=self.request.user)
-
-
-class UrlChangeViewSet(ViewSet):
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
-
-    def create(self, request):
-        change_uuid = User.objects.get(id=self.request.user.id)
-        change_uuid.code = uuid.uuid4()
-        change_uuid.save()
-
-        new_url = request.build_absolute_uri(reverse('ical', kwargs=dict(code=change_uuid.code)))
-
-        return Response({'url': new_url})
