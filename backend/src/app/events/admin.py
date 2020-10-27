@@ -38,5 +38,5 @@ class EventParticipantAdmin(admin.ModelAdmin):
         'event_id',
         'event',
         'role',
-        'reply',
+        'response',
     )

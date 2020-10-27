@@ -3,7 +3,12 @@ from django.db import models
 from app.calendars.models import Calendar
 from app.users.models import User
 
-from .choices import NatureChoice, RoleChoice, ReplyChoice
+from .choices import (
+    NatureChoice,
+    RoleChoice,
+    EventParticipantResponseChoice,
+    CalendarInvitationResponseChoice,
+)
 
 
 def event_attachment_path(instance, filename):
@@ -23,7 +28,11 @@ class Event(models.Model):
         choices=NatureChoice.choices,
         default=NatureChoice.event,
     )
-    calendars = models.ManyToManyField(Calendar, blank=True)
+    calendars = models.ManyToManyField(
+        Calendar,
+        through="EventInviteCalendar",
+        through_fields=['event', 'calendar'],
+    )
     subscribers = models.ManyToManyField(
         User,
         blank=True,
@@ -67,11 +76,11 @@ class EventParticipant(models.Model):
         choices=RoleChoice.choices,
         default=RoleChoice.participants,
     )
-    reply = models.CharField(
+    response = models.CharField(
         '回應',
         max_length=15,
-        choices=ReplyChoice.choices,
-        default=ReplyChoice.no_reply,
+        choices=EventParticipantResponseChoice.choices,
+        default=EventParticipantResponseChoice.no_reply,
     )
 
     class Meta:
@@ -79,3 +88,25 @@ class EventParticipant(models.Model):
 
     def __str__(self):
         return self.role
+
+
+class EventInviteCalendar(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE)
+    main_calendar = models.ForeignKey(
+        Calendar,
+        on_delete=models.CASCADE,
+        related_name='main_calendar',
+    )
+    response = models.CharField(
+        '回應',
+        max_length=15,
+        choices=CalendarInvitationResponseChoice.choices,
+        default=CalendarInvitationResponseChoice.no_reply,
+    )
+
+    class Meta:
+        unique_together = ['calendar', 'event']
+
+    def __str__(self):
+        return self.response
