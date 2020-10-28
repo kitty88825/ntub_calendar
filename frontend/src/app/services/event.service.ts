@@ -47,7 +47,7 @@ export class EventService {
   }
 
   patchEvent(id: number, formData: any): Observable<Event> {
-    return this.http.patch<Event>(`${environment.serverIp}event/${id}`, formData , { headers: this.reqHeader });
+    return this.http.patch<Event>(`${environment.serverIp}event/events/${id}`, formData , { headers: this.reqHeader });
   }
 
 }

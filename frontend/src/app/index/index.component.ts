@@ -1,5 +1,5 @@
 import { ShareDataService } from './../services/share-data.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { Token } from '../models/token.model';
@@ -20,12 +20,17 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit {
-  public pageSize = 9;
+  pageSize = 9;
   resToken = '';
   authToken;
   loggedIn: boolean;
   showModal: boolean;
   showEvent: boolean;
+  selectYear = String(new Date().getFullYear());
+  eventsYear = [];
+  eventsMonth = [];
+  showEvents = [];
+  selectMonth = '';
   data = {
     current: '1'
   };
@@ -39,14 +44,14 @@ export class IndexComponent implements OnInit {
   searchTextSmall = '';
   searchTextGrid = '';
   calendar = [];
-  pastEvents = [];
-  futureEvents = [];
-  page = 1;
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   eventTitle; eventStart; eventEnd; eventDescription; eventOffice;
   eventParticipant; eventFile; eventLocation;
-  pastBtn = false;
-  nowBtn = true;
+  token: Token;
+  page = 1;
+  IsLoadingEnd;
+  Loading;
+  initShowEvents = [];
 
   constructor(
     private router: Router,
@@ -63,8 +68,59 @@ export class IndexComponent implements OnInit {
   calendarWeekends = true;
   calendarEvents: EventInput[];
 
+  static getScrollTop(): number {
+    let scrollTop = 0;
+    if (document.documentElement && document.documentElement.scrollTop) {
+      scrollTop = document.documentElement.scrollTop;
+    } else if (document.body) {
+      scrollTop = document.body.scrollTop;
+    }
+    return scrollTop;
+  }
+
+  static getClientHeight(): number {
+    let clientHeight = 0;
+    if (document.body.clientHeight && document.documentElement.clientHeight) {
+      clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+    } else {
+      clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+    }
+    return clientHeight;
+  }
+
+  static getScrollHeight(): number {
+    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event) {
+
+    if (IndexComponent.getScrollTop() + IndexComponent.getClientHeight() === IndexComponent.getScrollHeight()
+      && this.IsLoadingEnd === false) {
+      this.Loading = true;
+      this.page = this.page + 1;
+      if (this.page * this.pageSize - this.initShowEvents.length <= 0) {
+        this.IsLoadingEnd = false;
+        this.showEvents = [];
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.page * this.pageSize; i++) {
+          this.showEvents.push(this.initShowEvents[i]);
+        }
+      } else {
+        this.IsLoadingEnd = true;
+        this.showEvents = [];
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.initShowEvents.length; i++) {
+          this.showEvents.push(this.initShowEvents[i]);
+        }
+      }
+    }
+  }
+
 
   ngOnInit() {
+    this.selectMonth = this.todayDate.substr(5, 2);
+
     this.calendarService.fGetCalendar().subscribe(
       data => {
         // tslint:disable-next-line: prefer-for-of
@@ -123,11 +179,13 @@ export class IndexComponent implements OnInit {
 
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.events.length; k++) {
-          if (this.events[k].startDate < this.todayDate && this.events[k].endDate < this.todayDate) {
-            this.pastEvents.push(this.events[k]);
-          } else {
-            this.futureEvents.push(this.events[k]);
+          this.eventsYear.push(this.events[k].startDate.substr(0, 4));
+          this.eventsMonth.push(this.events[k].startDate.substr(5, 2));
+
+          if (this.events[k].startDate.substr(0, 4) === this.selectYear && this.events[k].startDate.substr(5, 2) === this.selectMonth) {
+            this.showEvents.push(this.events[k]);
           }
+
 
           if (Number(this.events[k].startDate.substr(6, 2)) <= 7) {
             this.showDatas.push([String(Number(this.events[k].startDate.substr(0, 4)) - 1911),
@@ -141,23 +199,16 @@ export class IndexComponent implements OnInit {
 
         }
 
-        // tslint:disable-next-line: only-arrow-functions
-        this.pastEvents.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return 1;
-          }
-          if (startA > startB) {
-            return -1;
-          }
+        this.eventsYear = this.eventsYear.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
+        });
 
-          // names must be equal
-          return 0;
+        this.eventsMonth = this.eventsMonth.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
         });
 
         // tslint:disable-next-line: only-arrow-functions
-        this.futureEvents.sort(function (a, b) {
+        this.showEvents.sort(function (a, b) {
           const startA = a.start.toUpperCase(); // ignore upper and lowercase
           const startB = b.start.toUpperCase(); // ignore upper and lowercase
           if (startA < startB) {
@@ -170,6 +221,45 @@ export class IndexComponent implements OnInit {
           // names must be equal
           return 0;
         });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.eventsYear.sort(function (a, b) {
+          const startA = a; // ignore upper and lowercase
+          const startB = b; // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.eventsMonth.sort(function (a, b) {
+          const startA = a; // ignore upper and lowercase
+          const startB = b; // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        if (this.showEvents.length > this.pageSize) {
+          this.initShowEvents = this.showEvents.slice();
+          this.showEvents = [];
+          for (let i = 0; i < this.pageSize; i++) {
+            this.showEvents.push(this.initShowEvents[i]);
+          }
+          this.IsLoadingEnd = false;
+        }
 
       },
       error => {
@@ -179,18 +269,8 @@ export class IndexComponent implements OnInit {
 
   }
 
-  changeToPast() {
-    this.pastBtn = true;
-    this.nowBtn = false;
-  }
-
-  changeToNow() {
-    this.pastBtn = false;
-    this.nowBtn = true;
-  }
-
-  async signInWithGoogle() {
-    await this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
+  signInWithGoogle() {
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (result) => {
         this.authService.authState.subscribe((user) => {
           this.authToken = user.authToken;
@@ -198,50 +278,54 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('access_token', user.authToken);
           this.loggedIn = (user != null);
           localStorage.setItem('loggin', String(this.loggedIn));
-          const token: Token = {
+          this.token = {
             accessToken: this.authToken,
           };
-          this.tokenService.postToken(token).subscribe(
-            data => {
-              this.resToken = data.token.access;
-              localStorage.setItem('staff', String(data.staff));
-              localStorage.setItem('res_access_token', this.resToken);
-              localStorage.setItem('res_refresh_token', data.token.refresh);
-              let timerInterval;
-
-              Swal.fire({
-                title: 'Loggin in...',
-                timer: 2000,
-                onBeforeOpen: () => {
-                  Swal.showLoading(),
-                    timerInterval = setInterval(() => {
-                      const content = Swal.getContent();
-                      if (content) {
-                        const b = content.querySelector('b');
-                        if (b) {
-                          b.textContent = Swal.getTimerLeft();
-                        }
-                      }
-                    }, 100);
-                },
-                onClose: () => {
-                  clearInterval(timerInterval);
-                }
-              });
-              if (this.resToken != null) {
-                return this.router.navigate(['/calendar']);
-
-              } else if (this.resToken === null) {
-                alert('請重新登入！');
-              }
-            },
-            error => {
-              console.log(error);
-            }
-          );
         });
       }
-    );
+    ).then((result) => {
+      this.tokenService.postToken(this.token).subscribe(
+        data => {
+          this.resToken = data.token.access;
+          localStorage.setItem('staff', String(data.staff));
+          localStorage.setItem('res_access_token', this.resToken);
+          localStorage.setItem('res_refresh_token', data.token.refresh);
+
+          let timerInterval;
+
+          Swal.fire({
+            title: 'Loggin in...',
+            timer: 2000,
+            onBeforeOpen: () => {
+              Swal.showLoading(),
+                timerInterval = setInterval(() => {
+                  const content = Swal.getContent();
+                  if (content) {
+                    const b = content.querySelector('b');
+                    if (b) {
+                      b.textContent = Swal.getTimerLeft();
+                    }
+                  }
+                }, 100);
+            },
+            onClose: () => {
+              clearInterval(timerInterval);
+              if (this.resToken != null) {
+                this.router.navigate(['/calendar']);
+              } else {
+                alert('請重新登入！');
+                window.location.reload();
+              }
+            }
+          });
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    });
+
+
   }
 
   eventClick(info) {
@@ -315,6 +399,28 @@ export class IndexComponent implements OnInit {
 
   openData() {
     this.showModal = true;
+  }
+
+  onChange() {
+    this.showEvents = [];
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.events.length; i++) {
+      if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
+        this.showEvents.push(this.events[i]);
+      }
+    }
+
+    if (this.showEvents.length > this.pageSize) {
+      this.initShowEvents = this.showEvents.slice();
+      this.showEvents = [];
+      for (let i = 0; i < this.pageSize; i++) {
+        this.showEvents.push(this.initShowEvents[i]);
+      }
+      this.IsLoadingEnd = false;
+    } else {
+      this.IsLoadingEnd = true;
+    }
+
   }
 
 

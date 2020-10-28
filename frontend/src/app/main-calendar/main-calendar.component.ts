@@ -1,12 +1,11 @@
 import { TokenService } from './../services/token.service';
-import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
-import { Event } from '../models/event.model';
 import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
 import { SubscriptionService } from '../services/subscription.service';
@@ -18,22 +17,25 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./main-calendar.component.scss']
 })
 export class MainCalendarComponent implements OnInit {
-  public pageSize = 9;
   user = true;
   official = !this.user;
   searchText = '';
   searchTextSmall = '';
   searchTextGrid = '';
   put;
-  page = 0;
   title;
+  eventsYear = [];
+  selectAll: boolean;
+  selectYear = String(new Date().getFullYear());
+  eventsMonth = [];
+  selectMonth = '';
   openCalendar = [];
   calendars = [];
   mySub = [];
+  pageSize = 9;
   data = {
     current: '1'
   };
-  allEvents = [];
   isCollapsed = false;
   showEvent: boolean;
   events = [];
@@ -41,21 +43,18 @@ export class MainCalendarComponent implements OnInit {
   eventDescription; eventParticipant; eventFile;
   calendarName = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-  pastEvents = [];
   editPermission: boolean;
   deletePermission: boolean;
   group = [];
-  Selected = false;
   unSelectedItemsList = [];
   formData = new FormData();
   deleteData = [];
-  permissionCount = 0;
-  pastBtn = false;
-  nowBtn = true;
-  futureEvents = [];
-  future = [];
-  past = [];
-  deleteCount = 0;
+  role = '';
+  IsLoadingEnd;
+  Loading;
+  showEvents = [];
+  page = 1;
+  initShowEvents = [];
 
   constructor(
     private router: Router,
@@ -63,7 +62,7 @@ export class MainCalendarComponent implements OnInit {
     private shareDataService: ShareDataService,
     private calendarService: CalendarService,
     private subscriptionService: SubscriptionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -76,6 +75,54 @@ export class MainCalendarComponent implements OnInit {
 
   hiddenCalendarEvents = [];
 
+  static getScrollTop(): number {
+    let scrollTop = 0;
+    if (document.documentElement && document.documentElement.scrollTop) {
+      scrollTop = document.documentElement.scrollTop;
+    } else if (document.body) {
+      scrollTop = document.body.scrollTop;
+    }
+    return scrollTop;
+  }
+
+  static getClientHeight(): number {
+    let clientHeight = 0;
+    if (document.body.clientHeight && document.documentElement.clientHeight) {
+      clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+    } else {
+      clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+    }
+    return clientHeight;
+  }
+
+  static getScrollHeight(): number {
+    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event) {
+
+    if (MainCalendarComponent.getScrollTop() + MainCalendarComponent.getClientHeight() === MainCalendarComponent.getScrollHeight()
+      && this.IsLoadingEnd === false) {
+      this.Loading = true;
+      this.page = this.page + 1;
+      if (this.page * this.pageSize - this.initShowEvents.length <= 0) {
+        this.IsLoadingEnd = false;
+        this.showEvents = [];
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.page * this.pageSize; i++) {
+          this.showEvents.push(this.initShowEvents[i]);
+        }
+      } else {
+        this.IsLoadingEnd = true;
+        this.showEvents = [];
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < this.initShowEvents.length; i++) {
+          this.showEvents.push(this.initShowEvents[i]);
+        }
+      }
+    }
+  }
 
   eventClick(info) {
     this.showEvent = true;
@@ -100,35 +147,14 @@ export class MainCalendarComponent implements OnInit {
       // Show
       this.hiddenCalendarEvents
         .filter(calendarEvent => {
-          // tslint:disable-next-line: prefer-for-of
-          for (let j = 0; j < this.events.length; j++) {
-            if (this.events[j].calendars.length === 1) {
-              if (this.events[j].calendars.id === eventType.id) {
-                return calendarEvent.calendars.id === eventType.id;
-              }
-            } else if (this.events[j].calendars.length > 1) {
-              let count = 0;
-              // tslint:disable-next-line: prefer-for-of
-              for (let i = 0; i < calendarEvent.calendars.length; i++) {
-                // tslint:disable-next-line: prefer-for-of
-                for (let k = 0; k < this.eventTypes.length; k++) {
-                  if (calendarEvent.calendars[i].id === this.eventTypes[k].id && this.eventTypes[k].selected === true) {
-                    count++;
-                    if (count === calendarEvent.calendars.length) {
-                      return true;
-                    }
-                  }
-                }
-              }
-            }
+          if (calendarEvent.calendar.id === eventType.id) {
+            return true;
           }
-        }
-        )
+        })
         .forEach(calendarEvent => {
           calendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
           calendarEventsToShow.push(calendarEvent.id);
         });
-
 
       calendarEventsToShow.forEach(calendarEventToShow => {
         const index = this.hiddenCalendarEvents.findIndex(hiddenCalendarEvent => hiddenCalendarEvent.id === calendarEventToShow);
@@ -141,27 +167,8 @@ export class MainCalendarComponent implements OnInit {
       // Hide
       calendarEvents
         .filter(calendarEvent => {
-          // tslint:disable-next-line: prefer-for-of
-          for (let j = 0; j < this.events.length; j++) {
-            if (this.events[j].calendars.length === 1) {
-              if (this.events[j].calendars.id === eventType.id) {
-                return calendarEvent.calendars.id === eventType.id;
-              }
-            } else if (this.events[j].calendars.length > 1) {
-              let count = 0;
-              // tslint:disable-next-line: prefer-for-of
-              for (let i = 0; i < calendarEvent.calendars.length; i++) {
-                // tslint:disable-next-line: prefer-for-of
-                for (let k = 0; k < this.eventTypes.length; k++) {
-                  if (calendarEvent.calendars[i].id === this.eventTypes[k].id && this.eventTypes[k].selected === false) {
-                    count++;
-                    if (count === calendarEvent.calendars.length) {
-                      return true;
-                    }
-                  }
-                }
-              }
-            }
+          if (calendarEvent.calendar.id === eventType.id) {
+            return true;
           }
         })
         .forEach(calendarEvent => {
@@ -177,19 +184,20 @@ export class MainCalendarComponent implements OnInit {
         });
 
       calendarEventsToHide.forEach(calendarEventToHide => {
-        const index = calendarEvents.findIndex(calendarEvent => calendarEvent.calendar.id === calendarEventToHide);
+        const index = calendarEvents.findIndex(calendarEvent => {
+          return calendarEvent.calendar.id === calendarEventToHide;
+        });
+
         calendarEvents.splice(index, 1);
+
       });
     }
 
     this.calendarEvents = calendarEvents;
-
-    this.futureEvents = this.calendarEvents.filter(fu => this.future.includes(fu.id));
-
-    this.pastEvents = this.calendarEvents.filter(pa => this.past.includes(pa.id));
+    this.events = calendarEvents;
 
     // tslint:disable-next-line: only-arrow-functions
-    this.futureEvents.sort(function (a, b) {
+    this.events.sort(function (a, b) {
       const startA = a.start.toUpperCase(); // ignore upper and lowercase
       const startB = b.start.toUpperCase(); // ignore upper and lowercase
       if (startA < startB) {
@@ -202,27 +210,19 @@ export class MainCalendarComponent implements OnInit {
       // names must be equal
       return 0;
     });
-    // tslint:disable-next-line: only-arrow-functions
-    this.pastEvents.sort(function (a, b) {
-      const startA = a.start.toUpperCase(); // ignore upper and lowercase
-      const startB = b.start.toUpperCase(); // ignore upper and lowercase
-      if (startA < startB) {
-        return 1;
-      }
-      if (startA > startB) {
-        return -1;
-      }
 
-      // names must be equal
-      return 0;
-    });
+    this.onChange();
+
   }
 
   ngOnInit() {
+    this.selectMonth = this.todayDate.substr(5, 2);
+
     this.tokenService.getUser().subscribe(
       re => {
         console.log(re);
         this.group = re.groups;
+        this.role = re.role;
       }
     );
 
@@ -233,7 +233,7 @@ export class MainCalendarComponent implements OnInit {
           this.openCalendar.push({
             id: result[j].id, name: result[j].name,
             description: result[j].description, display: result[j].display,
-            color: result[j].color, permission: result[j].permission
+            color: result[j].color, permission: result[j].permissions
           });
 
           this.eventTypes.push({ title: 'type' + result[j].id, id: result[j].id, selected: true });
@@ -263,110 +263,94 @@ export class MainCalendarComponent implements OnInit {
 
         }
 
-        // tslint:disable-next-line: only-arrow-functions
-        this.events.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-
         this.calendarEvents = this.events;
-
-        // tslint:disable-next-line: prefer-for-of
-        for (let k = 0; k < this.events.length; k++) {
-          if (this.events[k].startDate < this.todayDate && this.events[k].endDate < this.todayDate) {
-            this.pastEvents.push(this.events[k]);
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < this.pastEvents.length; i++) {
-              this.past.push(this.pastEvents[i].id);
-            }
-          } else {
-            this.futureEvents.push(this.events[k]);
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < this.futureEvents.length; i++) {
-              this.future.push(this.futureEvents[i].id);
-            }
-          }
-        }
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.future = this.future.filter(function (el, i, arr) {
-          return arr.indexOf(el) === i;
-        });
-
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.past = this.past.filter(function (el, i, arr) {
-          return arr.indexOf(el) === i;
-        });
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.pastEvents.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return 1;
-          }
-          if (startA > startB) {
-            return -1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.futureEvents.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-
-
-
-
 
         // tslint:disable-next-line: prefer-for-of
         for (let k = 0; k < this.group.length; k++) {
           // tslint:disable-next-line: prefer-for-of
           for (let i = 0; i < this.events.length; i++) {
+            this.eventsYear.push(this.events[i].startDate.substr(0, 4));
+            this.eventsMonth.push(this.events[i].startDate.substr(5, 2));
+
+            if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
+              this.showEvents.push(this.events[i]);
+            }
+
             // tslint:disable-next-line: prefer-for-of
             for (let j = 0; j < this.events[i].permissions.length; j++) {
-              if (Number(this.group[k]) === this.events[i].permissions[j].group) {
+              if (Number(this.group[k]) === this.events[i].permissions[j].group &&
+                this.role === this.events[i].permissions[j].role &&
+                this.events[i].permissions[j].authority === 'write') {
                 this.events[i].permission = true;
               }
             }
           }
         }
+
+        this.eventsYear = this.eventsYear.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
+        });
+
+        this.eventsMonth = this.eventsMonth.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.showEvents.sort(function (a, b) {
+          const startA = a.start.toUpperCase(); // ignore upper and lowercase
+          const startB = b.start.toUpperCase(); // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.eventsYear.sort(function (a, b) {
+          const startA = a; // ignore upper and lowercase
+          const startB = b; // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.eventsMonth.sort(function (a, b) {
+          const startA = a; // ignore upper and lowercase
+          const startB = b; // ignore upper and lowercase
+          if (startA < startB) {
+            return -1;
+          }
+          if (startA > startB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        });
+
+        if (this.showEvents.length > this.pageSize) {
+          this.initShowEvents = this.showEvents.slice();
+          this.showEvents = [];
+          for (let i = 0; i < this.pageSize; i++) {
+            this.showEvents.push(this.initShowEvents[i]);
+          }
+          this.IsLoadingEnd = false;
+        }
+
       }
     );
-
-  }
-
-  changeToPast() {
-    this.pastBtn = true;
-    this.nowBtn = false;
-  }
-
-  changeToNow() {
-    this.pastBtn = false;
-    this.nowBtn = true;
   }
 
   setCurrent(param) {
@@ -428,20 +412,38 @@ export class MainCalendarComponent implements OnInit {
   }
 
   checkAll() {
-    this.permissionCount = 0;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.events.length; i++) {
-      if (this.events[i].permission === true) {
-        this.events[i].isChecked = this.Selected;
-        this.permissionCount = this.permissionCount + 1;
-      }
-    }
+    this.fetchSelectedItems();
 
-    this.changeSelection();
+    if (this.selectAll === true) {
+      this.initShowEvents.forEach(init => {
+        init.isChecked = true;
+      });
+    } else {
+      this.initShowEvents.forEach(init => {
+        init.isChecked = false;
+      });
+    }
   }
 
   changeSelection() {
     this.fetchSelectedItems();
+    let count = 0;
+    let permissionCount = 0;
+
+    this.initShowEvents.forEach(init => {
+      if (init.isChecked === true) {
+        count++;
+      }
+      if(init.permission === true) {
+        permissionCount++;
+      }
+    });
+
+    if (permissionCount === count) {
+      this.selectAll = true;
+    } else {
+      this.selectAll = false;
+    }
   }
 
   fetchSelectedItems() {
@@ -450,75 +452,6 @@ export class MainCalendarComponent implements OnInit {
     });
   }
 
-  fetchCheckedIDs(info) {
-    this.deleteData.length = 0;
-    this.permissionCount = 0;
-
-
-    if (info.target.checked === true) {
-      this.events.forEach((value, index) => {
-        if (value.calendars.length > 1) {
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < this.events.length; i++) {
-            if (this.events[i].id === value.id && value.isChecked === true) {
-              this.events[i].isChecked = true;
-            }
-          }
-          if (value.isChecked === true) {
-            this.deleteData.push(value.id);
-          }
-        } else if (value.calendars.length === 1) {
-          if (value.isChecked === true) {
-            this.deleteData.push(value.id);
-          }
-        }
-      });
-    } else if (info.target.checked === false) {
-      this.events.forEach((value, index) => {
-        if (value.calendars.length > 1) {
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < this.events.length; i++) {
-            if (this.events[i].id === value.id && value.isChecked === false) {
-              this.events[i].isChecked = false;
-            }
-          }
-          if (value.isChecked === true) {
-            this.deleteData.push(value.id);
-          }
-        } else if (value.calendars.length === 1) {
-          if (value.isChecked === true) {
-            this.deleteData.push(value.id);
-          }
-        }
-      });
-    }
-    this.deleteCount = this.deleteData.length;
-
-    // tslint:disable-next-line: only-arrow-functions
-    this.deleteData = this.deleteData.filter(function (el, i, arr) {
-      return arr.indexOf(el) === i;
-    });
-
-    console.log(this.deleteData);
-
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.events.length; i++) {
-
-      if (this.events[i].permission === true) {
-        this.permissionCount = this.permissionCount + 1;
-      }
-
-    }
-    console.log(this.deleteCount);
-    console.log(this.permissionCount);
-
-    if (this.permissionCount === this.deleteCount) {
-      this.Selected = true;
-    } else {
-      this.Selected = false;
-    }
-
-  }
 
   deleteAll() {
     Swal.fire({
@@ -556,7 +489,30 @@ export class MainCalendarComponent implements OnInit {
       }
     });
 
+  }
+
+  onChange() {
+    this.showEvents = [];
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.events.length; i++) {
+      if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
+        this.showEvents.push(this.events[i]);
+      }
+    }
+
+    if (this.showEvents.length > this.pageSize) {
+      this.initShowEvents = this.showEvents.slice();
+      this.showEvents = [];
+      for (let i = 0; i < this.pageSize; i++) {
+        this.showEvents.push(this.initShowEvents[i]);
+      }
+      this.IsLoadingEnd = false;
+    } else {
+      this.IsLoadingEnd = true;
+    }
 
   }
+
+
 
 }

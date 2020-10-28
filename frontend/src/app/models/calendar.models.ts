@@ -6,8 +6,8 @@ export interface Calendar {
   display: string;
   description?: string;
   color: string;
-  permission: [{
-    anthority: string;
+  permissions: [{
+    authority: string;
     group: NumberValueAccessor;
     groupName: string;
     id?: number;

@@ -1,3 +1,4 @@
+import { TokenService } from './../services/token.service';
 import { UserCommonService } from './../services/user-common.service';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -34,13 +35,16 @@ export class AddScheduleComponent implements OnInit {
   attribute = '';
   allCommonUser = [];
   addCommonUser = [];
+  group = [];
+  role = '';
 
   constructor(
     private router: Router,
     public eventService: EventService,
     private formBuilder: FormBuilder,
     private calendarService: CalendarService,
-    private userCommonService: UserCommonService
+    private userCommonService: UserCommonService,
+    private tokenService: TokenService
   ) { }
 
   @ViewChild('addTitle') addTitle: ElementRef;
@@ -60,12 +64,28 @@ export class AddScheduleComponent implements OnInit {
       toAddress: ['', Validators.pattern(this.emailPattern)]
     });
 
+    this.tokenService.getUser().subscribe(
+      re => {
+        this.group = re.groups;
+        this.role = re.role;
+      }
+    );
+
     this.calendarService.getCalendar().subscribe(
-      data => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-          this.calendars.push({ id: data[i].id, name: data[i].name, isChecked: false });
-        }
+      result => {
+        result.forEach(re => {
+          // tslint:disable-next-line: prefer-for-of
+          for (let k = 0; k < this.group.length; k++) {
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < re.permissions.length; i++) {
+              if (this.group[k] === re.permissions[i].group &&
+                this.role === re.permissions[i].role && re.permissions[i].authority === 'write') {
+                this.calendars.push({ id: re.id, name: re.name, isChecked: false });
+              }
+            }
+          }
+        });
+
       }
     );
 

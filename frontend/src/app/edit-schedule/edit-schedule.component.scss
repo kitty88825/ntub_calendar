@@ -116,6 +116,13 @@
     list-style: none;
   }
 
+  .form-control:focus {
+    border-color      : none;
+    box-shadow        : none;
+    -webkit-box-shadow: none;
+    outline           : $color_form_control auto 5px;
+  }
+
   blockquote,
   q {
     quotes: none;
@@ -131,7 +138,8 @@
 
   article {
     padding-top : $height_header;
-    padding-left: $width_aside;
+    padding-left: $content-size_left-right*2;
+    background-color: $color_primary;
 
     section.container {
       margin          : $content-size_left-right;
@@ -153,12 +161,143 @@
 
       .add {
 
+        &__attributes {
+          display   : flex;
+          margin-top: $content-size_top-bottom*3;
+
+          ul {
+            margin-top : $content-size_top-bottom/2;
+            margin-left: $content-size_left-right/2;
+
+            li {
+              display    : inline-flex;
+              align-items: center;
+              cursor     : pointer;
+              margin-left: $content-size_left-right/2;
+
+              /* The container */
+              .container {
+                display            : block;
+                position           : relative;
+                padding-left       : 35px;
+                width              : 70px;
+                margin-bottom      : 12px;
+                cursor             : pointer;
+                -webkit-user-select: none;
+                -moz-user-select   : none;
+                -ms-user-select    : none;
+                user-select        : none;
+              }
+
+              /* Hide the browser's default checkbox */
+              .container input {
+                position: absolute;
+                opacity : 0;
+                cursor  : pointer;
+              }
+
+              /* Create a custom checkbox */
+              .checkmark {
+                position: absolute;
+                top     : 3px;
+                left    : 5px;
+                height  : 20px;
+                width   : 20px;
+                border  : 2px solid $color_border;
+              }
+
+              .checkmark:hover {
+                background-color: $color_icon;
+              }
+
+              /* When the checkbox is checked, add a blue background */
+              .container input:checked~.checkmark {
+                background-color: $color_accent;
+                border          : none;
+              }
+
+              /* Create the checkmark/indicator (hidden when not checked) */
+              .checkmark:after {
+                content : "";
+                position: absolute;
+                display : none;
+              }
+
+              /* Show the checkmark when checked */
+              .container input:checked~.checkmark:after {
+                display: block;
+              }
+
+              /* Style the checkmark/indicator */
+              .container .checkmark:after {
+                left             : 7px;
+                top              : 3px;
+                width            : 5px;
+                height           : 10px;
+                border           : solid white;
+                border-width     : 0 2px 2px 0;
+                -webkit-transform: rotate(45deg);
+                -ms-transform    : rotate(45deg);
+                transform        : rotate(45deg);
+              }
+            }
+          }
+
+        }
+
         &__title {
-          display: inline-flex;
+          display: flex;
 
           h1 {
             font-size  : 25px;
             font-weight: 550;
+          }
+
+
+          .submit {
+            width           : 7%;
+            height          : 30px;
+            font-size       : 0.9rem;
+            background-color: $color_accent;
+            color           : white;
+            margin-left     : auto;
+            text-align      : center;
+            cursor          : pointer;
+            display         : flex;
+            align-items     : center;
+            border-radius   : 5px;
+
+            i {
+              margin-left: $content-size_left-right/3;
+              color      : white;
+            }
+
+            span {
+              margin-left: $content-size_left-right/4;
+            }
+          }
+
+          .cancel {
+            width           : 7%;
+            height          : 30px;
+            font-size       : 0.9rem;
+            background-color: #aaaaaa;
+            color           : white;
+            margin-left     : $content-size_left-right/2;
+            text-align      : center;
+            cursor          : pointer;
+            display         : flex;
+            align-items     : center;
+            border-radius   : 5px;
+
+            i {
+              margin-left: $content-size_left-right/3;
+              color      : white;
+            }
+
+            span {
+              margin-left: $content-size_left-right/4;
+            }
           }
 
           input {
@@ -178,14 +317,15 @@
 
         &__calendar {
           display   : flex;
-          margin-top: $content-size_top-bottom*3;
+          margin-top: $content-size_top-bottom;
 
           &__list {
             margin-left: $content-size_left-right/2;
             margin-top : $content-size_top-bottom/2;
 
             li {
-              display    : inline-flex;
+              display    : inline-block;
+              width      : 50%;
               align-items: center;
               cursor     : pointer;
               margin-left: $content-size_left-right/2;
@@ -257,6 +397,10 @@
 
             }
           }
+
+          h2 {
+            width: 8%;
+          }
         }
 
         &__time {
@@ -303,19 +447,51 @@
             display: none;
           }
 
-          label {
+          h2 {
+            width: 16%;
+          }
+
+          label.invite {
             width           : 50px;
             display         : flex;
             justify-content : center;
             align-items     : center;
             margin-bottom   : 32px;
             padding         : 6px 0;
+            margin-right    : $content-size_left-right;
             border          : 1px solid $color_form_control;
             border-radius   : 0 5px 5px 0;
             cursor          : pointer;
             transition      : box-shadow .4s ease;
             margin-left     : -$content-size_left-right/4;
             background-color: $color_border;
+          }
+
+          .commonUserBtn {
+            width    : 32%;
+            height   : 40px;
+            font-size: 15px;
+
+            input {
+              display: none;
+            }
+
+            label {
+              display        : flex;
+              justify-content: center;
+              align-items    : center;
+              margin-bottom  : 32px;
+              padding        : 8px 30px;
+              border         : 1px solid $color_form_control;
+              border-radius  : 5px;
+              cursor         : pointer;
+              transition     : box-shadow .4s ease;
+            }
+
+            label:hover {
+              border-color: $color_accent;
+            }
+
           }
 
 
@@ -325,15 +501,49 @@
           display: flex;
 
           textarea {
-            width: 300px;
+            width       : 300px;
+            margin-right: $content-size_left-right*2;
+          }
+
+          .title_block {
+            &_flex {
+              display: flex;
+            }
+
+            .advise {
+              width     : 90%;
+              height    : 40px;
+              font-size : 15px;
+              margin-top: $content-size_top-bottom;
+
+              input {
+                display: none;
+              }
+
+              label {
+                display        : flex;
+                justify-content: center;
+                align-items    : center;
+                margin-bottom  : 32px;
+                padding        : 8px 30px;
+                border         : 1px solid $color_form_control;
+                border-radius  : 5px;
+                cursor         : pointer;
+                transition     : box-shadow .4s ease;
+              }
+
+              label:hover {
+                border-color: $color_accent;
+              }
+
+            }
           }
 
           .all_participants {
-            width        : 400px;
+            width        : 470px;
             height       : 200px;
             border       : 1px solid $color_form_control;
             border-radius: 5px;
-            margin-left  : $content-size_left-right*2;
             overflow     : auto;
           }
 
@@ -367,16 +577,16 @@
             }
 
             label:hover {
-              background-color: $color_icon;
-              color           : $color_white;
+              border-color: $color_accent;
             }
+
           }
 
         }
 
         &__all__files {
           display      : flex;
-          width        : 80%;
+          width        : 87%;
           height       : 100px;
           border       : 1px solid $color_form_control;
           border-radius: 5px;
@@ -392,87 +602,16 @@
       }
 
 
-      .submit {
-        display         : flex;
-        align-items     : center;
-        justify-content : center;
-        height          : 50px;
-        width           : 10%;
-        margin-top      : 3%;
-        margin-left: auto;
-        margin-right: auto;
-        background-color: $color_accent;
-        color           : white;
-        cursor          : pointer;
-      }
 
     }
 
 
-  }
-
-
-  .aside {
-    position        : fixed;
-    z-index         : $z-index_second;
-    overflow        : auto;
-    box-sizing      : border-box;
-    margin-top      : $height_header;
-    padding         : $content-size_top-bottom $content-size_left-right;
-    width           : $width_aside;
-    height          : calc(100vh - #{$height_header});
-    background-color: $color_white;
-    box-shadow      : $box-shadow--left;
   }
 
   .item-categories {
 
-    i {
-      color : $color_icon;
-      cursor: pointer;
-    }
-
-
-    &__title {
-      display        : flex;
-      align-items    : center;
-      justify-content: space-between;
-      padding        : $content-size_left-right/1.5 0;
-      border-bottom  : $color_border solid 1px;
-      font-size      : 1.2rem;
-
-      &:hover,
-      &.active {
-        .item-categories__arrow {
-          transform: rotate(-90deg);
-        }
-      }
-    }
-
-    &__arrow {
-      transition: $transition_short;
-    }
-
-    &__list {
-      display  : flex;
-      flex-flow: column;
-      padding  : $content-size_left-right/2 0;
-
-    }
-
     &__checkbox {
       margin-right: $content-size_left-right/2;
-    }
-
-    &__item {
-      flex: auto;
-    }
-
-    &__status {
-      margin-top   : -$content-size_top-bottom;
-      width        : 10px;
-      height       : 10px;
-      border-radius: 50%;
     }
   }
 
@@ -481,6 +620,252 @@
     color           : $color_text;
     font-weight     : 400;
     font-family     : 'Noto Sans TC', sans-serif;
+  }
+
+  .event_dialog {
+    width           : 50%;
+    height          : 450px;
+    margin-top      : 10.5%;
+    margin-left     : 25%;
+    background-color: $color_white;
+    box-shadow      : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
+
+
+    .event_body {
+      padding: 10px;
+
+      .event_border {
+        width : 100%;
+        height: 430px;
+        border: $color_border 2px solid;
+
+        i.cancel {
+          position: relative;
+          z-index: 1000;
+          height     : 20px;
+          width      : 20px;
+          cursor     : pointer;
+          color      : black;
+          margin-left: 95%;
+          position   : relative;
+          top        : -10px;
+          left       : 23px;
+        }
+
+        i.cancel:hover {
+          color     : $color_accent;
+          transition: $transition_short;
+        }
+
+        i {
+          color      : $color_icon;
+          font-size  : 17px;
+          margin-left: $content-size_left-right;
+        }
+
+        .event_content　{
+          letter-spacing: 1px;
+
+          .event_block {
+            padding-top: $content-size_top-bottom*2;
+            overflow: auto;
+            padding: $content-size_top-bottom $content-size_left-right;
+            position: relative;
+            z-index: 999;
+            width: 30%;
+            height: 427px;
+            margin-top: -24px;
+            box-shadow: 6px 0px 20px -7px rgba(0,0,0,0.35);
+
+            li {
+              display    : flex;
+              align-items: center;
+              margin-top: $content-size_top-bottom;
+
+              /* The container */
+              .container {
+                display            : block;
+                position           : relative;
+                padding-left       : 35px;
+                margin-bottom      : 12px;
+                cursor             : pointer;
+                -webkit-user-select: none;
+                -moz-user-select   : none;
+                -ms-user-select    : none;
+                user-select        : none;
+              }
+
+              /* Hide the browser's default checkbox */
+              .container input {
+                position: absolute;
+                opacity : 0;
+                cursor  : pointer;
+              }
+
+              /* Create a custom checkbox */
+              .checkmark {
+                position: absolute;
+                top     : 3px;
+                left    : 5px;
+                height  : 20px;
+                width   : 20px;
+                border  : 2px solid $color_border;
+              }
+
+              .checkmark:hover {
+                background-color: $color_icon;
+              }
+
+              /* When the checkbox is checked, add a blue background */
+              .container input:checked~.checkmark {
+                background-color: $color_accent;
+                border          : none;
+              }
+
+              /* Create the checkmark/indicator (hidden when not checked) */
+              .checkmark:after {
+                content : "";
+                position: absolute;
+                display : none;
+              }
+
+              /* Show the checkmark when checked */
+              .container input:checked~.checkmark:after {
+                display: block;
+              }
+
+              /* Style the checkmark/indicator */
+              .container .checkmark:after {
+                left             : 7px;
+                top              : 3px;
+                width            : 5px;
+                height           : 10px;
+                border           : solid white;
+                border-width     : 0 2px 2px 0;
+                -webkit-transform: rotate(45deg);
+                -ms-transform    : rotate(45deg);
+                transform        : rotate(45deg);
+              }
+
+
+            }
+
+            span.title {
+              font-size: 17px;
+              font-weight: 600;
+            }
+          }
+
+          .event_participants {
+            padding: $content-size_top-bottom*3 $content-size_left-right;
+            position: relative;
+            z-index: 998;
+            margin-left: 30%;
+            width: 70%;
+            height: 427px;
+            margin-top: -427px;
+            background-color: $color_primary;
+
+            li {
+              display    : flex;
+              align-items: center;
+
+              /* The container */
+              .container {
+                display            : block;
+                position           : relative;
+                padding-left       : 35px;
+                margin-bottom      : 12px;
+                cursor             : pointer;
+                -webkit-user-select: none;
+                -moz-user-select   : none;
+                -ms-user-select    : none;
+                user-select        : none;
+              }
+
+              /* Hide the browser's default checkbox */
+              .container input {
+                position: absolute;
+                opacity : 0;
+                cursor  : pointer;
+              }
+
+              /* Create a custom checkbox */
+              .checkmark {
+                position: absolute;
+                top     : 3px;
+                left    : 5px;
+                height  : 20px;
+                width   : 20px;
+                border  : 2px solid $color_border;
+              }
+
+              .checkmark:hover {
+                background-color: $color_icon;
+              }
+
+              /* When the checkbox is checked, add a blue background */
+              .container input:checked~.checkmark {
+                background-color: $color_accent;
+                border          : none;
+              }
+
+              /* Create the checkmark/indicator (hidden when not checked) */
+              .checkmark:after {
+                content : "";
+                position: absolute;
+                display : none;
+              }
+
+              /* Show the checkmark when checked */
+              .container input:checked~.checkmark:after {
+                display: block;
+              }
+
+              /* Style the checkmark/indicator */
+              .container .checkmark:after {
+                left             : 7px;
+                top              : 3px;
+                width            : 5px;
+                height           : 10px;
+                border           : solid white;
+                border-width     : 0 2px 2px 0;
+                -webkit-transform: rotate(45deg);
+                -ms-transform    : rotate(45deg);
+                transform        : rotate(45deg);
+              }
+
+
+            }
+
+            span.all {
+              cursor: pointer;
+              background-color: $color_accent;
+              width: 5%;
+              padding:$content-size_top-bottom/2 $content-size_left-right/2;
+              border-radius: 5px;
+              font-size: 14px;
+              color: white;
+              letter-spacing: 1px;
+              margin-left: 82%;
+              margin-top: $content-size_top-bottom*2;
+            }
+
+            .allEmails {
+              overflow: auto;
+              width: 90%;
+              margin-left: 5%;
+              margin-right: 5%;
+              height: 90%;
+              margin-top: $content-size_top-bottom;
+              border: $color_border 2px solid;
+            }
+
+          }
+        }
+
+      }
+    }
   }
 
 

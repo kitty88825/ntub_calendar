@@ -1,30 +1,45 @@
 <app-navbar></app-navbar>
 <main>
-  <aside class="aside">
-    <ul class="item-categories">
-      <li>
-        <div class="item-categories__title active">
-          常用行程
-          <div class="form-group row">
-            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-              arrow_left
-            </i>
-          </div>
-        </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-          <ul class="item-categories__list">
-
-          </ul>
-        </div>
-      </li>
-    </ul>
-  </aside>
   <article>
     <section class="container">
+
       <div class="add__title">
-        <h1>新增標題</h1>
-        <input type="text" placeholder="請輸入標題" #addTitle (keyup)="0" required value={{title}}>
+        <h1>標題</h1>
+        <input type="text" placeholder="請輸入標題" [(ngModel)]="title" (keyup)="0" required>
+        <div class="submit" (click)="update()">
+          <i class="material-icons">
+            autorenew
+          </i>
+          <span>更新</span>
+        </div>
+        <div class="cancel" routerLink="['/calendar']">
+          <i class="material-icons">
+            clear
+          </i>
+          <span>取消</span>
+        </div>
+      </div>
+      <div class="add__attributes">
+        <i class="material-icons">
+          edit_attributes
+        </i>
+        <h2>行程屬性：</h2>
+        <ul>
+          <li>
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="會議"
+                (change)="meet($event)">會議
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
+                value="行程" (change)="schedule($event)">行程
+              <span class="checkmark"></span>
+            </label>
+          </li>
+        </ul>
       </div>
       <div class="add__calendar">
         <i class="material-icons">
@@ -46,8 +61,8 @@
           access_time
         </i>
         <h2>開始時間：</h2>
-        <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-          #startDate required>
+        <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #startDate
+          required>
         <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
           class="timepicker" #addStartTime required></ngb-timepicker>
       </div>
@@ -81,13 +96,19 @@
             <h2>參與人員：</h2>
             <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="email">
               <div>
-                <input type="email" class="form-control" #user placeholder="輸入邀請對象Email" formControlName="toAddress">
+                <input type="email" class="form-control" placeholder="輸入邀請對象Email" formControlName="toAddress">
               </div>
               <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid">
-              <label class="button-primary">
+              <label class="invite">
                 <span>邀請</span>
               </label>
             </form>
+            <div class="commonUserBtn" (click)="commonUser()">
+              <input type="button">
+              <label class="button-primary">
+                <span>選擇常用參與人員</span>
+              </label>
+            </div>
           </div>
         </div>
         <div class="add__description">
@@ -95,7 +116,22 @@
             subject
           </i>
           <h2>事由：</h2>
-          <textarea class="form-control" id="exampleTextarea" rows="3" [(ngModel)]="description" placeholder="新增說明"></textarea>
+          <textarea class="form-control" id="exampleTextarea" rows="3" [(ngModel)]="description"
+            placeholder="新增說明"></textarea>
+          <div class="title_block">
+            <div class="title_block_flex">
+              <i class="material-icons">
+                how_to_reg
+              </i>
+              <h2>所有參與人員：</h2>
+            </div>
+            <div class="advise">
+              <input type="button">
+              <label class="button-primary">
+                <span>推薦時間</span>
+              </label>
+            </div>
+          </div>
           <div class="all_participants" placeholder="參與對象">
             <ul>
               <li *ngFor="let name of userEmail;let index = index">
@@ -133,9 +169,40 @@
           </ul>
         </div>
       </div>
-      <div class="submit" (click)="update()">
-        確定
-      </div>
     </section>
   </article>
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="event_dialog">
+      <div class="event_content">
+        <div class="event_body">
+          <div class="event_border">
+            <i class="cancel material-icons" (click)="hide()">
+              cancel
+            </i>
+            <div class="event_content">
+              <div class="event_block">
+                <span class="title">選擇常用參與人員</span>
+                <ul>
+                  <li *ngFor="let commonUser of allCommonUser">
+                    <label class="container">
+                      <input type="checkbox" class="material-icons">{{commonUser.title}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div class="event_participants">
+                <span class="all">全選</span>
+                <div class="allEmails">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>

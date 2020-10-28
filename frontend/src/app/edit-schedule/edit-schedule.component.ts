@@ -1,3 +1,5 @@
+import { CommonUserService } from './../services/common-user.service';
+import { TokenService } from './../services/token.service';
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
@@ -23,6 +25,8 @@ export class EditScheduleComponent implements OnInit {
   fileName = [];
   title = '';
   addStart = '';
+  showModal: boolean;
+  allCommonUser = [];
   addSTime = '';
   addEnd = '';
   location = '';
@@ -38,13 +42,22 @@ export class EditScheduleComponent implements OnInit {
   isCheckedCalendars = [];
   userEmail = [];
   isOpen = false;
+  isMeet = false;
+  isSchedule = false;
+  attribute = '';
+  group = [];
+  role = '';
+  allParticipants = [];
+  oldMasterSelected: boolean;
 
   constructor(
     private router: Router,
     public eventService: EventService,
     private formBuilder: FormBuilder,
     private shareDataService: ShareDataService,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private tokenService: TokenService,
+    private commonUserService: CommonUserService
   ) { }
 
   isCollapsed = true;
@@ -64,11 +77,25 @@ export class EditScheduleComponent implements OnInit {
       toAddress: ['', Validators.pattern(this.emailPattern)]
     });
 
+    this.tokenService.getUser().subscribe(
+      re => {
+        this.group = re.groups;
+        this.role = re.role;
+      }
+    );
+
     this.shareDataService.getMessage().subscribe(
       data => {
-        console.log(data);
         this.id = data.message.id;
         this.title = data.message.title;
+        this.attribute = data.message.nature;
+        if (this.attribute === 'event') {
+          this.isMeet = false;
+          this.isSchedule = true;
+        } else if (this.attribute === 'meeting') {
+          this.isMeet = true;
+          this.isSchedule = false;
+        }
         this.addStart = data.message.startAt;
         this.startDate.nativeElement.value = this.addStart.substring(0, 10);
         const sHour = this.addStart.substring(11, 13);
@@ -86,23 +113,38 @@ export class EditScheduleComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.message.participants.length; i++) {
           this.userEmail.push(data.message.participants[i].email);
+          this.formData.append('emails', data.message.participants[i].email);
         }
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < data.message.calendars.length; j++) {
           this.isCheckedCalendars.push(data.message.calendars[j]);
         }
+
         this.calendarService.getCalendar().subscribe(
           result => {
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < result.length; i++) {
-              if (this.isCheckedCalendars.includes(result[i].id)) {
-                this.calendars.push({ id: result[i].id, name: result[i].name, isChecked: true });
-              } else {
-                this.calendars.push({ id: result[i].id, name: result[i].name, isChecked: false });
+            result.forEach(re => {
+              // tslint:disable-next-line: prefer-for-of
+              for (let k = 0; k < this.group.length; k++) {
+                // tslint:disable-next-line: prefer-for-of
+                for (let i = 0; i < re.permissions.length; i++) {
+                  if (this.group[k] === re.permissions[i].group &&
+                    this.role === re.permissions[i].role && re.permissions[i].authority === 'write') {
+                    this.calendars.push({ id: re.id, name: re.name, isChecked: false });
+                  }
+                }
               }
-            }
+            });
+            this.isCheckedCalendars.forEach(a => {
+              // tslint:disable-next-line: prefer-for-of
+              for (let i = 0; i < this.calendars.length; i++) {
+                if (this.calendars[i].id === a.id) {
+                  this.calendars[i].isChecked = true;
+                }
+              }
+            });
           }
         );
+
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.message.attachments.length; i++) {
           this.fileName.push(data.message.attachments[i].filename);
@@ -111,7 +153,28 @@ export class EditScheduleComponent implements OnInit {
       }
     );
 
+    this.commonUserService.getCommonUser().subscribe(
+      data => {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < data.length; i++) {
+          this.allCommonUser.push({ id: data[i].id, title: data[i].title, participant: data[i].participant });
+        }
+        console.log(this.allCommonUser);
+      }, error => {
+        console.log(error);
+      }
+    )
   }
+
+  oldCheckUncheckAll() {
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.allParticipants.length; i++) {
+      this.allParticipants[i].isChecked = this.oldMasterSelected;
+    }
+
+    this.changeSelection();
+  }
+
 
   changeSelection() {
     this.fetchSelectedItems();
@@ -136,10 +199,8 @@ export class EditScheduleComponent implements OnInit {
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
-      console.log(emails);
       this.userEmail.push(emails);
-      console.log(this.userEmail);
-      this.formData.append('users', emails);
+      this.formData.append('emails', emails);
     } else {
       Swal.fire({
         text: '請輸入Google信箱',
@@ -149,15 +210,16 @@ export class EditScheduleComponent implements OnInit {
     this.sendEmailForm.reset();
   }
 
-
   removeAddUser(index) {
     this.userEmail.splice(index, 1);
-    const users = this.formData.getAll('users');
+    const users = this.formData.getAll('emails');
     users.splice(index, 1);
-    this.formData.delete('users');
+    this.formData.delete('emails');
+    this.userEmail.length = 0;
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < users.length; i++) {
-      this.formData.append('files', users[i]);
+      this.formData.append('emails', users[i]);
+      this.userEmail.push(users[i]);
     }
   }
 
@@ -169,40 +231,47 @@ export class EditScheduleComponent implements OnInit {
       this.formData.append('files', this.uploadForm.get('profile').value);
       this.fileName.push(this.uploadForm.get('profile').value.name);
     }
+
   }
 
   removeSelectedFile(index) {
     const initLenght = this.formData.getAll('filesId').length;
-    console.log(initLenght);
     this.fileName.splice(index, 1);
 
     if (initLenght > index) {
       this.filesId = this.formData.getAll('filesId');
-      console.log(this.filesId);
       this.deleteId = this.filesId[index];
       console.log(this.deleteId);
+
       this.filesId.splice(index, 1);
-      console.log(this.filesId);
       this.formData.delete('filesId');
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.filesId.length; i++) {
         this.formData.append('filesId', this.filesId[i]);
       }
+
       this.formData.append('remove_files', this.deleteId);
     }
 
+
     const selectFile = this.formData.getAll('files');
     selectFile.splice(index - this.formData.getAll('filesId').length, 1);
+
     this.formData.delete('files');
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < selectFile.length; i++) {
       this.formData.append('files', selectFile[i]);
     }
 
+    console.log(selectFile);
   }
 
-
   update() {
+    if (this.isMeet === true) {
+      this.formData.append('nature', 'meeting');
+    } else {
+      this.formData.append('nature', 'event');
+    }
     this.formData.append('title', this.title);
     this.formData.append('start_at', this.startDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
@@ -244,6 +313,38 @@ export class EditScheduleComponent implements OnInit {
         });
       }
     );
+  }
+
+  meet(value) {
+
+    if (value.target.checked === true) {
+      this.isSchedule = false;
+      this.attribute = value.target.value;
+    } else {
+      this.isSchedule = true;
+      this.attribute = '行程';
+    }
+    console.log(this.attribute);
+  }
+
+  schedule(value) {
+
+    if (value.target.checked === true) {
+      this.isMeet = false;
+      this.attribute = value.target.value;
+    } else {
+      this.isMeet = true;
+      this.attribute = '會議';
+    }
+    console.log(this.attribute);
+  }
+
+  hide() {
+    this.showModal = false;
+  }
+
+  commonUser() {
+    this.showModal = true;
   }
 
 

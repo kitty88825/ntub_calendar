@@ -155,28 +155,13 @@
     .view {
       display: flex;
 
-      .pastBtn, .nowBtn {
-        display: flex;
-        align-items: center;
-        border-radius: 5px;
-        border: $color_border 1px solid;
-        padding: $content-size_top-bottom/3 $content-size_left-right/2;
-        cursor: pointer;
-        height: 40px;
-        color: $color_accent;
-        font-size: 10px;
+      select.year {
+        width: 100px;
       }
 
-      .pastBtn {
-        margin-right: $content-size_left-right/2;
-      }
-
-      .nowBtn {
-        margin-left: $content-size_left-right/2;
-      }
-
-      .pastBtn:hover, .nowBtn:hover {
-        background-color: #eeeeee;
+      select.month {
+        width: 80px;
+        margin-left: $content-size_left-right;
       }
 
       .searchbox {
@@ -189,7 +174,7 @@
         position     : relative;
         margin-right : $content-size_left-right;
         transition   : 300ms;
-        margin-left  : 25%;
+        margin-left  : 35%;
         z-index      : 99;
         padding      : $content-size_top-bottom/2 $content-size_left-right/2;
       }
