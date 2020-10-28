@@ -310,14 +310,14 @@ export class IndexComponent implements OnInit {
             },
             onClose: () => {
               clearInterval(timerInterval);
-              if (this.resToken != null) {
-                this.router.navigate(['/calendar']);
-              } else {
-                alert('請重新登入！');
-                window.location.reload();
-              }
             }
           });
+          if (this.resToken != null) {
+            this.router.navigate(['/calendar']);
+          } else {
+            alert('請重新登入！');
+            window.location.reload();
+          }
         },
         error => {
           console.log(error);

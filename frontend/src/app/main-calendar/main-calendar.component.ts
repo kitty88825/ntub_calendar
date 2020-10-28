@@ -220,7 +220,6 @@ export class MainCalendarComponent implements OnInit {
 
     this.tokenService.getUser().subscribe(
       re => {
-        console.log(re);
         this.group = re.groups;
         this.role = re.role;
       }
@@ -413,6 +412,7 @@ export class MainCalendarComponent implements OnInit {
 
   checkAll() {
     this.fetchSelectedItems();
+    this.deleteData.length = 0;
 
     if (this.selectAll === true) {
       this.initShowEvents.forEach(init => {
@@ -423,20 +423,35 @@ export class MainCalendarComponent implements OnInit {
         init.isChecked = false;
       });
     }
+
+    this.initShowEvents.forEach(init => {
+      if (init.permission === true && init.isChecked === true) {
+        this.deleteData.push(init.id);
+      }
+    });
+
+    console.log(this.deleteData);
+
   }
 
   changeSelection() {
     this.fetchSelectedItems();
     let count = 0;
     let permissionCount = 0;
+    this.deleteData = [];
 
     this.initShowEvents.forEach(init => {
       if (init.isChecked === true) {
         count++;
       }
-      if(init.permission === true) {
+      if (init.permission === true) {
         permissionCount++;
       }
+
+      if (init.permission === true && init.isChecked === true) {
+        this.deleteData.push(init.id);
+      }
+
     });
 
     if (permissionCount === count) {
@@ -444,6 +459,8 @@ export class MainCalendarComponent implements OnInit {
     } else {
       this.selectAll = false;
     }
+
+    console.log(this.deleteData);
   }
 
   fetchSelectedItems() {
