@@ -381,6 +381,8 @@ export class MainCalendarComponent implements OnInit {
             Swal.fire({
               text: '已刪除',
               icon: 'success',
+            }).then((re) => {
+              window.location.reload();
             });
           },
           error => {
