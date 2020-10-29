@@ -33,6 +33,7 @@ import { CommonUserComponent } from './common-user/common-user.component';
 import { OpenDataComponent } from './open-data/open-data.component';
 import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
+import { URLComponent } from './url/url.component';
 
 const config = new AuthServiceConfig([
   {
@@ -62,7 +63,8 @@ export function provideConfig() {
     CommonUserComponent,
     OpenDataComponent,
     AddCalendarComponent,
-    AddCalendarUnstaffComponent
+    AddCalendarUnstaffComponent,
+    URLComponent
   ],
   imports: [
     BrowserModule,

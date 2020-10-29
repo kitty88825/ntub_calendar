@@ -37,9 +37,9 @@ export class CommonUserComponent implements OnInit {
     private formBuilder: FormBuilder,
     private userCommonService: UserCommonService
   ) {
-    this.oldMasterSelected = true;
-    this.newMasterSelected = true;
-    this.addMasterSelected = true;
+    this.oldMasterSelected = false;
+    this.newMasterSelected = false;
+    this.addMasterSelected = false;
   }
 
   ngOnInit(): void {
@@ -69,7 +69,7 @@ export class CommonUserComponent implements OnInit {
           for (let i = 0; i < data.length; i++) {
             this.allMeetings.push({
               title: data[i].title,
-              id: data[i].id, participant: data[i].participant
+              id: data[i].id, participant: data[i].participant, isChecked: false
             });
           }
 
@@ -77,13 +77,14 @@ export class CommonUserComponent implements OnInit {
           // tslint:disable-next-line: prefer-for-of
           for (let i = 0; i < this.allMeetings.length; i++) {
             if (this.lookMeetName === this.allMeetings[i].title) {
+              this.allMeetings[i].isChecked = true;
               this.participants = this.allMeetings[i].participant;
               // tslint:disable-next-line: prefer-for-of
               for (let j = 0; j < this.participants.length; j++) {
                 this.allParticipants.push({
                   id: this.allMeetings[i].id,
                   participants: this.participants[j],
-                  isChecked: true
+                  isChecked: false
                 });
               }
             }
@@ -98,17 +99,11 @@ export class CommonUserComponent implements OnInit {
   }
 
   addMeetName() {
-    this.hasCommonUser = true;
-    this.formData.delete('emails');
-    if (this.meetName.length === 0) {
-      Swal.fire({
-        icon: 'error',
-        text: '請輸入新會議名稱',
-      });
-    } else if (this.meetName.length > 0) {
-      this.look = false;
-      this.new = true;
-    }
+    this.look = false;
+    this.new = true;
+    this.allMeetings.forEach(meet => {
+      meet.isChecked = false;
+    });
   }
 
   deleteOrigin() {
@@ -157,15 +152,17 @@ export class CommonUserComponent implements OnInit {
   }
 
   change(info) {
-    this.oldMasterSelected = true;
-    this.newMasterSelected = true;
+    this.oldMasterSelected = false;
+    this.newMasterSelected = false;
     this.allParticipants = [];
-    this.formData.delete('emails');
-    this.meetName = '';
     this.participants = null;
     this.look = true;
     this.new = false;
-    this.lookMeetName = info.target.value;
+    this.allMeetings.forEach(meet => {
+      meet.isChecked = false;
+    });
+    this.allMeetings[info].isChecked = true;
+    this.lookMeetName = this.allMeetings[info].title;
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.allMeetings.length; i++) {
       if (this.lookMeetName === this.allMeetings[i].title) {
@@ -175,7 +172,7 @@ export class CommonUserComponent implements OnInit {
           this.allParticipants.push({
             id: this.allMeetings[i].id,
             participants: this.participants[j],
-            isChecked: true
+            isChecked: false
           });
         }
       }
@@ -184,11 +181,10 @@ export class CommonUserComponent implements OnInit {
   }
 
   oldSend(value) {
+    this.newMasterSelected = false;
     if (value.toAddress.length !== 0) {
       const emails = this.oldSendEmailForm.value.toAddress.split(',');
-      console.log(emails);
-      this.oldInvalidEmails.push({ email: emails, isChecked: true });
-      console.log(this.oldInvalidEmails);
+      this.oldInvalidEmails.push({ email: emails, isChecked: false });
     }
     this.oldSendEmailForm.reset();
   }
@@ -196,40 +192,43 @@ export class CommonUserComponent implements OnInit {
   newSend(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.newSendEmailForm.value.toAddress.split(',');
-      console.log(emails);
-      this.newInvalidEmails.push({ email: emails, isChecked: true });
-      console.log(this.newInvalidEmails);
+      this.newInvalidEmails.push({ email: emails, isChecked: false });
     }
     this.newSendEmailForm.reset();
   }
 
   submit() {
     console.log(this.newInvalidEmails);
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.newInvalidEmails.length; i++) {
-      if (this.newInvalidEmails[i].isChecked === true) {
+    if (this.meetName.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        text: '請輸入會議名稱',
+      });
+    } else {
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < this.newInvalidEmails.length; i++) {
         this.formData.append('emails', this.newInvalidEmails[i].email);
       }
+      this.formData.append('title', this.meetName);
+      this.userCommonService.postCommonUser(this.formData).subscribe(
+        data => {
+          Swal.fire({
+            icon: 'success',
+            text: '新增成功',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+          }).then((result) => {
+            window.location.reload();
+          });
+        }, error => {
+          Swal.fire({
+            icon: 'error',
+            text: '新增失敗',
+          });
+          console.log(error);
+        }
+      );
     }
-    this.formData.append('title', this.meetName);
-    this.userCommonService.postCommonUser(this.formData).subscribe(
-      data => {
-        Swal.fire({
-          icon: 'success',
-          text: '新增成功',
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'OK',
-        }).then((result) => {
-          window.location.reload();
-        });
-      }, error => {
-        Swal.fire({
-          icon: 'error',
-          text: '新增失敗',
-        });
-        console.log(error);
-      }
-    );
   }
 
   edit() {
@@ -245,10 +244,13 @@ export class CommonUserComponent implements OnInit {
       if (result.value) {
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < this.oldInvalidEmails.length; j++) {
-          if (this.oldInvalidEmails[j].isChecked === true) {
-            this.formData.append('emails', this.oldInvalidEmails[j].email);
-          }
+          this.formData.append('emails', this.oldInvalidEmails[j].email);
+          console.log(this.oldInvalidEmails[j].email);
         }
+        this.allParticipants.forEach(all => {
+          this.formData.append('emails', all.participants);
+          console.log(all.participants);
+        });
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < this.allMeetings.length; i++) {
           if (this.allMeetings[i].title === this.lookMeetName) {
@@ -273,36 +275,46 @@ export class CommonUserComponent implements OnInit {
   }
 
   changeSelection() {
-    this.fetchSelectedItems();
-    this.fetchCheckedIDs();
+    let addCount = 0;
+    let allCount = 0;
+    let oldCount = 0;
 
-    this.oldMasterSelected = this.allParticipants.every(function (item: any) {
-      return item.isChecked === true;
-    });
-
-    this.newMasterSelected = this.oldInvalidEmails.every(function (item: any) {
-      return item.isChecked === true;
-    });
-
-    this.addMasterSelected = this.newInvalidEmails.every(function (item: any) {
-      return item.isChecked === true;
-    });
-  }
-
-  fetchSelectedItems() {
-    this.unSelectedItemsList = this.allParticipants.filter((value, index) => {
-      return value.isChecked;
-    });
-  }
-
-  fetchCheckedIDs() {
-    this.formData.delete('remove_emails');
-    this.allParticipants.forEach((value, index) => {
-      if (value.isChecked === false) {
-        this.formData.append('remove_emails', value.participants);
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.allParticipants.length; i++) {
+      if (this.allParticipants[i].isChecked === true) {
+        allCount++;
       }
-    });
+    }
+    if (this.allParticipants.length === allCount && this.allParticipants.length !== 0) {
+      this.oldMasterSelected = true;
+    } else {
+      this.oldMasterSelected = false;
+    }
 
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.oldInvalidEmails.length; i++) {
+      if (this.oldInvalidEmails[i].isChecked === true) {
+        oldCount++;
+      }
+    }
+    if (this.oldInvalidEmails.length === oldCount && this.oldInvalidEmails.length !== 0) {
+      this.newMasterSelected = true;
+    } else {
+      this.newMasterSelected = false;
+    }
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.newInvalidEmails.length; i++) {
+      if (this.newInvalidEmails[i].isChecked === true) {
+        addCount++;
+      }
+    }
+
+    if (this.newInvalidEmails.length === addCount && this.newInvalidEmails.length !== 0) {
+      this.addMasterSelected = true;
+    } else {
+      this.addMasterSelected = false;
+    }
   }
 
   oldCheckUncheckAll() {
@@ -332,8 +344,22 @@ export class CommonUserComponent implements OnInit {
     this.changeSelection();
   }
 
-  alert() {
-    this.isAlert = false;
+  deleteAdd() {
+    this.newInvalidEmails = this.newInvalidEmails.filter(deleteEmail => {
+      return deleteEmail.isChecked === false;
+    });
+  }
+
+  deleteOld() {
+    this.allParticipants = this.allParticipants.filter(deleteEmail => {
+      return deleteEmail.isChecked === false;
+    });
+  }
+
+  deleteNew() {
+    this.oldInvalidEmails = this.oldInvalidEmails.filter(deleteEmail => {
+      return deleteEmail.isChecked === false;
+    });
   }
 
 }
