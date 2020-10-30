@@ -22,34 +22,24 @@
             <div class="form-group">
               <h1>選擇行事曆：</h1>
               <select class="form-control calendar" id="exampleSelect1" [(ngModel)]="selectCalendar" (change)="onChange()">
-                <option *ngFor="let sub of subName" [ngValue]="sub">{{sub}}</option>
+                <option *ngFor="let sub of outputCalendar">{{sub.name}}</option>
               </select>
               <div class="start">
-                <select class="form-control year" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-                  <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
-                </select>
-                <span>年</span>
-                <select class="form-control month">
-                </select>
-                <select class="form-control day"></select>
+                <h1>開始時間：</h1>
               </div>
-              <h2>至</h2>
+              <input type="text" class="form-control startTime" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+              #addStartDate required  placement="right" [(ngModel)]="startDate">
               <div class="end">
-                <select class="form-control year" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-                  <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
-                </select>
-                <span>年</span>
-                <select class="form-control month"></select>
-                <select class="form-control day"></select>
+                <h1>結束時間：</h1>
               </div>
+              <input type="text" class="form-control endTime" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+              #addEndDate required  placement="right" [(ngModel)]="endDate">
+              <div class="btn" (click)="changeDate()">查看</div>
             </div>
           </ul>
         </div>
       </li>
     </ul>
-    <div class="date-picker" (click)="daochu()">
-      匯出Excel
-    </div>
   </aside>
   <article>
     <section class="container">
@@ -71,6 +61,7 @@
           </table>
         </div>
       </ul>
+      <div class="export" (click)="daochu()">匯出</div>
     </section>
   </article>
 </main>

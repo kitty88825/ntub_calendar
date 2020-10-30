@@ -350,10 +350,13 @@ export class MainCalendarComponent implements OnInit {
             this.showEvents.push(this.initShowEvents[i]);
           }
           this.IsLoadingEnd = false;
+        } else {
+          this.initShowEvents = this.showEvents.slice();
         }
 
       }
     );
+
   }
 
   setCurrent(param) {
@@ -445,6 +448,7 @@ export class MainCalendarComponent implements OnInit {
     let count = 0;
     let permissionCount = 0;
     this.deleteData = [];
+    console.log(this.initShowEvents);
 
     this.initShowEvents.forEach(init => {
       if (init.isChecked === true) {
@@ -459,6 +463,8 @@ export class MainCalendarComponent implements OnInit {
       }
 
     });
+    console.log(permissionCount);
+    console.log(count);
 
     if (permissionCount === count) {
       this.selectAll = true;
@@ -516,6 +522,7 @@ export class MainCalendarComponent implements OnInit {
 
   onChange() {
     this.showEvents = [];
+    this.initShowEvents = [];
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.events.length; i++) {
       if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
@@ -531,6 +538,7 @@ export class MainCalendarComponent implements OnInit {
       }
       this.IsLoadingEnd = false;
     } else {
+      this.initShowEvents = this.showEvents.slice();
       this.IsLoadingEnd = true;
     }
 

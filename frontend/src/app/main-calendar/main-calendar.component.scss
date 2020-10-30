@@ -197,10 +197,7 @@
 
         i {
           cursor: pointer;
-        }
-
-        i:hover {
-          color: $color_accent;
+          color: rgba($color: red, $alpha: 0.6);
         }
       }
 
