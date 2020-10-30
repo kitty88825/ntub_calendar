@@ -5,6 +5,7 @@ export interface Event {
   endAt: string;
   description?: string;
   location?: string;
+  calendars_id: number;
   calendars: [{
     color: string;
     description?: string,

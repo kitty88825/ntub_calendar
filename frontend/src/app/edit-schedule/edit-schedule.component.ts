@@ -26,6 +26,7 @@ export class EditScheduleComponent implements OnInit {
   title = '';
   addStart = '';
   showModal: boolean;
+  showCalendar: boolean;
   allCommonUser = [];
   addSTime = '';
   addEnd = '';
@@ -47,8 +48,10 @@ export class EditScheduleComponent implements OnInit {
   attribute = '';
   group = [];
   role = '';
-  allParticipants = [];
-  oldMasterSelected: boolean;
+  MasterSelected = false;
+  selectMainCalendar = '';
+  commonUserEmail = [];
+  allCalendar = [];
 
   constructor(
     private router: Router,
@@ -120,31 +123,6 @@ export class EditScheduleComponent implements OnInit {
           this.isCheckedCalendars.push(data.message.calendars[j]);
         }
 
-        this.calendarService.getCalendar().subscribe(
-          result => {
-            result.forEach(re => {
-              // tslint:disable-next-line: prefer-for-of
-              for (let k = 0; k < this.group.length; k++) {
-                // tslint:disable-next-line: prefer-for-of
-                for (let i = 0; i < re.permissions.length; i++) {
-                  if (this.group[k] === re.permissions[i].group &&
-                    this.role === re.permissions[i].role && re.permissions[i].authority === 'write') {
-                    this.calendars.push({ id: re.id, name: re.name, isChecked: false });
-                  }
-                }
-              }
-            });
-            this.isCheckedCalendars.forEach(a => {
-              // tslint:disable-next-line: prefer-for-of
-              for (let i = 0; i < this.calendars.length; i++) {
-                if (this.calendars[i].id === a.id) {
-                  this.calendars[i].isChecked = true;
-                }
-              }
-            });
-          }
-        );
-
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.message.attachments.length; i++) {
           this.fileName.push(data.message.attachments[i].filename);
@@ -153,47 +131,62 @@ export class EditScheduleComponent implements OnInit {
       }
     );
 
+    this.calendarService.getCalendar().subscribe(
+      result => {
+        result.forEach(re => {
+          this.allCalendar.push(re);
+          // tslint:disable-next-line: prefer-for-of
+          for (let k = 0; k < this.group.length; k++) {
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < re.permissions.length; i++) {
+              if (this.group[k] === re.permissions[i].group &&
+                this.role === re.permissions[i].role && re.permissions[i].authority === 'write') {
+                this.calendars.push({ id: re.id, name: re.name, isChecked: false });
+              }
+            }
+          }
+        });
+
+        this.isCheckedCalendars.forEach(a => {
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.calendars.length; i++) {
+            if (this.calendars[i].id === a.id) {
+              this.selectMainCalendar = this.calendars[i].name;
+            }
+          }
+        });
+      }
+    );
+
+
+
     this.commonUserService.getCommonUser().subscribe(
       data => {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
-          this.allCommonUser.push({ id: data[i].id, title: data[i].title, participant: data[i].participant });
+          this.allCommonUser.push({ id: data[i].id, title: data[i].title, participant: data[i].participant, isChecked: false });
         }
-        console.log(this.allCommonUser);
+        this.allCommonUser[0].isChecked = true;
+        this.allCommonUser[0].participant.forEach(email => {
+          this.commonUserEmail.push({ emails: email, isChecked: false });
+        });
       }, error => {
         console.log(error);
       }
-    )
+    );
   }
 
-  oldCheckUncheckAll() {
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.allParticipants.length; i++) {
-      this.allParticipants[i].isChecked = this.oldMasterSelected;
-    }
-
-    this.changeSelection();
-  }
-
-
-  changeSelection() {
+  CheckUncheckAll() {
     this.fetchSelectedItems();
-    this.fetchCheckedIDs();
+    this.commonUserEmail.forEach(email => {
+      email.isChecked = this.MasterSelected;
+    });
   }
 
   fetchSelectedItems() {
     this.selectedItemsList = this.calendars.filter((value, index) => {
       return value.isChecked;
     });
-  }
-
-  fetchCheckedIDs() {
-    this.calendars.forEach((value, index) => {
-      if (value.isChecked === true) {
-        this.formData.append('calendars', value.id);
-      }
-    });
-
   }
 
   send(value) {
@@ -345,6 +338,52 @@ export class EditScheduleComponent implements OnInit {
 
   commonUser() {
     this.showModal = true;
+  }
+
+  inviteCalendar() {
+    this.showCalendar = true;
+  }
+
+  hideCalendar() {
+    this.showCalendar = false;
+  }
+
+  changeSelectCommon(info) {
+    this.commonUserEmail = [];
+    this.allCommonUser.forEach(common => {
+      common.isChecked = false;
+      if (info === common.title) {
+        common.isChecked = true;
+        common.participant.forEach(email => {
+          this.commonUserEmail.push({ emails: email, isChecked: false });
+        });
+      }
+    });
+  }
+
+  changeSelectEmail() {
+    let count = 0;
+    this.commonUserEmail.forEach(emails => {
+      if (emails.isChecked === true) {
+        count++;
+      }
+    });
+    if (count === this.commonUserEmail.length) {
+      this.MasterSelected = true;
+    } else {
+      this.MasterSelected = false;
+    }
+  }
+
+  importEmail() {
+    this.commonUserEmail.forEach(email => {
+      if (email.isChecked === true) {
+        this.userEmail.push(email.emails);
+        this.formData.append('emails', email.emails);
+      }
+    });
+
+    this.hide();
   }
 
 
