@@ -1,3 +1,4 @@
+import { TokenService } from './../services/token.service';
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
@@ -34,7 +35,8 @@ export class OfficialChangeComponent implements OnInit {
   constructor(
     private router: Router,
     private eventService: EventService,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
@@ -43,7 +45,7 @@ export class OfficialChangeComponent implements OnInit {
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < data.length; i++) {
           this.result.push(data[i].name);
-          this.calendar.push([data[i].id, data[i].name]);
+          this.calendar.push({ id: data[i].id, name: data[i].name });
         }
       }
     );
@@ -52,8 +54,8 @@ export class OfficialChangeComponent implements OnInit {
   add() {
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.datas.length; i++) {
-      if (typeof this.datas[i][0] === 'string' && this.datas[i][1].length === 10 &&
-        this.datas[i][2].length === 10 && this.selectedValue.length !== 0) {
+      if (typeof this.datas[i][0] === 'string' && this.datas[i][3].length === 10 &&
+        this.datas[i][4].length === 10 && this.selectedValue.length !== 0) {
         this.istrue = this.istrue + 1;
       } else {
         Swal.fire({
@@ -64,39 +66,42 @@ export class OfficialChangeComponent implements OnInit {
     }
 
     if (this.istrue === this.datas.length) {
-      this.calendarService.getCalendar().subscribe(
-        data => {
-          console.log(data);
-        }
-      );
-
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.datas.length; i++) {
+        this.calendar.forEach(calendar => {
+          if (calendar.name === this.data[i][2]) {
+            this.formData.append('calendars_id', calendar.id);
+          }
+        });
         this.formData.append('title', this.datas[i][0]);
         this.formData.append('description', this.datas[i][1]);
-        this.formData.append('start_at', this.datas[i][2] + 'T00:00:00+08:00');
-        this.formData.append('end_at', this.datas[i][3] + 'T00:00:00+08:00');
+        this.formData.append('start_at', this.datas[i][3] + 'T00:00:00+08:00');
+        this.formData.append('end_at', this.datas[i][4] + 'T00:00:00+08:00');
         this.eventService.postEvent(this.formData).subscribe(
           data => {
             console.log(data);
+            Swal.fire({
+              text: '新增成功',
+              icon: 'success',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#aaa',
+              confirmButtonText: '回首頁',
+              cancelButtonText: '留在此頁',
+            }).then((result) => {
+              if (result.value) {
+                this.router.navigate(['/calendar']);
+              }
+            });
           },
           error => {
             console.log(error);
+            Swal.fire({
+              text: '新增失敗',
+              icon: 'error',
+            });
           }
         );
-        Swal.fire({
-          text: '新增成功',
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '回首頁',
-          cancelButtonText: '留在此頁',
-        }).then((result) => {
-          if (result.value) {
-            this.router.navigate(['/calendar']);
-          }
-        });
       }
     }
 
@@ -116,7 +121,7 @@ export class OfficialChangeComponent implements OnInit {
     this.datas = [];
     /* wire up file reader */
     const target: DataTransfer = (evt.target) as DataTransfer;
-    if (target.files.length !== 1) {
+    if (target.files.length > 1) {
       Swal.fire({
         text: '請勿選擇多個檔案',
         icon: 'error'
@@ -136,8 +141,10 @@ export class OfficialChangeComponent implements OnInit {
       this.data = XLSX.utils.sheet_to_json(ws, { dateNF: 'yyyy-MM-dd', header: 0, raw: false });
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.data.length; i++) {
-        this.datas.push([this.data[i].發布標題, this.data[i].內容概要, this.data[i].開始日期, this.data[i].結束日期]);
+        this.datas.push([this.data[i].發布標題, this.data[i].內容概要, this.data[i].發布單位, this.data[i].開始日期, this.data[i].結束日期]);
       }
+
+      this.selectedValue = this.data[0].發布單位;
 
       if (this.datas.length === 0) {
         Swal.fire({
@@ -151,7 +158,11 @@ export class OfficialChangeComponent implements OnInit {
   }
 
   addCalendar() {
-    this.router.navigate(['/add-calendar']);
+    if (localStorage.getItem('staff') === 'true') {
+      this.router.navigate(['/add-calendar']);
+    } else {
+      this.router.navigate(['/add-calendar-unstaff']);
+    }
   }
 
 

@@ -23,7 +23,7 @@ export class EventService {
   }
 
   postEvent(formData: any): Observable<any> {
-    return this.http.post<any>(environment.serverIp + 'event/', formData, { headers: this.reqHeader });
+    return this.http.post<any>(environment.serverIp + 'event/events', formData, { headers: this.reqHeader });
   }
 
   deleteEvent(id: number): Observable<Event> {
