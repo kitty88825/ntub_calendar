@@ -176,9 +176,81 @@
         }
 
       }
+      .download {
+        width: 9%;
+        background-color: $color_accent;
+        color: white;
+        border-radius: 5px;
+        margin-top: $content-size_top-bottom*2;
+        margin-left: auto;
+        padding: $content-size_top-bottom/2 $content-size_left-right/2;
+        letter-spacing: 1px;
+        text-align: center;
+        justify-content: center;
+        cursor: pointer;
+      }
     }
 
 
+  }
+
+  .modal_dialog {
+    width           : 20%;
+    height          : fit-content;
+    margin-left     : auto;
+    margin-right    : auto;
+    background-color: $color_white;
+    margin-top      : $content-size_top-bottom*13;
+    border-radius   : 10px;
+    box-shadow      : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
+
+    .modal_header {
+      padding-top : $content-size_top-bottom;
+      text-align  : right;
+      margin-right: $content-size_left-right/2;
+
+      i {
+        height: 20px;
+        width : 20px;
+        cursor: pointer;
+      }
+
+      i:hover {
+        color     : $color_accent;
+        transition: $transition_short;
+      }
+    }
+
+    .modal_body {
+      padding: 10px;
+
+      span {
+        font-size  : 18px;
+        margin-left: $content-size_left-right;
+      }
+
+      .item {
+        width           : 70%;
+        height          : 30px;
+        background-color: $color_accent;
+        color           : white;
+        margin-left     : auto;
+        margin-right    : auto;
+        margin-top      : $content-size_top-bottom;
+        border-radius   : 5px;
+        text-align      : center;
+        font-size       : 18px;
+        cursor          : pointer;
+
+        h4 {
+          letter-spacing: 1px;
+        }
+      }
+
+      .item:nth-last-child(1) {
+        margin-bottom: $content-size_top-bottom;
+      }
+    }
   }
 
 
@@ -253,6 +325,10 @@
             padding         : 5px;
             background-color: $color_primary;
           }
+
+          .select {
+            width: 65%;
+          }
         }
       }
     }
@@ -262,33 +338,6 @@
       color           : $color_text;
       font-weight     : 400;
       font-family     : 'Noto Sans TC', sans-serif;
-    }
-
-
-    .material-icons {
-      font-family   : 'Material Icons';
-      font-weight   : normal;
-      font-style    : normal;
-      font-size     : 24px;
-      /* Preferred icon size */
-      display       : inline-block;
-      line-height   : 1;
-      text-transform: none;
-      letter-spacing: normal;
-      word-wrap     : normal;
-      white-space   : nowrap;
-      direction     : ltr;
-
-      /* Support for all WebKit browsers. */
-      -webkit-font-smoothing: antialiased;
-      /* Support for Safari and Chrome. */
-      text-rendering        : optimizeLegibility;
-
-      /* Support for Firefox. */
-      -moz-osx-font-smoothing: grayscale;
-
-      /* Support for IE. */
-      font-feature-settings: 'liga';
     }
   }
 }
