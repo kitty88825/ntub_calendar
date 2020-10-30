@@ -1,4 +1,6 @@
 export interface URL {
-  username: string;
+  username?: string;
   email: string;
+  id?: number;
+  url?: string;
 }

@@ -34,6 +34,7 @@ import { OpenDataComponent } from './open-data/open-data.component';
 import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
 import { URLComponent } from './url/url.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 const config = new AuthServiceConfig([
   {
@@ -64,7 +65,7 @@ export function provideConfig() {
     OpenDataComponent,
     AddCalendarComponent,
     AddCalendarUnstaffComponent,
-    URLComponent
+    URLComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,7 +89,8 @@ export function provideConfig() {
           return localStorage.getItem('access_token');
         },
       }
-    })
+    }),
+    ColorPickerModule
   ],
   providers: [
     {

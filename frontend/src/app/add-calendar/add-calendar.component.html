@@ -1,15 +1,16 @@
 <app-navbar></app-navbar>
 <main>
   <aside class="aside">
+    <div class="addBtn" (click)="changeToAdd()">
+      <i class="material-icons">
+        calendar_today
+      </i>
+      <span>新增行事曆</span>
+    </div>
     <ul class="item-categories">
       <li>
         <div class="item-categories__title active">
-          <div class="name">
-            <i class="material-icons">
-              add
-            </i>
-            <span>新增行事曆</span>
-          </div>
+          公開
           <div class="form-group row">
             <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
               [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
@@ -19,46 +20,216 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <ul class="item-categories__list">
-            <div class="form-group">
-              <h2>新增行事曆名稱：</h2>
-              <input type="text" placeholder="輸入行事曆名稱" class="form-control calendar" [(ngModel)]="calendarName">
-              <h2>描述：</h2>
-              <textarea class="form-control" [(ngModel)]="description"></textarea>
-              <h2 class="staff">行事曆權限：</h2>
-              <div class="attribute">
-                <label class="container">
-                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet" value="public"
-                  (change)="meet($event)">公開
-                  <span class="checkmark"></span>
-                </label>
-                <label class="container">
-                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
-                  value="private" (change)="schedule($event)">不公開
-                <span class="checkmark"></span>
-                </label>
-              </div>
-              <hr>
-              <div class="addCalendar" (click)="addCalendar()">新增</div>
-            </div>
+            <li *ngFor="let open of publicCalendar" class="openCalendar__list" (click)="lookCalendar($event)">
+              <span class="openCalendar__list__radius" [style.background-color]="open.color"></span>
+              <div class="openCalendar__list__name">{{open.name}}</div>
+              <i class="material-icons">
+                edit
+              </i>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="item-categories__title active">
+          非公開
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isOpened = !isOpened"
+              [attr.aria-expanded]="!isOpened" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isOpened" [isAnimated]="true">
+          <ul class="item-categories__list">
+            <li *ngFor="let private of privateCalendar" class="openCalendar__list" (click)="lookCalendar($event)">
+              <span class="openCalendar__list__radius" [style.background-color]="private.color"></span>
+              <div class="openCalendar__list__name">{{private.name}}</div>
+              <i class="material-icons">
+                edit
+              </i>
+            </li>
           </ul>
         </div>
       </li>
     </ul>
   </aside>
   <article>
-    <section class="container">
-      <ul class="category">
-        <li class="category__block">
-          <span>公開</span>
-          <hr>
-          <div class="item-block"></div>
-        </li>
-        <li class="category__block">
-          <span>不公開</span>
-          <hr>
-          <div class="item-block"></div>
-        </li>
-      </ul>
+    <section class="container" *ngIf="add === true">
+      <div class="content">
+        <div class="content__name">
+          <h2>行事曆名稱</h2>
+          <input type="text" class="name form-control" placeholder="請輸入行事曆名稱" [(ngModel)]="calendarName">
+          <div class="submit" (click)="addCalendar()">
+            <i class="material-icons">
+              done_all
+            </i>
+            <span>建立</span>
+          </div>
+        </div>
+        <div class="content__color">
+          <h2>行事曆顏色</h2>
+          <div [(colorPicker)]="color" [style.background]="color" class="color form-control">
+            <i class="material-icons">
+              keyboard_arrow_down
+            </i>
+          </div>
+        </div>
+        <div class="content__description">
+          <h2>描述</h2>
+          <textarea class="form-control" [(ngModel)]="description"></textarea>
+        </div>
+        <div class="content__permission">
+          <h2>行事曆權限</h2>
+          <div class="attribute">
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet"
+                value="public" (change)="meet($event)">公開
+              <span class="checkmark"></span>
+            </label>
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
+                value="private" (change)="schedule($event)">不公開
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+        <div class="content__office">
+          <h2>單位權限設定</h2>
+          <div class="otherOffice">
+            <div class="otherOffice__title">
+              <div class="otherOffice__name">行事曆名稱</div>
+              <div class="otherOffice__role">使用者身分</div>
+              <div class="otherOffice__permission">權限</div>
+              <div class="otherOffice__delete">刪除</div>
+            </div>
+            <div class="otherOffice__content" *ngFor="let item of items; let i = index">
+              <div class="otherOffice__name">
+                <select class="form-control" (change)="changeOffice(i, $event)">
+                  <option></option>
+                  <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
+                </select>
+              </div>
+              <div class="otherOffice__role">
+                <select class="form-control" (change)="changeRole(i, $event)">
+                  <option value="student">學生</option>
+                  <option value="system">系統管理者</option>
+                  <option value="teacher">老師</option>
+                  <option value="unknow">不知名</option>
+                </select>
+              </div>
+              <div class="otherOffice__permission">
+                <select class="form-control" (change)="changeAuthority(i, $event)">
+                  <option value="read">可讀</option>
+                  <option value="write">可寫</option>
+                </select>
+              </div>
+              <div class="otherOffice__delete">
+                <i class="material-icons" (click)="deleteOffice(item)">
+                  delete
+                </i>
+              </div>
+            </div>
+            <div class="otherOffice__add" (click)="addOffice()">
+              <i class="material-icons">
+                add
+              </i>
+              添加更多權限設定
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="container" *ngIf="edit === true">
+      <div class="content">
+        <div class="content__name">
+          <h2>行事曆名稱</h2>
+          <input type="text" class="name form-control" placeholder="請輸入行事曆名稱" [(ngModel)]="calendarName">
+          <div class="submit" (click)="addCalendar()">
+            <i class="material-icons">
+              autorenew
+            </i>
+            <span>更新</span>
+          </div>
+          <div class="delete" (click)="addCalendar()">
+            <i class="material-icons">
+              clear
+            </i>
+            <span>刪除</span>
+          </div>
+        </div>
+        <div class="content__color">
+          <h2>行事曆顏色</h2>
+          <div [(colorPicker)]="color" [style.background]="color" class="color form-control">
+            <i class="material-icons">
+              keyboard_arrow_down
+            </i>
+          </div>
+        </div>
+        <div class="content__description">
+          <h2>描述</h2>
+          <textarea class="form-control" [(ngModel)]="description"></textarea>
+        </div>
+        <div class="content__permission">
+          <h2>行事曆權限</h2>
+          <div class="attribute">
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isMeet"
+                value="public" (change)="meet($event)">公開
+              <span class="checkmark"></span>
+            </label>
+            <label class="container">
+              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="isSchedule"
+                value="private" (change)="schedule($event)">不公開
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+        <div class="content__office">
+          <h2>單位權限設定</h2>
+          <div class="otherOffice">
+            <div class="otherOffice__title">
+              <div class="otherOffice__name">行事曆名稱</div>
+              <div class="otherOffice__role">使用者身分</div>
+              <div class="otherOffice__permission">權限</div>
+              <div class="otherOffice__delete">刪除</div>
+            </div>
+            <div class="otherOffice__content" *ngFor="let item of items; let i = index">
+              <div class="otherOffice__name">
+                <select class="form-control" (change)="changeOffice(i, $event)">
+                  <option></option>
+                  <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
+                </select>
+              </div>
+              <div class="otherOffice__role">
+                <select class="form-control" (change)="changeRole(i, $event)">
+                  <option value="student">學生</option>
+                  <option value="system">系統管理者</option>
+                  <option value="teacher">老師</option>
+                  <option value="unknow">不知名</option>
+                </select>
+              </div>
+              <div class="otherOffice__permission">
+                <select class="form-control" (change)="changeAuthority(i, $event)">
+                  <option value="read">可讀</option>
+                  <option value="write">可寫</option>
+                </select>
+              </div>
+              <div class="otherOffice__delete">
+                <i class="material-icons" (click)="deleteOffice(item)">
+                  delete
+                </i>
+              </div>
+            </div>
+            <div class="otherOffice__add" (click)="addOffice()">
+              <i class="material-icons">
+                add
+              </i>
+              添加更多權限設定
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </article>
 </main>

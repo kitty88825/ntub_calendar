@@ -18,5 +18,4 @@ export class ShareDataService {
     return this.subject.asObservable();
   }
 
-
 }

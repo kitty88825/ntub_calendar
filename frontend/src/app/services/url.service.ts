@@ -1,13 +1,13 @@
+import { URL } from './../models/URL.model';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Token } from '../models/token.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TokenService {
+export class URLService {
   resToken = '';
   reqHeader;
 
@@ -17,19 +17,10 @@ export class TokenService {
     this.reqHeader = new HttpHeaders({
       Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
     });
-   }
-
-
-  postToken(token: Token): Observable<Token> {
-    return this.http.post<Token>(environment.serverIp + 'user/login', token);
   }
 
-  refreshToken(token): Observable<any> {
-    return this.http.post<any>(environment.serverIp + 'token/refresh', token);
+  postRenewURL(url: any): Observable<URL> {
+    return this.http.post<URL>(environment.serverIp + 'user/update_code', url, { headers: this.reqHeader })
   }
 
-  getUser(): Observable<any> {
-    return this.http.get<any>(environment.serverIp + 'user/me', {headers: this.reqHeader});
-  }
 }
-

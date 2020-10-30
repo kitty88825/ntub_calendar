@@ -286,6 +286,10 @@ export class MainCalendarComponent implements OnInit {
           }
         }
 
+        this.showEvents = this.showEvents.filter(function (el, i, arr) {
+          return arr.indexOf(el) === i;
+        });
+
         this.eventsYear = this.eventsYear.filter(function (el, i, arr) {
           return arr.indexOf(el) === i;
         });

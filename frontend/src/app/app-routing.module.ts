@@ -14,6 +14,7 @@ import { IndexComponent } from './index/index.component';
 import { MainCalendarComponent } from './main-calendar/main-calendar.component';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { UserTeachComponent } from './user-teach/user-teach.component';
+import { URLComponent } from './url/url.component';
 
 
 const routes: Routes = [
@@ -31,7 +32,8 @@ const routes: Routes = [
   { path: 'common-user', component: CommonUserComponent },
   { path: 'opendata', component: OpenDataComponent },
   { path: 'add-calendar', component: AddCalendarComponent },
-  { path: 'add-calendar-unstaff', component: AddCalendarUnstaffComponent }
+  { path: 'add-calendar-unstaff', component: AddCalendarUnstaffComponent },
+  { path: 'my-url', component: URLComponent },
 ];
 
 @NgModule({
