@@ -387,10 +387,6 @@
             display: none;
           }
 
-          h2 {
-            width: 16%;
-          }
-
           label.invite {
             width           : 50px;
             display         : flex;
@@ -398,7 +394,6 @@
             align-items     : center;
             margin-bottom   : 32px;
             padding         : 6px 0;
-            margin-right    : $content-size_left-right;
             border          : 1px solid $color_form_control;
             border-radius   : 0 5px 5px 0;
             cursor          : pointer;
@@ -408,27 +403,23 @@
           }
 
           .commonUserBtn {
-            width    : 180px;
-            height   : 40px;
-            font-size: 15px;
+            display    : flex;
+            background-color: $color_second;
+            border-radius: 60px;
+            color: white;
+            letter-spacing: 1px;
+            margin-left: $content-size_left-right*2;
+            width: 200px;
+            font-size: 14px;
+            height: 40px;
+            text-align: center;
+            justify-content: center;
+            cursor: pointer;
+            padding-top: $content-size_top-bottom/2;
 
-            input {
-              display: none;
+            i {
+              color: white;
             }
-
-            label {
-              display         : flex;
-              justify-content : center;
-              align-items     : center;
-              margin-bottom   : 32px;
-              padding         : 8px 8px;
-              background-color: $color_second;
-              border-radius   : 80px;
-              color           : white;
-              letter-spacing  : 1px;
-              cursor          : pointer;
-            }
-
           }
 
 
@@ -442,48 +433,22 @@
             margin-right: $content-size_left-right*2;
           }
 
-          .title_block {
-            &_flex {
-              display: flex;
-            }
-
-            .advise {
-              width     : 90%;
-              height    : 40px;
-              font-size : 15px;
-              margin-top: $content-size_top-bottom;
-
-              input {
-                display: none;
-              }
-
-              label {
-                display         : flex;
-                justify-content : center;
-                align-items     : center;
-                margin-bottom   : 32px;
-                padding         : 8px 8px;
-                border-radius   : 80px;
-                cursor          : pointer;
-                background-color: $color_second;
-                color           : white;
-                letter-spacing  : 1px;
-              }
-
-              label:hover {
-                border-color: $color_accent;
-              }
-
-            }
-          }
-
           .all_participants {
-            width        : 450px;
+            width        : 400px;
             height       : 200px;
             border       : 1px solid $color_form_control;
             border-radius: 5px;
             overflow     : auto;
-            margin-left  : $content-size_left-right/2;
+          }
+
+
+          .all_common-user {
+            margin-left: $content-size_left-right*2;
+            width: 200px;
+
+            input {
+              width: 100%;
+            }
           }
 
           li {

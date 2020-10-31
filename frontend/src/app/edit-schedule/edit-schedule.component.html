@@ -99,10 +99,10 @@
               </label>
             </form>
             <div class="commonUserBtn" (click)="commonUser()">
-              <input type="button">
-              <label class="button-primary">
-                <span>選擇常用參與人員</span>
-              </label>
+              <i class="material-icons">
+                person_add
+              </i>
+              <h2>常用參與人員：</h2>
             </div>
           </div>
         </div>
@@ -113,20 +113,6 @@
           <h2>事由：</h2>
           <textarea class="form-control" id="exampleTextarea" rows="3" [(ngModel)]="description"
             placeholder="新增說明"></textarea>
-          <div class="title_block">
-            <div class="title_block_flex">
-              <i class="material-icons">
-                how_to_reg
-              </i>
-              <h2>所有參與人員：</h2>
-            </div>
-            <div class="advise">
-              <input type="button">
-              <label class="button-primary">
-                <span>推薦時間</span>
-              </label>
-            </div>
-          </div>
           <div class="all_participants" placeholder="參與對象">
             <ul>
               <li *ngFor="let name of userEmail;let index = index">
@@ -139,6 +125,9 @@
                 </i>
               </li>
             </ul>
+          </div>
+          <div class="all_common-user">
+            <input type="button" class="form-control" value="建議時間">
           </div>
         </div>
         <div class="add__file">
@@ -182,7 +171,8 @@
                 <ul class="allCommonUserForm">
                   <li *ngFor="let commonUser of allCommonUser">
                     <label class="container">
-                      <input type="checkbox" class="material-icons" [(ngModel)]="commonUser.isChecked" (change)="changeSelectCommon(commonUser.title)">{{commonUser.title}}
+                      <input type="checkbox" class="material-icons" [(ngModel)]="commonUser.isChecked"
+                        (change)="changeSelectCommon(commonUser.title)">{{commonUser.title}}
                       <span class="checkmark"></span>
                     </label>
                   </li>
@@ -192,7 +182,7 @@
                 <div class="all">
                   <label class="container">
                     <input type="checkbox" class="material-icons" (change)="CheckUncheckAll()"
-                    [(ngModel)]="MasterSelected">全選
+                      [(ngModel)]="MasterSelected">全選
                     <span class="checkmark"></span>
                   </label>
                 </div>
@@ -200,7 +190,8 @@
                   <ul>
                     <li *ngFor="let email of commonUserEmail">
                       <label class="container">
-                        <input type="checkbox" class="material-icons" [(ngModel)]="email.isChecked" (change)="changeSelectEmail()">{{email.emails}}
+                        <input type="checkbox" class="material-icons" [(ngModel)]="email.isChecked"
+                          (change)="changeSelectEmail()">{{email.emails}}
                         <span class="checkmark"></span>
                       </label>
                     </li>
@@ -217,8 +208,8 @@
       </div>
     </div>
   </div>
-    <!-- Creates the bootstrap modal where the image will appear -->
-    <div [style.display]="showCalendar ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div [style.display]="showCalendar ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="calendar_dialog">
       <div class="calendar_body">
@@ -255,5 +246,6 @@
         </div>
       </div>
     </div>
+
   </div>
 </main>

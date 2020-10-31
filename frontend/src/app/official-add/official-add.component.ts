@@ -33,6 +33,7 @@ export class OfficialAddComponent implements OnInit {
   @ViewChild('addStartDate') addStartDate: ElementRef;
   @ViewChild('addEndDate') addEndDate: ElementRef;
 
+
   ngOnInit(): void {
 
     this.calendarService.getCalendar().subscribe(
@@ -83,40 +84,50 @@ export class OfficialAddComponent implements OnInit {
 
   changeDate() {
     this.showDatas = [];
-    this.eventService.getEvents().subscribe(
-      data => {
-        data.forEach(event => {
-          event.calendars.forEach(calendar => {
-            if (calendar.name === this.selectCalendar &&
-              this.addStartDate.nativeElement.value.toUpperCase() <= event.startAt.substr(0, 10).toUpperCase() &&
-              this.addEndDate.nativeElement.value.toUpperCase() >= event.endAt.substr(0, 10).toUpperCase()) {
-              this.showDatas.push([event.title, event.description, calendar.name, event.startAt.substr(0, 10), event.endAt.substr(0, 10)]);
-            }
+    this.endDate = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+    this.startDate = formatDate(this.startDate, 'yyyy-MM-dd', 'en')
+    if (this.endDate.toUpperCase() >= this.startDate.toUpperCase()) {
+      this.eventService.getEvents().subscribe(
+        data => {
+          data.forEach(event => {
+            event.calendars.forEach(calendar => {
+              if (calendar.name === this.selectCalendar &&
+                this.addStartDate.nativeElement.value.toUpperCase() <= event.startAt.substr(0, 10).toUpperCase() &&
+                this.addEndDate.nativeElement.value.toUpperCase() >= event.endAt.substr(0, 10).toUpperCase()) {
+                this.showDatas.push([event.title, event.description, calendar.name,
+                event.startAt.substr(0, 10), event.endAt.substr(0, 10)]);
+              }
+            });
           });
-        });
 
-        if (this.showDatas.length === 0) {
-          Swal.fire({
-            text: '沒有符合的資料',
-            icon: 'warning',
+          if (this.showDatas.length === 0) {
+            Swal.fire({
+              text: '沒有符合的資料',
+              icon: 'warning',
+            });
+          }
+
+          this.showDatas.sort(function (a, b) {
+            const startA = a[3].toUpperCase(); // ignore upper and lowercase
+            const startB = b[3].toUpperCase(); // ignore upper and lowercase
+            if (startA < startB) {
+              return -1;
+            }
+            if (startA > startB) {
+              return 1;
+            }
+
+            // names must be equal
+            return 0;
           });
         }
-
-        this.showDatas.sort(function (a, b) {
-          const startA = a[3].toUpperCase(); // ignore upper and lowercase
-          const startB = b[3].toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-      }
-    );
+      );
+    } else {
+      Swal.fire({
+        text: '請輸入正確時間',
+        icon: 'error'
+      });
+    }
   }
 
 

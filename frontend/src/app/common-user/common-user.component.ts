@@ -10,7 +10,6 @@ import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 })
 export class CommonUserComponent implements OnInit {
   isCollapsed = false;
-  isOpened = false;
   meetName = '';
   look = true;
   new = !this.look;
@@ -26,21 +25,15 @@ export class CommonUserComponent implements OnInit {
   participants;
   deleteId;
   allParticipants = [];
-  unSelectedItemsList = [];
-  oldMasterSelected: boolean;
-  newMasterSelected: boolean;
-  addMasterSelected: boolean;
-  isAlert = true;
+  oldMasterSelected = false;
+  newMasterSelected = false;
+  addMasterSelected = false;
   hasCommonUser = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private userCommonService: UserCommonService
-  ) {
-    this.oldMasterSelected = false;
-    this.newMasterSelected = false;
-    this.addMasterSelected = false;
-  }
+  ) { }
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
@@ -57,43 +50,33 @@ export class CommonUserComponent implements OnInit {
 
     this.userCommonService.getCommonUsers().subscribe(
       data => {
-
         if (data.length === 0) {
           this.hasCommonUser = false;
         } else if (data.length > 0) {
           this.hasCommonUser = true;
-        }
 
-        if (data.length > 0) {
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < data.length; i++) {
-            this.allMeetings.push({
-              title: data[i].title,
-              id: data[i].id, participant: data[i].participant, isChecked: false
-            });
-          }
+          data.forEach(commonUser => {
+            this.allMeetings.push({ title: commonUser.title, id: commonUser, participant: commonUser.participant, isChecked: false });
+          });
 
           this.lookMeetName = this.allMeetings[0].title;
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < this.allMeetings.length; i++) {
-            if (this.lookMeetName === this.allMeetings[i].title) {
-              this.allMeetings[i].isChecked = true;
-              this.participants = this.allMeetings[i].participant;
-              // tslint:disable-next-line: prefer-for-of
-              for (let j = 0; j < this.participants.length; j++) {
-                this.allParticipants.push({
-                  id: this.allMeetings[i].id,
-                  participants: this.participants[j],
-                  isChecked: false
-                });
-              }
-            }
-          }
-        }
 
-      },
-      error => {
-        console.log(error);
+          this.allMeetings.forEach(meet => {
+            if (this.lookMeetName === meet.title) {
+              meet.isChecked = true;
+              this.participants = meet.participant;
+
+              this.participants.forEach(participant => {
+                this.allParticipants.push({ id: meet.id, participants: participant, isChecked: false });
+              });
+            }
+          });
+        }
+      }, error => {
+        Swal.fire({
+          text: '獲取資料失敗',
+          icon: 'error'
+        });
       }
     );
   }
@@ -117,15 +100,14 @@ export class CommonUserComponent implements OnInit {
       cancelButtonText: '取消'
     }).then((result) => {
       if (result.value) {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.allMeetings.length; i++) {
-          if (this.allMeetings[i].title === this.lookMeetName) {
-            this.deleteId = this.allMeetings[i].id;
+        this.allMeetings.forEach(meet => {
+          if (meet.title === this.lookMeetName) {
+            this.deleteId = meet.id.id;
           }
-        }
+        });
+        console.log(this.deleteId);
         this.userCommonService.deleteCommonUser(this.deleteId).subscribe(
           data => {
-            console.log(data);
             Swal.fire({
               icon: 'success',
               text: '刪除成功！',
@@ -134,9 +116,7 @@ export class CommonUserComponent implements OnInit {
             }).then((res) => {
               window.location.reload();
             });
-          },
-          error => {
-            console.log(error);
+          }, error => {
             Swal.fire({
               icon: 'error',
               text: '刪除失敗！',
@@ -155,29 +135,28 @@ export class CommonUserComponent implements OnInit {
     this.oldMasterSelected = false;
     this.newMasterSelected = false;
     this.allParticipants = [];
-    this.participants = null;
+    this.participants = [];
     this.look = true;
     this.new = false;
+    this.oldInvalidEmails = [];
+
     this.allMeetings.forEach(meet => {
       meet.isChecked = false;
     });
     this.allMeetings[info].isChecked = true;
     this.lookMeetName = this.allMeetings[info].title;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.allMeetings.length; i++) {
-      if (this.lookMeetName === this.allMeetings[i].title) {
-        this.participants = this.allMeetings[i].participant;
-        // tslint:disable-next-line: prefer-for-of
-        for (let j = 0; j < this.participants.length; j++) {
+    this.allMeetings.forEach(meet => {
+      if (this.lookMeetName === meet.title) {
+        this.participants = meet.participant;
+        this.participants.forEach(participant => {
           this.allParticipants.push({
-            id: this.allMeetings[i].id,
-            participants: this.participants[j],
+            id: meet.id,
+            participants: participant,
             isChecked: false
           });
-        }
+        });
       }
-    }
-    console.log(this.allParticipants);
+    });
   }
 
   oldSend(value) {
@@ -198,17 +177,15 @@ export class CommonUserComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.newInvalidEmails);
     if (this.meetName.length === 0) {
       Swal.fire({
         icon: 'error',
         text: '請輸入會議名稱',
       });
     } else {
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < this.newInvalidEmails.length; i++) {
-        this.formData.append('emails', this.newInvalidEmails[i].email);
-      }
+      this.newInvalidEmails.forEach(email => {
+        this.formData.append('emails', email.email);
+      });
       this.formData.append('title', this.meetName);
       this.userCommonService.postCommonUser(this.formData).subscribe(
         data => {
@@ -242,19 +219,15 @@ export class CommonUserComponent implements OnInit {
       cancelButtonText: '取消'
     }).then((result) => {
       if (result.value) {
-        // tslint:disable-next-line: prefer-for-of
-        for (let j = 0; j < this.oldInvalidEmails.length; j++) {
-          this.formData.append('emails', this.oldInvalidEmails[j].email);
-          console.log(this.oldInvalidEmails[j].email);
-        }
+        this.oldInvalidEmails.forEach(email => {
+          this.formData.append('emails', email.email);
+        });
         this.allParticipants.forEach(all => {
           this.formData.append('emails', all.participants);
-          console.log(all.participants);
         });
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.allMeetings.length; i++) {
-          if (this.allMeetings[i].title === this.lookMeetName) {
-            this.userCommonService.patchCommonUser(this.allMeetings[i].id, this.formData).subscribe(
+        this.allMeetings.forEach(meet => {
+          if (meet.title === this.lookMeetName) {
+            this.userCommonService.patchCommonUser(meet.id.id, this.formData).subscribe(
               data => {
                 Swal.fire({
                   icon: 'success',
@@ -262,14 +235,17 @@ export class CommonUserComponent implements OnInit {
                 }).then((res) => {
                   window.location.reload();
                 });
-
-              },
-              error => {
-                console.log(error);
+              }, error => {
+                Swal.fire({
+                  icon: 'error',
+                  text: '更新失敗！',
+                }).then((res) => {
+                  window.location.reload();
+                });
               }
             );
           }
-        }
+        });
       }
     });
   }
@@ -279,36 +255,35 @@ export class CommonUserComponent implements OnInit {
     let allCount = 0;
     let oldCount = 0;
 
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.allParticipants.length; i++) {
-      if (this.allParticipants[i].isChecked === true) {
+    this.allParticipants.forEach(all => {
+      if (all.isChecked === true) {
         allCount++;
       }
-    }
+    });
+
     if (this.allParticipants.length === allCount && this.allParticipants.length !== 0) {
       this.oldMasterSelected = true;
     } else {
       this.oldMasterSelected = false;
     }
 
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.oldInvalidEmails.length; i++) {
-      if (this.oldInvalidEmails[i].isChecked === true) {
+    this.oldInvalidEmails.forEach(email => {
+      if (email.isChecked === true) {
         oldCount++;
       }
-    }
+    });
+
     if (this.oldInvalidEmails.length === oldCount && this.oldInvalidEmails.length !== 0) {
       this.newMasterSelected = true;
     } else {
       this.newMasterSelected = false;
     }
 
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.newInvalidEmails.length; i++) {
-      if (this.newInvalidEmails[i].isChecked === true) {
+    this.newInvalidEmails.forEach(email => {
+      if (email.isChecked === true) {
         addCount++;
       }
-    }
+    });
 
     if (this.newInvalidEmails.length === addCount && this.newInvalidEmails.length !== 0) {
       this.addMasterSelected = true;
@@ -318,29 +293,23 @@ export class CommonUserComponent implements OnInit {
   }
 
   oldCheckUncheckAll() {
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.allParticipants.length; i++) {
-      this.allParticipants[i].isChecked = this.oldMasterSelected;
-    }
-
+    this.allParticipants.forEach(all => {
+      all.isChecked = this.oldMasterSelected;
+    });
     this.changeSelection();
   }
 
   newCheckUncheckAll() {
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.oldInvalidEmails.length; i++) {
-      this.oldInvalidEmails[i].isChecked = this.newMasterSelected;
-    }
-
+    this.oldInvalidEmails.forEach(email => {
+      email.isChecked = this.newMasterSelected;
+    });
     this.changeSelection();
   }
 
   addCheckUncheckAll() {
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.newInvalidEmails.length; i++) {
-      this.newInvalidEmails[i].isChecked = this.addMasterSelected;
-    }
-
+    this.newInvalidEmails.forEach(email => {
+      email.isChecked = this.addMasterSelected;
+    });
     this.changeSelection();
   }
 

@@ -38,16 +38,11 @@
         <i class="material-icons">
           event_available
         </i>
-        <h2>選擇行事曆</h2>
-        <ul class="add__calendar__list">
-          <li *ngFor="let calendar of calendars">
-            <label class="container">
-              <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="calendar.isChecked"
-                (change)="changeSelection()">{{calendar.name}}
-              <span class="checkmark"></span>
-            </label>
-          </li>
-        </ul>
+        <h2>發布單位：</h2>
+        <select class="add__calendar__list form-control" [(ngModel)]="selectMainCalendar">
+          <option *ngFor="let calendar of calendars">{{calendar.name}}</option>
+        </select>
+        <div class="other" (click)="inviteCalendar()">添加至其他行事曆</div>
       </div>
       <div class="add__time">
         <i class="material-icons">
@@ -97,7 +92,7 @@
               </label>
             </form>
           </div>
-          <div class="add__common-user">
+          <div class="add__common-user" (click)="OpencommonUser()">
             <i class="material-icons">
               person_add
             </i>
@@ -112,7 +107,7 @@
           <textarea class="form-control" id="exampleTextarea" rows="3" #description placeholder="新增說明"></textarea>
           <div class="all_participants" placeholder="參與對象">
             <ul>
-              <li *ngFor="let name of invalidEmails;let index = index">
+              <li *ngFor="let name of userEmail;let index = index">
                 <i class="material-icons">
                   person
                 </i>
@@ -124,10 +119,6 @@
             </ul>
           </div>
           <div class="all_common-user">
-            <select class="form-control" (change)="commonUser($event)">
-              <option></option>
-              <option *ngFor="let name of allCommonUser">{{name.title}}</option>
-            </select>
             <input type="button" class="form-control" value="建議時間">
           </div>
         </div>
@@ -156,4 +147,97 @@
       </div>
     </section>
   </article>
+    <!-- Creates the bootstrap modal where the image will appear -->
+    <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="event_dialog">
+      <div class="event_content">
+        <div class="event_body">
+          <div class="event_border">
+            <i class="cancel material-icons" (click)="hide()">
+              cancel
+            </i>
+            <div class="event_content">
+              <div class="event_block">
+                <span class="title">選擇常用參與人員</span>
+                <ul class="allCommonUserForm">
+                  <li *ngFor="let commonUser of allCommonUser">
+                    <label class="container">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="commonUser.isChecked"
+                        (change)="changeSelectCommon(commonUser.title)">{{commonUser.title}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div class="event_participants">
+                <div class="all">
+                  <label class="container">
+                    <input type="checkbox" class="material-icons" (change)="CheckUncheckAll()"
+                      [(ngModel)]="MasterSelected">全選
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="allEmails">
+                  <ul>
+                    <li *ngFor="let email of commonUserEmail">
+                      <label class="container">
+                        <input type="checkbox" class="material-icons" [(ngModel)]="email.isChecked"
+                          (change)="changeSelectEmail()">{{email.emails}}
+                        <span class="checkmark"></span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+                <div class="btn">
+                  <div class="cancel" (click)="hide()">取消</div>
+                  <div class="import" (click)="importEmail()">匯入</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Creates the bootstrap modal where the image will appear -->
+    <div [style.display]="showCalendar ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="calendar_dialog">
+      <div class="calendar_body">
+        <div class="calendar_border">
+          <i class="cancel material-icons" (click)="hideCalendar()">
+            cancel
+          </i>
+          <div class="calendar_container">
+            <div class="calendar_title">
+              <div class="calendar_checkbox">
+                <label class="container">
+                  <input type="checkbox" class="material-icons">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="calendar_name">行事曆名稱</div>
+              <div class="calendar_status">狀態</div>
+            </div>
+            <div class="calendar_content" *ngFor="let calendar of allCalendars">
+              <div class="calendar_checkbox">
+                <label class="container">
+                  <input type="checkbox" class="material-icons">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="calendar_name">{{calendar.name}}</div>
+              <div class="calendar_status"></div>
+            </div>
+          </div>
+          <div class="btn">
+            <div class="cancel" (click)="hideCalendar()">取消</div>
+            <div class="import">確定</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </main>

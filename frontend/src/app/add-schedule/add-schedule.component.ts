@@ -27,6 +27,7 @@ export class AddScheduleComponent implements OnInit {
   invalidEmails = [];
   isCollapsed = false;
   calendars = [];
+  allCalendars = [];
   selectedItemsList = [];
   isOpen = false;
   isSubmitted = false;
@@ -37,6 +38,12 @@ export class AddScheduleComponent implements OnInit {
   addCommonUser = [];
   group = [];
   role = '';
+  selectMainCalendar = '';
+  showCalendar: boolean;
+  showModal: boolean;
+  commonUserEmail = [];
+  MasterSelected = false;
+  userEmail = [];
 
   constructor(
     private router: Router,
@@ -74,6 +81,7 @@ export class AddScheduleComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(
       result => {
         result.forEach(re => {
+          this.allCalendars.push({ id: re.id, name: re.name });
           // tslint:disable-next-line: prefer-for-of
           for (let k = 0; k < this.group.length; k++) {
             // tslint:disable-next-line: prefer-for-of
@@ -93,8 +101,12 @@ export class AddScheduleComponent implements OnInit {
       res => {
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < res.length; j++) {
-          this.allCommonUser.push({ title: res[j].title, participants: res[j].participant });
+          this.allCommonUser.push({ title: res[j].title, participant: res[j].participant, isChecked: false });
         }
+        this.allCommonUser[0].isChecked = true;
+        this.allCommonUser[0].participant.forEach(email => {
+          this.commonUserEmail.push({ emails: email, isChecked: false });
+        });
       }
     );
   }
@@ -144,23 +156,42 @@ export class AddScheduleComponent implements OnInit {
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
-      this.invalidEmails.push(emails);
-      console.log(this.invalidEmails);
-      // this.formData.append('participants', emails);
+      this.userEmail.push(emails);
+      this.formData.append('emails', emails);
+    } else {
+      Swal.fire({
+        text: '請輸入Google信箱',
+        icon: 'error',
+      });
     }
     this.sendEmailForm.reset();
   }
 
+  changeSelectEmail() {
+    let count = 0;
+    this.commonUserEmail.forEach(emails => {
+      if (emails.isChecked === true) {
+        count++;
+      }
+    });
+    if (count === this.commonUserEmail.length) {
+      this.MasterSelected = true;
+    } else {
+      this.MasterSelected = false;
+    }
+  }
+
   removeAddUser(index) {
-    this.invalidEmails.splice(index, 1);
-    // const users = this.formData.getAll('participants');
-    // users.splice(index, 1);
-    // this.formData.delete('participants');
-    // // tslint:disable-next-line: prefer-for-of
-    // for (let i = 0; i < users.length; i++) {
-    //   this.formData.append('participants', users[i]);
-    // }
-    console.log(this.invalidEmails);
+    this.userEmail.splice(index, 1);
+    const users = this.formData.getAll('emails');
+    users.splice(index, 1);
+    this.formData.delete('emails');
+    this.userEmail.length = 0;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < users.length; i++) {
+      this.formData.append('emails', users[i]);
+      this.userEmail.push(users[i]);
+    }
   }
 
 
@@ -175,13 +206,8 @@ export class AddScheduleComponent implements OnInit {
     this.formData.append('description', this.description.nativeElement.value);
     this.formData.append('location', this.location.nativeElement.value);
     // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.invalidEmails.length; i++) {
-      this.formData.append('participants', this.invalidEmails[i]);
-    }
-
-    // tslint:disable-next-line: prefer-for-of
-    for (let j = 0; j < this.addCommonUser[0].length; j++) {
-      this.formData.append('participants', this.addCommonUser[0][j]);
+    for (let i = 0; i < this.userEmail.length; i++) {
+      this.formData.append('emails', this.userEmail[i]);
     }
 
 
@@ -233,6 +259,17 @@ export class AddScheduleComponent implements OnInit {
     console.log(this.attribute);
   }
 
+  importEmail() {
+    this.commonUserEmail.forEach(email => {
+      if (email.isChecked === true) {
+        this.userEmail.push(email.emails);
+        this.formData.append('emails', email.emails);
+      }
+    });
+
+    this.hide();
+  }
+
   schedule(value) {
 
     if (value.target.checked === true) {
@@ -245,16 +282,40 @@ export class AddScheduleComponent implements OnInit {
     console.log(this.attribute);
   }
 
-  commonUser(info) {
-    this.addCommonUser = [];
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.allCommonUser.length; i++) {
-      if (info.target.value === this.allCommonUser[i].title) {
-        this.addCommonUser.push(this.allCommonUser[i].participants);
-      }
-    }
+  inviteCalendar() {
+    this.showCalendar = true;
+  }
 
-    console.log(this.addCommonUser);
+  hideCalendar() {
+    this.showCalendar = false;
+  }
+
+  hide() {
+    this.showModal = false;
+  }
+
+  OpencommonUser() {
+    this.showModal = true;
+  }
+
+  CheckUncheckAll() {
+    this.fetchSelectedItems();
+    this.commonUserEmail.forEach(email => {
+      email.isChecked = this.MasterSelected;
+    });
+  }
+
+  changeSelectCommon(info) {
+    this.commonUserEmail = [];
+    this.allCommonUser.forEach(common => {
+      common.isChecked = false;
+      if (info === common.title) {
+        common.isChecked = true;
+        common.participant.forEach(email => {
+          this.commonUserEmail.push({ emails: email, isChecked: false });
+        });
+      }
+    });
   }
 
 }

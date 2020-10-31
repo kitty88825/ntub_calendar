@@ -27,8 +27,7 @@ export class MainCalendarComponent implements OnInit {
   eventsYear = [];
   selectAll: boolean;
   selectYear = String(new Date().getFullYear());
-  eventsMonth = [];
-  selectMonth = '';
+  eventsMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   openCalendar = [];
   calendars = [];
   mySub = [];
@@ -43,6 +42,7 @@ export class MainCalendarComponent implements OnInit {
   eventDescription; eventParticipant; eventFile;
   calendarName = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+  selectMonth = Number(this.todayDate.substr(5, 2));
   editPermission: boolean;
   deletePermission: boolean;
   group = [];
@@ -216,7 +216,6 @@ export class MainCalendarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectMonth = this.todayDate.substr(5, 2);
 
     this.tokenService.getUser().subscribe(
       re => {
@@ -269,9 +268,9 @@ export class MainCalendarComponent implements OnInit {
           // tslint:disable-next-line: prefer-for-of
           for (let i = 0; i < this.events.length; i++) {
             this.eventsYear.push(this.events[i].startDate.substr(0, 4));
-            this.eventsMonth.push(this.events[i].startDate.substr(5, 2));
 
-            if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
+            if (this.events[i].startDate.substr(0, 4) === this.selectYear
+            && Number(this.events[i].startDate.substr(5, 2)) === this.selectMonth) {
               this.showEvents.push(this.events[i]);
             }
 
@@ -294,10 +293,6 @@ export class MainCalendarComponent implements OnInit {
           return arr.indexOf(el) === i;
         });
 
-        this.eventsMonth = this.eventsMonth.filter(function (el, i, arr) {
-          return arr.indexOf(el) === i;
-        });
-
         // tslint:disable-next-line: only-arrow-functions
         this.showEvents.sort(function (a, b) {
           const startA = a.start.toUpperCase(); // ignore upper and lowercase
@@ -315,21 +310,6 @@ export class MainCalendarComponent implements OnInit {
 
         // tslint:disable-next-line: only-arrow-functions
         this.eventsYear.sort(function (a, b) {
-          const startA = a; // ignore upper and lowercase
-          const startB = b; // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.eventsMonth.sort(function (a, b) {
           const startA = a; // ignore upper and lowercase
           const startB = b; // ignore upper and lowercase
           if (startA < startB) {
@@ -525,7 +505,7 @@ export class MainCalendarComponent implements OnInit {
     this.initShowEvents = [];
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.events.length; i++) {
-      if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
+      if (this.events[i].startDate.substr(0, 4) === this.selectYear && Number(this.events[i].startDate.substr(5, 2)) === this.selectMonth) {
         this.showEvents.push(this.events[i]);
       }
     }
