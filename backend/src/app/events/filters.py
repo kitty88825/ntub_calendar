@@ -11,7 +11,7 @@ class SubscriberEventsFilter(filters.FilterSet):
 
     class Meta:
         model = Event
-        fields = ['subscribed']
+        fields = ['subscribed', 'nature']
 
     def filter_subscribed(self, queryset, name, value):
         if not value or not self.request.user.is_authenticated:
