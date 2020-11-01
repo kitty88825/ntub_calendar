@@ -22,17 +22,17 @@ class CalendarViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Calendar.objects \
-                .filter(
-                    Q(permissions__group__user=self.request.user.id) |
-                    Q(display='public'),
-                ) \
-                .distinct()
+            return Calendar.objects.filter(
+                Q(display='public') |
+                (
+                    Q(permissions__role=self.request.user.role) &
+                    Q(permissions__group__user=self.request.user)
+                ),
+            )
         else:
             return Calendar.objects.filter(display='public')
 
     def get_serializer_class(self):
-        # if self.action == 'subscribe' or self.action == 'unsubscribe':
         if self.action.endswith('subscribe'):
             return SubscribeCalendarSerializer
 
