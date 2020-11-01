@@ -40,18 +40,6 @@
       <div class="container__name">
         <span class="title">會議名稱：</span>
         <span class="meetName">{{lookMeetName}}</span>
-        <div class="btn submit" (click)="edit()">
-          <i class="material-icons">
-            autorenew
-          </i>
-          <span class="btnName">更新</span>
-        </div>
-        <div class="btn delete" (click)="deleteOrigin()">
-          <i class="material-icons">
-            clear
-          </i>
-          <span class="btnName">刪除</span>
-        </div>
       </div>
       <hr>
       <div class="container__header">
@@ -106,7 +94,7 @@
         <div class="new__participants">
           <ul>
             <li *ngFor="let name of oldInvalidEmails;let index = index">
-              <label class="participants__checkbox">
+              <label class="container participants__checkbox">
                 <input type="checkbox" class="material-icons" [(ngModel)]="name.isChecked"
                   (change)="changeSelection()">{{name.email}}
                 <span class="checkmark"></span>
@@ -115,17 +103,25 @@
           </ul>
         </div>
       </div>
+      <div class="container__btn">
+        <div class="btn submit" (click)="edit()">
+          <i class="material-icons">
+            done_all
+          </i>
+          <span class="btnName">確定</span>
+        </div>
+        <div class="btn delete" (click)="deleteOrigin()">
+          <i class="material-icons">
+            clear
+          </i>
+          <span class="btnName">刪除</span>
+        </div>
+      </div>
     </section>
     <section class="container" *ngIf="hasCommonUser === false || new === true">
       <div class="container__name">
         <span class="title">會議名稱：</span>
         <input type="text" class="meetName" value={{meetName}} [(ngModel)]="meetName" required>
-        <div class="btn submit" (click)="submit()">
-          <i class="material-icons">
-            done_all
-          </i>
-          <span class="bntName">建立</span>
-        </div>
       </div>
       <hr>
       <div class="container__header">
@@ -163,6 +159,14 @@
               </label>
             </li>
           </ul>
+        </div>
+      </div>
+      <div class="container__btn">
+        <div class="btn submit" (click)="submit()">
+          <i class="material-icons">
+            done_all
+          </i>
+          <span class="btnName">確定</span>
         </div>
       </div>
     </section>

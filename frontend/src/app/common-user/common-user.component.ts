@@ -84,6 +84,8 @@ export class CommonUserComponent implements OnInit {
   addMeetName() {
     this.look = false;
     this.new = true;
+    this.meetName = '';
+    this.newInvalidEmails = [];
     this.allMeetings.forEach(meet => {
       meet.isChecked = false;
     });

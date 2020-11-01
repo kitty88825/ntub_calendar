@@ -26,9 +26,9 @@ export class CalendarService {
     return this.http.post<any>(environment.serverIp + 'calendar/calendars', formData, { headers: this.reqHeader });
   }
 
-  // deleteEvent(id: number): Observable<Event> {
-  //   return this.http.delete<Event>(`${this.serverIp}event/${id}`, {headers: this.reqHeader});
-  // }
+  deleteCalendar(id: number): Observable<Calendar> {
+    return this.http.delete<Calendar>(environment.serverIp + 'calendar/calendars/' + id, {headers: this.reqHeader});
+  }
 
   getCalendar(): Observable<Calendar[]> {
     return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars', { headers: this.reqHeader });
@@ -38,12 +38,8 @@ export class CalendarService {
     return this.http.get<Calendar[]>(environment.serverIp + 'calendar/calendars');
   }
 
-  // getEvent(id: number): Observable<Event> {
-  //   return this.http.get<Event>(`${this.serverIp}event/${id}`, { headers: this.reqHeader });
-  // }
-
-  // patchEvent(id: number, formData: any): Observable<Event> {
-  //   return this.http.patch<Event>(`${this.serverIp}event/${id}`, formData, { headers: this.reqHeader });
-  // }
+  patchCalendar(id: number, formData: any): Observable<Calendar> {
+    return this.http.patch<Calendar>(environment.serverIp + 'calendar/calendars/' + id, formData, { headers: this.reqHeader });
+  }
 
 }

@@ -20,10 +20,10 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <ul class="item-categories__list">
-            <li *ngFor="let open of publicCalendar" class="openCalendar__list" (click)="lookCalendar($event)">
+            <li *ngFor="let open of publicCalendar" class="openCalendar__list" (click)="lookCalendar(open.name)">
               <span class="openCalendar__list__radius" [style.background-color]="open.color"></span>
               <div class="openCalendar__list__name">{{open.name}}</div>
-              <i class="material-icons">
+              <i class="material-icons" (click)="lookCalendar(open.name)">
                 edit
               </i>
             </li>
@@ -42,10 +42,10 @@
         </div>
         <div id="collapseBasic" [collapse]="isOpened" [isAnimated]="true">
           <ul class="item-categories__list">
-            <li *ngFor="let private of privateCalendar" class="openCalendar__list" (click)="lookCalendar($event)">
+            <li *ngFor="let private of privateCalendar" class="openCalendar__list" (click)="lookCalendar(private.name)">
               <span class="openCalendar__list__radius" [style.background-color]="private.color"></span>
               <div class="openCalendar__list__name">{{private.name}}</div>
-              <i class="material-icons">
+              <i class="material-icons" (click)="lookCalendar(private.name)">
                 edit
               </i>
             </li>
@@ -60,12 +60,6 @@
         <div class="content__name">
           <h2>行事曆名稱</h2>
           <input type="text" class="name form-control" placeholder="請輸入行事曆名稱" [(ngModel)]="calendarName">
-          <div class="submit" (click)="addCalendar()">
-            <i class="material-icons">
-              done_all
-            </i>
-            <span>建立</span>
-          </div>
         </div>
         <div class="content__color">
           <h2>行事曆顏色</h2>
@@ -95,7 +89,15 @@
           </div>
         </div>
         <div class="content__office">
-          <h2>單位權限設定</h2>
+          <div class="content__office__header">
+            <h2>單位權限設定</h2>
+            <div class="otherOffice__add" (click)="addOffice()">
+              <i class="material-icons">
+                add
+              </i>
+              添加更多權限設定
+            </div>
+          </div>
           <div class="otherOffice">
             <div class="otherOffice__title">
               <div class="otherOffice__name">行事曆名稱</div>
@@ -125,17 +127,19 @@
                 </select>
               </div>
               <div class="otherOffice__delete">
-                <i class="material-icons" (click)="deleteOffice(item)">
+                <i class="material-icons" (click)="deleteOffice(i)">
                   delete
                 </i>
               </div>
             </div>
-            <div class="otherOffice__add" (click)="addOffice()">
-              <i class="material-icons">
-                add
-              </i>
-              添加更多權限設定
-            </div>
+          </div>
+        </div>
+        <div class="content__btn">
+          <div class="submit" (click)="addCalendar()">
+            <i class="material-icons">
+              done_all
+            </i>
+            <span>確定</span>
           </div>
         </div>
       </div>
@@ -145,18 +149,6 @@
         <div class="content__name">
           <h2>行事曆名稱</h2>
           <input type="text" class="name form-control" placeholder="請輸入行事曆名稱" [(ngModel)]="calendarName">
-          <div class="submit" (click)="addCalendar()">
-            <i class="material-icons">
-              autorenew
-            </i>
-            <span>更新</span>
-          </div>
-          <div class="delete" (click)="addCalendar()">
-            <i class="material-icons">
-              clear
-            </i>
-            <span>刪除</span>
-          </div>
         </div>
         <div class="content__color">
           <h2>行事曆顏色</h2>
@@ -186,7 +178,15 @@
           </div>
         </div>
         <div class="content__office">
-          <h2>單位權限設定</h2>
+          <div class="content__office__header">
+            <h2>單位權限設定</h2>
+            <div class="otherOffice__add" (click)="addOffice()">
+              <i class="material-icons">
+                add
+              </i>
+              添加更多權限設定
+            </div>
+          </div>
           <div class="otherOffice">
             <div class="otherOffice__title">
               <div class="otherOffice__name">行事曆名稱</div>
@@ -194,15 +194,15 @@
               <div class="otherOffice__permission">權限</div>
               <div class="otherOffice__delete">刪除</div>
             </div>
-            <div class="otherOffice__content" *ngFor="let item of items; let i = index">
+            <div class="otherOffice__content" *ngFor="let item of calendarPermissions; let i = index">
               <div class="otherOffice__name">
-                <select class="form-control" (change)="changeOffice(i, $event)">
+                <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName">
                   <option></option>
                   <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
                 </select>
               </div>
               <div class="otherOffice__role">
-                <select class="form-control" (change)="changeRole(i, $event)">
+                <select class="form-control" (change)="changeRole(i, $event)" [(ngModel)]="item.role">
                   <option value="student">學生</option>
                   <option value="system">系統管理者</option>
                   <option value="teacher">老師</option>
@@ -210,23 +210,31 @@
                 </select>
               </div>
               <div class="otherOffice__permission">
-                <select class="form-control" (change)="changeAuthority(i, $event)">
+                <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
                   <option value="read">可讀</option>
                   <option value="write">可寫</option>
                 </select>
               </div>
               <div class="otherOffice__delete">
-                <i class="material-icons" (click)="deleteOffice(item)">
+                <i class="material-icons" (click)="deleteOffice(i)">
                   delete
                 </i>
               </div>
             </div>
-            <div class="otherOffice__add" (click)="addOffice()">
-              <i class="material-icons">
-                add
-              </i>
-              添加更多權限設定
-            </div>
+          </div>
+        </div>
+        <div class="content__btn">
+          <div class="submit" (click)="editCalendar()">
+            <i class="material-icons">
+              done_all
+            </i>
+            <span>確定</span>
+          </div>
+          <div class="delete" (click)="deleteCalendar()">
+            <i class="material-icons">
+              clear
+            </i>
+            <span>刪除</span>
           </div>
         </div>
       </div>

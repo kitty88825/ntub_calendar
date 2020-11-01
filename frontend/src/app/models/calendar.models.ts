@@ -1,5 +1,3 @@
-import { NumberValueAccessor } from '@angular/forms';
-
 export interface Calendar {
   id?: number;
   name: string;
@@ -8,9 +6,9 @@ export interface Calendar {
   color: string;
   permissions: [{
     authority: string;
-    group: NumberValueAccessor;
+    group: [];
     groupName: string;
     id?: number;
     role: string;
-  }]
+  }];
 }

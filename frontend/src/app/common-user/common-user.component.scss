@@ -15,22 +15,22 @@
     box-shadow      : $box-shadow--left;
 
     .addBtn {
-      display        : flex;
-      align-items    : center;
-      justify-content: center;
-      height         : 50px;
-      margin-top     : $content-size_top-bottom;
-      cursor         : pointer;
-      border-radius  : 40px;
-      box-shadow     : 0px 1px 6px -2px #000000;
+      display         : flex;
+      align-items     : center;
+      justify-content : center;
+      height          : 50px;
+      margin-top      : $content-size_top-bottom;
+      cursor          : pointer;
+      background-color: $color_accent;
+      border-radius   : 150px;
+      box-shadow      : 0px 1px 6px -2px #000000;
+      color           : white;
+      letter-spacing  : 1px;
 
       i {
+        color       : white;
         margin-right: $content-size_left-right/2;
       }
-    }
-
-    .addBtn:hover {
-      box-shadow: 0px 1px 6px -2px $color_accent;
     }
 
     .item-categories {
@@ -82,6 +82,10 @@
         label.name {
           margin-left: $content-size_left-right;
           margin-top : $content-size_top-bottom;
+
+          span {
+            border-radius: 30px;
+          }
         }
 
       }
@@ -151,20 +155,20 @@
         }
 
         .origin__participants {
-          width      : 68%;
+          width      : 49.5%;
           display    : flex;
           align-items: center;
 
           .filterBtn {
             display    : flex;
             align-items: center;
-            width      : 92px;
+            width      : 91px;
             margin-left: auto;
           }
         }
 
         .new__participants {
-          width      : 30%;
+          width      : 50%;
           display    : flex;
           align-items: center;
           margin-left: 3%;
@@ -204,23 +208,13 @@
         display: flex;
 
         ul {
-
-          li {
-            width : 40%;
-            margin: $content-size_top-bottom $content-size_left-right/2;
-          }
-        }
-
-        .origin__participants {
-          border  : solid $color_border 1px;
-          width   : 70%;
-          height  : 300px;
-          overflow: auto;
-          padding : $content-size_top-bottom/2 $content-size_left-right;
+          display   : grid;
+          margin-top: $content-size_top-bottom;
 
           li {
             display      : inline-block;
             margin-bottom: 0;
+            width        : 40%;
           }
 
           li:not(:nth-child(1)) {
@@ -228,9 +222,17 @@
           }
         }
 
+        .origin__participants {
+          border  : solid $color_border 1px;
+          width   : 50%;
+          height  : 300px;
+          overflow: auto;
+          padding : $content-size_top-bottom/2 $content-size_left-right;
+        }
+
         .new__participants {
           border     : solid $color_border 1px;
-          width      : 30%;
+          width      : 50%;
           height     : 300px;
           margin-left: $content-size_left-right;
           overflow   : auto;
@@ -243,15 +245,6 @@
           height  : 300px;
           overflow: auto;
           padding : $content-size_top-bottom/2 $content-size_left-right;
-
-          li {
-            display: inline-block;
-            margin-bottom: 0;
-          }
-
-          li:not(:nth-child(1)) {
-            margin-top: 0;
-          }
         }
 
       }
@@ -282,24 +275,30 @@
           margin-left: $content-size_left-right;
           font-size  : 1.4rem;
         }
+      }
+
+      .container__btn {
+        display: flex;
+        align-items: center;
+        margin-top: $content-size_top-bottom*2;
 
         .btn {
-          width        : 8%;
-          height       : 30px;
-          font-size    : 0.9rem;
-          color        : white;
-          text-align   : center;
-          cursor       : pointer;
-          display      : flex;
-          align-items  : center;
-          border-radius: 5px;
+          width          : 70px;
+          height         : 30px;
+          font-size      : 0.9rem;
+          color          : white;
+          text-align     : center;
+          cursor         : pointer;
+          display        : flex;
+          justify-content: center;
+          align-items    : center;
+          border-radius  : 5px;
 
           i {
-            color      : white;
-            margin-left: $content-size_left-right/3;
+            color: white;
           }
 
-          span.bntName {
+          span.btnName {
             margin-left: $content-size_left-right/4;
           }
         }
@@ -321,3 +320,5 @@
 
 
 @media screen and (max-width:480px) {}
+
+@media screen and (min-width:481px) and (max-width:768px) {}
