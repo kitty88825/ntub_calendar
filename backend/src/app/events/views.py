@@ -2,20 +2,25 @@ from django.db.models import Q
 
 from rest_framework.viewsets import ModelViewSet
 
+from django_filters import rest_framework as filters
+
 from .models import Event
 from .serializers import EventSerializer, UpdateEventAttachmentSerializer
 from .permission import HasCalendarPermissionOrParticipant
+from .filters import SubscriberEventsFilter
 
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.prefetch_related('attachments')
     permission_classes = [HasCalendarPermissionOrParticipant]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = SubscriberEventsFilter
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return Event.objects \
                 .filter(
-                    Q(calendars__groups__in=self.request.user.groups.all()) |
+                    Q(calendars__groups__user=self.request.user) |
                     Q(calendars__display='public') |
                     Q(participants=self.request.user.id),
                 ) \
