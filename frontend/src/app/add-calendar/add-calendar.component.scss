@@ -293,12 +293,12 @@
 
           .submit {
             background-color: $color_accent;
-            margin-left     : $content-size_left-right/2;
+            margin-left     : auto;
           }
 
           .delete {
             background-color: rgba($color: red, $alpha: 0.6);
-            margin-left     : auto;
+            margin-left     : $content-size_left-right/2;
           }
         }
       }
