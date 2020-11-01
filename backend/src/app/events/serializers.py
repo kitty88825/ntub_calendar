@@ -123,23 +123,20 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
     def create_calendar_from_event(self, event, main_calendar, calendars_id):
-        EventInviteCalendar.objects.create(
-            event_id=event.id,
-            calendar_id=main_calendar,
-            main_calendar_id=main_calendar,
-            response='accept',
-        )
-
         if not calendars_id:
             return
 
+        in_db_calendars = event.eventinvitecalendar_set \
+            .values_list('calendar_id', flat=True)
+
+        new_calendars_id = set(calendars_id) - set(in_db_calendars)
         EventInviteCalendar.objects.bulk_create(
             [EventInviteCalendar(
                 event_id=event.id,
                 calendar_id=c,
                 main_calendar_id=main_calendar,
                 response='no_reply',
-            ) for c in calendars_id],
+            ) for c in new_calendars_id],
         )
 
     def create(self, validated_data):
@@ -149,6 +146,14 @@ class EventSerializer(serializers.ModelSerializer):
         files = validated_data.pop('files', None)
         emails = validated_data.pop('emails', None)
         event = super().create(validated_data)
+
+        EventInviteCalendar.objects.create(
+            event_id=event.id,
+            calendar_id=main_calendar_id,
+            main_calendar_id=main_calendar_id,
+            response='accept',
+        )
+
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
         self.create_calendar_from_event(
@@ -166,11 +171,6 @@ class UpdateEventAttachmentSerializer(EventSerializer):
         write_only=True,
         required=False,
     )
-    calendars_id = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False,
-    )
 
     class Meta:
         model = Event
@@ -182,33 +182,23 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             'description',
             'location',
             'nature',
+            'main_calendar_id',
+            'invite_calendars_id',
             'files',
             'emails',
-            'calendars_id',
             'remove_files',
             'attachments',
             'calendars',
             'participants',
         )
 
-    def validate_calendars_id(self, value):
-        user = self.context['request'].user
-        has_calendar_permissions = len(Calendar.objects.filter(
-            Q(id__in=value),
-            Q(permissions__role=user.role),
-            Q(permissions__group__in=user.groups.all()),
-            Q(permissions__authority='write'),
-        ))
-        if len(value) != has_calendar_permissions:
-            raise serializers.ValidationError("You don't have permission.")
-        return value
-
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
+        main_calendar_id = validated_data.pop('main_calendar_id')
+        invite_calendars_id = validated_data.pop('invite_calendars_id', None)
         emails = validated_data.pop('emails', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
-        calendars_id = validated_data.pop('calendars_id', None)
         event = super().update(instance, validated_data)
 
         if remove_files:
@@ -223,15 +213,22 @@ class UpdateEventAttachmentSerializer(EventSerializer):
                 .exclude(user__email__in=emails) \
                 .delete()
 
-        if calendars_id:
+        if invite_calendars_id:
             Event.calendars.through \
                 .objects \
-                .filter(event_id=event) \
-                .exclude(calendar_id__in=calendars_id) \
+                .filter(event=event) \
+                .exclude(
+                    calendar_id=main_calendar_id,
+                    main_calendar=main_calendar_id) \
+                .exclude(calendar_id__in=invite_calendars_id) \
                 .delete()
 
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
-        self.create_calendar_from_event(event, calendars_id)
+        self.create_calendar_from_event(
+            event,
+            main_calendar_id,
+            invite_calendars_id,
+        )
 
         return event
