@@ -6,8 +6,13 @@ from app.calendars.serializers import CalendarSerializer
 from app.calendars.models import Calendar
 from app.users.models import User
 
-from .models import Event, EventParticipant, EventAttachment
 from .choices import RoleChoice
+from .models import (
+    Event,
+    EventParticipant,
+    EventAttachment,
+    EventInviteCalendar,
+)
 
 
 def validate_ntub_email(email: str):
@@ -43,7 +48,8 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
-    calendars_id = serializers.ListField(
+    main_calendar_id = serializers.IntegerField(write_only=True)
+    invite_calendars_id = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True,
         required=False,
@@ -64,7 +70,8 @@ class EventSerializer(serializers.ModelSerializer):
             'nature',
             'files',
             'emails',
-            'calendars_id',
+            'main_calendar_id',
+            'invite_calendars_id',
             'attachments',
             'calendars',
             'participants',
@@ -75,15 +82,14 @@ class EventSerializer(serializers.ModelSerializer):
             'update_at',
         )
 
-    def validate_calendars_id(self, value):
-        user = self.context['request'].user
+    def validate_main_calendar_id(self, value):
         has_calendar_permissions = Calendar.objects.filter(
-            Q(id__in=value),
-            Q(permissions__role=user.role),
-            Q(permissions__group__in=user.groups.all()),
+            Q(id=value),
+            Q(groups__user=self.context['request'].user),
+            Q(permissions__role=self.context['request'].user.role),
             Q(permissions__authority='write'),
-        ).count()
-        if len(value) != has_calendar_permissions:
+        )
+        if not has_calendar_permissions:
             raise serializers.ValidationError("You don't have permission.")
 
         return value
@@ -116,23 +122,40 @@ class EventSerializer(serializers.ModelSerializer):
             *User.objects.filter(email__in=emails),
         )
 
-    def create_calendar_from_event(self, event, calendars_id):
+    def create_calendar_from_event(self, event, main_calendar, calendars_id):
+        EventInviteCalendar.objects.create(
+            event_id=event.id,
+            calendar_id=main_calendar,
+            main_calendar_id=main_calendar,
+            response='accept',
+        )
+
         if not calendars_id:
             return
 
-        event.calendars.add(
-            *Calendar.objects.filter(id__in=calendars_id),
+        EventInviteCalendar.objects.bulk_create(
+            [EventInviteCalendar(
+                event_id=event.id,
+                calendar_id=c,
+                main_calendar_id=main_calendar,
+                response='no_reply',
+            ) for c in calendars_id],
         )
 
     def create(self, validated_data):
         user = validated_data.pop('user')
+        main_calendar_id = validated_data.pop('main_calendar_id')
+        invite_calendars_id = validated_data.pop('invite_calendars_id', None)
         files = validated_data.pop('files', None)
         emails = validated_data.pop('emails', None)
-        calendars_id = validated_data.pop('calendars_id', None)
         event = super().create(validated_data)
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
-        self.create_calendar_from_event(event, calendars_id)
+        self.create_calendar_from_event(
+            event,
+            main_calendar_id,
+            invite_calendars_id,
+        )
 
         return event
 
