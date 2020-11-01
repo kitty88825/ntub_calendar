@@ -5,21 +5,8 @@ export interface Event {
   endAt: string;
   description?: string;
   location?: string;
-  calendars_id: number;
-  calendars: [{
-    color: string;
-    description?: string,
-    display: string,
-    id?: number,
-    name: string,
-    permissions: [{
-      authority: string,
-      group: number,
-      groupName: string,
-      id?: number,
-      role: string
-    }]
-  }];
+  main_calendar_id: number;
+  invite_calendars_id?: [];
   attachments?: File;
   attribute: string;
   participants?: [];

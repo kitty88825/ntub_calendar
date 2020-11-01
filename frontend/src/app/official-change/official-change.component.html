@@ -18,8 +18,11 @@
           </div>
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-          <div>
+          <div class="item-categories__chooseFile">
             <label class="chooseFile">
+              <i class="material-icons">
+                attach_file
+              </i>
               <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
               選擇檔案
             </label>
@@ -27,8 +30,8 @@
           <h2>選擇行事曆：</h2>
           <ul class="item-categories__list">
             <div class="form-group">
-              <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-                <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
+              <select class="form-control" [(ngModel)]="selectedValue" (change)="onChange()">
+                <option *ngFor="let calendar of permissionCalendars">{{calendar.name}}</option>
               </select>
             </div>
           </ul>
