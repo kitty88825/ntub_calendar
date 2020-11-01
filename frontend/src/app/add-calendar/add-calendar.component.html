@@ -91,7 +91,7 @@
         <div class="content__office">
           <div class="content__office__header">
             <h2>單位權限設定</h2>
-            <div class="otherOffice__add" (click)="addOffice()">
+            <div class="add" (click)="addOffice()">
               <i class="material-icons">
                 add
               </i>
@@ -135,7 +135,7 @@
           </div>
         </div>
         <div class="content__btn">
-          <div class="submit" (click)="addCalendar()">
+          <div class="btn submit" (click)="addCalendar()">
             <i class="material-icons">
               done_all
             </i>
@@ -180,7 +180,7 @@
         <div class="content__office">
           <div class="content__office__header">
             <h2>單位權限設定</h2>
-            <div class="otherOffice__add" (click)="addOffice()">
+            <div class="add" (click)="addOffice()">
               <i class="material-icons">
                 add
               </i>
@@ -224,17 +224,17 @@
           </div>
         </div>
         <div class="content__btn">
-          <div class="submit" (click)="editCalendar()">
-            <i class="material-icons">
-              done_all
-            </i>
-            <span>確定</span>
-          </div>
-          <div class="delete" (click)="deleteCalendar()">
+          <div class="btn delete" (click)="deleteCalendar()">
             <i class="material-icons">
               clear
             </i>
             <span>刪除</span>
+          </div>
+          <div class="btn submit" (click)="editCalendar()">
+            <i class="material-icons">
+              done_all
+            </i>
+            <span>確定</span>
           </div>
         </div>
       </div>

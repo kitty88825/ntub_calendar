@@ -37,7 +37,6 @@ export class AddCalendarComponent implements OnInit {
 
   constructor(
     private calendarService: CalendarService,
-    private router: Router,
     private tokenService: TokenService,
   ) { }
 
@@ -69,13 +68,15 @@ export class AddCalendarComponent implements OnInit {
         });
       },
       error => {
-        console.log(error);
+        Swal.fire({
+          text: '獲取資料失敗',
+          icon: 'error'
+        });
       }
     );
   }
 
   meet(value) {
-
     if (value.target.checked === true) {
       this.isSchedule = false;
       this.attribute = value.target.value;
@@ -86,7 +87,6 @@ export class AddCalendarComponent implements OnInit {
   }
 
   schedule(value) {
-
     if (value.target.checked === true) {
       this.isMeet = false;
       this.attribute = value.target.value;
@@ -291,9 +291,6 @@ export class AddCalendarComponent implements OnInit {
           this.raw.permissions[i].group = this.calendarPermissions[i].group;
         }
       }
-
-      console.log(this.raw);
-
       this.permissionCalendar.forEach(calendar => {
         if (calendar.name === this.lookCalendarName) {
           this.calendarService.patchCalendar(calendar.id, this.raw).subscribe(

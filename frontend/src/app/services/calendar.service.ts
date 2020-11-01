@@ -1,7 +1,6 @@
 import { environment } from './../../environments/environment';
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Event } from '../models/event.model';
 import { Observable } from 'rxjs';
 import { Calendar } from '../models/calendar.models';
 

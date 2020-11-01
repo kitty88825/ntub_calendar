@@ -33,6 +33,10 @@
       }
     }
 
+    .addBtn:hover {
+      box-shadow: 0px 1px 6px -2px $color_accent;
+    }
+
     .item-categories {
       margin-top: $content-size_top-bottom;
 
