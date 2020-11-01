@@ -25,11 +25,9 @@ export class OfficialAddComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private subscriptionService: SubscriptionService,
     private calendarService: CalendarService
   ) { }
 
-  @ViewChild('table', { read: ElementRef }) table: ElementRef;
   @ViewChild('addStartDate') addStartDate: ElementRef;
   @ViewChild('addEndDate') addEndDate: ElementRef;
 
@@ -107,7 +105,8 @@ export class OfficialAddComponent implements OnInit {
             });
           }
 
-          this.showDatas.sort(function (a, b) {
+          // tslint:disable-next-line: only-arrow-functions
+          this.showDatas.sort(function(a, b) {
             const startA = a[3].toUpperCase(); // ignore upper and lowercase
             const startB = b[3].toUpperCase(); // ignore upper and lowercase
             if (startA < startB) {
@@ -117,7 +116,6 @@ export class OfficialAddComponent implements OnInit {
               return 1;
             }
 
-            // names must be equal
             return 0;
           });
         }

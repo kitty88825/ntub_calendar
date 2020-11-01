@@ -1,145 +1,89 @@
 @import '../../styles.scss';
 
 @media screen {
+  .aside {
+    position        : fixed;
+    z-index         : $z-index_second;
+    overflow        : auto;
+    box-sizing      : border-box;
+    margin-top      : $height_header;
+    padding         : $content-size_top-bottom $content-size_left-right;
+    width           : $width_aside;
+    height          : calc(100vh - #{$height_header});
+    background-color: $color_white;
+    box-shadow      : $box-shadow--left;
 
-  html,
-  body,
-  div,
-  span,
-  applet,
-  object,
-  iframe,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  blockquote,
-  pre,
-  a,
-  abbr,
-  acronym,
-  address,
-  big,
-  cite,
-  code,
-  del,
-  dfn,
-  em,
-  img,
-  ins,
-  kbd,
-  q,
-  s,
-  samp,
-  small,
-  strike,
-  strong,
-  sub,
-  sup,
-  tt,
-  var,
-  b,
-  u,
-  i,
-  center,
-  dl,
-  dt,
-  dd,
-  ol,
-  ul,
-  li,
-  fieldset,
-  form,
-  label,
-  legend,
-  table,
-  caption,
-  tbody,
-  tfoot,
-  thead,
-  tr,
-  th,
-  td,
-  article,
-  aside,
-  canvas,
-  details,
-  embed,
-  figure,
-  figcaption,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  output,
-  ruby,
-  section,
-  summary,
-  time,
-  mark,
-  audio,
-  video {
-    margin        : 0;
-    padding       : 0;
-    border        : 0;
-    font-size     : 100%;
-    font          : inherit;
-    vertical-align: baseline;
-  }
+    .item-categories {
 
-  /* HTML5 display-role reset for older browsers */
-  article,
-  aside,
-  details,
-  figcaption,
-  figure,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  section {
-    display: block;
-  }
+      i {
+        color : $color_icon;
+        cursor: pointer;
+      }
 
-  a {
-    text-decoration: none;
-    color          : $color_icon;
-  }
+      &__title {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        padding        : $content-size_left-right/1.5 0;
+        border-bottom  : $color_border solid 1px;
+        font-size      : 1.2rem;
 
-  a:hover {
-    color: $color_accent;
-  }
+        &:hover,
+        &.active {
+          .item-categories__arrow {
+            transform: rotate(-90deg);
+          }
+        }
 
-  body {
-    line-height: 1;
-  }
+        .name {
+          display    : flex;
+          align-items: center;
 
-  ol,
-  ul {
-    list-style: none;
-  }
+          span {
+            margin-left: $content-size_left-right/2;
+          }
+        }
+      }
 
-  blockquote,
-  q {
-    quotes: none;
-  }
+      &__arrow {
+        transition: $transition_short;
+      }
 
-  blockquote:before,
-  blockquote:after,
-  q:before,
-  q:after {
-    content: '';
-    content: none;
-  }
+      &__list {
+        display  : flex;
+        flex-flow: column;
+        padding  : $content-size_left-right/2 0;
 
-  table {
-    border-collapse: collapse;
-    border-spacing : 0;
+        .calendar {
+          margin-top: $content-size_top-bottom;
+        }
+
+        .start, .end {
+          display    : flex;
+          align-items: center;
+          margin-top : $content-size_top-bottom;
+        }
+
+        .startTime, .endTime {
+          margin-top: $content-size_top-bottom;
+        }
+
+        .btn {
+          padding: $content-size_top-bottom/2 $content-size_left-right/2;
+          margin-top: $content-size_top-bottom;
+          text-align: center;
+          justify-content: center;
+          width: 30%;
+          background-color: $color_accent;
+          border-radius: 5px;
+          color: white;
+          margin-left: 70%;
+          letter-spacing: 1px;
+        }
+
+      }
+
+    }
   }
 
   article {
@@ -155,137 +99,46 @@
       box-shadow      : $box-shadow--container;
     }
 
-  }
+    .event-list {
+      text-align: center;
 
+      .table thead th {
+        padding: 10px;
+        width: 20%;
+      }
 
-  .aside {
-    position        : fixed;
-    z-index         : $z-index_second;
-    overflow        : auto;
-    box-sizing      : border-box;
-    margin-top      : $height_header;
-    padding         : $content-size_top-bottom $content-size_left-right;
-    width           : $width_aside;
-    height          : calc(100vh - #{$height_header});
-    background-color: $color_white;
-    box-shadow      : $box-shadow--left;
-  }
+      .table td {
+        color: $color_text;
+        padding: 10px;
+      }
 
-  .item-categories {
+      &__header {
+        background-color: $color_table-header;
+        color           : $color_text-light;
+        font-size       : 1rem;
+      }
 
-    i {
-      color : $color_icon;
+      &__phase {
+        padding  : $content-size_top-bottom $content-size_left-right;
+        font-size: 0.9rem;
+      }
+
+    }
+
+    .export {
+      padding: $content-size_top-bottom/2 $content-size_left-right/2;
+      background-color: $color_accent;
+      width: 8%;
+      text-align: center;
+      justify-items: center;
+      letter-spacing: 1px;
+      margin-left: auto;
+      margin-top: $content-size_top-bottom*2;
+      border-radius: 5px;
+      color: white;
       cursor: pointer;
     }
 
-
-    &__title {
-      display        : flex;
-      align-items    : center;
-      justify-content: space-between;
-      padding        : $content-size_left-right/1.5 0;
-      border-bottom  : $color_border solid 1px;
-      font-size      : 1.2rem;
-
-      &:hover,
-      &.active {
-        .item-categories__arrow {
-          transform: rotate(-90deg);
-        }
-      }
-
-      .name {
-        display    : flex;
-        align-items: center;
-
-        span {
-          margin-left: $content-size_left-right/2;
-        }
-      }
-    }
-
-    &__arrow {
-      transition: $transition_short;
-    }
-
-    &__list {
-      display  : flex;
-      flex-flow: column;
-      padding  : $content-size_left-right/2 0;
-
-      .calendar {
-        margin-top: $content-size_top-bottom;
-      }
-
-      .start, .end {
-        display    : flex;
-        align-items: center;
-        margin-top : $content-size_top-bottom;
-      }
-
-      .startTime, .endTime {
-        margin-top: $content-size_top-bottom;
-      }
-
-      .btn {
-        padding: $content-size_top-bottom/2 $content-size_left-right/2;
-        margin-top: $content-size_top-bottom;
-        text-align: center;
-        justify-content: center;
-        width: 30%;
-        background-color: $color_accent;
-        border-radius: 5px;
-        color: white;
-        margin-left: 70%;
-        letter-spacing: 1px;
-      }
-
-    }
-
-  }
-
-  body {
-    background-color: $color_primary;
-    color           : $color_text;
-    font-weight     : 400;
-    font-family     : 'Noto Sans TC', sans-serif;
-  }
-
-  .event-list {
-
-    .table thead th {
-      padding: 10px;
-    }
-
-    .table td {
-      padding: 10px;
-    }
-
-    &__header {
-      background-color: $color_table-header;
-      color           : $color_text-light;
-      font-size       : 1rem;
-    }
-
-    &__phase {
-      padding  : $content-size_top-bottom $content-size_left-right;
-      font-size: 0.9rem;
-    }
-
-  }
-
-  .export {
-    padding: $content-size_top-bottom/2 $content-size_left-right/2;
-    background-color: $color_accent;
-    width: 8%;
-    text-align: center;
-    justify-items: center;
-    letter-spacing: 1px;
-    margin-left: auto;
-    margin-top: $content-size_top-bottom*2;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
   }
 
 }
