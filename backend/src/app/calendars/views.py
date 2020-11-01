@@ -22,13 +22,15 @@ class CalendarViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Calendar.objects.filter(
-                Q(display='public') |
-                (
-                    Q(permissions__role=self.request.user.role) &
-                    Q(permissions__group__user=self.request.user)
-                ),
-            )
+            return Calendar.objects \
+                .filter(
+                    Q(display='public') |
+                    (
+                        Q(permissions__role=self.request.user.role) &
+                        Q(permissions__group__user=self.request.user)
+                    ),
+                ) \
+                .distinct()
         else:
             return Calendar.objects.filter(display='public')
 
