@@ -1,16 +1,16 @@
 from django_filters import rest_framework as filters
 
-from .models import Calendar
+from .models import Event
 
 
-class SubscriberCalendarsFilter(filters.FilterSet):
+class SubscriberEventsFilter(filters.FilterSet):
     subscribed = filters.BooleanFilter(
         field_name='subscribers',
         method='filter_subscribed',
     )
 
     class Meta:
-        model = Calendar
+        model = Event
         fields = ['subscribed']
 
     def filter_subscribed(self, queryset, name, value):
