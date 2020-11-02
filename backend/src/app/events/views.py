@@ -67,3 +67,18 @@ class EventViewSet(ModelViewSet):
 
         return Response(res_serializer.data)
 
+    @action(['POST'], False, permission_classes=[IsAuthenticated])
+    def unsubscribe(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        self.request.user.subscribe_events.remove(
+            *Event.objects.filter(id__in=serializer.data['events']),
+        )
+
+        res_serializer = EventSerializer(
+            self.request.user.subscribe_events.all(),
+            many=True,
+        )
+
+        return Response(res_serializer.data)
