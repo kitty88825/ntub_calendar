@@ -71,10 +71,10 @@
             </thead>
             <tbody class="event-list_phase">
               <tr *ngFor="let row of showDatas">
-              <td *ngFor="let val of row">
-                {{val}}
-              </td>
-            </tr>
+                <td *ngFor="let val of row">
+                  {{val}}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -82,27 +82,25 @@
       <div class="download" (click)="download()">下載</div>
     </section>
   </article>
-    <!-- Creates the bootstrap modal where the image will appear -->
-    <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal_dialog">
-      <div class="modal_content">
-        <div class="modal_header">
-          <i class="material-icons" (click)="hideExcel()">
-            cancel
-          </i>
+      <div class="modal_header">
+        <i class="material-icons" (click)="hideExcel()">
+          cancel
+        </i>
+      </div>
+      <div class="modal_body">
+        <span>下載格式：</span>
+        <div class="item" (click)="daochu($event)">
+          <h4>csv</h4>
         </div>
-        <div class="modal_body">
-          <span>下載格式：</span>
-          <div class="item" (click)="daochu($event)">
-            <h4>csv</h4>
-          </div>
-          <div class="item" (click)="daochu($event)">
-            <h4>xlsx</h4>
-          </div>
-          <div class="item" (click)="daochu($event)">
-            <h4>xls</h4>
-          </div>
+        <div class="item" (click)="daochu($event)">
+          <h4>xlsx</h4>
+        </div>
+        <div class="item" (click)="daochu($event)">
+          <h4>xls</h4>
         </div>
       </div>
     </div>

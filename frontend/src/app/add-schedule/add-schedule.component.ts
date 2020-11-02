@@ -24,18 +24,15 @@ export class AddScheduleComponent implements OnInit {
   fileName = [];
   sendEmailForm: FormGroup;
   emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
-  invalidEmails = [];
-  isCollapsed = false;
   calendars = [];
   allCalendars = [];
+  showAddCalendars = [];
   selectedItemsList = [];
   isOpen = false;
-  isSubmitted = false;
   isMeet = true;
   isSchedule = !this.isMeet;
   attribute = '';
   allCommonUser = [];
-  addCommonUser = [];
   group = [];
   role = '';
   selectMainCalendar = '';
@@ -44,6 +41,7 @@ export class AddScheduleComponent implements OnInit {
   commonUserEmail = [];
   MasterSelected = false;
   userEmail = [];
+  addCalendarChecked = false;
 
   constructor(
     private router: Router,
@@ -81,28 +79,33 @@ export class AddScheduleComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(
       result => {
         result.forEach(re => {
-          this.allCalendars.push({ id: re.id, name: re.name });
-          // tslint:disable-next-line: prefer-for-of
-          for (let k = 0; k < this.group.length; k++) {
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < re.permissions.length; i++) {
-              if (this.group[k] === re.permissions[i].group &&
-                this.role === re.permissions[i].role && re.permissions[i].authority === 'write') {
+          this.allCalendars.push({ id: re.id, name: re.name, isChecked: false });
+
+          this.group.forEach(group => {
+            re.permissions.forEach(permission => {
+              if (group === permission.group &&
+                this.role === permission.role && permission.authority === 'write') {
                 this.calendars.push({ id: re.id, name: re.name, isChecked: false });
               }
-            }
-          }
+            });
+          });
         });
 
+        this.selectMainCalendar = this.calendars[0].name;
+
+        const allCalendar = this.allCalendars.slice();
+        const index = this.allCalendars.findIndex(calendar => calendar.name === this.selectMainCalendar);
+        allCalendar.splice(index, 1);
+
+        this.showAddCalendars = allCalendar;
       }
     );
 
     this.userCommonService.getCommonUsers().subscribe(
       res => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let j = 0; j < res.length; j++) {
-          this.allCommonUser.push({ title: res[j].title, participant: res[j].participant, isChecked: false });
-        }
+        res.forEach(common => {
+          this.allCommonUser.push({ title: common.title, participant: common.participant, isChecked: false });
+        });
         this.allCommonUser[0].isChecked = true;
         this.allCommonUser[0].participant.forEach(email => {
           this.commonUserEmail.push({ emails: email, isChecked: false });
@@ -111,24 +114,10 @@ export class AddScheduleComponent implements OnInit {
     );
   }
 
-  changeSelection() {
-    this.fetchSelectedItems();
-    this.fetchCheckedIDs();
-  }
-
   fetchSelectedItems() {
     this.selectedItemsList = this.calendars.filter((value, index) => {
       return value.isChecked;
     });
-  }
-
-  fetchCheckedIDs() {
-    this.calendars.forEach((value, index) => {
-      if (value.isChecked === true) {
-        this.formData.append('calendars', value.id);
-      }
-    });
-
   }
 
   fileSelected(event) {
@@ -145,12 +134,10 @@ export class AddScheduleComponent implements OnInit {
     this.fileName.splice(index, 1);
     const files = this.formData.getAll('files');
     files.splice(index, 1);
-    console.log(files);
     this.formData.delete('files');
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < files.length; i++) {
-      this.formData.append('files', files[i]);
-    }
+    files.forEach(file => {
+      this.formData.append('files', file);
+    });
   }
 
   send(value) {
@@ -187,68 +174,86 @@ export class AddScheduleComponent implements OnInit {
     users.splice(index, 1);
     this.formData.delete('emails');
     this.userEmail.length = 0;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < users.length; i++) {
-      this.formData.append('emails', users[i]);
-      this.userEmail.push(users[i]);
-    }
+    users.forEach(user => {
+      this.formData.append('emails', user);
+      this.userEmail.push(user);
+    });
   }
 
-
   add() {
-    this.formData.append('attributes', this.attribute);
-    this.formData.append('title', this.addTitle.nativeElement.value);
-    this.formData.append('start_at', this.addStartDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
-      + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
-    this.formData.append('end_at', this.addEndDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
-      + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
+    if (this.addTitle.nativeElement.value === '') {
+      Swal.fire({
+        text: '請輸入標題',
+        icon: 'error'
+      });
+    } else if (String(this.addStartDate.nativeElement.value).toUpperCase() > String(this.addEndDate.nativeElement.value).toUpperCase()) {
+      Swal.fire({
+        text: '請輸入正確時間',
+        icon: 'error'
+      });
+    } else {
+      this.calendars.forEach(calendar => {
+        if (this.selectMainCalendar === calendar.name) {
+          this.formData.append('main_calendar_id', calendar.id);
+        }
+      });
+      this.showAddCalendars.forEach(calendar => {
+        if (calendar.isChecked === true) {
+          this.formData.append('invite_calendars_id', calendar.id);
+        }
+      });
+      this.formData.append('attributes', this.attribute);
+      this.formData.append('title', this.addTitle.nativeElement.value);
+      this.formData.append('start_at', this.addStartDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
+        + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+      this.formData.append('end_at', this.addEndDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
+        + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
 
-    this.formData.append('description', this.description.nativeElement.value);
-    this.formData.append('location', this.location.nativeElement.value);
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.userEmail.length; i++) {
-      this.formData.append('emails', this.userEmail[i]);
+      this.formData.append('description', this.description.nativeElement.value);
+      this.formData.append('location', this.location.nativeElement.value);
+      this.userEmail.forEach(email => {
+        this.formData.append('emails', email);
+      });
+
+      this.eventService.postEvent(this.formData).subscribe(
+        data => {
+          console.log(data);
+          Swal.fire({
+            text: '新增成功',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: '返回首頁',
+            cancelButtonText: '再添一筆'
+          }).then((result) => {
+            if (result.value) {
+              this.router.navigate(['/calendar']);
+            }
+          });
+        },
+        error => {
+          console.log(error);
+          Swal.fire({
+            text: '新增失敗',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: '返回首頁',
+            cancelButtonText: '再添一筆'
+          }).then((result) => {
+            if (result.value) {
+              this.router.navigate(['/calendar']);
+            }
+          });
+        }
+      );
+
     }
-
-
-    this.eventService.postEvent(this.formData).subscribe(
-      data => {
-        console.log(data);
-        Swal.fire({
-          text: '新增成功',
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '返回首頁',
-          cancelButtonText: '再添一筆'
-        }).then((result) => {
-          if (result.value) {
-            this.router.navigate(['/calendar']);
-          }
-        });
-      },
-      error => {
-        console.log(error);
-        Swal.fire({
-          text: '新增失敗',
-          icon: 'error',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '返回首頁',
-          cancelButtonText: '再添一筆'
-        }).then((result) => {
-          if (result.value) {
-            this.router.navigate(['/calendar']);
-          }
-        });
-      }
-    );
   }
 
   meet(value) {
-
     if (value.target.checked === true) {
       this.isSchedule = false;
       this.attribute = value.target.value;
@@ -256,22 +261,18 @@ export class AddScheduleComponent implements OnInit {
       this.isSchedule = true;
       this.attribute = '行程';
     }
-    console.log(this.attribute);
   }
 
   importEmail() {
     this.commonUserEmail.forEach(email => {
       if (email.isChecked === true) {
         this.userEmail.push(email.emails);
-        this.formData.append('emails', email.emails);
       }
     });
-
     this.hide();
   }
 
   schedule(value) {
-
     if (value.target.checked === true) {
       this.isMeet = false;
       this.attribute = value.target.value;
@@ -279,7 +280,6 @@ export class AddScheduleComponent implements OnInit {
       this.isMeet = true;
       this.attribute = '會議';
     }
-    console.log(this.attribute);
   }
 
   inviteCalendar() {
@@ -316,6 +316,41 @@ export class AddScheduleComponent implements OnInit {
         });
       }
     });
+  }
+
+  changeSelectCalendar(calendarName) {
+    this.showAddCalendars = [];
+    console.log(this.allCalendars);
+    const allCalendar = this.allCalendars.slice();
+    const index = this.allCalendars.findIndex(calendar => calendar.name === calendarName);
+    allCalendar.splice(index, 1);
+    this.showAddCalendars = allCalendar;
+  }
+
+  addCalendar() {
+    this.showCalendar = false;
+  }
+
+  checkAllAddCalendar(info) {
+    this.showAddCalendars.forEach(calendar => calendar.isChecked = info.target.checked);
+  }
+
+  changeAddCalendar() {
+    let count = 0;
+    const all = this.showAddCalendars.length;
+
+    this.showAddCalendars.forEach(calendar => {
+      if (calendar.isChecked === true) {
+        count++;
+      }
+    });
+    console.log(count);
+
+    if (count === all) {
+      this.addCalendarChecked = true;
+    } else {
+      this.addCalendarChecked = false;
+    }
   }
 
 }

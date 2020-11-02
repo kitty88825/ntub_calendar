@@ -38,6 +38,14 @@ export class EventService {
     return this.http.get<Event[]>(environment.serverIp + 'event/events', { headers: this.reqHeader });
   }
 
+  getEvents_event(): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?nature=event', { headers: this.reqHeader });
+  }
+
+  getEvents_meet(): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?nature=meeting', { headers: this.reqHeader });
+  }
+
   openGetEvents(): Observable<Event[]> {
     return this.http.get<Event[]>(environment.serverIp + 'event/');
   }
@@ -47,7 +55,7 @@ export class EventService {
   }
 
   patchEvent(id: number, formData: any): Observable<Event> {
-    return this.http.patch<Event>(`${environment.serverIp}event/events/${id}`, formData , { headers: this.reqHeader });
+    return this.http.patch<Event>(`${environment.serverIp}event/events/${id}`, formData, { headers: this.reqHeader });
   }
 
 }

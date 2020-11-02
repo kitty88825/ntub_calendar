@@ -1,144 +1,8 @@
 @import '../../styles.scss';
 
 @media screen {
-
-  html,
-  body,
-  div,
-  span,
-  applet,
-  object,
-  iframe,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  blockquote,
-  pre,
-  a,
-  abbr,
-  acronym,
-  address,
-  big,
-  cite,
-  code,
-  del,
-  dfn,
-  em,
-  img,
-  ins,
-  kbd,
-  q,
-  s,
-  samp,
-  small,
-  strike,
-  strong,
-  sub,
-  sup,
-  tt,
-  var,
-  b,
-  u,
-  i,
-  center,
-  dl,
-  dt,
-  dd,
-  ol,
-  ul,
-  li,
-  fieldset,
-  form,
-  label,
-  legend,
-  table,
-  caption,
-  tbody,
-  tfoot,
-  thead,
-  tr,
-  th,
-  td,
-  article,
-  aside,
-  canvas,
-  details,
-  embed,
-  figure,
-  figcaption,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  output,
-  ruby,
-  section,
-  summary,
-  time,
-  mark,
-  audio,
-  video {
-    margin        : 0;
-    padding       : 0;
-    border        : 0;
-    font-size     : 100%;
-    font          : inherit;
-    vertical-align: baseline;
-  }
-
-  /* HTML5 display-role reset for older browsers */
-  article,
-  aside,
-  details,
-  figcaption,
-  figure,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  section {
-    display: block;
-  }
-
-  a {
-    text-decoration: none;
-    color          : $color_icon;
-  }
-
-  a:hover {
-    color: $color_accent;
-  }
-
-  body {
-    line-height: 1;
-  }
-
-  ol,
-  ul {
-    list-style: none;
-  }
-
-  blockquote,
-  q {
-    quotes: none;
-  }
-
-  blockquote:before,
-  blockquote:after,
-  q:before,
-  q:after {
-    content: '';
-    content: none;
-  }
-
   article {
-    padding-top: $height_header;
+    padding-top   : $height_header;
     letter-spacing: 1px;
 
     section.container {
@@ -149,49 +13,42 @@
       background-color: $color_white;
       box-shadow      : $box-shadow--container;
 
-      h3 {
-        width       : 86%;
-        margin-left : auto;
+      .date-picker {
+        display         : flex;
+        align-items: center;
+        width: 70%;
+        margin-left: auto;
         margin-right: auto;
+      }
+
+      h3 {
+        width: 150px;
         font-weight : 600;
-        font-size: 17px;
+        margin-left: $content-size_left-right/2;
+        font-size   : 17px;
       }
 
       .date-range {
-        width       : 86%;
-        margin-left : auto;
-        margin-right: auto;
-        margin-top  : $content-size_top-bottom;
         display     : flex;
         align-items : center;
 
-        .year {
-          width: 10%;
-        }
-
-        .month,
-        .day {
-          width      : 7%;
+        input {
+          width: 200px;
           margin-left: $content-size_left-right;
         }
 
-        .point {
-          font-weight : 600;
-          margin-left : $content-size_left-right*2;
-          margin-right: $content-size_left-right*2;
-        }
-
         span {
-          margin-left: $content-size_left-right/2;
+          margin-left: $content-size_left-right;
         }
 
         .look {
-          padding: $content-size_top-bottom/2 $content-size_left-right/2;
+          padding         : $content-size_top-bottom/2 $content-size_left-right/2;
           background-color: $color_accent;
-          color: white;
-          letter-spacing: 2px;
-          border-radius: 5px;
-          margin-left: $content-size_left-right*2;
+          color           : white;
+          letter-spacing  : 2px;
+          cursor: pointer;
+          border-radius   : 5px;
+          margin-left     : $content-size_left-right*2;
         }
       }
     }
@@ -206,11 +63,11 @@
 
       .category {
         display: flex;
-        width  : 90%;
-        margin : $content-size_top-bottom 5%;
+        width  : 95%;
+        margin : $content-size_top-bottom*3 auto;
 
         &__item {
-          width      : 30%;
+          width      : 32%;
           margin-left: $content-size_left-right;
 
           h2 {
@@ -231,6 +88,7 @@
             color           : white;
             margin-top      : -10px;
             padding         : 5px;
+            text-align: center;
 
             &__date {
               width: 25%;
@@ -246,9 +104,9 @@
           }
 
           &__content {
-            overflow: auto;
-            height: 300px;
-            box-shadow      : $box-shadow--container;
+            overflow  : auto;
+            height    : 400px;
+            box-shadow: $box-shadow--container;
           }
         }
       }

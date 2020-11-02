@@ -2,34 +2,19 @@
 <main>
   <article>
     <section class="container">
-      <h3>選擇日期區間</h3>
-      <div class="date-range">
-        <select class="form-control year" [(ngModel)]="setStartYear" (change)="changeStartYear()">
-          <option *ngFor="let year of Year">{{year}}</option>
-        </select>
-        <span>年</span>
-        <select class="form-control month" [(ngModel)]="setStartMonth" (change)="changeStartMonth()">
-          <option *ngFor="let month of Month">{{month}}</option>
-        </select>
-        <span>月</span>
-        <select class="form-control day" [(ngModel)]="setStartDay" (change)="changeStartDay()">
-          <option *ngFor="let day of startDay">{{day}}</option>
-        </select>
-        <span>日</span>
-        <span class="point">至</span>
-        <select class="form-control year" [(ngModel)]="setEndYear" (change)="changeEndYear()">
-          <option *ngFor="let year of Year">{{year}}</option>
-        </select>
-        <span>年</span>
-        <select class="form-control month" [(ngModel)]="setEndMonth" (change)="changeEndMonth()">
-          <option *ngFor="let month of Month">{{month}}</option>
-        </select>
-        <span>月</span>
-        <select class="form-control day" [(ngModel)]="setEndDay" (change)="changeEndDay()">
-          <option *ngFor="let day of endDay">{{day}}</option>
-        </select>
-        <span>日</span>
-        <div class="look">查看</div>
+      <div class="date-picker">
+        <i class="material-icons">
+          date_range
+        </i>
+        <h3>選擇日期區間</h3>
+        <div class="date-range">
+          <input type="text" class="form-control startTime" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+            #addStartDate required placement="bottom" [(ngModel)]="startDate">
+          <span class="point">至</span>
+          <input type="text" class="form-control endTime" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+            #addEndDate required placement="bottom" [(ngModel)]="endDate">
+          <div class="look">查看</div>
+        </div>
       </div>
     </section>
     <section class="body">

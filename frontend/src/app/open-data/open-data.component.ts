@@ -1,3 +1,4 @@
+import { CalendarService } from './../services/calendar.service';
 import { EventService } from './../services/event.service';
 import { Component, OnInit } from '@angular/core';
 import * as XLSX from 'xlsx';
@@ -23,42 +24,51 @@ export class OpenDataComponent implements OnInit {
   allEvents = [];
 
   constructor(
-    private eventService: EventService
+    private eventService: EventService,
+    private calendarService: CalendarService
   ) { }
 
   ngOnInit(): void {
-    this.eventService.getEvents().subscribe(
+    this.eventService.getEvents_event().subscribe(
       data => {
-        data.forEach(event => {
-          this.allEvents.push(event);
-          this.year.push(Number(event.startAt.substr(0, 4)) - 1911);
-        });
+        this.calendarService.getCalendar().subscribe(
+          result => {
+            data.forEach(event => {
+              result.forEach(calendar => {
+                if (event.main_calendar_id === calendar.id && calendar.display === 'public') {
+                  this.allEvents.push(event);
+                  this.year.push(Number(event.startAt.substr(0, 4)) - 1911);
+                }
+              });
+            });
 
-        this.year = this.year.filter(function (el, i, arr) {
-          return arr.indexOf(el) === i;
-        });
+            // tslint:disable-next-line: only-arrow-functions
+            this.year = this.year.filter(function(el, i, arr) {
+              return arr.indexOf(el) === i;
+            });
 
-        // tslint:disable-next-line: only-arrow-functions
-        this.year.sort(function (a, b) {
-          if (a < b) {
-            return 1;
+
+            // tslint:disable-next-line: only-arrow-functions
+            this.year.sort(function (a, b) {
+              if (a < b) {
+                return 1;
+              }
+              if (a > b) {
+                return -1;
+              }
+              return 0;
+            });
+
+            this.setYear = Number(this.todayDate.substr(0, 4)) - 1911;
+            if (Number(this.todayDate.substr(6, 2)) >= 7) {
+              this.setTerm = 1;
+            } else {
+              this.setTerm = 2;
+            }
           }
-          if (a > b) {
-            return -1;
-          }
+        );
 
-          // names must be equal
-          return 0;
-        });
-
-        this.setYear = Number(this.todayDate.substr(0, 4)) - 1911;
-        if (Number(this.todayDate.substr(6, 2)) >= 7) {
-          this.setTerm = 1;
-        } else {
-          this.setTerm = 2;
-        }
-
-        data.forEach(event => {
+        this.allEvents.forEach(event => {
           if (Number(event.startAt.substr(0, 4)) - 1911 === this.setYear) {
             if (this.setTerm === 1) {
               if (Number(event.startAt.substr(5, 2)) < 7) {
@@ -76,37 +86,8 @@ export class OpenDataComponent implements OnInit {
           }
         });
 
-        // tslint:disable-next-line: only-arrow-functions
-        this.showDatas.sort(function (a, b) {
-          const A = a[0].toUpperCase();
-          const B = b[0].toUpperCase();
-          if (A < B) {
-            return -1;
-          }
-          if (A > B) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.exportDatas.sort(function (a, b) {
-          const A = a[6].toUpperCase();
-          const B = b[6].toUpperCase();
-          if (A < B) {
-            return -1;
-          }
-          if (A > B) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
-
+        this.showDataSort();
+        this.exportDataSort();
       }
     );
   }
@@ -166,6 +147,13 @@ export class OpenDataComponent implements OnInit {
         }
       }
     });
+
+    this.showDataSort();
+    this.exportDataSort();
+
+  }
+
+  showDataSort() {
     // tslint:disable-next-line: only-arrow-functions
     this.showDatas.sort(function (a, b) {
       const A = a[0].toUpperCase();
@@ -176,14 +164,13 @@ export class OpenDataComponent implements OnInit {
       if (A > B) {
         return 1;
       }
-
-      // names must be equal
       return 0;
     });
+  }
 
-
+  exportDataSort() {
     // tslint:disable-next-line: only-arrow-functions
-    this.exportDatas.sort(function (a, b) {
+    this.exportDatas.sort(function(a, b) {
       const A = a[6].toUpperCase();
       const B = b[6].toUpperCase();
       if (A < B) {
@@ -192,11 +179,8 @@ export class OpenDataComponent implements OnInit {
       if (A > B) {
         return 1;
       }
-
-      // names must be equal
       return 0;
     });
-
   }
 
   download() {

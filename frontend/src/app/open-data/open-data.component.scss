@@ -2,144 +2,78 @@
 
 @media screen {
 
-  html,
-  body,
-  div,
-  span,
-  applet,
-  object,
-  iframe,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  blockquote,
-  pre,
-  a,
-  abbr,
-  acronym,
-  address,
-  big,
-  cite,
-  code,
-  del,
-  dfn,
-  em,
-  img,
-  ins,
-  kbd,
-  q,
-  s,
-  samp,
-  small,
-  strike,
-  strong,
-  sub,
-  sup,
-  tt,
-  var,
-  b,
-  u,
-  i,
-  center,
-  dl,
-  dt,
-  dd,
-  ol,
-  ul,
-  li,
-  fieldset,
-  form,
-  label,
-  legend,
-  table,
-  caption,
-  tbody,
-  tfoot,
-  thead,
-  tr,
-  th,
-  td,
-  article,
-  aside,
-  canvas,
-  details,
-  embed,
-  figure,
-  figcaption,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  output,
-  ruby,
-  section,
-  summary,
-  time,
-  mark,
-  audio,
-  video {
-    margin        : 0;
-    padding       : 0;
-    border        : 0;
-    font-size     : 100%;
-    font          : inherit;
-    vertical-align: baseline;
-  }
+  .aside {
+    position        : fixed;
+    z-index         : $z-index_second;
+    overflow        : auto;
+    box-sizing      : border-box;
+    margin-top      : $height_header;
+    padding         : $content-size_top-bottom $content-size_left-right;
+    width           : $width_aside;
+    height          : calc(100vh - #{$height_header});
+    background-color: $color_white;
+    box-shadow      : $box-shadow--left;
 
-  /* HTML5 display-role reset for older browsers */
-  article,
-  aside,
-  details,
-  figcaption,
-  figure,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  section {
-    display: block;
-  }
+    .item-categories {
 
-  a {
-    text-decoration: none;
-    color          : $color_icon;
-  }
+      &__title {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        padding        : $content-size_left-right/1.5 0;
+        border-bottom  : $color_border solid 1px;
+        font-size      : 1.2rem;
 
-  a:hover {
-    color: $color_accent;
-  }
+        &:hover,
+        &.active {
+          .item-categories__arrow {
+            transform: rotate(-90deg);
+          }
+        }
 
-  body {
-    line-height: 1;
-  }
+        .name {
+          display    : flex;
+          align-items: center;
 
-  ol,
-  ul {
-    list-style: none;
-  }
+          span {
+            margin-left: $content-size_left-right/2;
+          }
+        }
+      }
 
-  blockquote,
-  q {
-    quotes: none;
-  }
+      &__arrow {
+        transition: $transition_short;
+      }
 
-  blockquote:before,
-  blockquote:after,
-  q:before,
-  q:after {
-    content: '';
-    content: none;
-  }
+      &__list {
+        display  : flex;
+        flex-flow: column;
+        padding  : $content-size_left-right/2 0;
 
-  table {
-    border-collapse: collapse;
-    border-spacing : 0;
+        li {
+          display    : inline-flex;
+          align-items: center;
+          padding    : $content-size_left-right/2 0;
+          width      : 90%;
+          margin-left: 5%;
+
+          .title {
+            width: 40%;
+          }
+
+          .value {
+            width           : 65%;
+            border          : $color_border 1px solid;
+            padding         : 5px;
+            background-color: $color_primary;
+          }
+
+          .select {
+            width: 65%;
+          }
+        }
+      }
+    }
   }
 
   article {
@@ -162,6 +96,7 @@
 
         .table td {
           padding: 10px;
+          color: $color-text;
         }
 
         &__header {
@@ -176,18 +111,19 @@
         }
 
       }
+
       .download {
-        width: 9%;
+        width           : 9%;
         background-color: $color_accent;
-        color: white;
-        border-radius: 5px;
-        margin-top: $content-size_top-bottom*2;
-        margin-left: auto;
-        padding: $content-size_top-bottom/2 $content-size_left-right/2;
-        letter-spacing: 1px;
-        text-align: center;
-        justify-content: center;
-        cursor: pointer;
+        color           : white;
+        border-radius   : 5px;
+        margin-top      : $content-size_top-bottom*2;
+        margin-left     : auto;
+        padding         : $content-size_top-bottom/2 $content-size_left-right/2;
+        letter-spacing  : 1px;
+        text-align      : center;
+        justify-content : center;
+        cursor          : pointer;
       }
     }
 
@@ -250,94 +186,6 @@
       .item:nth-last-child(1) {
         margin-bottom: $content-size_top-bottom;
       }
-    }
-  }
-
-
-  .aside {
-    position        : fixed;
-    z-index         : $z-index_second;
-    overflow        : auto;
-    box-sizing      : border-box;
-    margin-top      : $height_header;
-    padding         : $content-size_top-bottom $content-size_left-right;
-    width           : $width_aside;
-    height          : calc(100vh - #{$height_header});
-    background-color: $color_white;
-    box-shadow      : $box-shadow--left;
-
-    .item-categories {
-
-      i {
-        color : $color_icon;
-        cursor: pointer;
-      }
-
-
-      &__title {
-        display        : flex;
-        align-items    : center;
-        justify-content: space-between;
-        padding        : $content-size_left-right/1.5 0;
-        border-bottom  : $color_border solid 1px;
-        font-size      : 1.2rem;
-
-        &:hover,
-        &.active {
-          .item-categories__arrow {
-            transform: rotate(-90deg);
-          }
-        }
-
-        .name {
-          display    : flex;
-          align-items: center;
-
-          span {
-            margin-left: $content-size_left-right/2;
-          }
-        }
-      }
-
-      &__arrow {
-        transition: $transition_short;
-      }
-
-      &__list {
-        display  : flex;
-        flex-flow: column;
-        padding  : $content-size_left-right/2 0;
-
-        li {
-          display    : inline-flex;
-          align-items: center;
-          padding    : $content-size_left-right/2 0;
-          width      : 90%;
-          margin-left: 5%;
-
-          .title {
-            width: 40%;
-          }
-
-          .value {
-            width           : 65%;
-            border          : $color_border 1px solid;
-            padding         : 5px;
-            background-color: $color_primary;
-          }
-
-          .select {
-            width: 65%;
-          }
-        }
-      }
-    }
-
-    body {
-      background-color: $color_primary;
-      color           : $color_text;
-      font-weight     : 400;
-      font-family     : 'Noto Sans TC', sans-serif;
     }
   }
 }

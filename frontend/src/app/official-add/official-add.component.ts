@@ -2,7 +2,6 @@ import { CalendarService } from './../services/calendar.service';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { EventService } from '../services/event.service';
-import { SubscriptionService } from '../services/subscription.service';
 import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 
@@ -58,7 +57,6 @@ export class OfficialAddComponent implements OnInit {
     for (let i = 0; i < this.showDatas.length; i++) {
       this.output.push(this.showDatas[i]);
     }
-    console.log(this.output);
     /* generate worksheet */
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.output);
 
@@ -88,12 +86,14 @@ export class OfficialAddComponent implements OnInit {
       this.eventService.getEvents().subscribe(
         data => {
           data.forEach(event => {
-            event.calendars.forEach(calendar => {
-              if (calendar.name === this.selectCalendar &&
-                this.addStartDate.nativeElement.value.toUpperCase() <= event.startAt.substr(0, 10).toUpperCase() &&
-                this.addEndDate.nativeElement.value.toUpperCase() >= event.endAt.substr(0, 10).toUpperCase()) {
-                this.showDatas.push([event.title, event.description, calendar.name,
-                event.startAt.substr(0, 10), event.endAt.substr(0, 10)]);
+            this.outputCalendar.forEach(calendar => {
+              if (event.main_calendar_id === calendar.id) {
+                if (calendar.name === this.selectCalendar &&
+                  this.addStartDate.nativeElement.value.toUpperCase() <= event.startAt.substr(0, 10).toUpperCase() &&
+                  this.addEndDate.nativeElement.value.toUpperCase() >= event.endAt.substr(0, 10).toUpperCase()) {
+                  this.showDatas.push([event.title, event.description, calendar.name,
+                  event.startAt.substr(0, 10), event.endAt.substr(0, 10)]);
+                }
               }
             });
           });
@@ -106,7 +106,7 @@ export class OfficialAddComponent implements OnInit {
           }
 
           // tslint:disable-next-line: only-arrow-functions
-          this.showDatas.sort(function(a, b) {
+          this.showDatas.sort(function (a, b) {
             const startA = a[3].toUpperCase(); // ignore upper and lowercase
             const startB = b[3].toUpperCase(); // ignore upper and lowercase
             if (startA < startB) {
@@ -115,7 +115,6 @@ export class OfficialAddComponent implements OnInit {
             if (startA > startB) {
               return 1;
             }
-
             return 0;
           });
         }

@@ -72,6 +72,14 @@
           letter-spacing  : 1px;
           height          : 50px;
           width           : 100%;
+
+          i {
+            font-size: 17px;
+          }
+
+          span {
+            margin-left: $content-size_left-right/4;
+          }
         }
 
         .chooseFile:hover {

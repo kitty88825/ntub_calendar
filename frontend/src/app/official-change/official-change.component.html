@@ -19,12 +19,12 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <div class="item-categories__chooseFile">
+            <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
             <label class="chooseFile">
               <i class="material-icons">
                 attach_file
               </i>
-              <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
-              選擇檔案
+              <span>選擇檔案</span>
             </label>
           </div>
           <h2>選擇行事曆：</h2>

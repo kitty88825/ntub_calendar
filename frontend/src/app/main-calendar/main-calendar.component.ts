@@ -245,16 +245,16 @@ export class MainCalendarComponent implements OnInit {
         for (let i = 0; i < data.length; i++) {
 
           // tslint:disable-next-line: prefer-for-of
-          for (let j = 0; j < data[i].calendars.length; j++) {
+          for (let j = 0; j < data[i].main_calendar_id; j++) {
 
             this.events.push({
-              id: data[i].id, title: data[i].title, start: data[i].startAt, calendar: data[i].calendars[j],
+              id: data[i].id, title: data[i].title, start: data[i].startAt, calendar: data[i].main_calendar_id[j],
               end: data[i].endAt, startDate: data[i].startAt.substr(0, 10), location: data[i].location,
               endDate: data[i].endAt.substr(0, 10), description: data[i].description,
-              backgroundColor: data[i].calendars[j].color, calendars: data[i].calendars,
+              backgroundColor: data[i].main_calendar_id[j].color, calendars: data[i].main_calendar_id,
               sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16),
               participants: data[i].participants, files: data[i].attachments, permission: false,
-              permissions: data[i].calendars[j].permissions, isChecked: false
+              permissions: data[i].main_calendar_id[j].permissions, isChecked: false
             });
 
           }
