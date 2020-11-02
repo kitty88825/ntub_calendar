@@ -232,3 +232,15 @@ class UpdateEventAttachmentSerializer(EventSerializer):
         )
 
         return event
+
+
+class SubscribeEventSerializer(serializers.Serializer):
+    events = serializers.ListField(child=serializers.IntegerField())
+
+    def validate_events(self, value):
+        return Event.objects.filter(
+            Q(calendars__display='public') |
+            Q(calendars__groups__user=self.context['request'].user) |
+            Q(participants=self.context['request'].user.id),
+            Q(id__in=value),
+        ).values_list('id', flat=True)
