@@ -37,6 +37,21 @@ class EventParticipantSerializer(serializers.ModelSerializer):
         fields = ('id', 'email')
 
 
+class EventInviteCalendarSerializer(serializers.ModelSerializer):
+    calendar = serializers.SerializerMethodField()
+    main_calendar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EventInviteCalendar
+        fields = ('calendar', 'main_calendar', 'response')
+
+    def get_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.calendar).data
+
+    def get_main_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.main_calendar).data
+
+
 class EventSerializer(serializers.ModelSerializer):
     files = serializers.ListField(
         child=serializers.FileField(),
@@ -54,8 +69,11 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
+    eventinvitecalendar_set = EventInviteCalendarSerializer(
+        many=True,
+        read_only=True,
+    )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    calendars = CalendarSerializer(many=True, read_only=True)
     participants = EventParticipantSerializer(many=True, read_only=True)
 
     class Meta:
@@ -73,7 +91,7 @@ class EventSerializer(serializers.ModelSerializer):
             'main_calendar_id',
             'invite_calendars_id',
             'attachments',
-            'calendars',
+            'eventinvitecalendar_set',
             'participants',
         )
         read_only_fields = (
