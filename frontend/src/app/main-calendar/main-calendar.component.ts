@@ -43,8 +43,6 @@ export class MainCalendarComponent implements OnInit {
   calendarName = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   selectMonth = Number(this.todayDate.substr(5, 2));
-  editPermission: boolean;
-  deletePermission: boolean;
   group = [];
   unSelectedItemsList = [];
   formData = new FormData();
@@ -55,13 +53,13 @@ export class MainCalendarComponent implements OnInit {
   showEvents = [];
   page = 1;
   initShowEvents = [];
+  permission: boolean;
 
   constructor(
     private router: Router,
     private eventService: EventService,
     private shareDataService: ShareDataService,
     private calendarService: CalendarService,
-    private subscriptionService: SubscriptionService,
     private tokenService: TokenService,
   ) { }
 
@@ -130,10 +128,11 @@ export class MainCalendarComponent implements OnInit {
     this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
     this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
     this.eventDescription = info.event._def.extendedProps.description;
-    this.eventOffice = info.event._def.extendedProps.calendar.name;
-    this.eventParticipant = info.event._def.extendedProps.participants;
-    this.eventFile = info.event._def.extendedProps.files.length;
+    this.eventOffice = info.event._def.extendedProps.mainCalendarName;
+    this.eventParticipant = info.event._def.extendedProps.participants.length + '人';
+    this.eventFile = info.event._def.extendedProps.files.length + '個';
     this.eventLocation = info.event._def.extendedProps.location;
+    this.permission = info.event._def.extendedProps.permission;
   }
 
   displayType(eventType: any): void {
@@ -147,7 +146,7 @@ export class MainCalendarComponent implements OnInit {
       // Show
       this.hiddenCalendarEvents
         .filter(calendarEvent => {
-          if (calendarEvent.calendar.id === eventType.id) {
+          if (calendarEvent.calendar[0].mainCalendar.id === eventType.id) {
             return true;
           }
         })
@@ -167,7 +166,8 @@ export class MainCalendarComponent implements OnInit {
       // Hide
       calendarEvents
         .filter(calendarEvent => {
-          if (calendarEvent.calendar.id === eventType.id) {
+          console.log(calendarEvent.calendar[0].mainCalendar.id);
+          if (calendarEvent.calendar[0].mainCalendar.id === eventType.id) {
             return true;
           }
         })
@@ -180,12 +180,12 @@ export class MainCalendarComponent implements OnInit {
           }
 
           this.hiddenCalendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
-          calendarEventsToHide.push(calendarEvent.calendar.id);
+          calendarEventsToHide.push(calendarEvent.calendar[0].mainCalendar.id);
         });
 
       calendarEventsToHide.forEach(calendarEventToHide => {
         const index = calendarEvents.findIndex(calendarEvent => {
-          return calendarEvent.calendar.id === calendarEventToHide;
+          return calendarEvent.calendar[0].mainCalendar.id === calendarEventToHide;
         });
 
         calendarEvents.splice(index, 1);
@@ -226,64 +226,52 @@ export class MainCalendarComponent implements OnInit {
 
     this.calendarService.getCalendar().subscribe(
       result => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let j = 0; j < result.length; j++) {
+        result.forEach(calendar => {
           this.openCalendar.push({
-            id: result[j].id, name: result[j].name,
-            description: result[j].description, display: result[j].display,
-            color: result[j].color, permission: result[j].permissions
+            id: calendar.id, name: calendar.name,
+            description: calendar.description, display: calendar.display,
+            color: calendar.color, permission: calendar.permissions
           });
 
-          this.eventTypes.push({ title: 'type' + result[j].id, id: result[j].id, selected: true });
-        }
+          this.eventTypes.push({ title: 'type' + calendar.id, id: calendar.id, selected: true });
+        });
       }
     );
 
     this.eventService.getEvents().subscribe(
       data => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-
-          // tslint:disable-next-line: prefer-for-of
-          for (let j = 0; j < data[i].main_calendar_id; j++) {
-
-            this.events.push({
-              id: data[i].id, title: data[i].title, start: data[i].startAt, calendar: data[i].main_calendar_id[j],
-              end: data[i].endAt, startDate: data[i].startAt.substr(0, 10), location: data[i].location,
-              endDate: data[i].endAt.substr(0, 10), description: data[i].description,
-              backgroundColor: data[i].main_calendar_id[j].color, calendars: data[i].main_calendar_id,
-              sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16),
-              participants: data[i].participants, files: data[i].attachments, permission: false,
-              permissions: data[i].main_calendar_id[j].permissions, isChecked: false
-            });
-
-          }
-
-        }
+        data.forEach(event => {
+          this.events.push({
+            id: event.id, title: event.title, start: event.startAt, calendar: event.eventinvitecalendarSet,
+            end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
+            endDate: event.endAt.substr(0, 10), description: event.description,
+            backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
+            sTime: event.startAt.substring(11, 16), eTime: event.endAt.substring(11, 16),
+            participants: event.eventparticipantSet, files: event.attachments, permission: false,
+            isChecked: false, mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name
+          });
+        });
 
         this.calendarEvents = this.events;
 
-        // tslint:disable-next-line: prefer-for-of
-        for (let k = 0; k < this.group.length; k++) {
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < this.events.length; i++) {
-            this.eventsYear.push(this.events[i].startDate.substr(0, 4));
+        this.group.forEach(group => {
+          this.events.forEach(event => {
+            this.eventsYear.push(event.startDate.substr(0, 4));
 
-            if (this.events[i].startDate.substr(0, 4) === this.selectYear
-            && Number(this.events[i].startDate.substr(5, 2)) === this.selectMonth) {
-              this.showEvents.push(this.events[i]);
+            if (event.startDate.substr(0, 4) === this.selectYear
+              && Number(event.startDate.substr(5, 2)) === this.selectMonth) {
+              this.showEvents.push(event);
             }
 
-            // tslint:disable-next-line: prefer-for-of
-            for (let j = 0; j < this.events[i].permissions.length; j++) {
-              if (Number(this.group[k]) === this.events[i].permissions[j].group &&
-                this.role === this.events[i].permissions[j].role &&
-                this.events[i].permissions[j].authority === 'write') {
-                this.events[i].permission = true;
+            if (event.calendar[0].mainCalendar.permissions.length !== 0) {
+              if (Number(group) === event.calendar[0].mainCalendar.permissions[0].group &&
+                this.role === event.calendar[0].mainCalendar.permissions[0].role &&
+                event.calendar[0].mainCalendar.permissions[0].authority === 'write') {
+                event.permission = true;
               }
             }
-          }
-        }
+          });
+        });
 
         this.showEvents = this.showEvents.filter(function (el, i, arr) {
           return arr.indexOf(el) === i;
@@ -293,20 +281,7 @@ export class MainCalendarComponent implements OnInit {
           return arr.indexOf(el) === i;
         });
 
-        // tslint:disable-next-line: only-arrow-functions
-        this.showEvents.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
+        this.showEventsSort();
 
         // tslint:disable-next-line: only-arrow-functions
         this.eventsYear.sort(function (a, b) {
@@ -318,8 +293,6 @@ export class MainCalendarComponent implements OnInit {
           if (startA > startB) {
             return 1;
           }
-
-          // names must be equal
           return 0;
         });
 
@@ -344,7 +317,6 @@ export class MainCalendarComponent implements OnInit {
   }
 
   delete(info) {
-    console.log(info.title);
     Swal.fire({
       text: '確定要刪除「' + info.title + '」?',
       showCancelButton: true,
@@ -418,9 +390,6 @@ export class MainCalendarComponent implements OnInit {
         this.deleteData.push(init.id);
       }
     });
-
-    console.log(this.deleteData);
-
   }
 
   changeSelection() {
@@ -428,7 +397,6 @@ export class MainCalendarComponent implements OnInit {
     let count = 0;
     let permissionCount = 0;
     this.deleteData = [];
-    console.log(this.initShowEvents);
 
     this.initShowEvents.forEach(init => {
       if (init.isChecked === true) {
@@ -443,16 +411,12 @@ export class MainCalendarComponent implements OnInit {
       }
 
     });
-    console.log(permissionCount);
-    console.log(count);
 
     if (permissionCount === count) {
       this.selectAll = true;
     } else {
       this.selectAll = false;
     }
-
-    console.log(this.deleteData);
   }
 
   fetchSelectedItems() {
@@ -460,7 +424,6 @@ export class MainCalendarComponent implements OnInit {
       return value.isChecked;
     });
   }
-
 
   deleteAll() {
     Swal.fire({
@@ -474,15 +437,14 @@ export class MainCalendarComponent implements OnInit {
       // tslint:disable-next-line: no-shadowed-variable
     }).then((result) => {
       if (result.value) {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.deleteData.length; i++) {
-          this.eventService.deleteEvent(this.deleteData[i]).subscribe(
+        this.deleteData.forEach(deleteData => {
+          this.eventService.deleteEvent(deleteData).subscribe(
             data => {
-              const index = this.calendarEvents.indexOf(this.deleteData[i]);
+              const index = this.calendarEvents.indexOf(deleteData);
               this.calendarEvents.splice(index, 1);
               this.calendarComponent
                 .getApi()
-                .getEventById(String(this.deleteData[i]))
+                .getEventById(String(deleteData))
                 .remove();
               Swal.fire({
                 text: '刪除成功',
@@ -494,7 +456,8 @@ export class MainCalendarComponent implements OnInit {
               console.log(error);
             }
           );
-        }
+
+        });
       }
     });
 
@@ -522,6 +485,21 @@ export class MainCalendarComponent implements OnInit {
       this.IsLoadingEnd = true;
     }
 
+  }
+
+  showEventsSort() {
+    // tslint:disable-next-line: only-arrow-functions
+    this.showEvents.sort(function (a, b) {
+      const startA = a.start.toUpperCase(); // ignore upper and lowercase
+      const startB = b.start.toUpperCase(); // ignore upper and lowercase
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
 

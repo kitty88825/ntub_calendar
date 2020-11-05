@@ -82,7 +82,8 @@
         <li class="event-list__header">
           <div class="event-list__checkbox">
             <label class="container">
-              <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()" [(ngModel)]="selectAll">
+              <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
+                [(ngModel)]="selectAll">
               <span class="checkmark"></span>
             </label>
           </div>
@@ -92,17 +93,16 @@
           <div class="event-list__date">開始日期</div>
           <div class="event-list__edit">編輯</div>
         </li>
-        <li
-          *ngFor="let event of showEvents | appFilter: searchText">
+        <li *ngFor="let event of showEvents | appFilter: searchText">
           <div class="event-list__checkbox">
             <label class="container" *ngIf="event.permission === true">
               <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
-              (change)="changeSelection()">
+                (change)="changeSelection()">
               <span class="checkmark"></span>
             </label>
           </div>
           <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
             <span>{{event.title}}</span>
           </div>
           <div class="event-list__content">
@@ -111,7 +111,8 @@
             </div>
           </div>
           <div class="event-list__office">
-            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+            <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
+            </div>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
           <div class="event-list__edit">
@@ -169,7 +170,8 @@
         <li class="event-list__header">
           <div class="event-list__checkbox">
             <label class="container">
-              <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" [(ngModel)]="selectAll">
+              <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
+                [(ngModel)]="selectAll">
               <span class="checkmark"></span>
             </label>
           </div>
@@ -179,17 +181,16 @@
           <div class="event-list__date">開始日期</div>
           <div class="event-list__edit">編輯</div>
         </li>
-        <li
-          *ngFor="let event of showEvents | appFilter:searchTextSmall">
+        <li *ngFor="let event of showEvents | appFilter:searchTextSmall">
           <div class="event-list__checkbox">
             <label class="container" *ngIf="event.permission === true">
               <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
-              (change)="changeSelection()">
+                (change)="changeSelection()">
               <span class="checkmark"></span>
             </label>
           </div>
           <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
             <span>{{event.title}}</span>
           </div>
           <div class="event-list__content">
@@ -198,7 +199,8 @@
             </div>
           </div>
           <div class="event-list__office">
-            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+            <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
+            </div>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
           <div class="event-list__edit">
@@ -257,7 +259,8 @@
           <div class="event-list__title">
             <div class="event-list__checkbox">
               <label class="container">
-                <input type="checkbox" class="material-icons item-categories__checkbox"  (change)="checkAll()" [(ngModel)]="selectAll">
+                <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
+                  [(ngModel)]="selectAll">
                 <span class="checkmark"></span>
               </label>
             </div>
@@ -266,24 +269,24 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li class="event-list__card"
-          *ngFor="let event of showEvents | appFilter:searchTextGrid">
+        <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchTextGrid">
           <div class="event-list__checkbox">
             <label class="container" *ngIf="event.permission === true">
               <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
-              (change)="changeSelection()">
+                (change)="changeSelection()">
               <span class="checkmark"></span>
             </label>
-            <i class="material-icons"  (click)="edit(event)" *ngIf="event.permission === true">
+            <i class="material-icons" (click)="edit(event)" *ngIf="event.permission === true">
               more_horiz
             </i>
           </div>
           <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
             <span>{{event.title}}</span>
           </div>
           <div class="event-list__office">
-            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+            <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
+            </div>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
         </li>
@@ -294,61 +297,73 @@
   <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="event_dialog">
-      <div class="event_content">
-        <div class="event_body">
-          <div class="event_border">
-            <i class="cancel material-icons" (click)="hide()">
-              cancel
+      <div class="event_body">
+        <div class="event_border">
+          <i class="cancel material-icons" (click)="hide()">
+            cancel
+          </i>
+          <div class="event_block">
+            <i class="material-icons">
+              title
             </i>
-            <div class="event_block">
+            <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              schedule
+            </i>
+            <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              schedule
+            </i>
+            <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              place
+            </i>
+            <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
+              </div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              subject
+            </i>
+            <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              groups
+            </i>
+            <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              group
+            </i>
+            <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              attach_file
+            </i>
+            <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
+            </span>
+          </div>
+          <div class="btn" *ngIf="permission === true">
+            <div class="edit">
               <i class="material-icons">
-                title
+                edit
               </i>
-              <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
+              <span>編輯</span>
             </div>
-            <div class="event_block">
+            <div class="delete">
               <i class="material-icons">
-                schedule
+                delete
               </i>
-              <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                schedule
-              </i>
-              <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                place
-              </i>
-              <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
-                </div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                subject
-              </i>
-              <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                groups
-              </i>
-              <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                group
-              </i>
-              <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                attach_file
-              </i>
-              <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
-              </span>
+              <span>刪除</span>
             </div>
           </div>
         </div>

@@ -39,6 +39,11 @@ export interface Event {
     },
     response: string
   }];
+  eventparticipantSet: [{
+    user: string,
+    role: string,
+    response: string
+  }];
   calendars: [{
     color: string;
     description?: string,
