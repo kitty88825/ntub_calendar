@@ -89,10 +89,9 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li
-          *ngFor="let event of showEvents | appFilter: searchText">
+        <li *ngFor="let event of showEvents | appFilter: searchText">
           <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
             <span>{{event.title}}</span>
           </div>
           <div class="event-list__content">
@@ -101,7 +100,8 @@
             </div>
           </div>
           <div class="event-list__office">
-            <div class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</div>
+            <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
+            </div>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
         </li>
@@ -155,14 +155,14 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li
-          *ngFor="let event of showEvents | appFilter: searchTextSmall">
+        <li *ngFor="let event of showEvents | appFilter: searchTextSmall">
           <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
             {{event.title}}
           </div>
           <div class="event-list__office">
-            <span class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</span>
+            <span class="event-list__tag"
+              [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}</span>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
         </li>
@@ -215,14 +215,14 @@
           <div class="event-list__office">發布單位</div>
           <div class="event-list__date">開始日期</div>
         </li>
-        <li class="event-list__card"
-          *ngFor="let event of showEvents | appFilter: searchTextGrid">
+        <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchTextGrid">
           <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.calendar.color"></span>
+            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
             {{event.title}}
           </div>
           <div class="event-list__office">
-            <span class="event-list__tag" [style.background-color]="event.calendar.color">{{event.calendar.name}}</span>
+            <span class="event-list__tag"
+              [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}</span>
           </div>
           <div class="event-list__date">{{event.startDate}}</div>
         </li>
@@ -233,23 +233,21 @@
   <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal_dialog">
-      <div class="modal_content">
-        <div class="modal_header">
-          <i class="material-icons" (click)="hideExcel()">
-            cancel
-          </i>
+      <div class="modal_header">
+        <i class="material-icons" (click)="hideExcel()">
+          cancel
+        </i>
+      </div>
+      <div class="modal_body">
+        <span>下載格式：</span>
+        <div class="item" (click)="daochu($event)">
+          <h4>csv</h4>
         </div>
-        <div class="modal_body">
-          <span>下載格式：</span>
-          <div class="item" (click)="daochu($event)">
-            <h4>csv</h4>
-          </div>
-          <div class="item" (click)="daochu($event)">
-            <h4>xlsx</h4>
-          </div>
-          <div class="item" (click)="daochu($event)">
-            <h4>xls</h4>
-          </div>
+        <div class="item" (click)="daochu($event)">
+          <h4>xlsx</h4>
+        </div>
+        <div class="item" (click)="daochu($event)">
+          <h4>xls</h4>
         </div>
       </div>
     </div>
@@ -258,62 +256,60 @@
   <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="event_dialog">
-      <div class="event_content">
-        <div class="event_body">
-          <div class="event_border">
-            <i class="cancel material-icons" (click)="hideEvent()">
-              cancel
+      <div class="event_body">
+        <div class="event_border">
+          <i class="cancel material-icons" (click)="hideEvent()">
+            cancel
+          </i>
+          <div class="event_block">
+            <i class="material-icons">
+              title
             </i>
-            <div class="event_block">
-              <i class="material-icons">
-                title
-              </i>
-              <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                schedule
-              </i>
-              <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                schedule
-              </i>
-              <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                place
-              </i>
-              <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
-                </div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                subject
-              </i>
-              <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                groups
-              </i>
-              <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                group
-              </i>
-              <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
-            </div>
-            <div class="event_block">
-              <i class="material-icons">
-                attach_file
-              </i>
-              <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
-                </span>
-            </div>
+            <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              schedule
+            </i>
+            <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              schedule
+            </i>
+            <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              place
+            </i>
+            <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
+              </div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              subject
+            </i>
+            <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              groups
+            </i>
+            <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              group
+            </i>
+            <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
+          </div>
+          <div class="event_block">
+            <i class="material-icons">
+              attach_file
+            </i>
+            <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
+            </span>
           </div>
         </div>
       </div>

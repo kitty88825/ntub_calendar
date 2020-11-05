@@ -28,7 +28,7 @@ export class IndexComponent implements OnInit {
   showEvent: boolean;
   selectYear = String(new Date().getFullYear());
   eventsYear = [];
-  eventsMonth = [];
+  eventsMonth = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
   showEvents = [];
   selectMonth = '';
   data = {
@@ -59,7 +59,6 @@ export class IndexComponent implements OnInit {
     private authService: AuthService,
     private calendarService: CalendarService,
     private eventService: EventService,
-    private shareDataService: ShareDataService
   ) { }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
@@ -94,7 +93,6 @@ export class IndexComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(event) {
-
     if (IndexComponent.getScrollTop() + IndexComponent.getClientHeight() === IndexComponent.getScrollHeight()
       && this.IsLoadingEnd === false) {
       this.Loading = true;
@@ -123,11 +121,12 @@ export class IndexComponent implements OnInit {
 
     this.calendarService.fGetCalendar().subscribe(
       data => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-          // tslint:disable-next-line: max-line-length
-          this.openCalendar.push({ id: data[i].id, name: data[i].name, description: data[i].description, display: data[i].display, color: data[i].color });
-        }
+        data.forEach(calendar => {
+          this.openCalendar.push({
+            id: calendar.id, name: calendar.name,
+            description: calendar.description, display: calendar, color: calendar.color
+          });
+        });
       },
       error => {
         console.log(error);
@@ -136,91 +135,46 @@ export class IndexComponent implements OnInit {
 
     this.eventService.fGetEvents().subscribe(
       data => {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-
-          // tslint:disable-next-line: prefer-for-of
-          for (let j = 0; j < data[i].calendars.length; j++) {
-
-            this.calendar.push({
-              calendar: data[i].calendars[j]
-            });
-
-            this.events.push({
-              id: data[i].id, title: data[i].title, start: data[i].startAt, calendar: data[i].calendars[j],
-              end: data[i].endAt, startDate: data[i].startAt.substr(0, 10), location: data[i].location,
-              endDate: data[i].endAt.substr(0, 10), description: data[i].description,
-              backgroundColor: this.calendar[0].calendar.color,
-              sTime: data[i].startAt.substring(11, 16), eTime: data[i].endAt.substring(11, 16),
-              participants: data[i].participants, files: data[i].attachments
-            });
-
-            this.calendar = [];
-          }
-
-        }
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.events.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
+        console.log(data);
+        data.forEach(event => {
+          this.events.push({
+            id: event.id, title: event.title, start: event.startAt, eventinvitecalendarSet: event.eventinvitecalendarSet,
+            end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
+            endDate: event.endAt.substr(0, 10), description: event.description, sTime: event.startAt.substring(11, 16),
+            eTime: event.endAt.substring(11, 16), files: event.attachments,
+            backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
+            mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name
+          });
         });
+
+        this.eventsSort();
 
         this.calendarEvents = this.events;
 
-        // tslint:disable-next-line: prefer-for-of
-        for (let k = 0; k < this.events.length; k++) {
-          this.eventsYear.push(this.events[k].startDate.substr(0, 4));
-          this.eventsMonth.push(this.events[k].startDate.substr(5, 2));
+        this.events.forEach(event => {
+          this.eventsYear.push(event.startDate.substr(0, 4));
 
-          if (this.events[k].startDate.substr(0, 4) === this.selectYear && this.events[k].startDate.substr(5, 2) === this.selectMonth) {
-            this.showEvents.push(this.events[k]);
+          if (event.startDate.substr(0, 4) === this.selectYear && event.startDate.substr(5, 2) === this.selectMonth) {
+            this.showEvents.push(event);
           }
 
-
-          if (Number(this.events[k].startDate.substr(6, 2)) <= 7) {
-            this.showDatas.push([String(Number(this.events[k].startDate.substr(0, 4)) - 1911),
-              '公立', '技專校院', '0051', '國立台北商業大學', '1', this.events[k].startDate,
-            this.events[k].endDate, '', '', '', this.events[k].title]);
+          if (Number(event.startDate.substr(6, 2)) <= 7) {
+            this.showDatas.push([String(Number(event.startDate.substr(0, 4)) - 1911),
+              '公立', '技專校院', '0051', '國立台北商業大學', '1', event.startDate,
+            event.endDate, '', '', '', event.title]);
           } else {
-            this.showDatas.push([String(Number(this.events[k].startDate.substr(0, 4)) - 1911),
-              '公立', '技專校院', '0051', '國立台北商業大學', '2', this.events[k].startDate,
-            this.events[k].endDate, '', '', '', this.events[k].title]);
+            this.showDatas.push([String(Number(event.startDate.substr(0, 4)) - 1911),
+              '公立', '技專校院', '0051', '國立台北商業大學', '2', event.startDate,
+            event.endDate, '', '', '', event.title]);
           }
+        });
 
-        }
-
+        // tslint:disable-next-line: only-arrow-functions
         this.eventsYear = this.eventsYear.filter(function (el, i, arr) {
           return arr.indexOf(el) === i;
         });
 
-        this.eventsMonth = this.eventsMonth.filter(function (el, i, arr) {
-          return arr.indexOf(el) === i;
-        });
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.showEvents.sort(function (a, b) {
-          const startA = a.start.toUpperCase(); // ignore upper and lowercase
-          const startB = b.start.toUpperCase(); // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
-          return 0;
-        });
+        this.showEventsSort();
 
         // tslint:disable-next-line: only-arrow-functions
         this.eventsYear.sort(function (a, b) {
@@ -232,23 +186,6 @@ export class IndexComponent implements OnInit {
           if (startA > startB) {
             return 1;
           }
-
-          // names must be equal
-          return 0;
-        });
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.eventsMonth.sort(function (a, b) {
-          const startA = a; // ignore upper and lowercase
-          const startB = b; // ignore upper and lowercase
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-
-          // names must be equal
           return 0;
         });
 
@@ -295,7 +232,7 @@ export class IndexComponent implements OnInit {
 
           Swal.fire({
             title: 'Loggin in...',
-            timer: 2000,
+            timer: 2500,
             onBeforeOpen: () => {
               Swal.showLoading(),
                 timerInterval = setInterval(() => {
@@ -315,8 +252,14 @@ export class IndexComponent implements OnInit {
           if (this.resToken != null) {
             this.router.navigate(['/calendar']);
           } else {
-            alert('請重新登入！');
-            window.location.reload();
+            Swal.fire({
+              text: '請重新登入！',
+              icon: 'error'
+            }).then((re) => {
+              if (re.value) {
+                window.location.reload();
+              }
+            });
           }
         },
         error => {
@@ -334,7 +277,7 @@ export class IndexComponent implements OnInit {
     this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
     this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
     this.eventDescription = info.event._def.extendedProps.description;
-    this.eventOffice = info.event._def.extendedProps.calendar.name;
+    this.eventOffice = info.event._def.extendedProps.calendar.mainCalendarName;
     this.eventParticipant = info.event._def.extendedProps.participants;
     this.eventFile = info.event._def.extendedProps.files.length;
     this.eventLocation = info.event._def.extendedProps.location;
@@ -357,10 +300,11 @@ export class IndexComponent implements OnInit {
   daochu(info) {
     this.output = [];
     this.output.push(this.header);
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.showDatas.length; i++) {
-      this.output.push(this.showDatas[i]);
-    }
+
+    this.showDatas.forEach(data => {
+      this.output.push(data);
+    });
+
     /* generate worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
@@ -403,12 +347,11 @@ export class IndexComponent implements OnInit {
 
   onChange() {
     this.showEvents = [];
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.events.length; i++) {
-      if (this.events[i].startDate.substr(0, 4) === this.selectYear && this.events[i].startDate.substr(5, 2) === this.selectMonth) {
-        this.showEvents.push(this.events[i]);
+    this.events.forEach(event => {
+      if (event.startDate.substr(0, 4) === this.selectYear && event.startDate.substr(5, 2) === this.selectMonth) {
+        this.showEvents.push(event);
       }
-    }
+    });
 
     if (this.showEvents.length > this.pageSize) {
       this.initShowEvents = this.showEvents.slice();
@@ -421,6 +364,36 @@ export class IndexComponent implements OnInit {
       this.IsLoadingEnd = true;
     }
 
+  }
+
+  eventsSort() {
+    // tslint:disable-next-line: only-arrow-functions
+    this.events.sort(function (a, b) {
+      const startA = a.start.toUpperCase(); // ignore upper and lowercase
+      const startB = b.start.toUpperCase(); // ignore upper and lowercase
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  showEventsSort() {
+    // tslint:disable-next-line: only-arrow-functions
+    this.showEvents.sort(function (a, b) {
+      const startA = a.start.toUpperCase(); // ignore upper and lowercase
+      const startB = b.start.toUpperCase(); // ignore upper and lowercase
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
 

@@ -5,8 +5,40 @@ export interface Event {
   endAt: string;
   description?: string;
   location?: string;
+  natrue: string;
   main_calendar_id: number;
   invite_calendars_id: [];
+  eventinvitecalendarSet: [{
+    calendar: {
+      id: number,
+      name: string,
+      description: string,
+      display: string,
+      color: string,
+      permissions: [{
+        id: number,
+        group: number,
+        group_name: string,
+        role: string,
+        anthority: string
+      }]
+    },
+    mainCalendar: {
+      id: number,
+      name: string,
+      description: string,
+      display: string,
+      color: string,
+      permissions: [{
+        id: number,
+        group: number,
+        group_name: string,
+        role: string,
+        anthority: string
+      }]
+    },
+    response: string
+  }];
   calendars: [{
     color: string;
     description?: string,
