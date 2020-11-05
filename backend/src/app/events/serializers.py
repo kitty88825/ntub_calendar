@@ -2,6 +2,7 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
+from app.users.serializers import UserSerializer
 from app.calendars.serializers import CalendarSerializer
 from app.calendars.models import Calendar
 from app.users.models import User
@@ -32,9 +33,29 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class EventParticipantSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
-        model = User
-        fields = ('id', 'email')
+        model = EventParticipant
+        fields = ('user', 'role', 'response')
+
+    def get_user(self, event_participnat):
+        return str(event_participnat.user)
+
+
+class EventInviteCalendarSerializer(serializers.ModelSerializer):
+    calendar = serializers.SerializerMethodField()
+    main_calendar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EventInviteCalendar
+        fields = ('calendar', 'main_calendar', 'response')
+
+    def get_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.calendar).data
+
+    def get_main_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.main_calendar).data
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -54,9 +75,12 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
+    eventinvitecalendar_set = EventInviteCalendarSerializer(
+        many=True,
+        read_only=True,
+    )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    calendars = CalendarSerializer(many=True, read_only=True)
-    participants = EventParticipantSerializer(many=True, read_only=True)
+    eventparticipant_set = EventParticipantSerializer(many=True, read_only=True)
 
     class Meta:
         model = Event
@@ -73,8 +97,8 @@ class EventSerializer(serializers.ModelSerializer):
             'main_calendar_id',
             'invite_calendars_id',
             'attachments',
-            'calendars',
-            'participants',
+            'eventinvitecalendar_set',
+            'eventparticipant_set',
         )
         read_only_fields = (
             'id',
