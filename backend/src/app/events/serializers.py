@@ -2,6 +2,7 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
+from app.users.serializers import UserSerializer
 from app.calendars.serializers import CalendarSerializer
 from app.calendars.models import Calendar
 from app.users.models import User
@@ -32,9 +33,14 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class EventParticipantSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
-        model = User
-        fields = ('id', 'email')
+        model = EventParticipant
+        fields = ('user', 'role', 'response')
+
+    def get_user(self, event_participnat):
+        return str(event_participnat.user)
 
 
 class EventInviteCalendarSerializer(serializers.ModelSerializer):
@@ -74,7 +80,7 @@ class EventSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    participants = EventParticipantSerializer(many=True, read_only=True)
+    eventparticipant_set = EventParticipantSerializer(many=True, read_only=True)
 
     class Meta:
         model = Event
@@ -92,7 +98,7 @@ class EventSerializer(serializers.ModelSerializer):
             'invite_calendars_id',
             'attachments',
             'eventinvitecalendar_set',
-            'participants',
+            'eventparticipant_set',
         )
         read_only_fields = (
             'id',
