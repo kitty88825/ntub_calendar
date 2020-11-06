@@ -1,9 +1,9 @@
+import { Event } from './../models/event.model';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subscription } from '../models/subscription.model';
-import { URL } from '../models/URL.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +24,8 @@ export class SubscriptionService {
     return this.http.post<any>(environment.serverIp + 'calendar/subscription', formData, { headers: this.reqHeader });
   }
 
-  getSubscription(): Observable<Subscription[]> {
-    return this.http.get<Subscription[]>(environment.serverIp + 'event/events?subscribed=true', { headers: this.reqHeader });
+  getSubscription(): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?subscribed=true', { headers: this.reqHeader });
   }
 
   deleteEvent(id: number): Observable<Subscription> {

@@ -41,7 +41,7 @@
     </ul>
   </aside>
   <article>
-    <section class="container" *ngIf="showURL === false">
+    <section class="container">
       <div class="header">
         <h2>單位行程</h2>
         <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
@@ -77,32 +77,6 @@
             </i>
             <span>確定</span>
           </div>
-        </div>
-      </div>
-    </section>
-    <section class="container" *ngIf="showURL === true">
-      <div class="URL">
-        <h1>個人URL：</h1>
-        <input type="text" [(ngModel)]="url" class="form-control" #URL>
-        <i class="copy material-icons" (click)="copyInputMessage(URL)">
-          file_copy
-        </i>
-        <i class="renew material-icons" (click)="renewURL()">
-          autorenew
-        </i>
-      </div>
-      <div class="subBtn">
-        <div class="cancel" (click)="edit()">
-          <i class="material-icons">
-            edit
-          </i>
-          <span>修改訂閱</span>
-        </div>
-        <div class="submit" routerLink="/calendar">
-          <i class="material-icons">
-            home
-          </i>
-          <span>回首頁</span>
         </div>
       </div>
     </section>

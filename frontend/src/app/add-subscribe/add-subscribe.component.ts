@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { URLService } from './../services/url.service';
 import { TokenService } from './../services/token.service';
 import { EventService } from './../services/event.service';
@@ -26,7 +27,6 @@ export class AddSubscribeComponent implements OnInit {
   showEvent = [];
   checkedAll = false;
   selectEventId = [];
-  showURL = false;
   url = '';
   userEmail = '';
 
@@ -35,7 +35,8 @@ export class AddSubscribeComponent implements OnInit {
     private subscriptionService: SubscriptionService,
     private eventService: EventService,
     private tokenService: TokenService,
-    private urlService: URLService
+    private urlService: URLService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -93,19 +94,6 @@ export class AddSubscribeComponent implements OnInit {
     );
   }
 
-  /* To copy Text from Textbox */
-  copyInputMessage(inputElement) {
-    inputElement.select();
-    document.execCommand('copy');
-    inputElement.setSelectionRange(0, 0);
-    Swal.fire({
-      text: '已複製',
-      icon: 'success',
-      confirmButtonColor: '#3085d6',
-      confirmButtonText: 'OK'
-    });
-  }
-
   selectCalendar(id) {
     this.checkedAll = false;
     this.showEvent = [];
@@ -145,6 +133,7 @@ export class AddSubscribeComponent implements OnInit {
       }
 
       if (event.isChecked === true) {
+        count++;
         this.selectEventId.push(event.id);
       }
     });
@@ -254,7 +243,7 @@ export class AddSubscribeComponent implements OnInit {
           icon: 'success'
         }).then((result) => {
           if (result.value) {
-            this.showURL = true;
+            this.router.navigate(['/my-url']);
           }
         });
       }, error => {
@@ -264,10 +253,6 @@ export class AddSubscribeComponent implements OnInit {
         });
       }
     );
-  }
-
-  edit() {
-    this.showURL = false;
   }
 
   changeEvent() {

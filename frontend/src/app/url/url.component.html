@@ -1,23 +1,80 @@
 <app-navbar></app-navbar>
 <main>
+  <aside class="aside">
+    <ul class="item-categories">
+      <li>
+        <div class="item-categories__title active">
+          我的訂閱
+          <div class="form-group row">
+            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+              arrow_left
+            </i>
+          </div>
+        </div>
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+          <ul class="item-categories__list">
+            <li *ngFor="let sub of subCalendar">
+              <label class="container">
+                <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="sub.isChecked"
+                (change)="changeSelect()">{{sub.name}}
+                <span class="checkmark"></span>
+              </label>
+              <span class="item-categories__status" [style.background-color]="sub.color"></span>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </aside>
   <article>
     <section class="container">
-      <div class="url form-group">
-        <label for="static" class="title col-form-label">URL：</label>
-        <div class="box">
-          <input type="text" class="form-control" #URL [(ngModel)]="userURL" disabled>
+      <div class="content">
+        <div class="URL">
+          <h1>個人URL：</h1>
+          <input type="text" [(ngModel)]="url" class="form-control" #URL>
+          <div class="functionBtn">
+            <div class="copy" (click)="copyInputMessage(URL)">
+              <i class="material-icons">
+                file_copy
+              </i>
+              <span>複製</span>
+            </div>
+            <div class="renew" (click)="renewURL()">
+              <i class="material-icons">
+                autorenew
+              </i>
+              <span>更新</span>
+            </div>
+          </div>
         </div>
-        <div class="copy" (click)="copyInputMessage(URL)">
-          <i class="material-icons copyPic">
-            file_copy
-          </i>
-          <span>複製</span>
-        </div>
-        <div class="renew" (click)="renewURL()">
+      </div>
+    </section>
+    <section class="container">
+      <div class="header">
+        <h2>已訂閱行程</h2>
+        <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
+        <i class="material-icons">
+          search
+        </i>
+      </div>
+      <hr>
+      <div class="subEvent">
+        <ul>
+          <li *ngFor="let event of showEvent | appFilter : searchText">
+            <div class="event">
+              <span class="status" [style.background-color]="event.color"></span>
+              <span>{{event.title}}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="subBtn">
+        <div class="cancel" (click)="edit()">
           <i class="material-icons">
-            autorenew
+            edit
           </i>
-          <span>更新</span>
+          <span>修改訂閱</span>
         </div>
       </div>
     </section>
