@@ -4,7 +4,12 @@
     <ul class="item-categories">
       <li>
         <div class="item-categories__title active">
-          選擇匯出項目
+          <div class="name">
+            <i class="material-icons">
+              picture_as_pdf
+            </i>
+            <span>選擇匯出項目</span>
+          </div>
           <div class="form-group row">
             <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
               [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
@@ -12,11 +17,12 @@
             </i>
           </div>
         </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <ul class="item-categories__list">
-            <li *ngFor="let calendar of calendars" [(ngModel)]="calendar.isChecked">
-              <label class="container">
-                <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked">{{calendar.name}}
+            <li *ngFor="let calendar of openCalendar">
+              <label class="container origin">
+                <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                (change)="changeSelect()">{{calendar.name}}
                 <span class="checkmark"></span>
               </label>
             </li>
@@ -26,6 +32,29 @@
     </ul>
   </aside>
   <article>
-    <section class="container"></section>
+    <section class="container">
+      <ul class="event-list" #screen id="screen">
+        <li class="event-list__header">
+          <div class="event-list__title">發布標題</div>
+          <div class="event-list__content">內容概要</div>
+          <div class="event-list__date">開始日期</div>
+        </li>
+        <li *ngFor="let event of showEvent">
+          <div class="event-list__title">{{event.title}}</div>
+          <div class="event-list__content">{{event.description}}</div>
+          <div class="event-list__date">{{event.startDate}}</div>
+        </li>
+      </ul>
+      <div class="subBtn" (click)="savePdf()">
+        <i class="material-icons">
+          download
+        </i>
+        <span>下載</span>
+      </div>
+    </section>
+    <div id="nodownload">
+      <img #canvas>
+      <a #downloadLink></a>
+    </div>
   </article>
 </main>

@@ -228,27 +228,6 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('res_access_token', this.resToken);
           localStorage.setItem('res_refresh_token', data.token.refresh);
 
-          let timerInterval;
-
-          Swal.fire({
-            title: 'Loggin in...',
-            timer: 2500,
-            onBeforeOpen: () => {
-              Swal.showLoading(),
-                timerInterval = setInterval(() => {
-                  const content = Swal.getContent();
-                  if (content) {
-                    const b = content.querySelector('b');
-                    if (b) {
-                      b.textContent = Swal.getTimerLeft();
-                    }
-                  }
-                }, 100);
-            },
-            onClose: () => {
-              clearInterval(timerInterval);
-            }
-          });
           if (this.resToken != null) {
             this.router.navigate(['/calendar']);
           } else {

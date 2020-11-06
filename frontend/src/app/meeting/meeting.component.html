@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <main>
   <article>
-    <section class="container">
+    <section class="container" *ngIf="edit === false">
       <div class="date-picker">
         <i class="material-icons">
           date_range
@@ -13,11 +13,11 @@
           <span class="point">至</span>
           <input type="text" class="form-control endTime" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
             #addEndDate required placement="bottom" [(ngModel)]="endDate">
-          <div class="look">查看</div>
+          <div class="look" (click)="changeDate()">查看</div>
         </div>
       </div>
     </section>
-    <section class="body">
+    <section class="body" *ngIf="edit === false">
       <ul class="category">
         <li class="category__item">
           <h2>自行發起會議</h2>
@@ -28,10 +28,10 @@
             <li class="item-title__name">會議名稱</li>
           </ul>
           <div class="category__item__content">
-            <ul class="item-content">
-              <li class="item-title__date"></li>
-              <li class="item-title__time"></li>
-              <li class="item-title__name"></li>
+            <ul class="item-content" *ngFor="let meet of myMeet" (click)="editMeet(meet.id)">
+              <li class="item-title__date">{{meet.startDate}}</li>
+              <li class="item-title__time">{{meet.sTime}}</li>
+              <li class="item-title__name">{{meet.title}}</li>
             </ul>
           </div>
         </li>
@@ -44,10 +44,10 @@
             <li class="item-title__name">會議名稱</li>
           </ul>
           <div class="category__item__content">
-            <ul class="item-content">
-              <li class="item-title__date"></li>
-              <li class="item-title__time"></li>
-              <li class="item-title__name"></li>
+            <ul class="item-content" *ngFor="let meet of invitedMeet" (click)="editMeet(meet.id)">
+              <li class="item-title__date">{{meet.startDate}}</li>
+              <li class="item-title__time">{{meet.sTime}}</li>
+              <li class="item-title__name">{{meet.title}}</li>
             </ul>
           </div>
         </li>
@@ -60,14 +60,125 @@
             <li class="item-title__name">會議名稱</li>
           </ul>
           <div class="category__item__content">
-            <ul class="item-content">
-              <li class="item-title__date"></li>
-              <li class="item-title__time"></li>
-              <li class="item-title__name"></li>
+            <ul class="item-content" *ngFor="let meet of pastMeet" (click)="editMeet(meet.id)">
+              <li class="item-title__date">{{meet.startDate}}</li>
+              <li class="item-title__time">{{meet.sTime}}</li>
+              <li class="item-title__name">{{meet.title}}</li>
             </ul>
           </div>
         </li>
       </ul>
+    </section>
+    <section class="container" *ngIf="edit === true">
+      <div class="block">
+        <div class="info__block">
+          <div class="info__block__title">
+            <i class="material-icons">
+              title
+            </i>
+            <h2>會議名稱</h2>
+            <span>{{lookTitle}}</span>
+          </div>
+          <div class="info__block__office">
+            <i class="material-icons">
+              event
+            </i>
+            <h2>發布單位</h2>
+            <span>{{lookOffice}}</span>
+          </div>
+          <div class="info__block__time">
+            <i class="material-icons">
+              schedule
+            </i>
+            <h2>開始時間</h2>
+            <span>{{lookSTime}}</span>
+          </div>
+          <div class="info__block__time">
+            <i class="material-icons">
+              schedule
+            </i>
+            <h2>結束時間</h2>
+            <span>{{lookETime}}</span>
+          </div>
+          <div class="info__block__location">
+            <i class="material-icons">
+              location_on
+            </i>
+            <h2>地點</h2>
+            <span>{{lookLocation}}</span>
+          </div>
+          <div class="info__block__description">
+            <i class="material-icons">
+              subject
+            </i>
+            <h2>備註</h2>
+            <textarea class="form-control">{{lookDes}}</textarea>
+          </div>
+          <div class="info__block__file">
+            <i class="material-icons">
+              attach_file
+            </i>
+            <h2>附件</h2>
+            <div class="allFiles">
+              <ul>
+                <li *ngFor="let file of lookFiles">
+                  {{file}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="participant__block">
+          <div class="participant__block__header">
+            <i class="material-icons">
+              group
+            </i>
+            <h2>參與對象</h2>
+            <i class="attend material-icons">
+              done_all
+            </i>
+            <h4>參加</h4>
+            <i class="deny material-icons">
+              highlight_off
+            </i>
+            <h4>拒絕</h4>
+            <i class="noresponse material-icons">
+              info
+            </i>
+            <h4>未回應</h4>
+          </div>
+          <div class="participant__block__all">
+            <ul>
+              <li *ngFor="let participant of lookParticipants">
+                <h5>{{participant.user}}</h5>
+                <div class="response" *ngIf="participant.response === 'no_reply'">
+                  <i class="noresponse material-icons">
+                    info
+                  </i>
+                </div>
+                <div class="response" *ngIf="participant.response === 'decline'">
+                  <i class="deny material-icons">
+                    highlight_off
+                  </i>
+                </div>
+                <div class="response" *ngIf="participant.response === 'accept'">
+                  <i class="attend material-icons">
+                    done_all
+                  </i>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="subBtn">
+        <div class="goback" (click)="goback()">
+          <i class="material-icons">
+            undo
+          </i>
+          <span>返回</span>
+        </div>
+      </div>
     </section>
   </article>
 </main>
