@@ -58,4 +58,8 @@ export class EventService {
     return this.http.patch<Event>(`${environment.serverIp}event/events/${id}`, formData, { headers: this.reqHeader });
   }
 
+  postEventSubscribe(formData: any): Observable<any> {
+    return this.http.post<any>(environment.serverIp + 'event/events/subscribe', formData, { headers: this.reqHeader });
+  }
+
 }

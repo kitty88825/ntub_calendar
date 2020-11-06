@@ -25,7 +25,7 @@ export class SubscriptionService {
   }
 
   getSubscription(): Observable<Subscription[]> {
-    return this.http.get<Subscription[]>(environment.serverIp + 'calendar/subscription', { headers: this.reqHeader });
+    return this.http.get<Subscription[]>(environment.serverIp + 'event/events?subscribed=true', { headers: this.reqHeader });
   }
 
   deleteEvent(id: number): Observable<Subscription> {

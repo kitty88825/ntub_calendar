@@ -226,6 +226,7 @@ export class MainCalendarComponent implements OnInit {
 
     this.calendarService.getCalendar().subscribe(
       result => {
+        console.log(result);
         result.forEach(calendar => {
           this.openCalendar.push({
             id: calendar.id, name: calendar.name,
@@ -358,7 +359,6 @@ export class MainCalendarComponent implements OnInit {
   edit(info) {
     this.eventService.getEvent(info.id).subscribe(
       data => {
-        console.log(data);
         this.put = data;
         this.title = data.title;
         this.shareDataService.sendMessage(this.put);

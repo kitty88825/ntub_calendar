@@ -87,7 +87,7 @@ export class OfficialAddComponent implements OnInit {
         data => {
           data.forEach(event => {
             this.outputCalendar.forEach(calendar => {
-              if (event.main_calendar_id === calendar.id) {
+              if (event.eventinvitecalendarSet[0].mainCalendar.id === calendar.id) {
                 if (calendar.name === this.selectCalendar &&
                   this.addStartDate.nativeElement.value.toUpperCase() <= event.startAt.substr(0, 10).toUpperCase() &&
                   this.addEndDate.nativeElement.value.toUpperCase() >= event.endAt.substr(0, 10).toUpperCase()) {

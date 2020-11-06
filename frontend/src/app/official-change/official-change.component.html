@@ -19,13 +19,15 @@
         </div>
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
           <div class="item-categories__chooseFile">
-            <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
-            <label class="chooseFile">
-              <i class="material-icons">
-                attach_file
-              </i>
-              <span>選擇檔案</span>
-            </label>
+            <div class="custom-file">
+              <input id="customFileInput" type="file" (change)="onFileChange($event)" accept=".xlsx">
+              <label for="customFileInput" class="button-primary">
+                <i class="material-icons">
+                  attach_file
+                </i>
+                <span>選擇檔案</span>
+              </label>
+            </div>
           </div>
           <h2>選擇行事曆：</h2>
           <ul class="item-categories__list">

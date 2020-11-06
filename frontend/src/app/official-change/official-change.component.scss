@@ -54,37 +54,49 @@
       &__chooseFile {
         display    : flex;
         align-items: center;
+        width: 100%;
 
-        i {
-          color: white;
-        }
+        .custom-file {
+          width: 100%;
+          margin-top: $content-size_top-bottom*2;
 
-        .chooseFile {
-          display         : flex;
-          align-items     : center;
-          border-radius   : 90px;
-          color           : white;
-          justify-content : center;
-          background-color: $color_accent;
-          box-shadow      : 0px 1px 6px -2px #000000;
-          margin          : $content-size_top-bottom*2 0;
-          cursor          : pointer;
-          letter-spacing  : 1px;
-          height          : 50px;
-          width           : 100%;
-
-          i {
-            font-size: 17px;
+          input {
+            display: none;
           }
 
-          span {
-            margin-left: $content-size_left-right/4;
+          label {
+            width           : 100%;
+            display         : flex;
+            justify-content : center;
+            align-items     : center;
+            background-color: $color_accent;
+            letter-spacing  : 1px;
+            height          : 45px;
+            padding         : $content-size_top-bottom/2 $content-size_left-right/2;
+            border-radius   : 90px;
+            color           : white;
+            cursor          : pointer;
+            transition      : box-shadow .4s ease;
+            box-shadow      : 0px 1px 6px -2px #000000;
+
+            i {
+              color    : white;
+              font-size: 16px;
+            }
+
+            span {
+              margin-left: $content-size_left-right/4;
+            }
+          }
+
+          label:hover {
+            box-shadow: 0px 1px 6px -2px $color_accent;
           }
         }
+      }
 
-        .chooseFile:hover {
-          box-shadow: 0px 1px 6px -2px $color_accent;
-        }
+      h2 {
+        margin-top: $content-size_top-bottom*2.5;
       }
 
       h3 {

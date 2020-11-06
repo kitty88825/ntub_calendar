@@ -18,11 +18,13 @@ export class ExportComponent implements OnInit {
   ngOnInit(): void {
     this.calendarService.getCalendar().subscribe(
       data => {
-        data.forEach(calendar => this.calendars.push({ id: calendar.id, name: calendar.name, isChecked: false }));
+        // // tslint:disable-next-line: prefer-for-of
+        // for (let i = 0; i < data.length; i++) {
+        //   this.calendars.push({ id: data[i].id, name: data[i].name, isChecked: false })
+        // }
       }
     );
   }
-
 
   savePdf() {
   }

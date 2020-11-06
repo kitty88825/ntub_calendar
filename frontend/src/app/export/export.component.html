@@ -15,7 +15,7 @@
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
           <ul class="item-categories__list">
             <li *ngFor="let calendar of calendars" [(ngModel)]="calendar.isChecked">
-              <label class="container origin">
+              <label class="container">
                 <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked">{{calendar.name}}
                 <span class="checkmark"></span>
               </label>

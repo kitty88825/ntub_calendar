@@ -15,13 +15,13 @@
         <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
           <div class="year">
             <span>學年度</span>
-            <select class="form-control" [(ngModel)]="setYear">
+            <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
               <option *ngFor="let year of year">{{year}}</option>
             </select>
           </div>
           <div class="term">
             <span>學期</span>
-            <select class="form-control" [(ngModel)]="setTerm">
+            <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
               <option value="1">1</option>
               <option value="2">2</option>
             </select>
@@ -30,7 +30,8 @@
           <ul class="item-categories__list">
             <li *ngFor="let calendar of calendars">
               <label class="container origin">
-                <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked" (change)="selectCalendar()">{{calendar.name}}
+                <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                  (change)="selectCalendar(calendar.id)">{{calendar.name}}
                 <span class="checkmark"></span>
               </label>
             </li>
@@ -40,7 +41,7 @@
     </ul>
   </aside>
   <article>
-    <section class="container">
+    <section class="container" *ngIf="showURL === false">
       <div class="header">
         <h2>單位行程</h2>
         <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
@@ -48,11 +49,62 @@
           search
         </i>
         <label class="container">
-          <input type="checkbox" class="material-icons">全選
+          <input type="checkbox" class="material-icons" (change)="checkAll()" [(ngModel)]="checkedAll">全選
           <span class="checkmark"></span>
         </label>
       </div>
       <hr>
+      <div class="officeEvent">
+        <ul>
+          <li *ngFor="let event of showEvent | appFilter : searchText">
+            <label class="container">
+              <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
+                (change)="changeEvent()">{{event.title}}
+              <span class="checkmark"></span>
+            </label>
+          </li>
+        </ul>
+        <div class="subBtn">
+          <div class="cancel" (click)="reset()">
+            <i class="material-icons">
+              clear
+            </i>
+            <span>重設</span>
+          </div>
+          <div class="submit" (click)="submit()">
+            <i class="material-icons">
+              done_all
+            </i>
+            <span>確定</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="container" *ngIf="showURL === true">
+      <div class="URL">
+        <h1>個人URL：</h1>
+        <input type="text" [(ngModel)]="url" class="form-control" #URL>
+        <i class="copy material-icons" (click)="copyInputMessage(URL)">
+          file_copy
+        </i>
+        <i class="renew material-icons" (click)="renewURL()">
+          autorenew
+        </i>
+      </div>
+      <div class="subBtn">
+        <div class="cancel" (click)="edit()">
+          <i class="material-icons">
+            edit
+          </i>
+          <span>修改訂閱</span>
+        </div>
+        <div class="submit" routerLink="/calendar">
+          <i class="material-icons">
+            home
+          </i>
+          <span>回首頁</span>
+        </div>
+      </div>
     </section>
   </article>
 </main>

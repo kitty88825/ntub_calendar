@@ -1,3 +1,5 @@
+import { URLService } from './../services/url.service';
+import { TokenService } from './../services/token.service';
 import { EventService } from './../services/event.service';
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -13,7 +15,6 @@ import { formatDate } from '@angular/common';
 export class AddSubscribeComponent implements OnInit {
   calendars = [];
   formData = new FormData();
-  userURL = '';
   isCollapsed = false;
   searchText = '';
   allEvents = [];
@@ -23,17 +24,31 @@ export class AddSubscribeComponent implements OnInit {
   term = [1, 2];
   setTerm = 0;
   showEvent = [];
+  checkedAll = false;
+  selectEventId = [];
+  showURL = false;
+  url = '';
+  userEmail = '';
 
   constructor(
     private calendarService: CalendarService,
     private subscriptionService: SubscriptionService,
-    private eventService: EventService
+    private eventService: EventService,
+    private tokenService: TokenService,
+    private urlService: URLService
   ) { }
 
   ngOnInit(): void {
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => this.calendars.push({ id: calendar.id, name: calendar.name, isChecked: false }));
+      }
+    );
+
+    this.tokenService.getUser().subscribe(
+      data => {
+        this.url = data.url;
+        this.userEmail = data.email;
       }
     );
 
@@ -68,6 +83,14 @@ export class AddSubscribeComponent implements OnInit {
 
       }
     );
+
+    this.subscriptionService.getSubscription().subscribe(
+      data => {
+        data.forEach(event => {
+          this.selectEventId.push(event.id);
+        });
+      }
+    );
   }
 
   /* To copy Text from Textbox */
@@ -83,13 +106,204 @@ export class AddSubscribeComponent implements OnInit {
     });
   }
 
-  selectCalendar() {
+  selectCalendar(id) {
+    this.checkedAll = false;
+    this.showEvent = [];
+    const showEventCount = this.showEvent.length;
+    let count = 0;
+
+    this.calendars.forEach(calendar => {
+      calendar.isChecked = false;
+      if (calendar.id === id) {
+        calendar.isChecked = true;
+      }
+    });
+
     this.calendars.forEach(calendar => {
       if (calendar.isChecked === true) {
         this.allEvents.forEach(event => {
+          if (Number(this.setTerm) === 1) {
+            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id &&
+              Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
+              Number(event.startAt.substr(5, 2)) < 7) {
+              this.showEvent.push({ id: event.id, title: event.title, isChecked: false });
+            }
+          } else if (Number(this.setTerm) === 2) {
+            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id &&
+              Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
+              Number(event.startAt.substr(5, 2)) >= 7) {
+              this.showEvent.push({ id: event.id, title: event.title, isChecked: false });
+            }
+          }
         });
       }
     });
+
+    this.showEvent.forEach(event => {
+      if (this.selectEventId.includes(event.id)) {
+        event.isChecked = true;
+      }
+
+      if (event.isChecked === true) {
+        this.selectEventId.push(event.id);
+      }
+    });
+
+    if (count === showEventCount) {
+      this.checkedAll = true;
+    } else {
+      this.checkedAll = false;
+    }
+
+    this.selectEventId = this.selectEventId.filter(function (el, i, arr) {
+      return arr.indexOf(el) === i;
+    });
+  }
+
+  changeTerm() {
+    this.resetData();
+  }
+
+  changeYear() {
+    this.resetData();
+  }
+
+  checkAll() {
+    this.showEvent.forEach(event => {
+      event.isChecked = this.checkedAll;
+    });
+    this.showEvent.forEach(event => {
+      if (event.isChecked === true) {
+        this.selectEventId.push(event.id);
+      } else {
+        const index = this.selectEventId.findIndex(select => {
+          return select === event.id;
+        });
+        if (index >= 0) {
+          this.selectEventId.splice(index, 1);
+        }
+      }
+    });
+    this.selectEventId = this.selectEventId.filter(function (el, i, arr) {
+      return arr.indexOf(el) === i;
+    });
+  }
+
+  resetData() {
+    this.checkedAll = false;
+    this.showEvent = [];
+
+    this.calendars.forEach(calendar => {
+      if (calendar.isChecked === true) {
+        this.allEvents.forEach(event => {
+          if (Number(this.setTerm) === 1) {
+            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id &&
+              Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
+              Number(event.startAt.substr(5, 2)) < 7) {
+              this.showEvent.push({ id: event.id, title: event.title, isChecked: false });
+            }
+          } else if (Number(this.setTerm) === 2) {
+            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id &&
+              Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
+              Number(event.startAt.substr(5, 2)) >= 7) {
+              this.showEvent.push({ id: event.id, title: event.title, isChecked: false });
+            }
+          }
+        });
+      }
+    });
+
+    this.showEvent.forEach(event => {
+      if (this.selectEventId.includes(event.id)) {
+        event.isChecked = true;
+      }
+
+      if (event.isChecked === true) {
+        this.selectEventId.push(event.id);
+      }
+    });
+
+    this.selectEventId = this.selectEventId.filter(function (el, i, arr) {
+      return arr.indexOf(el) === i;
+    });
+  }
+
+  reset() {
+    this.checkedAll = false;
+    this.showEvent.forEach(event => {
+      if (this.selectEventId.includes(event.id)) {
+        event.isChecked = false;
+        const index = this.selectEventId.findIndex(select => {
+          return select === event.id;
+        });
+        if (index >= 0) {
+          this.selectEventId.splice(index, 1);
+        }
+      }
+    });
+  }
+
+  submit() {
+    this.selectEventId.forEach(eventId => {
+      this.formData.append('events', eventId);
+    });
+    this.eventService.postEventSubscribe(this.formData).subscribe(
+      data => {
+        Swal.fire({
+          text: '新增訂閱成功',
+          icon: 'success'
+        }).then((result) => {
+          if (result.value) {
+            this.showURL = true;
+          }
+        });
+      }, error => {
+        Swal.fire({
+          text: '新增訂閱失敗',
+          icon: 'error'
+        });
+      }
+    );
+  }
+
+  edit() {
+    this.showURL = false;
+  }
+
+  changeEvent() {
+    const showEventCount = this.showEvent.length;
+    let count = 0;
+    this.showEvent.forEach(event => {
+      if (event.isChecked === true) {
+        count++;
+        this.selectEventId.push(event.id);
+      } else if (event.isChecked === false) {
+        const index = this.selectEventId.findIndex(select => {
+          return select === event.id;
+        });
+        if (index >= 0) {
+          this.selectEventId.splice(index, 1);
+        }
+      }
+    });
+
+    this.selectEventId = this.selectEventId.filter(function (el, i, arr) {
+      return arr.indexOf(el) === i;
+    });
+
+    if (count === showEventCount) {
+      this.checkedAll = true;
+    } else {
+      this.checkedAll = false;
+    }
+  }
+
+  renewURL() {
+    this.urlService.postRenewURL(this.userEmail).subscribe(
+      data => {
+        this.url = data.url;
+      }
+    );
   }
 
 }

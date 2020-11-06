@@ -60,6 +60,7 @@
         display  : flex;
         flex-flow: column;
         padding  : $content-size_top-bottom/2 0;
+        margin-top: $content-size_top-bottom;
 
         li {
           display    : inline-flex;

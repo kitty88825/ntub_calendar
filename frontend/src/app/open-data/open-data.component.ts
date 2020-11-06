@@ -35,7 +35,7 @@ export class OpenDataComponent implements OnInit {
           result => {
             data.forEach(event => {
               result.forEach(calendar => {
-                if (event.main_calendar_id === calendar.id && calendar.display === 'public') {
+                if (event.eventinvitecalendarSet[0].mainCalendar.id === calendar.id && calendar.display === 'public') {
                   this.allEvents.push(event);
                   this.year.push(Number(event.startAt.substr(0, 4)) - 1911);
                 }
@@ -43,10 +43,9 @@ export class OpenDataComponent implements OnInit {
             });
 
             // tslint:disable-next-line: only-arrow-functions
-            this.year = this.year.filter(function(el, i, arr) {
+            this.year = this.year.filter(function (el, i, arr) {
               return arr.indexOf(el) === i;
             });
-
 
             // tslint:disable-next-line: only-arrow-functions
             this.year.sort(function (a, b) {
@@ -60,34 +59,35 @@ export class OpenDataComponent implements OnInit {
             });
 
             this.setYear = Number(this.todayDate.substr(0, 4)) - 1911;
-            if (Number(this.todayDate.substr(6, 2)) >= 7) {
-              this.setTerm = 1;
-            } else {
+            if (Number(this.todayDate.substr(5, 2)) >= 7) {
               this.setTerm = 2;
+            } else {
+              this.setTerm = 1;
             }
+
+            this.allEvents.forEach(event => {
+              if (Number(event.startAt.substr(0, 4)) - 1911 === this.setYear) {
+                if (this.setTerm === 1) {
+                  if (Number(event.startAt.substr(5, 2)) < 7) {
+                    this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
+                    this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
+                    event.endAt.substr(0, 10), '', '', '', event.title]);
+                  }
+                } else if (this.setTerm === 2) {
+                  if (Number(event.startAt.substr(5, 2)) >= 7) {
+                    this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
+                    this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 2, event.startAt.substr(0, 10),
+                    event.endAt.substr(0, 10), '', '', '', event.title]);
+                  }
+                }
+              }
+            });
+
+            this.showDataSort();
+            this.exportDataSort();
           }
         );
 
-        this.allEvents.forEach(event => {
-          if (Number(event.startAt.substr(0, 4)) - 1911 === this.setYear) {
-            if (this.setTerm === 1) {
-              if (Number(event.startAt.substr(5, 2)) < 7) {
-                this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
-                this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
-                event.endAt.substr(0, 10), '', '', '', event.title]);
-              }
-            } else if (this.setTerm === 2) {
-              if (Number(event.startAt.substr(5, 2)) >= 7) {
-                this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
-                this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 2, event.startAt.substr(0, 10),
-                event.endAt.substr(0, 10), '', '', '', event.title]);
-              }
-            }
-          }
-        });
-
-        this.showDataSort();
-        this.exportDataSort();
       }
     );
   }
@@ -170,7 +170,7 @@ export class OpenDataComponent implements OnInit {
 
   exportDataSort() {
     // tslint:disable-next-line: only-arrow-functions
-    this.exportDatas.sort(function(a, b) {
+    this.exportDatas.sort(function (a, b) {
       const A = a[6].toUpperCase();
       const B = b[6].toUpperCase();
       if (A < B) {
