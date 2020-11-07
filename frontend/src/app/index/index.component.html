@@ -1,318 +1,367 @@
-<header class="header">
-  <h1 class="header__title">
-    <i class="header__icon">
-      <img src="../../assets/images/一訂行_湖水綠.png">
-    </i>
-    <span class=" header__name">
-      一訂行
-    </span>
-  </h1>
-  <nav class="header__navbar">
-    <ul class="header__function">
-      <li>
-        <i class="material-icons" [routerLink]="['/user-teach']" (click)="logout()">
+<div class="body-content">
+  <input type="checkbox" name="" id="sideMenu-active">
+  <div class="sideMenu">
+    <div class="sideMenu__content">
+      <div class="sideMenu__content__opendata"  (click)="openData()">
+        <i class="material-icons">
+          download
+        </i>
+        <span>OpenData下載</span>
+      </div>
+      <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+        <i class="material-icons">
           help_outline
         </i>
-      </li>
-    </ul>
-    <div class="header__person">
-      <div class="header__person-name" (click)="signInWithGoogle()">登入</div>
+        <span>使用說明</span>
+      </div>
+      <div class="sideMenu__content__title active">
+        <div class="title">
+          <i class="material-icons">
+            event_available
+          </i>
+          <h1>公開行事曆</h1>
+        </div>
+        <div class="form-group row">
+          <i class="material-icons sideMenu__content__arrow" (click)="isCollapsed = !isCollapsed"
+            [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+            arrow_left
+          </i>
+        </div>
+      </div>
+      <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+        <ul class="sideMenu__content__list">
+          <li *ngFor="let calendarInfo of openCalendar">
+            <span class="sideMenu__content__status" [style.background-color]="calendarInfo.color"></span>
+            <div class="sideMenu__content__item">{{calendarInfo.name}}</div>
+          </li>
+        </ul>
+      </div>
     </div>
-  </nav>
-</header>
-<main>
-  <aside class="aside">
-    <div class="date-picker">
-      <full-calendar #calendar [header]="{
-        left: 'prev',
-        center: 'title',
-        right: 'next'
-      }" [plugins]="calendarPlugins" [weekends]="calendarWeekends"
-        [events]="calendarEvents | appFilter : searchText | appFilter: searchTextSmall | appFilter:searchTextGrid"
-        (eventClick)="eventClick($event)">
-      </full-calendar>
-    </div>
-
-    <ul class="item-categories__list">
-      <li *ngFor="let calendarInfo of openCalendar">
-        <span class="item-categories__status" [style.background-color]="calendarInfo.color"></span>
-        <div class="item-categories__item">{{calendarInfo.name}}</div>
-      </li>
-    </ul>
-  </aside>
-  <article>
-    <section class="container" *ngIf="data.current == '1'">
-      <div class="view">
-        <select class="year form-control" id="exampleSelect1" [(ngModel)]="selectYear" (change)="onChange()">
-          <option [ngValue]="year" *ngFor="let year of eventsYear">{{year}}</option>
-        </select>
-        <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
-          <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
-        </select>
-        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
-        <span>
-          <i class="material-icons">
-            search
-          </i>
-        </span>
-        <div class="openDataBtn" (click)="openData()">
-          <h3>OpenData</h3>
-          <i class="material-icons">
-            get_app
-          </i>
-        </div>
-        <ul class="view_item">
-          <li class="view_item-btn" (click)="setCurrent(1)" [ngClass]="{'active': data.current == '1'}">
-            <i class="material-icons">
-              view_headline
-            </i>
-            <hr>
-          </li>
-          <li class="view_item-btn" (click)="setCurrent(2)">
-            <i class="material-icons">
-              view_stream
-            </i>
-            <hr>
-          </li>
-          <li class="view_item-btn" (click)="setCurrent(3)">
-            <i class="material-icons">
-              view_module
-            </i>
-            <hr>
-          </li>
-        </ul>
-      </div>
-      <ul class="event-list">
-        <li class="event-list__header">
-          <div class="event-list__title">發布標題</div>
-          <div class="event-list__content">內容概要</div>
-          <div class="event-list__office">發布單位</div>
-          <div class="event-list__date">開始日期</div>
-        </li>
-        <li *ngFor="let event of showEvents | appFilter: searchText">
-          <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
-            <span>{{event.title}}</span>
-          </div>
-          <div class="event-list__content">
-            <div class="event-list__text">
-              {{event.description}}
-            </div>
-          </div>
-          <div class="event-list__office">
-            <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
-            </div>
-          </div>
-          <div class="event-list__date">{{event.startDate}}</div>
-        </li>
-      </ul>
-    </section>
-    <section class="container" *ngIf="data.current == '2'">
-      <div class="view">
-        <select class="year form-control" id="exampleSelect1" [(ngModel)]="selectYear" (change)="onChange()">
-          <option [ngValue]="year" *ngFor="let year of eventsYear">{{year}}</option>
-        </select>
-        <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
-          <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
-        </select>
-        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
-        <span>
-          <i class="material-icons">
-            search
-          </i>
-        </span>
-        <div class="openDataBtn" (click)="openData()">
-          <h3>OpenData</h3>
-          <i class="material-icons">
-            get_app
-          </i>
-        </div>
-        <ul class="view_item">
-          <li class="view_item-btn" (click)="setCurrent(1)">
-            <i class="material-icons">
-              view_headline
-            </i>
-            <hr>
-          </li>
-          <li class="view_item-btn" (click)="setCurrent(2)" [ngClass]="{'active': data.current == '2'}">
-            <i class="material-icons">
-              view_stream
-            </i>
-            <hr>
-          </li>
-          <li class="view_item-btn" (click)="setCurrent(3)">
-            <i class="material-icons">
-              view_module
-            </i>
-            <hr>
-          </li>
-        </ul>
-      </div>
-      <ul class="event-list event-list--small">
-        <li class="event-list__header">
-          <div class="event-list__title">發布標題</div>
-          <div class="event-list__content">內容概要</div>
-          <div class="event-list__office">發布單位</div>
-          <div class="event-list__date">開始日期</div>
-        </li>
-        <li *ngFor="let event of showEvents | appFilter: searchTextSmall">
-          <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
-            {{event.title}}
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag"
-              [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}</span>
-          </div>
-          <div class="event-list__date">{{event.startDate}}</div>
-        </li>
-      </ul>
-    </section>
-    <section class="container" *ngIf="data.current == '3'">
-      <div class="view">
-        <select class="year form-control" id="exampleSelect1" [(ngModel)]="selectYear" (change)="onChange()">
-          <option [ngValue]="year" *ngFor="let year of eventsYear">{{year}}</option>
-        </select>
-        <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
-          <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
-        </select>
-        <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
-        <span>
-          <i class="material-icons">
-            search
-          </i>
-        </span>
-        <div class="openDataBtn" (click)="openData()">
-          <h3>OpenData</h3>
-          <i class="material-icons">
-            get_app
-          </i>
-        </div>
-        <ul class="view_item">
-          <li class="view_item-btn" (click)="setCurrent(1)">
-            <i class="material-icons">
-              view_headline
-            </i>
-            <hr>
-          </li>
-          <li class="view_item-btn" (click)="setCurrent(2)">
-            <i class="material-icons">
-              view_stream
-            </i>
-            <hr>
-          </li>
-          <li class="view_item-btn" (click)="setCurrent(3)" [ngClass]="{'active': data.current == '3'}">
-            <i class="material-icons">
-              view_module
-            </i>
-            <hr>
-          </li>
-        </ul>
-      </div>
-      <ul class="event-list event-list--grid">
-        <li class="event-list__header">
-          <div class="event-list__title">發布標題</div>
-          <div class="event-list__office">發布單位</div>
-          <div class="event-list__date">開始日期</div>
-        </li>
-        <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchTextGrid">
-          <div class="event-list__title">
-            <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
-            {{event.title}}
-          </div>
-          <div class="event-list__office">
-            <span class="event-list__tag"
-              [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}</span>
-          </div>
-          <div class="event-list__date">{{event.startDate}}</div>
-        </li>
-      </ul>
-    </section>
-  </article>
-  <!-- Creates the bootstrap modal where the image will appear -->
-  <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal_dialog">
-      <div class="modal_header">
-        <i class="material-icons" (click)="hideExcel()">
-          cancel
+    <label for="sideMenu-active" class="close">
+      <i class="material-icons">east</i>
+    </label>
+  </div>
+  <label for="sideMenu-active" class="open">
+    <i class="material-icons">menu</i>
+  </label>
+  <div class="right">
+    <header class="header">
+      <h1 class="header__title">
+        <i class="header__icon">
+          <img src="../../assets/images/一訂行_湖水綠.png">
         </i>
-      </div>
-      <div class="modal_body">
-        <span>下載格式：</span>
-        <div class="item" (click)="daochu($event)">
-          <h4>csv</h4>
+        <span class=" header__name">
+          一訂行
+        </span>
+      </h1>
+      <nav class="header__navbar">
+        <ul class="header__function">
+          <li>
+            <i class="material-icons" [routerLink]="['/user-teach']" (click)="logout()">
+              help_outline
+            </i>
+          </li>
+        </ul>
+        <div class="header__person">
+          <div class="header__person-name" (click)="signInWithGoogle()">登入</div>
         </div>
-        <div class="item" (click)="daochu($event)">
-          <h4>xlsx</h4>
+      </nav>
+    </header>
+    <main>
+      <aside class="aside">
+        <div class="date-picker">
+          <full-calendar #calendar [header]="{
+          left: 'prev',
+          center: 'title',
+          right: 'next'
+        }" [plugins]="calendarPlugins" [weekends]="calendarWeekends"
+            [events]="calendarEvents | appFilter : searchText | appFilter: searchTextSmall | appFilter:searchTextGrid"
+            (eventClick)="eventClick($event)">
+          </full-calendar>
         </div>
-        <div class="item" (click)="daochu($event)">
-          <h4>xls</h4>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Creates the bootstrap modal where the image will appear -->
-  <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="event_dialog">
-      <div class="event_body">
-        <div class="event_border">
-          <i class="cancel material-icons" (click)="hideEvent()">
-            cancel
-          </i>
-          <div class="event_block">
-            <i class="material-icons">
-              title
-            </i>
-            <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              schedule
-            </i>
-            <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              schedule
-            </i>
-            <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              place
-            </i>
-            <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
-              </div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              subject
-            </i>
-            <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              groups
-            </i>
-            <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              group
-            </i>
-            <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
-          </div>
-          <div class="event_block">
-            <i class="material-icons">
-              attach_file
-            </i>
-            <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
+
+        <ul class="item-categories__list">
+          <li *ngFor="let calendarInfo of openCalendar">
+            <span class="item-categories__status" [style.background-color]="calendarInfo.color"></span>
+            <div class="item-categories__item">{{calendarInfo.name}}</div>
+          </li>
+        </ul>
+      </aside>
+      <article>
+        <section class="container" *ngIf="data.current == '1'">
+          <div class="view">
+            <select class="year form-control" id="exampleSelect1" [(ngModel)]="selectYear" (change)="onChange()">
+              <option [ngValue]="year" *ngFor="let year of eventsYear">{{year}}</option>
+            </select>
+            <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
+              <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
+            </select>
+            <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
+            <span>
+              <i class="material-icons">
+                search
+              </i>
             </span>
+            <div class="openDataBtn" (click)="openData()">
+              <h3>OpenData</h3>
+              <i class="material-icons">
+                get_app
+              </i>
+            </div>
+            <ul class="view_item">
+              <li class="view_item-btn" (click)="setCurrent(1)" [ngClass]="{'active': data.current == '1'}">
+                <i class="material-icons">
+                  view_headline
+                </i>
+                <hr>
+              </li>
+              <li class="view_item-btn" (click)="setCurrent(2)">
+                <i class="material-icons">
+                  view_stream
+                </i>
+                <hr>
+              </li>
+              <li class="view_item-btn" (click)="setCurrent(3)">
+                <i class="material-icons">
+                  view_module
+                </i>
+                <hr>
+              </li>
+            </ul>
+          </div>
+          <ul class="event-list">
+            <li class="event-list__header">
+              <div class="event-list__title">發布標題</div>
+              <div class="event-list__content">內容概要</div>
+              <div class="event-list__office">發布單位</div>
+              <div class="event-list__date">開始日期</div>
+            </li>
+            <li *ngFor="let event of showEvents | appFilter: searchText">
+              <div class="event-list__title">
+                <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
+                <span>{{event.title}}</span>
+              </div>
+              <div class="event-list__content">
+                <div class="event-list__text">
+                  {{event.description}}
+                </div>
+              </div>
+              <div class="event-list__office">
+                <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
+                </div>
+              </div>
+              <div class="event-list__date">{{event.startDate}}</div>
+            </li>
+          </ul>
+        </section>
+        <section class="container" *ngIf="data.current == '2'">
+          <div class="view">
+            <select class="year form-control" id="exampleSelect1" [(ngModel)]="selectYear" (change)="onChange()">
+              <option [ngValue]="year" *ngFor="let year of eventsYear">{{year}}</option>
+            </select>
+            <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
+              <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
+            </select>
+            <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextSmall">
+            <span>
+              <i class="material-icons">
+                search
+              </i>
+            </span>
+            <div class="openDataBtn" (click)="openData()">
+              <h3>OpenData</h3>
+              <i class="material-icons">
+                get_app
+              </i>
+            </div>
+            <ul class="view_item">
+              <li class="view_item-btn" (click)="setCurrent(1)">
+                <i class="material-icons">
+                  view_headline
+                </i>
+                <hr>
+              </li>
+              <li class="view_item-btn" (click)="setCurrent(2)" [ngClass]="{'active': data.current == '2'}">
+                <i class="material-icons">
+                  view_stream
+                </i>
+                <hr>
+              </li>
+              <li class="view_item-btn" (click)="setCurrent(3)">
+                <i class="material-icons">
+                  view_module
+                </i>
+                <hr>
+              </li>
+            </ul>
+          </div>
+          <ul class="event-list event-list--small">
+            <li class="event-list__header">
+              <div class="event-list__title">發布標題</div>
+              <div class="event-list__content">內容概要</div>
+              <div class="event-list__office">發布單位</div>
+              <div class="event-list__date">開始日期</div>
+            </li>
+            <li *ngFor="let event of showEvents | appFilter: searchTextSmall">
+              <div class="event-list__title">
+                <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
+                {{event.title}}
+              </div>
+              <div class="event-list__office">
+                <span class="event-list__tag"
+                  [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}</span>
+              </div>
+              <div class="event-list__date">{{event.startDate}}</div>
+            </li>
+          </ul>
+        </section>
+        <section class="container" *ngIf="data.current == '3'">
+          <div class="view">
+            <select class="year form-control" id="exampleSelect1" [(ngModel)]="selectYear" (change)="onChange()">
+              <option [ngValue]="year" *ngFor="let year of eventsYear">{{year}}</option>
+            </select>
+            <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
+              <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
+            </select>
+            <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchTextGrid">
+            <span>
+              <i class="material-icons">
+                search
+              </i>
+            </span>
+            <div class="openDataBtn" (click)="openData()">
+              <h3>OpenData</h3>
+              <i class="material-icons">
+                get_app
+              </i>
+            </div>
+            <ul class="view_item">
+              <li class="view_item-btn" (click)="setCurrent(1)">
+                <i class="material-icons">
+                  view_headline
+                </i>
+                <hr>
+              </li>
+              <li class="view_item-btn" (click)="setCurrent(2)">
+                <i class="material-icons">
+                  view_stream
+                </i>
+                <hr>
+              </li>
+              <li class="view_item-btn" (click)="setCurrent(3)" [ngClass]="{'active': data.current == '3'}">
+                <i class="material-icons">
+                  view_module
+                </i>
+                <hr>
+              </li>
+            </ul>
+          </div>
+          <ul class="event-list event-list--grid">
+            <li class="event-list__header">
+              <div class="event-list__title">發布標題</div>
+              <div class="event-list__office">發布單位</div>
+              <div class="event-list__date">開始日期</div>
+            </li>
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchTextGrid">
+              <div class="event-list__title">
+                <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
+                {{event.title}}
+              </div>
+              <div class="event-list__office">
+                <span class="event-list__tag"
+                  [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}</span>
+              </div>
+              <div class="event-list__date">{{event.startDate}}</div>
+            </li>
+          </ul>
+        </section>
+      </article>
+      <!-- Creates the bootstrap modal where the image will appear -->
+      <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal_dialog">
+          <div class="modal_header">
+            <i class="material-icons" (click)="hideExcel()">
+              cancel
+            </i>
+          </div>
+          <div class="modal_body">
+            <span>下載格式：</span>
+            <div class="item" (click)="daochu($event)">
+              <h4>csv</h4>
+            </div>
+            <div class="item" (click)="daochu($event)">
+              <h4>xlsx</h4>
+            </div>
+            <div class="item" (click)="daochu($event)">
+              <h4>xls</h4>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <!-- Creates the bootstrap modal where the image will appear -->
+      <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="event_dialog">
+          <div class="event_body">
+            <div class="event_border">
+              <i class="cancel material-icons" (click)="hideEvent()">
+                cancel
+              </i>
+              <div class="event_block">
+                <i class="material-icons">
+                  title
+                </i>
+                <span>行程名稱<div class="event__detail">{{eventTitle}}</div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  schedule
+                </i>
+                <span>開始時間<div class="event__detail">{{eventStart}}</div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  schedule
+                </i>
+                <span>結束時間<div class="event__detail">{{eventEnd}}</div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  place
+                </i>
+                <span>地 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點<div class="event__detail">{{eventLocation}}
+                  </div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  subject
+                </i>
+                <span>內容概要<div class="event__detail">{{eventDescription}}</div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  groups
+                </i>
+                <span>發布單位<div class="event__detail">{{eventOffice}}</div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  group
+                </i>
+                <span>參與對象<div class="event__detail">{{eventParticipant}}</div></span>
+              </div>
+              <div class="event_block">
+                <i class="material-icons">
+                  attach_file
+                </i>
+                <span>附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件<div class="event__detail">{{eventFile}}</div>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
-</main>
+</div>

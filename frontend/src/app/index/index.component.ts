@@ -22,6 +22,7 @@ import { formatDate } from '@angular/common';
 export class IndexComponent implements OnInit {
   pageSize = 9;
   resToken = '';
+  isCollapsed = false;
   authToken;
   loggedIn: boolean;
   showModal: boolean;
