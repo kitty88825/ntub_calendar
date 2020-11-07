@@ -214,8 +214,8 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             'emails',
             'remove_files',
             'attachments',
-            'calendars',
-            'participants',
+            'eventinvitecalendar_set',
+            'eventparticipant_set',
         )
 
     def update(self, instance, validated_data):
