@@ -1,6 +1,9 @@
 <div class="body-content">
   <input type="checkbox" name="" id="sideMenu-active">
   <div class="sideMenu">
+    <label for="sideMenu-active" class="close">
+      <i class="material-icons">east</i>
+    </label>
     <div class="sideMenu__content">
       <div class="sideMenu__content__opendata"  (click)="openData()">
         <i class="material-icons">
@@ -37,9 +40,6 @@
         </ul>
       </div>
     </div>
-    <label for="sideMenu-active" class="close">
-      <i class="material-icons">east</i>
-    </label>
   </div>
   <label for="sideMenu-active" class="open">
     <i class="material-icons">menu</i>
@@ -57,7 +57,7 @@
       <nav class="header__navbar">
         <ul class="header__function">
           <li>
-            <i class="material-icons" [routerLink]="['/user-teach']" (click)="logout()">
+            <i class="material-icons" [routerLink]="['/user-teach']">
               help_outline
             </i>
           </li>
@@ -79,7 +79,6 @@
             (eventClick)="eventClick($event)">
           </full-calendar>
         </div>
-
         <ul class="item-categories__list">
           <li *ngFor="let calendarInfo of openCalendar">
             <span class="item-categories__status" [style.background-color]="calendarInfo.color"></span>

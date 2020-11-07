@@ -1,4 +1,3 @@
-import { ShareDataService } from './../services/share-data.service';
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
@@ -44,7 +43,6 @@ export class IndexComponent implements OnInit {
   searchText = '';
   searchTextSmall = '';
   searchTextGrid = '';
-  calendar = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   eventTitle; eventStart; eventEnd; eventDescription; eventOffice;
   eventParticipant; eventFile; eventLocation;
@@ -116,7 +114,6 @@ export class IndexComponent implements OnInit {
     }
   }
 
-
   ngOnInit() {
     this.selectMonth = this.todayDate.substr(5, 2);
 
@@ -128,15 +125,11 @@ export class IndexComponent implements OnInit {
             description: calendar.description, display: calendar, color: calendar.color
           });
         });
-      },
-      error => {
-        console.log(error);
       }
     );
 
     this.eventService.fGetEvents().subscribe(
       data => {
-        console.log(data);
         data.forEach(event => {
           this.events.push({
             id: event.id, title: event.title, start: event.startAt, eventinvitecalendarSet: event.eventinvitecalendarSet,
@@ -199,9 +192,6 @@ export class IndexComponent implements OnInit {
           this.IsLoadingEnd = false;
         }
 
-      },
-      error => {
-        console.log(error);
       }
     );
 
@@ -230,7 +220,16 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('res_refresh_token', data.token.refresh);
 
           if (this.resToken != null) {
-            this.router.navigate(['/calendar']);
+            Swal.fire({
+              title: 'Loggin in',
+              timer: 5000,
+              onBeforeOpen: () => {
+                Swal.showLoading();
+              },
+              onClose: () => {
+                this.router.navigate(['/calendar']);
+              }
+            });
           } else {
             Swal.fire({
               text: '請重新登入！',
@@ -241,9 +240,6 @@ export class IndexComponent implements OnInit {
               }
             });
           }
-        },
-        error => {
-          console.log(error);
         }
       );
     });
@@ -265,15 +261,6 @@ export class IndexComponent implements OnInit {
 
   setCurrent(param) {
     this.data.current = param;
-  }
-
-
-  logout() {
-    this.authService.signOut();
-    localStorage.removeItem('res_refresh_token');
-    localStorage.removeItem('res_access_token');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('loggin');
   }
 
   // 匯出
@@ -348,7 +335,7 @@ export class IndexComponent implements OnInit {
 
   eventsSort() {
     // tslint:disable-next-line: only-arrow-functions
-    this.events.sort(function (a, b) {
+    this.events.sort(function(a, b) {
       const startA = a.start.toUpperCase(); // ignore upper and lowercase
       const startB = b.start.toUpperCase(); // ignore upper and lowercase
       if (startA < startB) {
@@ -363,7 +350,7 @@ export class IndexComponent implements OnInit {
 
   showEventsSort() {
     // tslint:disable-next-line: only-arrow-functions
-    this.showEvents.sort(function (a, b) {
+    this.showEvents.sort(function(a, b) {
       const startA = a.start.toUpperCase(); // ignore upper and lowercase
       const startB = b.start.toUpperCase(); // ignore upper and lowercase
       if (startA < startB) {
@@ -375,7 +362,6 @@ export class IndexComponent implements OnInit {
       return 0;
     });
   }
-
 
 }
 
