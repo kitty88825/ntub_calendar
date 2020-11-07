@@ -2,7 +2,6 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
-from app.users.serializers import UserSerializer
 from app.calendars.serializers import CalendarSerializer
 from app.calendars.models import Calendar
 from app.users.models import User
@@ -80,7 +79,10 @@ class EventSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    eventparticipant_set = EventParticipantSerializer(many=True, read_only=True)
+    eventparticipant_set = EventParticipantSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Event
@@ -218,12 +220,17 @@ class UpdateEventAttachmentSerializer(EventSerializer):
 
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
-        main_calendar_id = validated_data.pop('main_calendar_id')
+        main_calendar_id = validated_data.pop('main_calendar_id', None)
         invite_calendars_id = validated_data.pop('invite_calendars_id', None)
         emails = validated_data.pop('emails', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
         event = super().update(instance, validated_data)
+
+        if main_calendar_id is None:
+            main_calendar_id = event.eventinvitecalendar_set \
+                .values_list('main_calendar', flat=True) \
+                .first()
 
         if remove_files:
             EventAttachment.objects \
