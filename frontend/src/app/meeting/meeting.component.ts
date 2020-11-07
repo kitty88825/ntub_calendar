@@ -50,19 +50,20 @@ export class MeetingComponent implements OnInit {
 
         this.allMeet.forEach(event => {
           event.eventparticipantSet.forEach(participant => {
-            if (participant.user === this.myEmail && participant.role === 'editors') {
-              this.myMeet.push({
-                id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
-                sTime: event.startAt.substr(11, 5)
-              });
-            }
-            if (participant.user === this.myEmail && participant.role === 'participants') {
-              this.invitedMeet.push({
-                id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
-                sTime: event.startAt.substr(11, 5)
-              });
-            }
-            if (event.startAt.substr(0, 10).toUpperCase() < this.startDate.toUpperCase()) {
+            if (event.endAt.substr(0, 10).toUpperCase() > this.todayDate.toUpperCase()) {
+              if (participant.user === this.myEmail && participant.role === 'editors') {
+                this.myMeet.push({
+                  id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
+                  sTime: event.startAt.substr(11, 5)
+                });
+              }
+              if (participant.user === this.myEmail && participant.role === 'participants') {
+                this.invitedMeet.push({
+                  id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
+                  sTime: event.startAt.substr(11, 5)
+                });
+              }
+            } else if (event.endAt.substr(0, 10).toUpperCase() < this.todayDate.toUpperCase()) {
               if (participant.user === this.myEmail && participant.role === 'participants' || participant.role === 'editors') {
                 this.pastMeet.push({
                   id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),

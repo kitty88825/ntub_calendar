@@ -105,10 +105,21 @@
             <div class="all_participants" placeholder="參與對象">
               <ul>
                 <li *ngFor="let name of userEmail;let index = index">
-                  <i class="material-icons" (click)="removeAddUser(index)">
+                  <i class="clear material-icons" (click)="removeAddUser(index)">
                     clear
                   </i>
-                  <h2>{{name}}</h2>
+                  <h3>{{name.email}}</h3>
+                  <span>
+                    <i class="noresponse material-icons" *ngIf="name.response === 'no_reply'">
+                      info
+                    </i>
+                    <i class="attend material-icons" *ngIf="name.response === 'accept'">
+                      done_all
+                    </i>
+                    <i class="deny material-icons" *ngIf="name.response === 'decline'">
+                      highlight_off
+                    </i>
+                  </span>
                 </li>
               </ul>
             </div>

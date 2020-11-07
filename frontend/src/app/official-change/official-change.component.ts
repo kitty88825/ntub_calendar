@@ -76,7 +76,7 @@ export class OfficialChangeComponent implements OnInit {
         Swal.fire({
           text: '請輸入正確資料',
           icon: 'error'
-        }).then(this.datas.length = 0);
+        });
       }
     });
 

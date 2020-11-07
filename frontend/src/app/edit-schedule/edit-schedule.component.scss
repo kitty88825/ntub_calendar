@@ -213,14 +213,35 @@
             li {
               display    : flex;
               align-items: center;
-              margin     : $content-size_top-bottom $content-size_left-right/2;
+              padding     : $content-size_top-bottom/2 $content-size_left-right/2;
 
               i {
                 font-size: 15px;
               }
 
-              i:hover {
+              i.clear:hover {
                 color: $color_accent;
+              }
+
+              span {
+                margin-left: auto;
+
+                i.noresponse {
+                  color: wheat;
+                }
+
+                i.attend {
+                  color: $color_accent;
+                }
+
+                i.deny {
+                  color: rgba($color: red, $alpha: 0.6);
+                }
+
+              }
+
+              h3 {
+                margin-left: $content-size_left-right/2;
               }
             }
           }

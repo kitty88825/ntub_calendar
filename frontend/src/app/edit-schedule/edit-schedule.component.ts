@@ -172,7 +172,7 @@ export class EditScheduleComponent implements OnInit {
         this.mianCalendarId = data.message.eventinvitecalendarSet[0].mainCalendar.id;
 
         data.message.eventparticipantSet.forEach(email => {
-          this.userEmail.push(email.user);
+          this.userEmail.push({ email: email.user, response: email.response });
           this.formData.append('emails', email.user);
         });
 
@@ -201,7 +201,7 @@ export class EditScheduleComponent implements OnInit {
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
-      this.userEmail.push(emails);
+      this.userEmail.push({ email: emails, response: '' });
       this.formData.append('emails', emails);
     } else {
       Swal.fire({
@@ -217,10 +217,8 @@ export class EditScheduleComponent implements OnInit {
     const users = this.formData.getAll('emails');
     users.splice(index, 1);
     this.formData.delete('emails');
-    this.userEmail.length = 0;
     users.forEach(user => {
       this.formData.append('emails', user);
-      this.userEmail.push(user);
     });
   }
 
@@ -391,7 +389,7 @@ export class EditScheduleComponent implements OnInit {
   importEmail() {
     this.commonUserEmail.forEach(email => {
       if (email.isChecked === true) {
-        this.userEmail.push(email.emails);
+        this.userEmail.push({ email: email.emails, response: '' });
         this.formData.append('emails', email.emails);
       }
     });
