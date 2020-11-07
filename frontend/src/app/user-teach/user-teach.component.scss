@@ -2,129 +2,6 @@
 
 @media screen {
 
-  html,
-  body,
-  div,
-  span,
-  applet,
-  object,
-  iframe,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  blockquote,
-  pre,
-  a,
-  abbr,
-  acronym,
-  address,
-  big,
-  cite,
-  code,
-  del,
-  dfn,
-  em,
-  img,
-  ins,
-  kbd,
-  q,
-  s,
-  samp,
-  small,
-  strike,
-  strong,
-  sub,
-  sup,
-  tt,
-  var,
-  b,
-  u,
-  i,
-  center,
-  dl,
-  dt,
-  dd,
-  ol,
-  ul,
-  li,
-  fieldset,
-  form,
-  label,
-  legend,
-  table,
-  caption,
-  tbody,
-  tfoot,
-  thead,
-  tr,
-  th,
-  td,
-  article,
-  aside,
-  canvas,
-  details,
-  embed,
-  figure,
-  figcaption,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  output,
-  ruby,
-  section,
-  summary,
-  time,
-  mark,
-  audio,
-  video {
-    margin        : 0;
-    padding       : 0;
-    border        : 0;
-    font-size     : 100%;
-    font          : inherit;
-    vertical-align: baseline;
-  }
-
-  /* HTML5 display-role reset for older browsers */
-  article,
-  aside,
-  details,
-  figcaption,
-  figure,
-  footer,
-  header,
-  hgroup,
-  menu,
-  nav,
-  section {
-    display: block;
-  }
-
-  ol,
-  ul {
-    list-style: none;
-  }
-
-  blockquote,
-  q {
-    quotes: none;
-  }
-
-
-  blockquote:before,
-  blockquote:after,
-  q:before,
-  q:after {
-    content: '';
-    content: none;
-  }
-
   article {
     padding-top : $height_header;
     padding-left: $width_aside;
@@ -148,6 +25,7 @@
         margin-bottom : $content-size_top-bottom;
 
         i {
+          color       : black;
           margin-right: $content-size_left-right/2;
         }
       }
@@ -223,8 +101,8 @@
           font-size     : 24px;
           letter-spacing: 2px;
           font-weight   : 400;
-          text-align: center;
-          margin-top: -$content-size_top-bottom;
+          text-align    : center;
+          margin-top    : -$content-size_top-bottom;
         }
 
       }
@@ -276,6 +154,7 @@
 
     &__name {
       font-size: 1.3rem;
+      letter-spacing: 1px;
     }
 
     &__navbar {
@@ -304,8 +183,114 @@
 
   }
 
-
 }
 
+@media screen and (max-width:480px) {
+  .header {
+    position: fixed;
+    z-index : 998;
 
-@media screen and (max-width:480px) {}
+    &__function {
+      display: none;
+    }
+
+    &__icon {
+      border-right: none;
+    }
+
+    &__person {
+      padding-left: 0;
+    }
+
+    &__name {
+      width      : 30%;
+      margin-left: 20%;
+    }
+
+    &__title {
+      width: 100%;
+    }
+
+    &__avatar {
+      width: 80px;
+    }
+  }
+
+  .aside {
+    display: none;
+  }
+
+  article {
+    padding: $height_header $content-size_left-right;
+
+    section.title {
+      width        : 100%;
+      margin       : 0;
+      padding      : $content-size_top-bottom $content-size_left-right/2;
+      margin-top   : $content-size_top-bottom*2;
+      font-size    : 18px;
+      border-radius: 5px;
+    }
+
+    section.content {
+
+      section.container {
+        display      : block !important;
+        width        : 100%;
+        margin       : 0;
+        margin-top   : $content-size_top-bottom*2;
+        border-radius: 5px;
+        padding      : $content-size_top-bottom*2 $content-size_top-bottom;
+        font-size    : 13px;
+
+        h2 {
+          font-size: 20px;
+        }
+
+        h4 {
+          span {
+            text-align     : center;
+            justify-content: center;
+            width          : 65px;
+            margin-right   : 0;
+            padding        : 5px;
+            font-size      : 5px;
+            border-radius  : 5px;
+          }
+
+          i {
+            color    : black;
+            font-size: 14px;
+          }
+
+          h6 {
+            display    : flex;
+            margin-left: $content-size_left-right/3;
+            width      : 70%;
+            align-items: center;
+          }
+        }
+
+        h4.two-line {
+          margin-top: -$content-size_top-bottom;
+        }
+
+        h4.three-line {
+          margin-top: -$content-size_top-bottom*3;
+        }
+
+        .line {
+          margin-left: 30px;
+        }
+
+        .height {
+          margin-top: -$content-size_top-bottom;
+        }
+      }
+    }
+
+    section.container {
+      display: none;
+    }
+  }
+}

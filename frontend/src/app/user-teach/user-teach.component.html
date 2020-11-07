@@ -9,7 +9,7 @@
   </h1>
   <nav class="header__navbar">
     <div class="header__person">
-      <div class="header__avatar" [routerLink]="['/index']">回上頁</div>
+      <div class="header__avatar" [routerLink]="['/index']">回首頁</div>
     </div>
   </nav>
 </header>
@@ -17,7 +17,7 @@
 <main>
   <aside class="aside">
     <ul class="item-categories">
-      <div class="item-block"  [ngClass]="{'active': data.current == '1'}">
+      <div class="item-block" [ngClass]="{'active': data.current == '1'}">
         <li (click)="setCurrent(1)">
           登入系統
         </li>
@@ -42,7 +42,7 @@
           刪除事件
         </li>
       </div>
-      <div class="item-block"  [ngClass]="{'active': data.current == '6'}">
+      <div class="item-block" [ngClass]="{'active': data.current == '6'}">
         <li (click)="setCurrent(6)">
           修改事件
         </li>
@@ -278,6 +278,252 @@
           <span>Step 1</span>點選頭像即可登出
         </h4>
       </div>
+    </section>
+    <section class="content">
+      <section class="container">
+        <h2>登入系統</h2>
+        <hr>
+        <h3>
+          <i class="material-icons">
+            error
+          </i>
+          須以北商的Google帳號登入系統
+        </h3>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>點選首頁的 `登入` 按鈕</h6>
+          </h4>
+          <div class="line"></div>
+          <h4>
+            <span>Step 2</span>
+            <h6>輸入帳號及密碼-> `登入成功`</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>匯出修改</h2>
+        <hr>
+        <h3>
+          <i class="material-icons">
+            error
+          </i>
+          僅有權限者能使用本功能
+        </h3>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>
+              點選
+              <i class="material-icons">
+                launch
+              </i>
+              圖示
+            </h6>
+          </h4>
+          <div class="line"></div>
+          <h4>
+            <span>Step 2</span>
+            <h6>選擇以往年度的行事曆資料</h6>
+          </h4>
+          <div class="line"></div>
+          <h4>
+            <span>Step 3</span>
+            <h6>點選 `匯出` 按鈕</h6>
+          </h4>
+          <div class="line"></div>
+          <h4 class="two-line">
+            <span>Step 4</span>
+            <h6>打開Excel->將以往年度的資料更改為今年的資料</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>匯入建立</h2>
+        <hr>
+        <h3>
+          <i class="material-icons">
+            error
+          </i>
+          僅有權限者能使用本功能
+        </h3>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>
+              點選
+              <i class="material-icons">
+                launch
+              </i>
+              圖示
+            </h6>
+          </h4>
+          <div class="line"></div>
+          <h4 class="two-line">
+            <span>Step 2</span>
+            <h6>點選 `選擇檔案` 按鈕->將更改完成的今年度行事曆上傳</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4>
+            <span>Step 3</span>
+            <h6>選擇要匯入新增到哪本行事曆</h6>
+          </h4>
+          <div class="line"></div>
+          <h4>
+            <span>Step 4</span>
+            <h6>點選 `建立` 按鈕</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>新增行程</h2>
+        <hr>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>
+              點選
+              <i class="material-icons">
+                queue
+              </i>
+              圖示
+            </h6>
+          </h4>
+          <div class="line"></div>
+          <h4>
+            <span>Step 2</span>
+            <h6>勾選欲將行程放置的行事曆</h6>
+          </h4>
+          <div class="line"></div>
+          <h4 class="two-line">
+            <span>Step 3</span>
+            <h6>於 `新增標題` 欄位打上欲新增行程之名稱</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4 class="two-line">
+            <span>Step 4</span>
+            <h6>於 `開始時間` 與 `結束時間` 欄位選擇欲新增行程之時間</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4 class="two-line">
+            <span>Step 5</span>
+            <h6>點選 `進階` 按鈕可以為行程添加更完整資訊</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4 class="two-line">
+            <span>Step 6</span>
+            <h6>於`地點` 欄位打上欲新增行程之地點</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4 class="two-line">
+            <span>Step 7</span>
+            <h6>`參與人員` 欄位能藉由打上參與人員Google帳號邀請對方加入此行程</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4 class="two-line">
+            <span>Step 8</span>
+            <h6>於 `事由` 欄位打上新增行程之地點緣由</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4 class="two-line">
+            <span>Step 9</span>
+            <h6>點擊 `選擇檔案` 按鈕能附加一或多個檔案</h6>
+          </h4>
+          <div class="line height"></div>
+          <h4>
+            <span>Step 10</span>
+            <h6>點擊 `新增` 按鈕完成行程新增</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>刪除事件</h2>
+        <hr>
+        <h3>
+          <i class="material-icons">
+            error
+          </i>
+          僅有權限者能使用本功能
+        </h3>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>於首頁畫面中->點擊欲刪除之行程</h6>
+          </h4>
+          <div class="line"></div>
+          <h4 class="two-line">
+            <span>Step 2</span>
+            <h6>跳出提示框後->點擊 `刪除` 即可刪除行程</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>修改事件</h2>
+        <hr>
+        <h3>
+          <i class="material-icons">
+            error
+          </i>
+          僅有權限者能使用本功能
+        </h3>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>於首頁畫面中->點擊欲修改之行程</h6>
+          </h4>
+          <div class="line"></div>
+          <h4 class="two-line">
+            <span>Step 2</span>
+            <h6>跳出提示框後->點擊 `更改` 即可編輯行程</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>查詢事件</h2>
+        <hr>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>於首頁畫面中->將欲搜尋之行程關鍵字輸入在搜尋框中</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>新增訂閱</h2>
+        <hr>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>
+              點選
+              <i class="material-icons">
+                bookmarks
+              </i>
+              圖示
+            </h6>
+          </h4>
+          <div class="line"></div>
+          <h4>
+            <span>Step 2</span>
+            <h6>勾選欲訂閱處室->按下 `確定` 鍵</h6>
+          </h4>
+          <div class="line"></div>
+          <h4 class="three-line">
+            <span>Step 3</span>
+            <h6>藉由系統產生之url可以至各大常用行事曆訂閱(若訂閱處室有更改資料，將會自動更新於您的個人行事曆當中，無須重複產生url)</h6>
+          </h4>
+        </div>
+      </section>
+      <section class="container">
+        <h2>登出系統</h2>
+        <hr>
+        <div class="teach">
+          <h4>
+            <span>Step 1</span>
+            <h6>點選頭像即可登出</h6>
+          </h4>
+        </div>
+      </section>
     </section>
   </article>
 </main>
