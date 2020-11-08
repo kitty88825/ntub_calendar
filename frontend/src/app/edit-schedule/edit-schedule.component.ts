@@ -45,6 +45,7 @@ export class EditScheduleComponent implements OnInit {
   isOpen = false;
   isMeet = false;
   isSchedule = false;
+  isTrue = false;
   attribute = '';
   group = [];
   role = '';
@@ -52,7 +53,7 @@ export class EditScheduleComponent implements OnInit {
   selectMainCalendar = '';
   commonUserEmail = [];
   allCalendar = [];
-  isCollapsed = true;
+  isCollapsed = false;
   showAddCalendars = [];
   addCalendarChecked = false;
   mianCalendarId = 0;
