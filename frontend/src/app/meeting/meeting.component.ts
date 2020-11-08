@@ -19,6 +19,8 @@ export class MeetingComponent implements OnInit {
   myMeet = [];
   invitedMeet = [];
   pastMeet = [];
+  isTrue = false;
+  isOpen = false;
   edit = false;
   lookMeet = [];
   lookTitle; lookOffice; lookSTime;

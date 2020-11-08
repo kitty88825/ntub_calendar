@@ -21,6 +21,8 @@ export class OfficialAddComponent implements OnInit {
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   startDate = this.todayDate;
   endDate = this.todayDate;
+  isOpen = false;
+  isTrue = false;
 
   constructor(
     private eventService: EventService,
