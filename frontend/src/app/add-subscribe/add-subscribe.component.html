@@ -1,84 +1,204 @@
-<app-navbar></app-navbar>
-<main>
-  <aside class="aside">
-    <ul class="item-categories">
-      <li>
-        <div class="item-categories__title active">
-          新增訂閱
-          <div class="form-group row">
-            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-              arrow_left
-            </i>
-          </div>
-        </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
-          <div class="year">
-            <span>學年度</span>
-            <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
-              <option *ngFor="let year of year">{{year}}</option>
-            </select>
-          </div>
-          <div class="term">
-            <span>學期</span>
-            <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
-              <option value="1">1</option>
-              <option value="2">2</option>
-            </select>
-          </div>
-          <hr>
-          <ul class="item-categories__list">
-            <li *ngFor="let calendar of calendars">
-              <label class="container origin">
-                <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                  (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                <span class="checkmark"></span>
-              </label>
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
-  </aside>
-  <article>
-    <section class="container">
-      <div class="header">
-        <h2>單位行程</h2>
-        <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
+<div class="body-content">
+  <input type="checkbox" name="" id="sideMenu-active">
+  <div class="sideMenu">
+    <label for="sideMenu-active" class="close">
+      <i class="material-icons">east</i>
+    </label>
+    <div class="sideMenu__content">
+      <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
         <i class="material-icons">
-          search
+          bookmarks
         </i>
-        <label class="container">
-          <input type="checkbox" class="material-icons" (change)="checkAll()" [(ngModel)]="checkedAll">全選
-          <span class="checkmark"></span>
-        </label>
+        <span>新增訂閱</span>
       </div>
-      <hr>
-      <div class="officeEvent">
-        <ul>
-          <li *ngFor="let event of showEvent | appFilter : searchText">
-            <label class="container">
-              <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
-                (change)="changeEvent()">{{event.title}}
-              <span class="checkmark"></span>
-            </label>
+      <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+        <i class="material-icons">
+          help_outline
+        </i>
+        <span>使用說明</span>
+      </div>
+      <ul>
+        <li>
+          <div class="sideMenu__content__title active">
+            <div class="title">
+              <i class="material-icons">
+                library_add
+              </i>
+              <h1>行程管理</h1>
+            </div>
+            <div class="form-group row">
+              <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                arrow_left
+              </i>
+            </div>
+          </div>
+          <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+            <ul class="sideMenu__content__list">
+              <li>
+                <div class="sideMenu__content__add" routerLink="/add-schedule">
+                  <span>新增行程</span>
+                </div>
+                <div class="sideMenu__content__add" routerLink="/meeting">
+                  <span>查看會議</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <div class="sideMenu__content__title active">
+            <div class="title">
+              <i class="material-icons">
+                open_in_new
+              </i>
+              <h1>匯出入管理</h1>
+            </div>
+            <div class="form-group row">
+              <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                arrow_left
+              </i>
+            </div>
+          </div>
+          <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+            <ul class="sideMenu__content__list">
+              <li>
+                <div class="sideMenu__content__add" routerLink="/add-subscribe">
+                  <span>匯出修改</span>
+                </div>
+                <div class="sideMenu__content__add" routerLink="/add-subscribe">
+                  <span>匯入建立</span>
+                </div>
+              </li>
+              <li>
+                <div class="sideMenu__content__add" routerLink="/opendata">
+                  <span>OpenData</span>
+                </div>
+                <div class="sideMenu__content__add" routerLink="/export">
+                  <span>匯出PDF</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <label for="sideMenu-active" class="open">
+    <i class="material-icons">menu</i>
+  </label>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <aside class="aside">
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              新增訂閱
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+              <div class="year">
+                <span>學年度</span>
+                <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
+                  <option *ngFor="let year of year">{{year}}</option>
+                </select>
+              </div>
+              <div class="term">
+                <span>學期</span>
+                <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
+              <hr>
+              <ul class="item-categories__list">
+                <li *ngFor="let calendar of calendars">
+                  <label class="container origin">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                      (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
-        <div class="subBtn">
-          <div class="cancel" (click)="reset()">
-            <i class="material-icons">
-              clear
-            </i>
-            <span>重設</span>
+      </aside>
+      <article>
+        <section class="container">
+          <div class="select__block">
+            <div class="time">
+              <div class="year">
+                <span>學年度</span>
+                <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
+                  <option *ngFor="let year of year">{{year}}</option>
+                </select>
+              </div>
+              <div class="term">
+                <span>學期</span>
+                <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
+            </div>
+            <div class="calendar">
+              <span>行事曆</span>
+              <select class="form-control" (change)="selectCalendarSmall(calendarSmall)" [(ngModel)]="calendarSmall">
+                <option *ngFor="let calendar of calendars">
+                  {{calendar.name}}
+                </option>
+              </select>
+            </div>
           </div>
-          <div class="submit" (click)="submit()">
+          <div class="header">
+            <h2>單位行程</h2>
+            <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
             <i class="material-icons">
-              done_all
+              search
             </i>
-            <span>確定</span>
+            <label class="container">
+              <input type="checkbox" class="material-icons" (change)="checkAll()" [(ngModel)]="checkedAll">全選
+              <span class="checkmark"></span>
+            </label>
           </div>
-        </div>
-      </div>
-    </section>
-  </article>
-</main>
+          <hr>
+          <div class="officeEvent">
+            <ul>
+              <li *ngFor="let event of showEvent | appFilter : searchText">
+                <label class="container">
+                  <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
+                    (change)="changeEvent()">{{event.title}}
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+            <div class="subBtn">
+              <div class="cancel" (click)="reset()">
+                <i class="material-icons">
+                  clear
+                </i>
+                <span>重設</span>
+              </div>
+              <div class="submit" (click)="submit()">
+                <i class="material-icons">
+                  done_all
+                </i>
+                <span>確定</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </article>
+    </main>
+  </div>
+</div>

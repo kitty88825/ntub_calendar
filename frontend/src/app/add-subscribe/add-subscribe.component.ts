@@ -17,6 +17,8 @@ export class AddSubscribeComponent implements OnInit {
   calendars = [];
   formData = new FormData();
   isCollapsed = false;
+  isTrue = false;
+  isOpen = false;
   searchText = '';
   allEvents = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
@@ -29,6 +31,7 @@ export class AddSubscribeComponent implements OnInit {
   selectEventId = [];
   url = '';
   userEmail = '';
+  calendarSmall = '';
 
   constructor(
     private calendarService: CalendarService,
@@ -147,6 +150,55 @@ export class AddSubscribeComponent implements OnInit {
     this.selectEventId = this.selectEventId.filter(function (el, i, arr) {
       return arr.indexOf(el) === i;
     });
+  }
+
+  selectCalendarSmall(name) {
+    this.checkedAll = false;
+    this.showEvent = [];
+    const showEventCount = this.showEvent.length;
+    let count = 0;
+
+    this.calendars.forEach(calendar => {
+      if (calendar.name === name) {
+        this.allEvents.forEach(event => {
+          if (Number(this.setTerm) === 1) {
+            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id &&
+              Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
+              Number(event.startAt.substr(5, 2)) < 7) {
+              this.showEvent.push({ id: event.id, title: event.title, isChecked: false });
+            }
+          } else if (Number(this.setTerm) === 2) {
+            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id &&
+              Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
+              Number(event.startAt.substr(5, 2)) >= 7) {
+              this.showEvent.push({ id: event.id, title: event.title, isChecked: false });
+            }
+          }
+        });
+      }
+    });
+
+    this.showEvent.forEach(event => {
+      if (this.selectEventId.includes(event.id)) {
+        event.isChecked = true;
+      }
+
+      if (event.isChecked === true) {
+        count++;
+        this.selectEventId.push(event.id);
+      }
+    });
+
+    if (count === showEventCount) {
+      this.checkedAll = true;
+    } else {
+      this.checkedAll = false;
+    }
+
+    this.selectEventId = this.selectEventId.filter(function (el, i, arr) {
+      return arr.indexOf(el) === i;
+    });
+
   }
 
   changeTerm() {
