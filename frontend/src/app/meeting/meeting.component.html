@@ -3,10 +3,12 @@
   <article>
     <section class="container" *ngIf="edit === false">
       <div class="date-picker">
-        <i class="material-icons">
-          date_range
-        </i>
-        <h3>選擇日期區間</h3>
+        <div class="title">
+          <i class="material-icons">
+            date_range
+          </i>
+          <h3>選擇日期區間</h3>
+        </div>
         <div class="date-range">
           <input type="text" class="form-control startTime" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
             #addStartDate required placement="bottom" [(ngModel)]="startDate">
