@@ -36,19 +36,34 @@ export class ExportComponent implements OnInit {
 
   savePdf() {
     html2canvas(this.screen.nativeElement).then(canvas => {
-      this.canvas.nativeElement.src = canvas.toDataURL();
-      this.downloadLink.nativeElement.href = canvas.toDataURL('image/png');
-      var docDefinition = {
-        content: [{
-          image: this.downloadLink.nativeElement.href,
-          width: 500,
+      var contentWidth = canvas.width;
+      var contentHeight = canvas.height;
+      
+      var pageHeight = contentWidth / 592.28 * 841.89; 
+      var leftHeight = contentHeight; 
 
-        }],
-        pageSize: 'A4',
-        pageMargins: [20, 20, 20, 20]
-      };
-      pdfMake.createPdf(docDefinition).download('demo.pdf');
-    });
+      var position = 0; //頁面偏移
+
+      // a4尺寸，html頁面產生的canvas在pdf中圖片高度和寬度
+      var imgWidth = 595.28;
+      var imgHeight = 592.28 / contentWidth * contentHeight;
+      var pageData = canvas.toDataURL('image/jpeg', 1.0);
+      var pdf = new jsPDF('', 'pt', 'a4');
+
+      if (leftHeight < pageHeight) {
+        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+      } else {
+        while (leftHeight > 0 ) {
+          pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+          leftHeight -= pageHeight;
+          position -= 851;
+          if (leftHeight > 0) {
+            pdf.addPage();
+          }
+        }
+      }
+      pdf.save('demo.pdf');
+    })
   }
 }
 
