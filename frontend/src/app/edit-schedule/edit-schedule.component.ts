@@ -218,6 +218,7 @@ export class EditScheduleComponent implements OnInit {
     users.splice(index, 1);
     this.formData.delete('emails');
     users.forEach(user => {
+      console.log(user);
       this.formData.append('emails', user);
     });
   }

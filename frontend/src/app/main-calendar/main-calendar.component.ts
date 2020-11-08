@@ -36,6 +36,8 @@ export class MainCalendarComponent implements OnInit {
     current: '1'
   };
   isCollapsed = false;
+  isOpen = false;
+  isTrue = false;
   showEvent: boolean;
   events = [];
   event; eventTitle; eventStart; eventEnd; eventOffice; eventLocation;
