@@ -7,6 +7,7 @@ import { EventService } from '../services/event.service';
 import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { CalendarService } from '../services/calendar.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-add-schedule',
@@ -28,6 +29,8 @@ export class AddScheduleComponent implements OnInit {
   allCalendars = [];
   showAddCalendars = [];
   selectedItemsList = [];
+  isCollapsed = false;
+  isTrue = false;
   isOpen = false;
   isMeet = true;
   isSchedule = !this.isMeet;
@@ -42,6 +45,11 @@ export class AddScheduleComponent implements OnInit {
   MasterSelected = false;
   userEmail = [];
   addCalendarChecked = false;
+  title = '';
+  description = '';
+  location = '';
+  startDate = '';
+  endDate = '';
 
   constructor(
     private router: Router,
@@ -52,13 +60,8 @@ export class AddScheduleComponent implements OnInit {
     private tokenService: TokenService
   ) { }
 
-  @ViewChild('addTitle') addTitle: ElementRef;
-  @ViewChild('addStartDate') addStartDate: ElementRef;
   @ViewChild('addStartTime') addStartTime: NgbTimepicker;
-  @ViewChild('addEndDate') addEndDate: ElementRef;
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
-  @ViewChild('description') description: ElementRef;
-  @ViewChild('location') location: ElementRef;
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
@@ -181,12 +184,15 @@ export class AddScheduleComponent implements OnInit {
   }
 
   add() {
-    if (this.addTitle.nativeElement.value === '') {
+    const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+    const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+
+    if (this.title === '') {
       Swal.fire({
         text: '請輸入標題',
         icon: 'error'
       });
-    } else if (String(this.addStartDate.nativeElement.value).toUpperCase() > String(this.addEndDate.nativeElement.value).toUpperCase()) {
+    } else if (String(this.startDate).toUpperCase() > String(this.endDate).toUpperCase()) {
       Swal.fire({
         text: '請輸入正確時間',
         icon: 'error'
@@ -203,14 +209,14 @@ export class AddScheduleComponent implements OnInit {
         }
       });
       this.formData.append('attributes', this.attribute);
-      this.formData.append('title', this.addTitle.nativeElement.value);
-      this.formData.append('start_at', this.addStartDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
+      this.formData.append('title', this.title);
+      this.formData.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
         + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
-      this.formData.append('end_at', this.addEndDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
+      this.formData.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
         + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
 
-      this.formData.append('description', this.description.nativeElement.value);
-      this.formData.append('location', this.location.nativeElement.value);
+      this.formData.append('description', this.description);
+      this.formData.append('location', this.location);
       this.userEmail.forEach(email => {
         this.formData.append('emails', email);
       });

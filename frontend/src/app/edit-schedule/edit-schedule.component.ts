@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { CommonUserService } from './../services/common-user.service';
 import { TokenService } from './../services/token.service';
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
@@ -57,6 +58,8 @@ export class EditScheduleComponent implements OnInit {
   showAddCalendars = [];
   addCalendarChecked = false;
   mianCalendarId = 0;
+  startDate = '';
+  endDate = '';
 
   constructor(
     private router: Router,
@@ -70,8 +73,6 @@ export class EditScheduleComponent implements OnInit {
 
   @ViewChild('addStartTime') addStartTime: NgbTimepicker;
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
-  @ViewChild('startDate') startDate: ElementRef;
-  @ViewChild('endDate') endDate: ElementRef;
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
@@ -157,13 +158,13 @@ export class EditScheduleComponent implements OnInit {
           this.isSchedule = false;
         }
         this.addStart = data.message.startAt;
-        this.startDate.nativeElement.value = this.addStart.substring(0, 10);
+        this.startDate = this.addStart.substring(0, 10);
         const sHour = this.addStart.substring(11, 13);
         this.addStartTime.model.hour = Number(sHour);
         const sMinute = this.addStart.substring(14, 16);
         this.addStartTime.model.minute = Number(sMinute);
         this.addEnd = data.message.endAt;
-        this.endDate.nativeElement.value = this.addEnd.substring(0, 10);
+        this.endDate = this.addEnd.substring(0, 10);
         const eHour = this.addEnd.substring(11, 13);
         this.addEndTime.model.hour = Number(eHour);
         const eMinute = this.addEnd.substring(14, 16);
@@ -268,6 +269,9 @@ export class EditScheduleComponent implements OnInit {
   }
 
   update() {
+    const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+    const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+
     this.showAddCalendars.forEach(calendar => {
       if (calendar.isChecked === true) {
         this.formData.append('invite_calendars_id', calendar.id);
@@ -279,9 +283,9 @@ export class EditScheduleComponent implements OnInit {
       this.formData.append('nature', 'event');
     }
     this.formData.append('title', this.title);
-    this.formData.append('start_at', this.startDate.nativeElement.value + 'T' + this.addStartTime.model.hour + ':'
+    this.formData.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
       + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
-    this.formData.append('end_at', this.endDate.nativeElement.value + 'T' + this.addEndTime.model.hour + ':'
+    this.formData.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
       + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
 
     this.formData.append('description', this.description);

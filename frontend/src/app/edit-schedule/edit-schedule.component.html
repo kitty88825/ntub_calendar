@@ -139,7 +139,7 @@
               </i>
               <h2>開始時間：</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                #startDate required>
+                [(ngModel)]="startDate" required>
               <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
                 class="timepicker" #addStartTime required></ngb-timepicker>
             </div>
@@ -149,7 +149,7 @@
               </i>
               <h2>結束時間：</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                #endDate required>
+              [(ngModel)]="endDate" required>
               <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
                 class="timepicker" #addEndTime required></ngb-timepicker>
             </div>
@@ -305,7 +305,7 @@
               </i>
               <h2>開始</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                #startDate required>
+              [(ngModel)]="startDate" required>
               <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
                 class="timepicker" #addStartTime required></ngb-timepicker>
             </div>
@@ -315,7 +315,7 @@
               </i>
               <h2>結束</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                #endDate required>
+              [(ngModel)]="endDate" required>
               <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
                 class="timepicker" #addEndTime required></ngb-timepicker>
             </div>
