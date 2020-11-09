@@ -13,6 +13,8 @@ import pdfMake from 'pdfmake/build/pdfmake';
 export class ExportComponent implements OnInit {
 
   isCollapsed = false;
+  isTrue = false;
+  isOpen = false;
   openCalendar = [];
   allEvents = [];
   showEvent = [];
