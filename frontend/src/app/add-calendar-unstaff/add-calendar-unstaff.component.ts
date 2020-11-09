@@ -11,6 +11,8 @@ export class AddCalendarUnstaffComponent implements OnInit {
   isSchedule = !this.isMeet;
   attribute = 'public';
   color = '#839B91';
+  isTrue = false;
+  isOpen = false;
   allCalendar = [];
   count = 1;
   items = [0, 1];
