@@ -11,6 +11,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddCalendarComponent implements OnInit {
   isCollapsed = false;
+  isTrue = false;
+  isOpen = false;
   isOpened = false;
   isMeet = true;
   isSchedule = !this.isMeet;
@@ -25,7 +27,9 @@ export class AddCalendarComponent implements OnInit {
   lookCalendarName = '';
   lookCalendarInfo = [];
   add = true;
+  addSmall = false;
   edit = false;
+  editSmall = false;
   color = '#839B91';
   allCalendar = [];
   raw = { name: '', display: '', description: '', color: '', permissions: [{ id: 0, authority: '', group: [], groupName: '', role: '' }] };
@@ -104,6 +108,8 @@ export class AddCalendarComponent implements OnInit {
     this.description = '';
     this.attribute = 'public';
     this.isMeet = true;
+    this.addSmall = true;
+    this.editSmall = false;
     this.isSchedule = false;
   }
 
@@ -172,6 +178,8 @@ export class AddCalendarComponent implements OnInit {
   lookCalendar(info) {
     this.edit = true;
     this.add = false;
+    this.addSmall = false;
+    this.editSmall = true;
     this.lookCalendarName = info;
     this.lookCalendarInfo = [];
     this.calendarPermissions = [];
@@ -210,6 +218,10 @@ export class AddCalendarComponent implements OnInit {
     } else if (this.edit === true) {
       this.calendarPermissions.push({ id: 0, authority: 'read', group: [], groupName: '', role: 'student' });
     }
+  }
+
+  cancelAdd() {
+    this.addSmall = false;
   }
 
   deleteOffice(index) {
