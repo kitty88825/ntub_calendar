@@ -60,6 +60,7 @@ export class EditScheduleComponent implements OnInit {
   mianCalendarId = 0;
   startDate = '';
   endDate = '';
+  staff = localStorage.getItem('staff');
 
   constructor(
     private router: Router,

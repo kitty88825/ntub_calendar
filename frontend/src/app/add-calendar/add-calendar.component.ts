@@ -38,6 +38,7 @@ export class AddCalendarComponent implements OnInit {
   count = 1;
   setPermissions = [{ id: 0, groupName: '', role: 'student', authority: 'read', group: [] },
   { id: 0, groupName: '', role: 'student', authority: 'read', group: [] }];
+  staff = localStorage.getItem('staff');
 
   constructor(
     private calendarService: CalendarService,

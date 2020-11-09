@@ -27,6 +27,7 @@ export class MeetingComponent implements OnInit {
   lookLocation; lookETime; lookDes;
   lookFiles = [];
   lookParticipants = [];
+  staff = localStorage.getItem('staff');
 
   @ViewChild('addStartDate') start: ElementRef;
   @ViewChild('addEndDate') end: ElementRef;

@@ -28,6 +28,7 @@ export class OfficialChangeComponent implements OnInit {
   isTrue = false;
   isOpen = false;
   permissionCalendars = [];
+  staff = localStorage.getItem('staff');
 
   // tslint:disable-next-line: member-ordering
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };

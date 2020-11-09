@@ -65,7 +65,7 @@
           </div>
           <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
             <ul class="sideMenu__content__list">
-              <li>
+              <li *ngIf="staff === 'true'">
                 <div class="sideMenu__content__add" routerLink="/official-add">
                   <span>匯出修改</span>
                 </div>
@@ -77,7 +77,7 @@
                 <div class="sideMenu__content__add" routerLink="/opendata">
                   <span>OpenData</span>
                 </div>
-                <div class="sideMenu__content__add" routerLink="/export">
+                <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
                   <span>匯出PDF</span>
                 </div>
               </li>

@@ -50,6 +50,7 @@ export class AddScheduleComponent implements OnInit {
   location = '';
   startDate = '';
   endDate = '';
+  staff = localStorage.getItem('staff');
 
   constructor(
     private router: Router,
@@ -94,7 +95,9 @@ export class AddScheduleComponent implements OnInit {
           });
         });
 
-        this.selectMainCalendar = this.calendars[0].name;
+        if (this.calendars.length !== 0) {
+          this.selectMainCalendar = this.calendars[0].name;
+        }
 
         const allCalendar = this.allCalendars.slice();
         const index = this.allCalendars.findIndex(calendar => calendar.name === this.selectMainCalendar);

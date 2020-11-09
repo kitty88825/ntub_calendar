@@ -32,6 +32,7 @@ export class AddSubscribeComponent implements OnInit {
   url = '';
   userEmail = '';
   calendarSmall = '';
+  staff = localStorage.getItem('staff');
 
   constructor(
     private calendarService: CalendarService,

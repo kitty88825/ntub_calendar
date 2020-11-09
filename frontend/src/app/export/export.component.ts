@@ -18,6 +18,7 @@ export class ExportComponent implements OnInit {
   openCalendar = [];
   allEvents = [];
   showEvent = [];
+  staff = localStorage.getItem('staff');
 
   @ViewChild('screen') screen: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;

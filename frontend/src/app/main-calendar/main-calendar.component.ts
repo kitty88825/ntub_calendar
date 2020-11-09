@@ -56,6 +56,7 @@ export class MainCalendarComponent implements OnInit {
   page = 1;
   initShowEvents = [];
   permission: boolean;
+  staff = localStorage.getItem('staff');
 
   constructor(
     private router: Router,

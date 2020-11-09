@@ -47,7 +47,7 @@
           <div class="dropdown-menu" ngbDropdownMenu>
             <a class="dropdown-item" [routerLink]="['/my-url']" ngbDropdownItem>我的URL</a>
             <a class="dropdown-item" [routerLink]="['/common-user']" ngbDropdownItem>常用參與人員</a>
-            <a class="dropdown-item" [routerLink]="['/add-calendar']" ngbDropdownItem>行事曆管理</a>
+            <a class="dropdown-item" (click)="addCalendar()" ngbDropdownItem>行事曆管理</a>
             <a class="dropdown-item" ngbDropdownItem (click)="logout()">登出</a>
           </div>
         </li>

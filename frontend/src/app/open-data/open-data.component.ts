@@ -24,6 +24,7 @@ export class OpenDataComponent implements OnInit {
   showModal: boolean;
   exportDatas = [];
   allEvents = [];
+  staff = localStorage.getItem('staff');
 
   constructor(
     private eventService: EventService,

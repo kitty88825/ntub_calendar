@@ -26,6 +26,14 @@ export class NavbarComponent implements OnInit {
     this.staff = localStorage.getItem('staff');
   }
 
+  addCalendar() {
+    if (this.staff === 'true') {
+      this.router.navigate(['/add-calendar']);
+    } else if (this.staff === 'false') {
+      this.router.navigate(['/add-calendar-unstaff']);
+    }
+  }
+
   logout() {
     Swal.fire({
       text: '是否確定要登出？',
