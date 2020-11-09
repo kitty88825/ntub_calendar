@@ -11,6 +11,8 @@ import { formatDate } from '@angular/common';
 })
 export class OpenDataComponent implements OnInit {
   isCollapsed = false;
+  isTrue = false;
+  isOpen = false;
   showDatas = [];
   header = ['起始日期', '結束日期', '性質', '類別', '對象', '說明'];
   exportTitle = ['學年度', '設立別', '學校類別', '學校代碼', '學校名稱', '學期', '起始日期', '結束日期', '性質', '類別', '對象', '說明']

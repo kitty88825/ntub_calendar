@@ -131,6 +131,10 @@
       box-shadow      : $box-shadow--container;
     }
 
+    .header {
+      display: none;
+    }
+
     .event-list {
       text-align: center;
 
@@ -368,6 +372,7 @@
           padding   : $content-size_top-bottom*2 $content-size_top-bottom;
 
           .header {
+            display         : block;
             padding         : $content-size_top-bottom $content-size_left-right/2;
             background-color: $color_table-header;
 
@@ -416,27 +421,27 @@
             }
 
             .calendar {
-              display: flex;
+              display    : flex;
               align-items: center;
-              margin-top: $content-size_top-bottom;
+              margin-top : $content-size_top-bottom;
 
               h2 {
                 font-size: 14px;
               }
 
               select {
-                font-size: 14px;
-                width: 210px;
+                font-size  : 14px;
+                width      : 210px;
                 margin-left: $content-size_left-right/2;
               }
             }
 
             h3 {
-              font-size: 12px;
-              width: 80px;
+              font-size  : 12px;
+              width      : 80px;
               margin-left: auto;
-              margin-top: $content-size_top-bottom/2;
-              color: $color_accent;
+              margin-top : $content-size_top-bottom/2;
+              color      : $color_accent;
             }
           }
 
@@ -466,9 +471,9 @@
 
           .submit {
             margin-left: 75%;
-            width    : 25%;
-            font-size: 14px;
-            padding: $content-size_top-bottom/2 $content-size_left-right/2;
+            width      : 25%;
+            font-size  : 14px;
+            padding    : $content-size_top-bottom/2 $content-size_left-right/2;
           }
         }
       }

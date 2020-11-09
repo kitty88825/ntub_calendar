@@ -101,6 +101,10 @@
       box-shadow      : $box-shadow--container;
     }
 
+    .header {
+      display: none;
+    }
+
     .event-list {
       text-align: center;
 
@@ -338,6 +342,7 @@
           padding   : $content-size_top-bottom*2 $content-size_top-bottom;
 
           .header {
+            display: block;
             padding         : $content-size_top-bottom $content-size_left-right/2;
             background-color: $color_table-header;
 
