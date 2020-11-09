@@ -25,6 +25,8 @@ export class OfficialChangeComponent implements OnInit {
   group = [];
   role = '';
   isCollapsed = false;
+  isTrue = false;
+  isOpen = false;
   permissionCalendars = [];
 
   // tslint:disable-next-line: member-ordering

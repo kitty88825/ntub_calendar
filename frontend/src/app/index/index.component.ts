@@ -219,27 +219,26 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('res_access_token', this.resToken);
           localStorage.setItem('res_refresh_token', data.token.refresh);
 
-          if (this.resToken != null) {
-            Swal.fire({
-              title: 'Loggin in',
-              timer: 5000,
-              onBeforeOpen: () => {
-                Swal.showLoading();
-              },
-              onClose: () => {
+          Swal.fire({
+            title: 'Loggin in',
+            timer: 5000,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+              if (this.resToken != null) {
                 this.router.navigate(['/calendar']);
+              } else {
+                Swal.fire({
+                  text: '請重新登入！',
+                  icon: 'error'
+                }).then((re) => {
+                  if (re.value) {
+                    window.location.reload();
+                  }
+                });
               }
-            });
-          } else {
-            Swal.fire({
-              text: '請重新登入！',
-              icon: 'error'
-            }).then((re) => {
-              if (re.value) {
-                window.location.reload();
-              }
-            });
-          }
+            }
+          });
+
         }
       );
     });
