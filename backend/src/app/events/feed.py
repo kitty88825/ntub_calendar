@@ -23,7 +23,8 @@ class EventFeed(ICalFeed):
         return Event.objects \
             .filter(
                 Q(calendars__subscribers=user) |
-                Q(eventparticipant__user=user),
+                Q(eventparticipant__user=user) |
+                Q(subscribers=user),
             ) \
             .distinct()
 
