@@ -19,7 +19,7 @@ def get_event(update, context):
     event = Event.objects.values()
     serializer = GetSerializer(event, many=True)
 
-    data = json.loads(json.dumps(serializer.data, ensure_ascii=False))
+    data = json.loads(json.dumps(serializer.data))
 
     for i in data:
         i['行程'] = i.pop('title')
@@ -28,9 +28,12 @@ def get_event(update, context):
         i['備註'] = i.pop('description')
         i['地點'] = i.pop('location')
 
-        print(i)
-
     data = json.dumps(data, ensure_ascii=False)
-    print(type(data))
+    data = data.replace('"', '')
+    data = data.replace('[', '')
+    data = data.replace(']', '')
+    data = data.replace('{', '')
+    data = data.replace('}', '')
 
     context.bot.send_message(chat_id, data.replace(',', '\n'))
+    # context.bot.send_message(chat_id, data)
