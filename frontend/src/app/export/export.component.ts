@@ -1,23 +1,14 @@
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
 import * as jsPDF from 'jspdf';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { EventInput } from '@fullcalendar/core';
-import Swal from 'sweetalert2/dist/sweetalert2.js';
-import { Router } from '@angular/router';
-import { EventService } from '../services/event.service';
-import { Event } from '../models/event.model';
-import { ShareDataService } from '../services/share-data.service';
-import { CalendarService } from '../services/calendar.service';
-import { SubscriptionService } from '../services/subscription.service';
 import html2canvas from 'html2canvas';
-import pdfMake from 'pdfmake/build/pdfmake';
 
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss']
 })
+
 
 export class ExportComponent implements OnInit {
 
@@ -28,32 +19,37 @@ export class ExportComponent implements OnInit {
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('downloadLink') downloadLink: ElementRef;
 
-
-
   ngOnInit(): void {
 
   }
 
-  savePdf() {
+  async savePdf() {
+    for (var i = 0; i < 2; i++) {
+      await new Promise(resolve => {
+        setTimeout(() => {
+          $('html,main').animate({ scrollTop: 0 });
+          console.log('totheTop' + i);
+          resolve();
+        }, 500);
+      });
+    }
     html2canvas(this.screen.nativeElement).then(canvas => {
       var contentWidth = canvas.width;
       var contentHeight = canvas.height;
-      
-      var pageHeight = contentWidth / 592.28 * 841.89; 
-      var leftHeight = contentHeight; 
 
-      var position = 0; //頁面偏移
+      var pageHeight = contentWidth / 592.28 * 841.89;
+      var leftHeight = contentHeight;
+      var position = 0; 
 
-      // a4尺寸，html頁面產生的canvas在pdf中圖片高度和寬度
       var imgWidth = 595.28;
       var imgHeight = 592.28 / contentWidth * contentHeight;
       var pageData = canvas.toDataURL('image/jpeg', 1.0);
       var pdf = new jsPDF('', 'pt', 'a4');
 
-      if (leftHeight < pageHeight) {
+      if (leftHeight <= pageHeight) {
         pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
       } else {
-        while (leftHeight > 0 ) {
+        while (leftHeight > 0) {
           pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
           leftHeight -= pageHeight;
           position -= 851;
@@ -64,6 +60,7 @@ export class ExportComponent implements OnInit {
       }
       pdf.save('demo.pdf');
     })
+    console.log('sucess download PDF');
   }
 }
 
