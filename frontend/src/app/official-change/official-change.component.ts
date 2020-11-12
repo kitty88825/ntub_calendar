@@ -40,7 +40,6 @@ export class OfficialChangeComponent implements OnInit {
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
-  @ViewChild('customLoadingTemplate', { static: false }) customLoadingTemplate: TemplateRef<any>;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
   public loading = false;
   public primaryColour = PrimaryWhite;

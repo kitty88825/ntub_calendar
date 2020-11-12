@@ -31,7 +31,6 @@ export class OfficialAddComponent implements OnInit {
   staff = localStorage.getItem('staff');
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
-  @ViewChild('customLoadingTemplate', { static: false }) customLoadingTemplate: TemplateRef<any>;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
   public loading = false;
   public primaryColour = PrimaryWhite;
