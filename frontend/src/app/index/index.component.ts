@@ -329,6 +329,7 @@ export class IndexComponent implements OnInit {
         this.showEvents.push(event);
       }
     });
+    this.showEventsSort();
 
     if (this.showEvents.length > this.pageSize) {
       this.initShowEvents = this.showEvents.slice();

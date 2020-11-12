@@ -9,9 +9,6 @@ import { AuthService } from 'angularx-social-login';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  user = false;
-  official = !this.user;
-  public isMenuCollapsed = true;
   userName = '';
   staff = '';
 
@@ -22,7 +19,6 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName').substr(0, 1);
-
     this.staff = localStorage.getItem('staff');
   }
 
