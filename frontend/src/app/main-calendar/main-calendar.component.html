@@ -401,7 +401,7 @@
                     (change)="changeSelection()">
                   <span class="checkmark"></span>
                 </label>
-                <div class="wirte" ngbDropdown>
+                <div class="write" ngbDropdown>
                   <i class="material-icons" *ngIf="event.permission === true" ngbDropdownToggle>
                     more_horiz
                   </i>
@@ -489,7 +489,7 @@
                     (change)="changeSelection()">
                   <span class="checkmark"></span>
                 </label>
-                <div class="wirte" ngbDropdown>
+                <div class="write" ngbDropdown>
                   <i class="material-icons" *ngIf="event.permission === true" ngbDropdownToggle>
                     more_horiz
                   </i>
@@ -596,6 +596,7 @@
     </main>
     <ngx-loading [show]="loading"
       [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
-      [template]="loadingTemplate"></ngx-loading>
+      [template]="loadingTemplate">
+    </ngx-loading>
   </div>
 </div>

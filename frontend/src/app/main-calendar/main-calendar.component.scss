@@ -750,6 +750,10 @@
               label.container {
                 top: -7px;
               }
+
+              .write {
+                margin-left: $content-size_left-right*3;
+              }
             }
 
             &__radius {

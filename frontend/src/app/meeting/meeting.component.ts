@@ -53,7 +53,7 @@ export class MeetingComponent implements OnInit {
 
         this.allMeet.forEach(event => {
           event.eventparticipantSet.forEach(participant => {
-            if (event.endAt.substr(0, 10).toUpperCase() > this.todayDate.toUpperCase()) {
+            if (event.endAt.substr(0, 10).toUpperCase() >= this.todayDate.toUpperCase()) {
               if (participant.user === this.myEmail && participant.role === 'editors') {
                 this.myMeet.push({
                   id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
@@ -75,11 +75,12 @@ export class MeetingComponent implements OnInit {
               }
             }
           });
+
+          this.myMeetSort();
+          this.invitedMeetSort();
+          this.pastMeetSort();
         });
 
-        this.myMeetSort();
-        this.invitedMeetSort();
-        this.pastMeetSort();
       }
     );
 

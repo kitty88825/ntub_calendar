@@ -1,7 +1,7 @@
 import { formatDate } from '@angular/common';
 import { CommonUserService } from './../services/common-user.service';
 import { TokenService } from './../services/token.service';
-import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -9,6 +9,12 @@ import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-edit-schedule',
@@ -25,28 +31,23 @@ export class EditScheduleComponent implements OnInit {
   formData = new FormData();
   fileName = [];
   title = '';
-  addStart = '';
   showModal: boolean;
   showCalendar: boolean;
   allCommonUser = [];
-  addSTime = '';
-  addEnd = '';
   location = '';
   description = '';
-  users = [];
   id = 0;
-  deleteId;
-  filesId;
+  deleteId = '';
+  filesId = [];
   sendEmailForm: FormGroup;
   emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
   calendars = [];
-  selectedItemsList = [];
-  isCheckedCalendars = [];
   userEmail = [];
   isOpen = false;
+  isTrue = false;
+  isCollapsed = false;
   isMeet = false;
   isSchedule = false;
-  isTrue = false;
   attribute = '';
   group = [];
   role = '';
@@ -54,13 +55,25 @@ export class EditScheduleComponent implements OnInit {
   selectMainCalendar = '';
   commonUserEmail = [];
   allCalendar = [];
-  isCollapsed = false;
   showAddCalendars = [];
   addCalendarChecked = false;
   mianCalendarId = 0;
   startDate = '';
   endDate = '';
   staff = localStorage.getItem('staff');
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none,
+    primaryColour: this.primaryColour, secondaryColour: this.secondaryColour,
+    tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
 
   constructor(
     private router: Router,
@@ -76,6 +89,7 @@ export class EditScheduleComponent implements OnInit {
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
@@ -91,7 +105,6 @@ export class EditScheduleComponent implements OnInit {
       }
     );
 
-
     this.commonUserService.getCommonUser().subscribe(
       data => {
         data.forEach(common => {
@@ -101,11 +114,8 @@ export class EditScheduleComponent implements OnInit {
         this.allCommonUser[0].participant.forEach(email => {
           this.commonUserEmail.push({ emails: email, isChecked: false });
         });
-      }, error => {
-        console.log(error);
       }
     );
-
 
     this.shareDataService.getMessage().subscribe(
       data => {
@@ -131,11 +141,7 @@ export class EditScheduleComponent implements OnInit {
                 this.selectMainCalendar = calendar.name;
               }
             });
-            const allCalendar = this.allCalendar.slice();
-            const index = this.allCalendar.findIndex(calendar => calendar.name === this.selectMainCalendar);
-            allCalendar.splice(index, 1);
-
-            this.showAddCalendars = allCalendar;
+            this.showInviteCalendar(this.selectMainCalendar);
 
             data.message.eventinvitecalendarSet.forEach(calendar => {
               this.showAddCalendars.forEach(show => {
@@ -158,17 +164,15 @@ export class EditScheduleComponent implements OnInit {
           this.isMeet = true;
           this.isSchedule = false;
         }
-        this.addStart = data.message.startAt;
-        this.startDate = this.addStart.substring(0, 10);
-        const sHour = this.addStart.substring(11, 13);
+        this.startDate = data.message.startAt.substring(0, 10);
+        const sHour = data.message.startAt.substring(11, 13);
         this.addStartTime.model.hour = Number(sHour);
-        const sMinute = this.addStart.substring(14, 16);
+        const sMinute = data.message.startAt.substring(14, 16);
         this.addStartTime.model.minute = Number(sMinute);
-        this.addEnd = data.message.endAt;
-        this.endDate = this.addEnd.substring(0, 10);
-        const eHour = this.addEnd.substring(11, 13);
+        this.endDate = data.message.endAt.substring(0, 10);
+        const eHour = data.message.endAt.substring(11, 13);
         this.addEndTime.model.hour = Number(eHour);
-        const eMinute = this.addEnd.substring(14, 16);
+        const eMinute = data.message.endAt.substring(14, 16);
         this.addEndTime.model.minute = Number(eMinute);
         this.location = data.message.location;
         this.description = data.message.description;
@@ -183,21 +187,14 @@ export class EditScheduleComponent implements OnInit {
           this.fileName.push(file.filename);
           this.formData.append('filesId', file.id);
         });
-
+        this.loading = !this.loading;
       }
     );
   }
 
   CheckUncheckAll() {
-    this.fetchSelectedItems();
     this.commonUserEmail.forEach(email => {
       email.isChecked = this.MasterSelected;
-    });
-  }
-
-  fetchSelectedItems() {
-    this.selectedItemsList = this.calendars.filter((value, index) => {
-      return value.isChecked;
     });
   }
 
@@ -244,7 +241,6 @@ export class EditScheduleComponent implements OnInit {
     if (initLenght > index) {
       this.filesId = this.formData.getAll('filesId');
       this.deleteId = this.filesId[index];
-      console.log(this.deleteId);
 
       this.filesId.splice(index, 1);
       this.formData.delete('filesId');
@@ -256,7 +252,6 @@ export class EditScheduleComponent implements OnInit {
       this.formData.append('remove_files', this.deleteId);
     }
 
-
     const selectFile = this.formData.getAll('files');
     selectFile.splice(index - this.formData.getAll('filesId').length, 1);
 
@@ -265,69 +260,70 @@ export class EditScheduleComponent implements OnInit {
     for (let i = 0; i < selectFile.length; i++) {
       this.formData.append('files', selectFile[i]);
     }
-
-    console.log(selectFile);
   }
 
   update() {
     const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
     const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
-
-    this.showAddCalendars.forEach(calendar => {
-      if (calendar.isChecked === true) {
-        this.formData.append('invite_calendars_id', calendar.id);
-      }
-    });
-    if (this.isMeet === true) {
-      this.formData.append('nature', 'meeting');
+    if (end.toUpperCase() < start.toUpperCase()) {
+      Swal.fire({
+        text: '請輸入正確日期',
+        icon: 'error'
+      });
     } else {
-      this.formData.append('nature', 'event');
-    }
-    this.formData.append('title', this.title);
-    this.formData.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
-      + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
-    this.formData.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
-      + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
-
-    this.formData.append('description', this.description);
-    this.formData.append('location', this.location);
-
-    this.eventService.patchEvent(this.id, this.formData).subscribe(
-      data => {
-        console.log(data);
-        Swal.fire({
-          text: '更新成功',
-          icon: 'success',
-          showCancelButton: false,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: '返回首頁',
-        }).then((result) => {
-          if (result.value) {
-            this.router.navigate(['/calendar']);
-          }
-        });
-      },
-      error => {
-        console.log(error);
-        Swal.fire({
-          text: '更新失敗',
-          icon: 'error',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '返回首頁',
-          cancelButtonText: '取消'
-        }).then((result) => {
-          if (result.value) {
-            this.router.navigate(['/calendar']);
-          }
-        });
+      this.showAddCalendars.forEach(calendar => {
+        if (calendar.isChecked === true) {
+          this.formData.append('invite_calendars_id', calendar.id);
+        }
+      });
+      if (this.isMeet === true) {
+        this.formData.append('nature', 'meeting');
+      } else {
+        this.formData.append('nature', 'event');
       }
-    );
+      this.formData.append('title', this.title);
+      this.formData.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
+        + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+      this.formData.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
+        + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
+      this.formData.append('description', this.description);
+      this.formData.append('location', this.location);
+
+      this.eventService.patchEvent(this.id, this.formData).subscribe(
+        data => {
+          Swal.fire({
+            text: '更新成功',
+            icon: 'success',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '返回首頁',
+          }).then((result) => {
+            if (result.value) {
+              this.router.navigate(['/calendar']);
+            }
+          });
+        },
+        error => {
+          console.log(error);
+          Swal.fire({
+            text: '更新失敗',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: '返回首頁',
+            cancelButtonText: '取消'
+          }).then((result) => {
+            if (result.value) {
+              this.router.navigate(['/calendar']);
+            }
+          });
+        }
+      );
+    }
   }
 
   meet(value) {
-
     if (value.target.checked === true) {
       this.isSchedule = false;
       this.attribute = value.target.value;
@@ -335,11 +331,9 @@ export class EditScheduleComponent implements OnInit {
       this.isSchedule = true;
       this.attribute = '行程';
     }
-    console.log(this.attribute);
   }
 
   schedule(value) {
-
     if (value.target.checked === true) {
       this.isMeet = false;
       this.attribute = value.target.value;
@@ -347,7 +341,6 @@ export class EditScheduleComponent implements OnInit {
       this.isMeet = true;
       this.attribute = '會議';
     }
-    console.log(this.attribute);
   }
 
   hide() {
@@ -406,10 +399,7 @@ export class EditScheduleComponent implements OnInit {
 
   changeSelectCalendar(calendarName) {
     this.showAddCalendars = [];
-    const allCalendar = this.allCalendar.slice();
-    const index = this.allCalendar.findIndex(calendar => calendar.name === calendarName);
-    allCalendar.splice(index, 1);
-    this.showAddCalendars = allCalendar;
+    this.showInviteCalendar(calendarName);
   }
 
   checkAllAddCalendar(info) {
@@ -440,5 +430,23 @@ export class EditScheduleComponent implements OnInit {
     });
   }
 
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
+    }
+  }
+
+  showInviteCalendar(calendarName) {
+    const allCalendar = this.allCalendar.slice();
+    const index = this.allCalendar.findIndex(calendar => calendar.name === calendarName);
+    allCalendar.splice(index, 1);
+    this.showAddCalendars = allCalendar;
+  }
 
 }
