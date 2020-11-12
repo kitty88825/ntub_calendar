@@ -2,8 +2,14 @@ import { Router } from '@angular/router';
 import { TokenService } from './../services/token.service';
 import { EventService } from './../services/event.service';
 import { formatDate } from '@angular/common';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-meeting',
@@ -12,8 +18,6 @@ import Swal from 'sweetalert2';
 })
 export class MeetingComponent implements OnInit {
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-  startDate = this.todayDate;
-  endDate = this.todayDate;
   myEmail = '';
   allMeet = [];
   myMeet = [];
@@ -32,6 +36,18 @@ export class MeetingComponent implements OnInit {
   @ViewChild('addStartDate') start: ElementRef;
   @ViewChild('addEndDate') end: ElementRef;
 
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
   constructor(
     private eventService: EventService,
     private tokenService: TokenService,
@@ -39,6 +55,7 @@ export class MeetingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.tokenService.getUser().subscribe(
       data => {
         this.myEmail = data.email;
@@ -80,7 +97,7 @@ export class MeetingComponent implements OnInit {
           this.invitedMeetSort();
           this.pastMeetSort();
         });
-
+        this.loading = !this.loading;
       }
     );
 
@@ -93,6 +110,7 @@ export class MeetingComponent implements OnInit {
         icon: 'error'
       });
     } else {
+      this.loading = !this.loading;
       this.invitedMeet = [];
       this.myMeet = [];
       this.pastMeet = [];
@@ -127,14 +145,21 @@ export class MeetingComponent implements OnInit {
       this.myMeetSort();
       this.invitedMeetSort();
       this.pastMeetSort();
+      this.loading = !this.loading;
+
+      if (this.myMeet.length === 0 && this.invitedMeet.length === 0 && this.pastMeet.length === 0) {
+        Swal.fire({
+          text: '查無會議',
+          icon: 'warning'
+        });
+      }
     }
   }
 
   myMeetSort() {
-    // tslint:disable-next-line: only-arrow-functions
-    this.myMeet.sort(function (a, b) {
-      const startA = a.startDate.toUpperCase(); // ignore upper and lowercase
-      const startB = b.startDate.toUpperCase(); // ignore upper and lowercase
+    this.myMeet.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
       if (startA < startB) {
         return -1;
       }
@@ -146,10 +171,9 @@ export class MeetingComponent implements OnInit {
   }
 
   invitedMeetSort() {
-    // tslint:disable-next-line: only-arrow-functions
-    this.invitedMeet.sort(function (a, b) {
-      const startA = a.startDate.toUpperCase(); // ignore upper and lowercase
-      const startB = b.startDate.toUpperCase(); // ignore upper and lowercase
+    this.invitedMeet.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
       if (startA < startB) {
         return -1;
       }
@@ -161,10 +185,9 @@ export class MeetingComponent implements OnInit {
   }
 
   pastMeetSort() {
-    // tslint:disable-next-line: only-arrow-functions
-    this.pastMeet.sort(function (a, b) {
-      const startA = a.startDate.toUpperCase(); // ignore upper and lowercase
-      const startB = b.startDate.toUpperCase(); // ignore upper and lowercase
+    this.pastMeet.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
       if (startA < startB) {
         return -1;
       }
@@ -204,6 +227,18 @@ export class MeetingComponent implements OnInit {
 
   goback() {
     this.edit = false;
+  }
+
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
+    }
   }
 
 }
