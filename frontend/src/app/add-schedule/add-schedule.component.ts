@@ -1,6 +1,6 @@
 import { TokenService } from './../services/token.service';
 import { UserCommonService } from './../services/user-common.service';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -28,7 +28,6 @@ export class AddScheduleComponent implements OnInit {
   calendars = [];
   allCalendars = [];
   showAddCalendars = [];
-  selectedItemsList = [];
   isCollapsed = false;
   isTrue = false;
   isOpen = false;
@@ -99,11 +98,7 @@ export class AddScheduleComponent implements OnInit {
           this.selectMainCalendar = this.calendars[0].name;
         }
 
-        const allCalendar = this.allCalendars.slice();
-        const index = this.allCalendars.findIndex(calendar => calendar.name === this.selectMainCalendar);
-        allCalendar.splice(index, 1);
-
-        this.showAddCalendars = allCalendar;
+        this.showInviteCalendar(this.selectMainCalendar);
       }
     );
 
@@ -118,12 +113,6 @@ export class AddScheduleComponent implements OnInit {
         });
       }
     );
-  }
-
-  fetchSelectedItems() {
-    this.selectedItemsList = this.calendars.filter((value, index) => {
-      return value.isChecked;
-    });
   }
 
   fileSelected(event) {
@@ -262,6 +251,13 @@ export class AddScheduleComponent implements OnInit {
     }
   }
 
+  showInviteCalendar(calendarName) {
+    const allCalendar = this.allCalendars.slice();
+    const index = this.allCalendars.findIndex(calendar => calendar.name === calendarName);
+    allCalendar.splice(index, 1);
+    this.showAddCalendars = allCalendar;
+  }
+
   meet(value) {
     if (value.target.checked === true) {
       this.isSchedule = false;
@@ -308,7 +304,6 @@ export class AddScheduleComponent implements OnInit {
   }
 
   CheckUncheckAll() {
-    this.fetchSelectedItems();
     this.commonUserEmail.forEach(email => {
       email.isChecked = this.MasterSelected;
     });
@@ -329,11 +324,7 @@ export class AddScheduleComponent implements OnInit {
 
   changeSelectCalendar(calendarName) {
     this.showAddCalendars = [];
-    console.log(this.allCalendars);
-    const allCalendar = this.allCalendars.slice();
-    const index = this.allCalendars.findIndex(calendar => calendar.name === calendarName);
-    allCalendar.splice(index, 1);
-    this.showAddCalendars = allCalendar;
+    this.showInviteCalendar(calendarName);
   }
 
   addCalendar() {
@@ -353,7 +344,6 @@ export class AddScheduleComponent implements OnInit {
         count++;
       }
     });
-    console.log(count);
 
     if (count === all) {
       this.addCalendarChecked = true;
