@@ -1,47 +1,49 @@
 <div class="body-content">
-  <input type="checkbox" name="" id="sideMenu-active">
-  <div class="sideMenu">
-    <label for="sideMenu-active" class="close">
-      <i class="material-icons">east</i>
-    </label>
-    <div class="sideMenu__content">
-      <div class="addBtn" (click)="addMeetName()">
-        <i class="material-icons">
-          group
-        </i>
-        <span>新增常用參與人員</span>
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="addBtn" (click)="addMeetName()">
+          <i class="material-icons">
+            group
+          </i>
+          <span>新增常用參與人員</span>
+        </div>
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              <div class="title">
+                <span>查看常用參與人員</span>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <ul class="item-categories__list">
+                <li *ngFor="let all of allMeetings; let i =index">
+                  <label class="container name">
+                    <input type="checkbox" class="material-icons" (change)="change(i)"
+                      [(ngModel)]="all.isChecked">{{all.title}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
       </div>
-      <ul class="item-categories">
-        <li>
-          <div class="item-categories__title active">
-            <div class="title">
-              <span>查看常用參與人員</span>
-            </div>
-            <div class="form-group row">
-              <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-                arrow_left
-              </i>
-            </div>
-          </div>
-          <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-            <ul class="item-categories__list">
-              <li *ngFor="let all of allMeetings; let i =index">
-                <label class="container name">
-                  <input type="checkbox" class="material-icons" (change)="change(i)"
-                    [(ngModel)]="all.isChecked">{{all.title}}
-                  <span class="checkmark"></span>
-                </label>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ul>
     </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
   </div>
-  <label for="sideMenu-active" class="open">
-    <i class="material-icons">menu</i>
-  </label>
   <div class="right">
     <app-navbar></app-navbar>
     <main>
@@ -218,5 +220,9 @@
         </section>
       </article>
     </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
   </div>
 </div>

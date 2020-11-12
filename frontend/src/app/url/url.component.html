@@ -1,40 +1,42 @@
 <div class="body-content">
-  <input type="checkbox" name="" id="sideMenu-active">
-  <div class="sideMenu">
-    <label for="sideMenu-active" class="close">
-      <i class="material-icons">east</i>
-    </label>
-    <div class="sideMenu__content">
-      <ul class="item-categories">
-        <li>
-          <div class="item-categories__title active">
-            我的訂閱
-            <div class="form-group row">
-              <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-                arrow_left
-              </i>
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              我的訂閱
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
             </div>
-          </div>
-          <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
-            <ul class="item-categories__list">
-              <li *ngFor="let sub of subCalendar">
-                <label class="container">
-                  <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="sub.isChecked"
-                    (change)="changeSelect()">{{sub.name}}
-                  <span class="checkmark"></span>
-                </label>
-                <span class="item-categories__status" [style.background-color]="sub.color"></span>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ul>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+              <ul class="item-categories__list">
+                <li *ngFor="let sub of subCalendar">
+                  <label class="container">
+                    <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="sub.isChecked"
+                      (change)="changeSelect()">{{sub.name}}
+                    <span class="checkmark"></span>
+                  </label>
+                  <span class="item-categories__status" [style.background-color]="sub.color"></span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
   </div>
-  <label for="sideMenu-active" class="open">
-    <i class="material-icons">menu</i>
-  </label>
   <div class="right">
     <app-navbar></app-navbar>
     <main>
@@ -118,6 +120,9 @@
         </section>
       </article>
     </main>
-
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
   </div>
 </div>

@@ -4,8 +4,15 @@ import { SubscriptionService } from './../services/subscription.service';
 import { Router } from '@angular/router';
 import { URLService } from './../services/url.service';
 import { TokenService } from './../services/token.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+import { ViewChild } from '@angular/core';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-url',
@@ -26,6 +33,18 @@ export class URLComponent implements OnInit {
   subEvents = [];
   allCalendar = [];
 
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
   constructor(
     private tokenService: TokenService,
     private urlService: URLService,
@@ -36,6 +55,7 @@ export class URLComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.tokenService.getUser().subscribe(
       data => {
         this.url = data.url;
@@ -55,8 +75,7 @@ export class URLComponent implements OnInit {
 
         this.showEvent = this.subEvents;
 
-        // tslint:disable-next-line: only-arrow-functions
-        this.subCalendarId = this.subCalendarId.filter(function (el, i, arr) {
+        this.subCalendarId = this.subCalendarId.filter((el, i, arr) => {
           return arr.indexOf(el) === i;
         });
 
@@ -74,7 +93,6 @@ export class URLComponent implements OnInit {
             });
           }
         );
-
       }
     );
 
@@ -99,8 +117,7 @@ export class URLComponent implements OnInit {
                 }
               });
             });
-            console.log(this.showEvent);
-
+            this.loading = !this.loading;
           }
         );
 
@@ -109,7 +126,6 @@ export class URLComponent implements OnInit {
 
   }
 
-  /* To copy Text from Textbox */
   copyInputMessage(inputElement) {
     inputElement.select();
     document.execCommand('copy');
@@ -144,6 +160,18 @@ export class URLComponent implements OnInit {
         }
       });
     });
+  }
+
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
+    }
   }
 
 }

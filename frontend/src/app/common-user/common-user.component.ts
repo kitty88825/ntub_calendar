@@ -1,7 +1,13 @@
 import { UserCommonService } from './../services/user-common.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-common-user',
@@ -30,12 +36,25 @@ export class CommonUserComponent implements OnInit {
   addMasterSelected = false;
   hasCommonUser = false;
 
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private userCommonService: UserCommonService
   ) { }
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
@@ -72,6 +91,7 @@ export class CommonUserComponent implements OnInit {
             }
           });
         }
+        this.loading = !this.loading;
       }, error => {
         Swal.fire({
           text: '獲取資料失敗',
@@ -107,7 +127,6 @@ export class CommonUserComponent implements OnInit {
             this.deleteId = meet.id.id;
           }
         });
-        console.log(this.deleteId);
         this.userCommonService.deleteCommonUser(this.deleteId).subscribe(
           data => {
             Swal.fire({
@@ -331,6 +350,18 @@ export class CommonUserComponent implements OnInit {
     this.oldInvalidEmails = this.oldInvalidEmails.filter(deleteEmail => {
       return deleteEmail.isChecked === false;
     });
+  }
+
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
+    }
   }
 
 }
