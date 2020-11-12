@@ -1,11 +1,18 @@
 import { TokenService } from './../services/token.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import { EventService } from '../services/event.service';
 import { DatePipe } from '@angular/common';
 import { CalendarService } from '../services/calendar.service';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+import { ViewChild } from '@angular/core';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 type AOA = any[];
 
@@ -15,6 +22,7 @@ type AOA = any[];
   styleUrls: ['./official-change.component.scss'],
   providers: [DatePipe]
 })
+
 export class OfficialChangeComponent implements OnInit {
   data: AOA;
   formData = new FormData();
@@ -29,9 +37,20 @@ export class OfficialChangeComponent implements OnInit {
   isOpen = false;
   permissionCalendars = [];
   staff = localStorage.getItem('staff');
-
-  // tslint:disable-next-line: member-ordering
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  @ViewChild('customLoadingTemplate', { static: false }) customLoadingTemplate: TemplateRef<any>;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
 
   constructor(
     private router: Router,
@@ -41,6 +60,7 @@ export class OfficialChangeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.tokenService.getUser().subscribe(
       data => {
         this.group = data.groups;
@@ -67,7 +87,7 @@ export class OfficialChangeComponent implements OnInit {
         });
       }
     );
-
+    this.loading = !this.loading;
   }
 
   add() {
@@ -84,6 +104,7 @@ export class OfficialChangeComponent implements OnInit {
     });
 
     if (this.istrue === this.datas.length) {
+      this.loading = !this.loading;
       this.datas.forEach(event => {
         this.permissionCalendars.forEach(calendar => {
           if (calendar.name === event[2]) {
@@ -95,31 +116,18 @@ export class OfficialChangeComponent implements OnInit {
         this.formData.append('start_at', event[3] + 'T00:00:00+08:00');
         this.formData.append('end_at', event[4] + 'T00:00:00+08:00');
         this.eventService.postEvent(this.formData).subscribe(
-          data => {
-            console.log(data);
-            Swal.fire({
-              text: '新增成功',
-              icon: 'success',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#aaa',
-              confirmButtonText: '回首頁',
-              cancelButtonText: '留在此頁',
-            }).then((result) => {
-              if (result.value) {
-                this.router.navigate(['/calendar']);
-              }
-            });
-          },
-          error => {
-            console.log(error);
-            Swal.fire({
-              text: '新增失敗',
-              icon: 'error',
-            });
-          }
+          data => { }
         );
       });
+      this.loading = !this.loading;
+      if (this.loading === false) {
+        Swal.fire({
+          text: '新增成功',
+          icon: 'success',
+        }).then((result) => {
+          this.router.navigate(['calendar']);
+        });
+      }
     }
 
   }
@@ -137,7 +145,6 @@ export class OfficialChangeComponent implements OnInit {
     this.datas = [];
     let count = 0;
     const permissionCalendarsCount = this.permissionCalendars.length;
-    /* wire up file reader */
     const target: DataTransfer = (evt.target) as DataTransfer;
     if (target.files.length > 1) {
       Swal.fire({
@@ -148,11 +155,9 @@ export class OfficialChangeComponent implements OnInit {
     }
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
-      /* read workbook */
       const bstr: string = e.target.result;
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary', cellDates: true, cellNF: false, cellText: false });
 
-      /* grab first sheet */
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
@@ -196,6 +201,18 @@ export class OfficialChangeComponent implements OnInit {
       this.router.navigate(['/add-calendar']);
     } else {
       this.router.navigate(['/add-calendar-unstaff']);
+    }
+  }
+
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
     }
   }
 

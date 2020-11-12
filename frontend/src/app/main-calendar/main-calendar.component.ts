@@ -407,6 +407,7 @@ export class MainCalendarComponent implements OnInit {
       cancelButtonText: '取消'
     }).then((result) => {
       if (result.value) {
+        this.loading = !this.loading;
         this.deleteData.forEach(deleteData => {
           this.eventService.deleteEvent(deleteData).subscribe(
             data => {
@@ -416,15 +417,18 @@ export class MainCalendarComponent implements OnInit {
                 .getApi()
                 .getEventById(String(deleteData))
                 .remove();
-              Swal.fire({
-                text: '刪除成功',
-                icon: 'success',
-              }).then((res) => {
-                window.location.reload();
-              });
             }
           );
         });
+        this.loading = !this.loading;
+        if (this.loading === false) {
+          Swal.fire({
+            text: '刪除成功',
+            icon: 'success',
+          }).then((res) => {
+            window.location.reload();
+          });
+        }
       }
     });
   }

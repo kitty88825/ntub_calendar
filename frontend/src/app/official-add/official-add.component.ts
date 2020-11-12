@@ -19,7 +19,6 @@ const SecondaryBlue = '#006ddd';
 export class OfficialAddComponent implements OnInit {
   showDatas = [];
   header = ['發布標題', '內容概要', '發布單位', '開始日期', '結束日期'];
-  output = [];
   isCollapsed = false;
   selectCalendar = '';
   calendarId = [];
@@ -54,7 +53,7 @@ export class OfficialAddComponent implements OnInit {
 
 
   ngOnInit(): void {
-
+    this.loading = !this.loading;
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => {
@@ -63,7 +62,7 @@ export class OfficialAddComponent implements OnInit {
         this.selectCalendar = this.outputCalendar[0].name;
       }
     );
-
+    this.loading = !this.loading;
   }
 
   onChange() {
@@ -72,12 +71,13 @@ export class OfficialAddComponent implements OnInit {
   }
 
   daochu() {
-    this.output.push(this.header);
+    const output = [];
+    output.push(this.header);
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.showDatas.length; i++) {
-      this.output.push(this.showDatas[i]);
+      output.push(this.showDatas[i]);
     }
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.output);
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(output);
 
     const wscols = [
       { wch: 20 },
