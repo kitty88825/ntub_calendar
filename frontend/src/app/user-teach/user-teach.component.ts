@@ -7,11 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserTeachComponent implements OnInit {
 
-  data = {
-    current: '1'
-  };
-
-  loggin;
+  data = {current: '1'};
+  loggin = '';
 
   constructor() { }
 
@@ -21,7 +18,6 @@ export class UserTeachComponent implements OnInit {
 
   setCurrent(param) {
     this.data.current = param;
-    console.log(param);
   }
 
 }

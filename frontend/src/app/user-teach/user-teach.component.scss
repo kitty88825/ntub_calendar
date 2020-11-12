@@ -14,7 +14,7 @@
       box-shadow      : $box-shadow--container;
 
       h2 {
-        font-size  : 30px;
+        font-size  : 25px;
         font-weight: 800;
       }
 
@@ -102,15 +102,15 @@
         margin-left     : $content-size_left-right/2;
         margin-top      : $content-size_top-bottom/2;
         cursor          : pointer;
-        padding         : 15px;
+        padding         : $content-size_top-bottom $content-size_left-right/2;
         box-shadow      : -1px 0px 5px -1px rgba(0, 0, 0, 0.24);
 
         li {
-          font-size     : 24px;
+          font-size     : 20px;
           letter-spacing: 2px;
           font-weight   : 400;
           text-align    : center;
-          margin-top    : -$content-size_top-bottom;
+          justify-content: center;
         }
 
       }
@@ -138,6 +138,7 @@
     height          : $height_header;
     background-color: $color_white;
     box-shadow      : $box-shadow;
+    z-index : 998;
 
     &__title {
       display    : inline-flex;
@@ -195,8 +196,6 @@
 
 @media screen and (max-width:480px) {
   .header {
-    position: fixed;
-    z-index : 998;
 
     &__function {
       display: none;
