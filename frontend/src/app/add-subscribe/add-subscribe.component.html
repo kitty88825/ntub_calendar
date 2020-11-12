@@ -97,7 +97,7 @@
         <ul class="item-categories">
           <li>
             <div class="item-categories__title active">
-              新增訂閱
+              選擇訂閱
               <div class="form-group row">
                 <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
@@ -166,20 +166,28 @@
             <i class="material-icons">
               search
             </i>
-            <label class="container">
-              <input type="checkbox" class="material-icons" (change)="checkAll()" [(ngModel)]="checkedAll">全選
-              <span class="checkmark"></span>
-            </label>
           </div>
           <hr>
           <div class="officeEvent">
             <ul>
-              <li *ngFor="let event of showEvent | appFilter : searchText">
-                <label class="container">
-                  <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
-                    (change)="changeEvent()">{{event.title}}
-                  <span class="checkmark"></span>
-                </label>
+              <li *ngFor="let calendar of showEvent" class="calendarEvent">
+                <div class="officeEvent__title">
+                  {{calendar.calendarName}}
+                  <label class="container">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked" (change)="changeAll(calendar)">全選
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="officeEvent__content">
+                  <ul>
+                    <li *ngFor="let event of calendar.events | appFilter: searchText">
+                      <label class="container">
+                        <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked" (change)="changeEvent(calendar)">{{event.title}}
+                        <span class="checkmark"></span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
               </li>
             </ul>
             <div class="subBtn">

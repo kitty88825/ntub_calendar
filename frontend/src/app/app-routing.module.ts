@@ -16,7 +16,6 @@ import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { UserTeachComponent } from './user-teach/user-teach.component';
 import { URLComponent } from './url/url.component';
 
-
 const routes: Routes = [
   { path: '', component: IndexComponent },
   { path: 'index', component: IndexComponent },

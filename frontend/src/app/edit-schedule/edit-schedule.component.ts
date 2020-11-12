@@ -433,5 +433,12 @@ export class EditScheduleComponent implements OnInit {
     }
   }
 
+  adviseTime() {
+    Swal.fire({
+      text: '功能開發中請耐心等待！',
+      icon: 'warning'
+    });
+  }
+
 
 }

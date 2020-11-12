@@ -13,213 +13,14 @@
       background-color: $color_white;
       box-shadow      : $box-shadow--container;
 
-      .title {
-        display     : flex;
-        align-items : center;
-        width       : 60%;
-        margin-left : auto;
-        margin-right: auto;
-
-        i {
-          color: rgba($color: red, $alpha: 0.6);
-        }
-
-        h1 {
-          margin-left: $content-size_left-right/2;
-          font-size  : 18px;
-          color      : rgba($color: red, $alpha: 0.6);
-        }
-      }
-
-      .form {
-        width       : 54%;
-        margin-left : auto;
-        margin-right: auto;
-        margin-top  : $content-size_top-bottom*3;
-
-        h2 {
-          width: 20%;
-        }
-
-        &__name {
-          display    : flex;
-          align-items: center;
-
-          h2 {
-            font-size : 20px;
-            margin-top: $content-size_top-bottom;
-          }
-
-          input {
-            width         : 450px;
-            border        : 0;
-            outline       : 0;
-            border-radius : 0;
-            background    : transparent;
-            font-size     : 17px;
-            letter-spacing: 1px;
-            margin-left   : $content-size_left-right;
-            border-bottom : 2px solid $color_text-light;
-          }
-
-          input:focus,
-          input:hover {
-            border-bottom: 2px solid $color_accent;
-          }
-        }
-
-        &__color {
-          display    : flex;
-          align-items: center;
-          margin-top : $content-size_top-bottom*2;
-
-          .color {
-            width      : 70px;
-            height     : 15px;
-            cursor     : pointer;
-            margin-left: $content-size_left-right;
-
-            i {
-              position : relative;
-              color    : $color_border;
-              font-size: 17px;
-              left     : 75%;
-              top      : -10%;
-            }
-          }
-        }
-
-        &__description {
-          display    : flex;
-          align-items: center;
-          margin-top : $content-size_top-bottom*2;
-
-          textarea {
-            margin-left: $content-size_left-right*2;
-          }
-        }
-
-        .content {
-          margin-top: $content-size_top-bottom;
-          width     : 100%;
-          min-height: 100px;
-        }
-
-        input {
-          margin-top: $content-size_top-bottom;
-        }
-
-        &__attribute {
-          display    : flex;
-          align-items: center;
-          margin-top : $content-size_top-bottom;
-
-          label {
-            width      : 15%;
-            margin-left: $content-size_left-right/2;
-            margin-top : $content-size_top-bottom/2;
-
-            span {
-              border-radius: 30px;
-            }
-          }
-
-        }
-
-        &__use {
-          margin-top: $content-size_top-bottom*2;
-
-          textarea {
-            margin-top: $content-size_top-bottom;
-          }
-        }
-      }
-
-      .submit {
-        background-color: $color_accent;
-        width           : 6%;
-        border-radius   : 5px;
-        color           : white;
-        text-align      : center;
-        letter-spacing  : 1px;
-        padding         : 4px;
-        margin-top      : $content-size_top-bottom;
-        margin-left     : 71%;
+      h1 {
+        color: red;
+        text-align: center;
+        letter-spacing: 1px;
       }
 
     }
 
-    .content__office__header {
-      margin-top : $content-size_top-bottom*2;
-      display    : flex;
-      align-items: center;
-
-      .add {
-        width           : fit-content;
-        display         : flex;
-        letter-spacing  : 1px;
-        align-items     : center;
-        margin-left     : auto;
-        font-size       : 13px;
-        color           : white;
-        border-radius   : 90px;
-        cursor          : pointer;
-        background-color: $color_second;
-        padding         : $content-size_top-bottom/4 $content-size_left-right/2;
-
-        i {
-          color: white;
-        }
-      }
-    }
-
-    .otherOffice {
-      width     : 100%;
-      margin-top: $content-size_top-bottom;
-      font-size : 14px;
-
-      &__title {
-        display         : flex;
-        padding         : $content-size_top-bottom $content-size_left-right;
-        background-color: $color_table-header;
-        border-radius   : 5px 5px 0 0;
-        border          : 1px $color_form_control solid;
-      }
-
-      &__content {
-        display      : flex;
-        border-left  : 1px $color_form_control solid;
-        border-bottom: 1px $color_form_control solid;
-        border-right : 1px $color_form_control solid;
-        padding      : $content-size_top-bottom $content-size_left-right;
-
-        select {
-          width: 80%;
-        }
-      }
-
-      &__name {
-        flex: 1;
-      }
-
-      &__role {
-        flex: 1;
-      }
-
-      &__permission {
-        flex: 1;
-      }
-
-      &__delete {
-        flex: 0.3;
-
-        i {
-          cursor    : pointer;
-          margin-top: $content-size_top-bottom/2;
-          color     : red;
-        }
-      }
-    }
   }
 
   .sideMenu {
@@ -231,7 +32,7 @@
     bottom          : 0;
 
     .close {
-      display: nonw;
+      display: none;
     }
   }
 

@@ -173,12 +173,9 @@
                   <h2>參與人員：</h2>
                   <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="email">
                     <div>
-                      <input type="email" class="form-control" placeholder="輸入邀請對象Email" formControlName="toAddress">
+                      <input type="email" class="form-control" placeholder="輸入邀請對象北商Email" formControlName="toAddress">
                     </div>
-                    <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid">
-                    <label class="button-primary">
-                      <span>邀請</span>
-                    </label>
+                    <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid"  value="邀請">
                   </form>
                 </div>
                 <div class="add__common-user" (click)="OpencommonUser()">
@@ -204,8 +201,8 @@
                     </li>
                   </ul>
                 </div>
-                <div class="all_common-user">
-                  <input type="button" class="form-control" value="建議時間">
+                <div class="all_common-user" (click)="adviseTime()">
+                  <input type="button" class="form-control" value="推薦時間">
                 </div>
               </div>
               <div class="add__file">
@@ -318,12 +315,9 @@
               <h2>參與人員</h2>
               <form [formGroup]="sendEmailForm" (ngSubmit)="send(sendEmailForm.value)" class="email">
                 <div>
-                  <input type="email" class="form-control" placeholder="輸入邀請對象Email" formControlName="toAddress">
+                  <input type="email" class="form-control" placeholder="輸入邀請對象北商Email" formControlName="toAddress">
                 </div>
                 <input type="submit" class="addUserBtn" [disabled]="!sendEmailForm.valid">
-                <label class="invite">
-                  <span>邀請</span>
-                </label>
               </form>
               <div class="add_small__common-user" (click)="OpencommonUser()">
                 <h3>常用</h3>
@@ -350,7 +344,7 @@
                 </li>
               </ul>
             </div>
-            <div class="all_common-user">
+            <div class="all_common-user" (click)="adviseTime()">
               <input type="button" class="form-control" value="推薦時間">
             </div>
             <hr>

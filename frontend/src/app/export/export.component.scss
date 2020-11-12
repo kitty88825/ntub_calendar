@@ -35,6 +35,10 @@
       background-color: $color_white;
       box-shadow      : $box-shadow--container;
 
+      .header {
+        display: none;
+      }
+
       .subBtn {
         display         : flex;
         align-items     : center;

@@ -44,6 +44,7 @@
         display       : flex;
         align-items   : center;
         letter-spacing: 1px;
+        width: 100%;
 
         h2 {
           width    : 200px;
@@ -61,25 +62,62 @@
         }
 
         i {
-          position: relative;
-          left    : -30px;
-        }
-
-        label.container {
-          width      : 80px;
-          margin-left: $content-size_left-right/2;
-          margin-top : $content-size_top-bottom/2;
+          position: absolute;
+          left    : 94%;
         }
       }
 
       .officeEvent {
         width: 100%;
 
-        ul {
+        li.calendarEvent {
+          margin-top: $content-size_top-bottom;
+        }
 
-          li {
-            display: inline-grid;
-            width  : 50%;
+        &__title {
+          font-size: 18px;
+          font-weight: 550;
+          display: flex;
+          align-items: center;
+          background-color: $color_accent;
+          letter-spacing: 1px;
+          color: white;
+          border-radius: 5px 5px 0 0;
+          padding: $content-size_top-bottom/2 $content-size_left-right/2;
+
+          label.container {
+            margin-top: $content-size_top-bottom/2;
+            font-size: 15px;
+            width      : 80px;
+            margin-left: auto;
+
+            input {
+              margin-top: $content-size_top-bottom/2;
+            }
+          }
+
+          label.container input:checked ~ .checkmark {
+            background-color:white;
+          }
+
+          label.container .checkmark::after {
+            border-color: $color_accent;
+          }
+        }
+
+        &__content {
+          border-radius: 0 0 5px 5px;
+          border: 1px solid $color_border;
+          padding: $content-size_top-bottom/2 $content-size_left-right/2;
+          display: grid;
+
+          ul {
+            margin-top: $content-size_top-bottom;
+
+            li {
+              display: inline-block;
+              width: 50%;
+            }
           }
         }
 
@@ -178,10 +216,6 @@
           align-items: center;
           padding    : $content-size_top-bottom/2 0;
           cursor     : pointer;
-        }
-
-        span {
-          border-radius: 30px;
         }
       }
 
@@ -420,8 +454,12 @@
             }
 
             input.searchbox {
-              width      : 120px;
+              width      : 150px;
               font-size: 13px;
+            }
+
+            i {
+              left: 82%;
             }
 
             label.container {

@@ -35,6 +35,7 @@ import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
 import { URLComponent } from './url/url.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { NgxLoadingModule } from 'ngx-loading';
 
 const config = new AuthServiceConfig([
   {
@@ -90,7 +91,8 @@ export function provideConfig() {
         },
       }
     }),
-    ColorPickerModule
+    ColorPickerModule,
+    NgxLoadingModule.forRoot({})
   ],
   providers: [
     {

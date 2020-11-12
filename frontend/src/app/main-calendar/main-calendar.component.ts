@@ -1,5 +1,5 @@
 import { TokenService } from './../services/token.service';
-import { Component, ViewChild, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, Output, EventEmitter, HostListener, TemplateRef } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
@@ -10,6 +10,12 @@ import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
 import { SubscriptionService } from '../services/subscription.service';
 import { formatDate } from '@angular/common';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-main-calendar',
@@ -20,8 +26,6 @@ export class MainCalendarComponent implements OnInit {
   user = true;
   official = !this.user;
   searchText = '';
-  searchTextSmall = '';
-  searchTextGrid = '';
   put;
   title;
   eventsYear = [];
@@ -57,6 +61,20 @@ export class MainCalendarComponent implements OnInit {
   initShowEvents = [];
   permission: boolean;
   staff = localStorage.getItem('staff');
+  lookEvent = {id: 0, title: ''};
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none,
+    primaryColour: this.primaryColour, secondaryColour: this.secondaryColour,
+    tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
 
   constructor(
     private router: Router,
@@ -127,6 +145,8 @@ export class MainCalendarComponent implements OnInit {
 
   eventClick(info) {
     this.showEvent = true;
+    this.lookEvent.id = info.event._def.publicId;
+    this.lookEvent.title = info.event._def.title;
     this.eventTitle = info.event._def.title;
     this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
     this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
@@ -136,6 +156,18 @@ export class MainCalendarComponent implements OnInit {
     this.eventFile = info.event._def.extendedProps.files.length + '個';
     this.eventLocation = info.event._def.extendedProps.location;
     this.permission = info.event._def.extendedProps.permission;
+  }
+
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
+    }
   }
 
   displayType(eventType: any): void {
@@ -219,6 +251,8 @@ export class MainCalendarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = !this.loading;
+    this.eventsYear.push(this.todayDate.substr(0, 4));
 
     this.tokenService.getUser().subscribe(
       re => {
@@ -311,6 +345,7 @@ export class MainCalendarComponent implements OnInit {
           this.initShowEvents = this.showEvents.slice();
         }
 
+        this.loading = false;
       }
     );
 
@@ -487,6 +522,8 @@ export class MainCalendarComponent implements OnInit {
       this.initShowEvents = this.showEvents.slice();
       this.IsLoadingEnd = true;
     }
+
+    this.showEventsSort();
 
   }
 

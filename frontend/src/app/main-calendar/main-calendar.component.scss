@@ -7,7 +7,7 @@
     padding-left    : $width_aside;
     background-color: $color_primary;
 
-    section.container {
+    section.container, section.small {
       width           : 96%;
       margin          : $content-size_left-right;
       margin-top      : $content-size_top-bottom*4;
@@ -275,6 +275,10 @@
       }
     }
 
+    section.small {
+      display: none;
+    }
+
   }
 
   .aside {
@@ -437,20 +441,20 @@
             }
 
             i {
-              color: white;
+              color    : white;
               font-size: 14px;
             }
           }
 
           .delete {
             background-color: rgba($color: red, $alpha: 0.6);
-            margin-left: $content-size_left-right/2;
-            margin-right: $content-size_left-right;
+            margin-left     : $content-size_left-right/2;
+            margin-right    : $content-size_left-right;
           }
 
           .edit {
             background-color: $color_icon;
-            margin-left: auto;
+            margin-left     : auto;
           }
 
         }
@@ -521,9 +525,9 @@
         padding : $content-size_top-bottom $content-size_left-right;
 
         &__list {
-          display    : flex;
-          flex-flow  : column;
-          padding    : $content-size_left-right/2 0;
+          display  : flex;
+          flex-flow: column;
+          padding  : $content-size_left-right/2 0;
 
           li {
             display    : inline-flex;
@@ -574,7 +578,8 @@
           transition: $transition_short;
         }
 
-        &__subscribe, &__userTeach {
+        &__subscribe,
+        &__userTeach {
           display         : flex;
           align-items     : center;
           width           : 100%;
@@ -649,6 +654,11 @@
         padding: $height_header $content-size_left-right;
 
         section.container {
+          display: none;
+        }
+
+        section.small {
+          display: block;
           width     : 100%;
           margin    : 0;
           margin-top: $content-size_top-bottom*3;
@@ -656,13 +666,13 @@
 
           span.checkmark {
             height: 15px;
-            width: 15px;
-            top : 6px;
+            width : 15px;
+            top   : 6px;
           }
 
           span.checkmark::after {
             left: 5px;
-            top: 1.5px;
+            top : 1.5px;
           }
 
           .view {
@@ -701,9 +711,9 @@
             }
 
             .deleteBtn {
-              padding-top: 5px;
+              padding-top : 5px;
               margin-right: 0;
-              margin-left: $content-size_left-right/3;
+              margin-left : $content-size_left-right/3;
 
               i {
                 font-size: 17px;
@@ -727,7 +737,7 @@
             }
 
             &__date {
-              flex     : 1;
+              flex: 1;
             }
 
             &__checkbox {
@@ -751,9 +761,73 @@
             }
 
             li {
-
               >div {
                 padding: $content-size_top-bottom/2;
+              }
+            }
+
+            &--grid {
+
+              >li:not(.event-list__header),
+              li:not(.event-list__phase) {
+                display: grid;
+              }
+
+              .event-list__header {
+
+                .event-list__office,
+                .event-list__date {
+                  display: none;
+                }
+
+                .event-list__title {
+                  display: flex;
+
+                  .event-list__checkbox {
+                    margin-top: $content-size_top-bottom/2;
+                    left      : 0;
+                  }
+
+                  span.title {
+                    margin-left: $content-size_left-right/2;
+                  }
+                }
+              }
+
+              .event-list__office {
+                width : fit-content;
+                margin: 0 auto;
+              }
+
+              li.event-list__card {
+                display   : inline-block;
+                width     : 100%;
+                margin    : 0;
+                text-align: center;
+                margin    : $content-size_top-bottom 0;
+                box-shadow: 1px 1px 7px -3px rgba(0, 0, 0, 0.75);
+
+                .event-list__title {
+                  width : fit-content;
+                  margin: 0px auto;
+                }
+
+                .event-list__checkbox {
+                  margin-top: $content-size_top-bottom/2;
+                  left      : 0;
+                }
+
+                .event-list__checkbox {
+                  display: flex;
+
+                  i {
+                    cursor     : pointer;
+                    margin-left: $content-size_left-right*12;
+                    width      : 10px;
+                    height     : 10px;
+                    margin-top : -$content-size_top-bottom/2;
+                  }
+                }
               }
             }
           }

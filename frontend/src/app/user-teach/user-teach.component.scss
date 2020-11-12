@@ -38,6 +38,10 @@
           display    : flex;
           align-items: center;
 
+          i {
+            color: black;
+          }
+
           span {
             background-color: black;
             color           : white;
@@ -69,6 +73,10 @@
       color           : white;
       font-size       : 25px;
       letter-spacing  : 2px;
+    }
+
+    section.content {
+      display: none;
     }
 
   }
@@ -233,6 +241,7 @@
     }
 
     section.content {
+      display: block;
 
       section.container {
         display      : block !important;

@@ -1,3 +1,4 @@
+import { EventService } from './../services/event.service';
 import { CalendarService } from './../services/calendar.service';
 import { SubscriptionService } from './../services/subscription.service';
 import { Router } from '@angular/router';
@@ -23,11 +24,13 @@ export class URLComponent implements OnInit {
   searchText = '';
   showEvent = [];
   subEvents = [];
+  allCalendar = [];
 
   constructor(
     private tokenService: TokenService,
     private urlService: URLService,
     private router: Router,
+    private eventService: EventService,
     private calendarService: CalendarService,
     private subscriptionService: SubscriptionService
   ) { }
@@ -40,7 +43,7 @@ export class URLComponent implements OnInit {
       }
     );
 
-    this.subscriptionService.getSubscription().subscribe(
+    this.subscriptionService.getEventSubscription().subscribe(
       data => {
         data.forEach(event => {
           this.subEvents.push({
@@ -51,6 +54,7 @@ export class URLComponent implements OnInit {
         });
 
         this.showEvent = this.subEvents;
+
         // tslint:disable-next-line: only-arrow-functions
         this.subCalendarId = this.subCalendarId.filter(function (el, i, arr) {
           return arr.indexOf(el) === i;
@@ -73,6 +77,36 @@ export class URLComponent implements OnInit {
 
       }
     );
+
+    this.subscriptionService.getCalendarSubscription().subscribe(
+      data => {
+        data.forEach(calendar => {
+          this.subCalendar.push({
+            id: calendar.id, name: calendar.name, color: calendar.color, display: calendar.display,
+            description: calendar.description, permissions: calendar.permissions, isChecked: true
+          });
+          this.allCalendar.push(calendar.id);
+        });
+        this.eventService.getEvents().subscribe(
+          res => {
+            res.forEach(event => {
+              this.allCalendar.forEach(all => {
+                if (event.eventinvitecalendarSet[0].mainCalendar.id === all) {
+                  this.showEvent.push({
+                    id: event.id, title: event.title, calendars: event.eventinvitecalendarSet,
+                    color: event.eventinvitecalendarSet[0].mainCalendar.color
+                  });
+                }
+              });
+            });
+            console.log(this.showEvent);
+
+          }
+        );
+
+      }
+    );
+
   }
 
   /* To copy Text from Textbox */

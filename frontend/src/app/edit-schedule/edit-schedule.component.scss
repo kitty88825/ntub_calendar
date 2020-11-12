@@ -149,10 +149,6 @@
             align-items: center;
 
             input.addUserBtn {
-              display: none;
-            }
-
-            label {
               width           : 50px;
               display         : flex;
               justify-content : center;
@@ -588,7 +584,8 @@
             flex: 0.2;
 
             i {
-              margin-top: $content-size_top-bottom/2;
+              margin-left: $content-size_left-right/4;
+              margin-top : $content-size_top-bottom/2;
             }
 
             i.no_response {
@@ -1055,7 +1052,7 @@
                 }
 
                 h3 {
-                  font-size: 13px;
+                  font-size  : 13px;
                   margin-left: $content-size_left-right/2;
                 }
               }
@@ -1157,7 +1154,7 @@
                   }
 
                   h4 {
-                    font-size: 13px;
+                    font-size  : 13px;
                     margin-left: $content-size_left-right/2;
                   }
                 }
@@ -1255,12 +1252,12 @@
               letter-spacing: 1px;
 
               .event_block {
-                padding    : 0 $content-size_left-right;
-                width      : 100%;
-                overflow   : unset;
-                height     : 180px;
-                margin-top : 0;
-                box-shadow : none;
+                padding   : 0 $content-size_left-right;
+                width     : 100%;
+                overflow  : unset;
+                height    : 180px;
+                margin-top: 0;
+                box-shadow: none;
 
                 li {
                   display    : flex;
@@ -1278,11 +1275,11 @@
                 }
 
                 ul.allCommonUserForm {
-                  padding: $content-size_top-bottom $content-size_left-right/2;
+                  padding   : $content-size_top-bottom $content-size_left-right/2;
                   margin-top: $content-size_top-bottom/2;
-                  overflow   : auto;
-                  height: 150px;
-                  border     : $color_border 2px solid;
+                  overflow  : auto;
+                  height    : 150px;
+                  border    : $color_border 2px solid;
                 }
               }
 
@@ -1317,7 +1314,7 @@
                   margin-right: 3%;
                   height      : 75%;
                   border      : $color_border 2px solid;
-                  padding: $content-size_top-bottom $content-size_left-right/2;
+                  padding     : $content-size_top-bottom $content-size_left-right/2;
                 }
 
                 .btn {

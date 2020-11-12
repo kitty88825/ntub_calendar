@@ -141,10 +141,6 @@
             align-items: center;
 
             input.addUserBtn {
-              display: none;
-            }
-
-            label {
               width           : 50px;
               display         : flex;
               justify-content : center;
@@ -905,16 +901,6 @@
                 align-items: center;
 
                 input.addUserBtn {
-                  display: none;
-                }
-
-                input {
-                  font-size  : 13px;
-                  width      : 140px;
-                  margin-left: $content-size_left-right/2;
-                }
-
-                label {
                   width           : 45px;
                   display         : flex;
                   justify-content : center;
@@ -927,6 +913,12 @@
                   transition      : box-shadow .4s ease;
                   margin-left     : -$content-size_left-right/4;
                   background-color: $color_border;
+                }
+
+                input {
+                  font-size  : 13px;
+                  width      : 140px;
+                  margin-left: $content-size_left-right/2;
                 }
               }
             }
