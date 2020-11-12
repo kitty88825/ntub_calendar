@@ -1,8 +1,13 @@
 import { TokenService } from './../services/token.service';
-import { Router } from '@angular/router';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { CalendarService } from './../services/calendar.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-add-calendar',
@@ -40,12 +45,25 @@ export class AddCalendarComponent implements OnInit {
   { id: 0, groupName: '', role: 'student', authority: 'read', group: [] }];
   staff = localStorage.getItem('staff');
 
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
   constructor(
     private calendarService: CalendarService,
     private tokenService: TokenService,
   ) { }
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.tokenService.getUser().subscribe(
       result => {
         this.group = result.groups;
@@ -71,6 +89,7 @@ export class AddCalendarComponent implements OnInit {
             });
           });
         });
+        this.loading = !this.loading;
       },
       error => {
         Swal.fire({
@@ -177,6 +196,7 @@ export class AddCalendarComponent implements OnInit {
   }
 
   lookCalendar(info) {
+    this.loading = !this.loading;
     this.edit = true;
     this.add = false;
     this.addSmall = false;
@@ -206,6 +226,7 @@ export class AddCalendarComponent implements OnInit {
             });
           }
         });
+        this.loading = !this.loading;
       }
     );
 
@@ -361,5 +382,17 @@ export class AddCalendarComponent implements OnInit {
       }
     });
 
+  }
+
+  toggleColours(): void {
+    this.coloursEnabled = !this.coloursEnabled;
+
+    if (this.coloursEnabled) {
+      this.primaryColour = PrimaryRed;
+      this.secondaryColour = SecondaryBlue;
+    } else {
+      this.primaryColour = PrimaryWhite;
+      this.secondaryColour = SecondaryGrey;
+    }
   }
 }
