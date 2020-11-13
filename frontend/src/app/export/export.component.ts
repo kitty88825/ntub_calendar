@@ -39,20 +39,22 @@ export class ExportComponent implements OnInit {
 
       var pageHeight = contentWidth / 592.28 * 841.89;
       var leftHeight = contentHeight;
-      var position = 0; 
+      var position = 10; 
 
-      var imgWidth = 595.28;
-      var imgHeight = 592.28 / contentWidth * contentHeight;
+      var imgWidth = 572.28;
+      var imgHeight = 572.28 / contentWidth * contentHeight; //592
       var pageData = canvas.toDataURL('image/jpeg', 1.0);
-      var pdf = new jsPDF('', 'pt', 'a4');
+      var pdf = new jsPDF('1', 'pt', 'a4');
+      
+      
 
-      if (leftHeight <= pageHeight) {
-        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+      if (leftHeight < pageHeight) {
+        pdf.addImage(pageData, 'JPEG', 10, 10, imgWidth, imgHeight);
       } else {
         while (leftHeight > 0) {
-          pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+          pdf.addImage(pageData, 'JPEG', 10, position, imgWidth, imgHeight)
           leftHeight -= pageHeight;
-          position -= 851;
+          position -= 900;
           if (leftHeight > 0) {
             pdf.addPage();
           }
@@ -60,7 +62,7 @@ export class ExportComponent implements OnInit {
       }
       pdf.save('demo.pdf');
     })
-    console.log('sucess download PDF');
+    console.log('success download PDF');
   }
 }
 
