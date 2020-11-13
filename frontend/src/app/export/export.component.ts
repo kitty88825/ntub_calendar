@@ -2,7 +2,8 @@ import { EventService } from './../services/event.service';
 import { CalendarService } from './../services/calendar.service';
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
 import html2canvas from 'html2canvas';
-import pdfMake from 'pdfmake/build/pdfmake';
+import * as jsPDF from 'jspdf';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-export',
@@ -18,8 +19,11 @@ export class ExportComponent implements OnInit {
   openCalendar = [];
   allEvents = [];
   showEvent = [];
+  year = [];
   staff = localStorage.getItem('staff');
+  setYear = new Date().getFullYear() - 1911;
 
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
   @ViewChild('screen') screen: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('downloadLink') downloadLink: ElementRef;
@@ -30,6 +34,7 @@ export class ExportComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.year.push(this.setYear);
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => {
@@ -49,23 +54,69 @@ export class ExportComponent implements OnInit {
             calendars: event.eventinvitecalendarSet
           });
         });
+
+        this.allEvents.forEach(event => {
+          this.year.push(Number(event.startDate.substr(0, 4)) - 1911);
+        });
+
+        this.yearSort();
+
       }
     );
+
   }
 
-  savePdf() {
+  yearSort() {
+    this.year = this.year.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
+
+    this.year.sort((a, b) => {
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
+  async savePdf() {
+    for (let i = 0; i < 2; i++) {
+      await new Promise(resolve => {
+        setTimeout(() => {
+          $('html,main').animate({ scrollTop: 0 });
+          resolve();
+        }, 500);
+      });
+    }
     html2canvas(this.screen.nativeElement).then(canvas => {
-      this.canvas.nativeElement.src = canvas.toDataURL();
-      this.downloadLink.nativeElement.href = canvas.toDataURL('image/png');
-      const docDefinition = {
-        content: [{
-          image: this.downloadLink.nativeElement.href,
-          width: 550
-        }],
-        pageSize: 'A4',
-        pageMargins: [20, 0, 20, 0]
-      };
-      pdfMake.createPdf(docDefinition).download('demo.pdf');
+      const contentWidth = canvas.width;
+      const contentHeight = canvas.height;
+
+      const pageHeight = contentWidth / 592.28 * 841.89;
+      let leftHeight = contentHeight;
+      let position = 0;
+
+      const imgWidth = 595.28;
+      const imgHeight = 592.28 / contentWidth * contentHeight;
+      const pageData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('', 'pt', 'a4');
+
+      if (leftHeight <= pageHeight) {
+        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+      } else {
+        while (leftHeight > 0) {
+          pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+          leftHeight -= pageHeight;
+          position -= 851;
+          if (leftHeight > 0) {
+            pdf.addPage();
+          }
+        }
+      }
+      pdf.save('demo.pdf');
     });
   }
 
@@ -74,17 +125,33 @@ export class ExportComponent implements OnInit {
 
     this.openCalendar.forEach(calendar => {
       this.allEvents.forEach(event => {
-        if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id) {
+        if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
+          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)) {
           this.showEvent.push(event);
         }
       });
     });
+    this.showEventSort();
+  }
 
+  changeYear() {
+    this.showEvent = [];
 
-    // tslint:disable-next-line: only-arrow-functions
-    this.showEvent.sort(function (a, b) {
-      const startA = a.startDate.toUpperCase(); // ignore upper and lowercase
-      const startB = b.startDate.toUpperCase(); // ignore upper and lowercase
+    this.openCalendar.forEach(calendar => {
+      this.allEvents.forEach(event => {
+        if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
+          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)) {
+          this.showEvent.push(event);
+        }
+      });
+    });
+    this.showEventSort();
+  }
+
+  showEventSort() {
+    this.showEvent.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
       if (startA < startB) {
         return -1;
       }
@@ -93,5 +160,6 @@ export class ExportComponent implements OnInit {
       }
       return 0;
     });
+
   }
 }
