@@ -191,6 +191,7 @@ export class IndexComponent implements OnInit {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (data) => {
         this.authService.authState.subscribe((user) => {
+          this.loading = !this.loading;
           this.authToken = user.authToken;
           localStorage.setItem('userName', user.name);
           localStorage.setItem('access_token', user.authToken);
@@ -211,6 +212,7 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('res_refresh_token', data.token.refresh);
 
           if (this.resToken.length !== 0) {
+            this.loading = !this.loading;
             this.router.navigate(['/calendar']);
           } else {
             Swal.fire({

@@ -94,7 +94,7 @@
   </div>
   <div class="right">
     <app-navbar></app-navbar>
-    <main>
+    <main #main>
       <aside class="aside">
         <ul class="item-categories">
           <li>
@@ -154,18 +154,32 @@
             </ul>
           </div>
           <ul class="event-list" #screen id="screen">
-            <li class="event-list__header">
-              <div class="event-list__title">發布標題</div>
-              <div class="event-list__content">內容概要</div>
-              <div class="event-list__date">開始日期</div>
+            <li class="event-list__header" *ngIf="showTitle === true">
+              <h1>國立台北商業大學{{setYear}}學年度第1學期行事曆</h1>
             </li>
-            <li *ngFor="let event of showEvent" class="event-list__phase">
-              <div class="event-list__title">{{event.title}}</div>
-              <div class="event-list__content">{{event.description}}</div>
-              <div class="event-list__date">{{event.startDate}}</div>
+            <li *ngFor="let calendar of showEventOne" class="event-list__phase">
+              <div class="calendarName">{{calendar.calendar}}</div>
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li class="event-list__header" *ngIf="showTitle === true">
+              <h1>國立台北商業大學{{setYear}}學年度第2學期行事曆</h1>
+            </li>
+            <li *ngFor="let calendar of showEventTwo" class="event-list__phase">
+              <div class="calendarName">{{calendar.calendar}}</div>
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
             </li>
           </ul>
-          <div class="subBtn" (click)="savePdf()">
+          <div class="subBtn" (click)="savePdf(main)" *ngIf="showTitle === true">
             <i class="material-icons">
               download
             </i>

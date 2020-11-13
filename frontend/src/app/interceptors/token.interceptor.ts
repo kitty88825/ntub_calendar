@@ -1,10 +1,9 @@
 import { Router } from '@angular/router';
-import { MainCalendarComponent } from './../main-calendar/main-calendar.component';
 import { TokenService } from './../services/token.service';
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, empty, Subject } from 'rxjs';
-import { catchError, tap, switchMap } from 'rxjs/operators';
+import { Observable, throwError, Subject } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

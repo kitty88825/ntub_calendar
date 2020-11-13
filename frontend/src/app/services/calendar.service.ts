@@ -1,5 +1,5 @@
 import { environment } from './../../environments/environment';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Calendar } from '../models/calendar.models';

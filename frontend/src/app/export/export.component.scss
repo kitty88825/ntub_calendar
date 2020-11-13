@@ -12,7 +12,9 @@
         bottom          : 0;
       }
 
-      #sideMenu-active, .close, .open {
+      #sideMenu-active,
+      .close,
+      .open {
         display: none;
       }
     }
@@ -78,7 +80,7 @@
               display    : inline-flex;
               align-items: center;
               padding    : 0;
-              margin-top: $content-size_top-bottom/2;
+              margin-top : $content-size_top-bottom/2;
               cursor     : pointer;
             }
           }
@@ -135,43 +137,64 @@
           .event-list {
 
             &__header {
-              background-color: $color_table-header;
-              color           : $color_text-light;
-              font-size       : 1rem;
+              color         : $color_text;
+              font-size     : 1rem;
+              font-weight   : 600;
+              letter-spacing: 1px;
+              padding       : $content-size_top-bottom $content-size_left-right/2;
             }
 
             li {
               display    : flex;
               align-items: center;
               flex-flow  : row nowrap;
-              line-height: 1.5;
+              line-height: 1;
 
               &:not(.event-list__header):not(.event-list__phase) {
                 min-height   : 5rem;
                 border-bottom: $color_border solid 1px;
               }
 
-              &:nth-last-child(1) {
-                border-bottom: none !important;
-              }
-
               >div {
                 padding: $content-size_top-bottom $content-size_left-right;
               }
-            }
 
-            &__title {
-              flex: 1.5;
+              h1 {
+                width     : 100%;
+                text-align: center;
+              }
             }
 
             &__content {
-              flex: 2;
+              display: inline-block;
             }
 
-            &__date {
-              flex: 0.5;
+            &__title {
+              display  : inline-block;
+              font-size: 13px;
+              padding: $content-size_top-bottom/2 $content-size_left-right/4;
+
+              span {
+                font-size  : 14px;
+                margin-left: $content-size_left-right/4;
+              }
+
+              span.date {
+                margin-left: $content-size_left-right/2;
+              }
             }
 
+            &__phase {
+              display: grid !important;
+              border : 2px solid $color_text;
+
+              .calendarName {
+                text-align   : center;
+                font-size    : 12px;
+                font-weight: 600;
+                border-bottom: 2px solid $color_text;
+              }
+            }
           }
 
           .subBtn {
@@ -380,11 +403,11 @@
           padding   : $content-size_top-bottom*2 $content-size_top-bottom;
 
           .header {
-            font-size       : 14px;
-            display         : block;
-            height          : 200px;
-            border: 1px solid $color_border;
-            padding         : $content-size_top-bottom $content-size_left-right;
+            font-size: 14px;
+            display  : block;
+            height   : 200px;
+            border   : 1px solid $color_border;
+            padding  : $content-size_top-bottom $content-size_left-right;
 
             .item-categories {
 
@@ -432,7 +455,7 @@
                   display    : inline-flex;
                   align-items: center;
                   cursor     : pointer;
-                  margin-top: $content-size_top-bottom/2;
+                  margin-top : $content-size_top-bottom/2;
                 }
               }
 

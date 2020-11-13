@@ -18,10 +18,12 @@ export class ExportComponent implements OnInit {
   isOpen = false;
   openCalendar = [];
   allEvents = [];
-  showEvent = [];
+  showEventOne = [];
+  showEventTwo = [];
   year = [];
   staff = localStorage.getItem('staff');
   setYear = new Date().getFullYear() - 1911;
+  showTitle = false;
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
   @ViewChild('screen') screen: ElementRef;
@@ -51,7 +53,8 @@ export class ExportComponent implements OnInit {
         data.forEach(event => {
           this.allEvents.push({
             id: event.id, title: event.title, description: event.description, startDate: event.startAt.substr(0, 10),
-            calendars: event.eventinvitecalendarSet
+            calendars: event.eventinvitecalendarSet, startMonth: event.startAt.substr(5, 2), startDay: event.startAt.substr(8, 2),
+            mainCalendar: event.eventinvitecalendarSet[0].mainCalendar.name
           });
         });
 
@@ -82,11 +85,11 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  async savePdf() {
+  async savePdf(main: HTMLElement) {
     for (let i = 0; i < 2; i++) {
       await new Promise(resolve => {
         setTimeout(() => {
-          $('html,main').animate({ scrollTop: 0 });
+          main.scrollIntoView();
           resolve();
         }, 500);
       });
@@ -121,35 +124,57 @@ export class ExportComponent implements OnInit {
   }
 
   changeSelect() {
-    this.showEvent = [];
-
-    this.openCalendar.forEach(calendar => {
-      this.allEvents.forEach(event => {
-        if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
-          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)) {
-          this.showEvent.push(event);
-        }
-      });
-    });
+    this.resetDate();
     this.showEventSort();
   }
 
   changeYear() {
-    this.showEvent = [];
+    this.resetDate();
+    this.showEventSort();
+  }
+
+  resetDate() {
+    this.showTitle = true;
+    this.showEventOne = [];
+    this.showEventTwo = [];
+    const showEventOne = [];
+    let calendarName = '';
+    const showEventTwo = [];
 
     this.openCalendar.forEach(calendar => {
       this.allEvents.forEach(event => {
         if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
           Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)) {
-          this.showEvent.push(event);
+          calendarName = event.mainCalendar;
+
+          if (event.startDate.substr(5, 2) <= 7) {
+            showEventOne.push(event);
+          } else if (event.startDate.substr(5, 2) > 7) {
+            showEventTwo.push(event);
+          }
         }
       });
     });
+    this.showEventOne.push({ calendar: calendarName, events: showEventOne });
+    this.showEventTwo.push({ calendar: calendarName, events: showEventTwo });
+
     this.showEventSort();
   }
 
   showEventSort() {
-    this.showEvent.sort((a, b) => {
+    this.showEventOne[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+
+    this.showEventTwo[0].events.sort((a, b) => {
       const startA = a.startDate.toUpperCase();
       const startB = b.startDate.toUpperCase();
       if (startA < startB) {

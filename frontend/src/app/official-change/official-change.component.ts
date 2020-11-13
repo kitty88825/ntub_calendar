@@ -92,7 +92,7 @@ export class OfficialChangeComponent implements OnInit {
   add() {
     this.datas.forEach(event => {
       if (typeof event[0] === 'string' && event[3].length === 10 &&
-        event[4].length === 10 && this.selectedValue.length !== 0) {
+        event[4].length === 10 && this.selectedValue.length !== 0 && event[4].toUpperCase() >= event[3].toUpperCase()) {
         this.istrue = this.istrue + 1;
       } else {
         Swal.fire({
