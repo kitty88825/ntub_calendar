@@ -86,14 +86,12 @@ export class ExportComponent implements OnInit {
   }
 
   async savePdf(main: HTMLElement) {
-    for (let i = 0; i < 2; i++) {
-      await new Promise(resolve => {
-        setTimeout(() => {
-          main.scrollIntoView();
-          resolve();
-        }, 500);
-      });
-    }
+    await new Promise(resolve => {
+      setTimeout(() => {
+        main.scrollIntoView();
+        resolve();
+      }, 500);
+    });
     html2canvas(this.screen.nativeElement).then(canvas => {
       const contentWidth = canvas.width;
       const contentHeight = canvas.height;

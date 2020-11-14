@@ -9,15 +9,14 @@ import { Observable } from 'rxjs';
 })
 export class TokenService {
   resToken = '';
-  reqHeader;
+  reqHeader = new HttpHeaders({
+    Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
+  });
 
   constructor(
     public http: HttpClient,
   ) {
-    this.reqHeader = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
-    });
-   }
+  }
 
 
   postToken(token: Token): Observable<Token> {
@@ -29,7 +28,7 @@ export class TokenService {
   }
 
   getUser(): Observable<any> {
-    return this.http.get<any>(environment.serverIp + 'user/me', {headers: this.reqHeader});
+    return this.http.get<any>(environment.serverIp + 'user/me', { headers: this.reqHeader });
   }
 }
 

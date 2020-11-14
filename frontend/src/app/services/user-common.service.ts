@@ -8,15 +8,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserCommonService {
-  reqHeader;
+  reqHeader = new HttpHeaders({
+    Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
+  });
 
 
   constructor(
     private http: HttpClient,
   ) {
-    this.reqHeader = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
-    });
   }
 
   postCommonUser(formData: any): Observable<any> {

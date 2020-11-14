@@ -271,21 +271,21 @@
           .searchbox {
             margin-top   : $content-size_top-bottom/2;
             border-radius: 5px;
-            width        : 25%;
+            width        : 181px;
             height       : 30px;
             box-sizing   : border-box;
             border       : solid $color_border 1px;
             position     : relative;
             margin-right : $content-size_left-right;
             transition   : 300ms;
-            margin-left  : 35%;
+            margin-left  : auto;
             z-index      : 99;
             padding      : $content-size_top-bottom/2 $content-size_left-right/2;
           }
 
           .openDataBtn {
             display      : flex;
-            width        : 10%;
+            width        : 95px;
             height       : 30px;
             border       : $color_border solid 1px;
             align-items  : center;
@@ -312,12 +312,12 @@
           }
 
           span {
-            position   : absolute;
-            color      : $color_icon;
-            margin-top : 9px;
-            margin-left: 51.5%;
-            transition : 300ms;
-            z-index    : 100;
+            position  : absolute;
+            color     : $color_icon;
+            margin-top: 9px;
+            right     : 250px;
+            transition: 300ms;
+            z-index   : 100;
           }
 
           .searchbox::placeholder {
@@ -407,6 +407,10 @@
               margin: 0px auto;
             }
 
+            .event-list__office {
+              width: 100%;
+            }
+
             li.event-list__card {
               display   : inline-block;
               width     : 31%;
@@ -458,17 +462,24 @@
           }
 
           &__content {
-            flex: 2 0px;
+            width: 35%;
+            flex : 2 0px;
           }
 
           &__text {
-            font-size: 0.9rem;
-            opacity  : 0.5;
+            width        : 100%;
+            font-size    : 0.9rem;
+            opacity      : 0.5;
+            overflow     : hidden;
+            white-space  : nowrap;
+            text-overflow: ellipsis;
           }
 
           &__office {
-            flex     : 1.5 0px;
-            font-size: 0.9rem;
+            width: 28%;
+            flex      : 1.5 0px;
+            font-size : 0.9rem;
+            text-align: center;
           }
 
           &__date {
@@ -477,10 +488,15 @@
           }
 
           &__tag {
-            width        : fit-content;
+            width        : 70%;
             padding      : $content-size_top-bottom/1.5 $content-size_left-right;
             border-radius: 20px;
             color        : $color_white;
+            margin-left  : auto;
+            margin-right : auto;
+            overflow     : hidden;
+            white-space  : nowrap;
+            text-overflow: ellipsis;
           }
         }
 
@@ -499,6 +515,10 @@
         box-shadow      : $box-shadow--left;
 
         .date-picker {
+          position        : fixed;
+          width           : 250px;
+          top             : 70px;
+          padding-top     : 20px;
           display         : flex;
           align-items     : center;
           justify-content : center;
@@ -509,6 +529,7 @@
         .item-categories {
 
           &__list {
+            margin-top : 250px;
             display    : flex;
             flex-flow  : column;
             margin-left: $content-size_left-right/2;
@@ -732,7 +753,7 @@
             }
 
             input.searchbox {
-              width       : 100px;
+              width       : 120px;
               font-size   : 12px;
               margin-left : auto;
               margin-right: 0;
@@ -740,8 +761,8 @@
             }
 
             span {
-              margin-top : 5px;
-              margin-left: 78%;
+              margin-top: 5px;
+              right     : 30px;
 
               i {
                 font-size: 17px;

@@ -59,7 +59,7 @@
               position     : relative;
               margin-right : $content-size_left-right;
               transition   : 300ms;
-              margin-left  : 45%;
+              margin-left  : auto;
               z-index      : 99;
               padding      : $content-size_top-bottom/2 $content-size_left-right/2;
             }
@@ -75,12 +75,12 @@
             }
 
             span {
-              position   : absolute;
-              color      : $color_icon;
-              margin-top : 9px;
-              margin-left: 57.5%;
-              transition : 300ms;
-              z-index    : 100;
+              position  : absolute;
+              color     : $color_icon;
+              margin-top: 9px;
+              right     : 170px;
+              transition: 300ms;
+              z-index   : 100;
             }
 
             .searchbox::placeholder {
@@ -172,7 +172,7 @@
               }
 
               .event-list__office {
-                width : fit-content;
+                width : 100%;
                 margin: 0 auto;
               }
 
@@ -190,21 +190,23 @@
                 }
 
                 .event-list__checkbox {
+                  display   : flex;
                   margin-top: $content-size_top-bottom/2;
                   left      : 0;
-                }
-
-                .event-list__checkbox {
-                  display: flex;
 
                   i {
-                    cursor     : pointer;
-                    margin-left: $content-size_left-right*9;
-                    width      : 10px;
-                    height     : 10px;
-                    margin-top : -$content-size_top-bottom/2;
+                    position  : absolute;
+                    cursor    : pointer;
+                    width     : 10px;
+                    height    : 10px;
+                    left      : 180px;
+                    margin-top: -$content-size_top-bottom/2;
                   }
                 }
+              }
+
+              .event-list__tag {
+                width: 70%;
               }
             }
 
@@ -257,17 +259,24 @@
             }
 
             &__content {
-              flex: 1.5;
+              width: 24%;
+              flex : 1.5;
             }
 
             &__text {
-              font-size: 0.9rem;
-              opacity  : 0.5;
+              width        : 100%;
+              font-size    : 0.9rem;
+              opacity      : 0.5;
+              overflow     : hidden;
+              white-space  : nowrap;
+              text-overflow: ellipsis;
             }
 
             &__office {
-              flex     : 1.5;
-              font-size: 0.9rem;
+              width     : 23%;
+              flex      : 1.5;
+              font-size : 0.9rem;
+              text-align: center;
             }
 
             &__date {
@@ -276,10 +285,15 @@
             }
 
             &__tag {
-              width        : fit-content;
+              width        : 70%;
               padding      : $content-size_top-bottom/1.5 $content-size_left-right;
               border-radius: 20px;
               color        : $color_white;
+              margin-left  : auto;
+              margin-right : auto;
+              overflow     : hidden;
+              white-space  : nowrap;
+              text-overflow: ellipsis;
             }
 
             &__edit {
@@ -316,14 +330,22 @@
         box-shadow      : $box-shadow--left;
 
         .date-picker {
+          position        : fixed;
+          width           : 250px;
           display         : flex;
+          top             : 70px;
+          padding-top     : 20px;
           align-items     : center;
           justify-content : center;
           height          : 250px;
           background-color: $color_primary;
+          z-index         : 999;
         }
 
         .item-categories {
+          position  : relative;
+          z-index   : 998;
+          margin-top: 250px;
 
           &__title {
             display        : flex;
@@ -698,7 +720,7 @@
             }
 
             input.searchbox {
-              width       : 100px;
+              width       : 120px;
               font-size   : 12px;
               margin-left : auto;
               margin-right: 0;
@@ -706,8 +728,8 @@
             }
 
             span {
-              margin-top : 5px;
-              margin-left: 72%;
+              margin-top: 5px;
+              right     : 60px;
 
               i {
                 font-size: 17px;
@@ -777,8 +799,8 @@
             &--grid {
 
               li.event-list__card {
-                width     : 100%;
-                margin    : $content-size_top-bottom 0;
+                width : 100%;
+                margin: $content-size_top-bottom 0;
               }
             }
           }

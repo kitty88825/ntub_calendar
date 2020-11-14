@@ -10,14 +10,13 @@ import { Subscription } from '../models/subscription.model';
 })
 export class SubscriptionService {
   resToken = '';
-  reqHeader;
+  reqHeader = new HttpHeaders({
+    Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
+  });
 
   constructor(
     private http: HttpClient,
   ) {
-    this.reqHeader = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
-    });
   }
 
   postSubscription(formData: any): Observable<any> {

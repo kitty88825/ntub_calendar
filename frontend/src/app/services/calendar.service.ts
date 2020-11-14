@@ -10,15 +10,14 @@ import { Calendar } from '../models/calendar.models';
 export class CalendarService {
 
   resToken = '';
-  reqHeader;
+  reqHeader = new HttpHeaders({
+    Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
+  });
 
 
   constructor(
     private http: HttpClient,
   ) {
-    this.reqHeader = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
-    });
   }
 
   postCalendar(formData: any): Observable<any> {

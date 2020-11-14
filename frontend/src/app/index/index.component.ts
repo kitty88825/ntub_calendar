@@ -25,8 +25,6 @@ const SecondaryBlue = '#006ddd';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit {
-  pageSize = 9;
-  page = 1;
   isCollapsed = false;
   token: Token;
   resToken = '';
@@ -84,54 +82,6 @@ export class IndexComponent implements OnInit {
   calendarPlugins = [dayGridPlugin];
   calendarWeekends = true;
   calendarEvents: EventInput[];
-
-  static getScrollTop(): number {
-    let scrollTop = 0;
-    if (document.documentElement && document.documentElement.scrollTop) {
-      scrollTop = document.documentElement.scrollTop;
-    } else if (document.body) {
-      scrollTop = document.body.scrollTop;
-    }
-    return scrollTop;
-  }
-
-  static getClientHeight(): number {
-    let clientHeight = 0;
-    if (document.body.clientHeight && document.documentElement.clientHeight) {
-      clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
-    } else {
-      clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
-    }
-    return clientHeight;
-  }
-
-  static getScrollHeight(): number {
-    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll(event) {
-    if (IndexComponent.getScrollTop() + IndexComponent.getClientHeight() === IndexComponent.getScrollHeight()
-      && this.IsLoadingEnd === false) {
-      this.Loading = true;
-      this.page = this.page + 1;
-      if (this.page * this.pageSize - this.initShowEvents.length <= 0) {
-        this.IsLoadingEnd = false;
-        this.showEvents = [];
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.page * this.pageSize; i++) {
-          this.showEvents.push(this.initShowEvents[i]);
-        }
-      } else {
-        this.IsLoadingEnd = true;
-        this.showEvents = [];
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.initShowEvents.length; i++) {
-          this.showEvents.push(this.initShowEvents[i]);
-        }
-      }
-    }
-  }
 
   ngOnInit() {
     this.loading = !this.loading;
@@ -211,19 +161,21 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('res_access_token', this.resToken);
           localStorage.setItem('res_refresh_token', data.token.refresh);
 
-          if (this.resToken.length !== 0) {
-            this.loading = !this.loading;
-            this.router.navigate(['/calendar']);
-          } else {
-            Swal.fire({
-              text: '請重新登入！',
-              icon: 'error'
-            }).then((re) => {
-              if (re.value) {
-                window.location.reload();
-              }
-            });
-          }
+          setTimeout(() => {
+            if (localStorage.getItem('res_access_token').length !== null) {
+              this.loading = !this.loading;
+              this.router.navigate(['/calendar']);
+            } else {
+              Swal.fire({
+                text: '請重新登入！',
+                icon: 'error'
+              }).then((re) => {
+                if (re.value) {
+                  window.location.reload();
+                }
+              });
+            }
+          }, 1000);
         }
       );
     });
@@ -332,17 +284,6 @@ export class IndexComponent implements OnInit {
       }
     });
     this.showEventsSort();
-
-    if (this.showEvents.length > this.pageSize) {
-      this.initShowEvents = this.showEvents.slice();
-      this.showEvents = [];
-      for (let i = 0; i < this.pageSize; i++) {
-        this.showEvents.push(this.initShowEvents[i]);
-      }
-      this.IsLoadingEnd = false;
-    } else {
-      this.IsLoadingEnd = true;
-    }
   }
 
   toggleColours(): void {

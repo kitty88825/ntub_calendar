@@ -119,14 +119,16 @@ export class OfficialChangeComponent implements OnInit {
         );
       });
       this.loading = !this.loading;
-      if (this.loading === false) {
-        Swal.fire({
-          text: '新增成功',
-          icon: 'success',
-        }).then((result) => {
-          this.router.navigate(['calendar']);
-        });
-      }
+      setTimeout(() => {
+        if (this.loading === false) {
+          Swal.fire({
+            text: '新增成功',
+            icon: 'success',
+          }).then((result) => {
+            this.router.navigate(['calendar']);
+          });
+        }
+      }, 1000);
     }
 
   }

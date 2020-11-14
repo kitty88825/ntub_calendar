@@ -1,4 +1,6 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-teach',
@@ -7,10 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserTeachComponent implements OnInit {
 
-  data = {current: '1'};
+  data = { current: '1' };
   loggin = '';
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loggin = localStorage.getItem('loggin');

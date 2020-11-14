@@ -11,15 +11,14 @@ export class CommonUserService {
 
 
   resToken = '';
-  reqHeader;
+  reqHeader = new HttpHeaders({
+    Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
+  });
 
 
   constructor(
     private http: HttpClient,
   ) {
-    this.reqHeader = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
-    });
   }
 
   getCommonUser(): Observable<CommonUser[]> {

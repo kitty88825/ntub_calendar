@@ -148,9 +148,9 @@ export class AddCalendarComponent implements OnInit {
     this.raw.description = this.description;
     this.raw.color = this.color;
     this.raw.display = this.attribute;
-    if (this.setPermissions[0].groupName === '') {
+    if (this.setPermissions[0].authority === 'read') {
       Swal.fire({
-        text: '請至少輸入一個權限',
+        text: '請至少輸入一個可寫權限',
         icon: 'error'
       });
     } else if (this.setPermissions.length === 1 && this.setPermissions[0].groupName !== '') {
@@ -159,11 +159,33 @@ export class AddCalendarComponent implements OnInit {
       this.raw.permissions[0].role = this.setPermissions[0].role;
       this.raw.permissions[0].authority = this.setPermissions[0].authority;
       this.raw.permissions[0].group = this.setPermissions[0].group;
+
+      this.calendarService.postCalendar(this.raw).subscribe(
+        data => {
+          Swal.fire({
+            text: '新增成功',
+            icon: 'success',
+          }).then((result) => {
+            if (result.value) {
+              window.location.reload();
+            }
+          });
+        },
+        error => {
+          console.log(error);
+          Swal.fire({
+            text: '新增失敗',
+            icon: 'error',
+          });
+        }
+      );
+
     } else if (this.setPermissions.length > 1) {
       const count = this.setPermissions.length - 1;
       for (let j = 0; j < count; j++) {
         this.raw.permissions.push({ authority: '', group: [], groupName: '', role: '', id: 0 });
       }
+
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.setPermissions.length; i++) {
         this.raw.permissions[i].id = this.setPermissions[i].id;
@@ -172,27 +194,28 @@ export class AddCalendarComponent implements OnInit {
         this.raw.permissions[i].authority = this.setPermissions[i].authority;
         this.raw.permissions[i].group = this.setPermissions[i].group;
       }
-    }
 
-    this.calendarService.postCalendar(this.raw).subscribe(
-      data => {
-        Swal.fire({
-          text: '新增成功',
-          icon: 'success',
-        }).then((result) => {
-          if (result.value) {
-            window.location.reload();
-          }
-        });
-      },
-      error => {
-        console.log(error);
-        Swal.fire({
-          text: '新增失敗',
-          icon: 'error',
-        });
-      }
-    );
+      this.calendarService.postCalendar(this.raw).subscribe(
+        data => {
+          Swal.fire({
+            text: '新增成功',
+            icon: 'success',
+          }).then((result) => {
+            if (result.value) {
+              window.location.reload();
+            }
+          });
+        },
+        error => {
+          console.log(error);
+          Swal.fire({
+            text: '新增失敗',
+            icon: 'error',
+          });
+        }
+      );
+
+    }
   }
 
   lookCalendar(info) {

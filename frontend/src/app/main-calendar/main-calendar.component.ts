@@ -28,10 +28,10 @@ export class MainCalendarComponent implements OnInit {
   eventsMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   selectAll: boolean;
   publicCalendar = [];
-  pageSize = 9;
-  page = 1;
+  privateCalendar = [];
   data = { current: '1' };
   isCollapsed = false;
+  isPrivate = false;
   isOpen = false;
   isTrue = false;
   showEvent: boolean;
@@ -53,7 +53,6 @@ export class MainCalendarComponent implements OnInit {
   IsLoadingEnd: boolean;
   Loading: boolean;
   showEvents = [];
-  initShowEvents = [];
   permission: boolean;
   staff = localStorage.getItem('staff');
   lookEvent = { id: 0, title: '' };
@@ -85,58 +84,10 @@ export class MainCalendarComponent implements OnInit {
   calendarWeekends = true;
   calendarEvents: EventInput[];
 
-  eventTypes = [];
+  eventTypesPublic = [];
+  eventTypesPrivate = [];
 
   hiddenCalendarEvents = [];
-
-  static getScrollTop(): number {
-    let scrollTop = 0;
-    if (document.documentElement && document.documentElement.scrollTop) {
-      scrollTop = document.documentElement.scrollTop;
-    } else if (document.body) {
-      scrollTop = document.body.scrollTop;
-    }
-    return scrollTop;
-  }
-
-  static getClientHeight(): number {
-    let clientHeight = 0;
-    if (document.body.clientHeight && document.documentElement.clientHeight) {
-      clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
-    } else {
-      clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
-    }
-    return clientHeight;
-  }
-
-  static getScrollHeight(): number {
-    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll(event) {
-
-    if (MainCalendarComponent.getScrollTop() + MainCalendarComponent.getClientHeight() === MainCalendarComponent.getScrollHeight()
-      && this.IsLoadingEnd === false) {
-      this.Loading = true;
-      this.page = this.page + 1;
-      if (this.page * this.pageSize - this.initShowEvents.length <= 0) {
-        this.IsLoadingEnd = false;
-        this.showEvents = [];
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.page * this.pageSize; i++) {
-          this.showEvents.push(this.initShowEvents[i]);
-        }
-      } else {
-        this.IsLoadingEnd = true;
-        this.showEvents = [];
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.initShowEvents.length; i++) {
-          this.showEvents.push(this.initShowEvents[i]);
-        }
-      }
-    }
-  }
 
   eventClick(info) {
     this.showEvent = true;
@@ -165,7 +116,70 @@ export class MainCalendarComponent implements OnInit {
     }
   }
 
-  displayType(eventType: any): void {
+  displayTypePublic(eventType: any): void {
+
+    eventType.selected = !eventType.selected;
+    const calendarEvents = this.calendarEvents.slice();
+
+    if (eventType.selected === true) {
+      const calendarEventsToShow: any[] = [];
+
+      // Show
+      this.hiddenCalendarEvents
+        .filter(calendarEvent => {
+          if (calendarEvent.calendar[0].mainCalendar.id === eventType.id) {
+            return true;
+          }
+        })
+        .forEach(calendarEvent => {
+          calendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
+          calendarEventsToShow.push(calendarEvent.id);
+        });
+
+      calendarEventsToShow.forEach(calendarEventToShow => {
+        const index = this.hiddenCalendarEvents.findIndex(hiddenCalendarEvent => hiddenCalendarEvent.id === calendarEventToShow);
+        this.hiddenCalendarEvents.splice(index, 1);
+      });
+
+    } else {
+      const calendarEventsToHide: any[] = [];
+
+      // Hide
+      calendarEvents
+        .filter(calendarEvent => {
+          if (calendarEvent.calendar[0].mainCalendar.id === eventType.id) {
+            return true;
+          }
+        })
+        .forEach(calendarEvent => {
+          if (this.calendarComponent.getApi().getEventById(String(calendarEvent.id))) {
+            this.calendarComponent
+              .getApi()
+              .getEventById(String(calendarEvent.id))
+              .remove();
+          }
+
+          this.hiddenCalendarEvents.push(JSON.parse(JSON.stringify(calendarEvent)));
+          calendarEventsToHide.push(calendarEvent.calendar[0].mainCalendar.id);
+        });
+
+      calendarEventsToHide.forEach(calendarEventToHide => {
+        const index = calendarEvents.findIndex(calendarEvent => {
+          return calendarEvent.calendar[0].mainCalendar.id === calendarEventToHide;
+        });
+
+        calendarEvents.splice(index, 1);
+
+      });
+    }
+
+    this.calendarEvents = calendarEvents;
+    this.events = calendarEvents;
+
+    this.onChange();
+  }
+
+  displayTypePrivate(eventType: any): void {
 
     eventType.selected = !eventType.selected;
     const calendarEvents = this.calendarEvents.slice();
@@ -242,13 +256,22 @@ export class MainCalendarComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(
       result => {
         result.forEach(calendar => {
-          this.publicCalendar.push({
-            id: calendar.id, name: calendar.name,
-            description: calendar.description, display: calendar.display,
-            color: calendar.color, permission: calendar.permissions
-          });
+          if (calendar.display === 'public') {
+            this.publicCalendar.push({
+              id: calendar.id, name: calendar.name,
+              description: calendar.description, display: calendar.display,
+              color: calendar.color, permission: calendar.permissions
+            });
+            this.eventTypesPublic.push({ title: 'type' + calendar.id, id: calendar.id, name: calendar.name, selected: true });
 
-          this.eventTypes.push({ title: 'type' + calendar.id, id: calendar.id, selected: true });
+          } else if (calendar.display === 'private') {
+            this.privateCalendar.push({
+              id: calendar.id, name: calendar.name,
+              description: calendar.description, display: calendar.display,
+              color: calendar.color, permission: calendar.permissions
+            });
+            this.eventTypesPrivate.push({ title: 'type' + calendar.id, id: calendar.id, name: calendar.name, selected: true });
+          }
         });
       }
     );
@@ -354,16 +377,16 @@ export class MainCalendarComponent implements OnInit {
     this.deleteData.length = 0;
 
     if (this.selectAll === true) {
-      this.initShowEvents.forEach(init => {
+      this.showEvents.forEach(init => {
         init.isChecked = true;
       });
     } else {
-      this.initShowEvents.forEach(init => {
+      this.showEvents.forEach(init => {
         init.isChecked = false;
       });
     }
 
-    this.initShowEvents.forEach(init => {
+    this.showEvents.forEach(init => {
       if (init.permission === true && init.isChecked === true) {
         this.deleteData.push(init.id);
       }
@@ -375,7 +398,7 @@ export class MainCalendarComponent implements OnInit {
     let permissionCount = 0;
     this.deleteData = [];
 
-    this.initShowEvents.forEach(init => {
+    this.showEvents.forEach(init => {
       if (init.isChecked === true) {
         count++;
       }
@@ -421,21 +444,22 @@ export class MainCalendarComponent implements OnInit {
           );
         });
         this.loading = !this.loading;
-        if (this.loading === false) {
-          Swal.fire({
-            text: '刪除成功',
-            icon: 'success',
-          }).then((res) => {
-            window.location.reload();
-          });
-        }
+        setTimeout(() => {
+          if (this.loading === false) {
+            Swal.fire({
+              text: '刪除成功',
+              icon: 'success',
+            }).then((res) => {
+              window.location.reload();
+            });
+          }
+        }, 1000);
       }
     });
   }
 
   onChange() {
     this.showEvents = [];
-    this.initShowEvents = [];
     this.showEventsChange();
     this.showEventsSort();
   }
@@ -484,17 +508,6 @@ export class MainCalendarComponent implements OnInit {
       }
     });
     this.showEventsSort();
-
-    if (this.showEvents.length > this.pageSize) {
-      this.initShowEvents = this.showEvents.slice();
-      this.showEvents = [];
-      for (let i = 0; i < this.pageSize; i++) {
-        this.showEvents.push(this.initShowEvents[i]);
-      }
-      this.IsLoadingEnd = false;
-    } else {
-      this.initShowEvents = this.showEvents.slice();
-    }
   }
 
 

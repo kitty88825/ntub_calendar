@@ -76,6 +76,8 @@ export class AddSubscribeComponent implements OnInit {
 
             this.subscriptionService.getCalendarSubscription().subscribe(
               re => {
+                console.log(re);
+
                 re.forEach(calendar => {
                   this.hasSubCalendar.push(calendar);
                   this.hasSubCalendarId.push(calendar.id);
@@ -110,6 +112,8 @@ export class AddSubscribeComponent implements OnInit {
 
             this.subscriptionService.getEventSubscription().subscribe(
               re => {
+                console.log(re);
+
                 re.forEach(events => {
                   this.hasSubEvent.push(events);
                   this.hasSubEventId.push(events.id);
@@ -539,12 +543,15 @@ export class AddSubscribeComponent implements OnInit {
       }
     });
     this.loading = !this.loading;
-    Swal.fire({
-      text: '成功！',
-      icon: 'success'
-    }).then((result) => {
-      this.router.navigate(['/my-url']);
-    });
+
+    setTimeout(() => {
+      Swal.fire({
+        text: '成功！',
+        icon: 'success'
+      }).then((result) => {
+        this.router.navigate(['/my-url']);
+      });
+    }, 1000);
   }
 
   changeEvent(calendar) {

@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { TokenService } from './../services/token.service';
 import { EventService } from './../services/event.service';
 import { formatDate } from '@angular/common';
@@ -20,6 +19,7 @@ export class MeetingComponent implements OnInit {
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   myEmail = '';
   allMeet = [];
+  allDate = [];
   myMeet = [];
   invitedMeet = [];
   pastMeet = [];
@@ -32,6 +32,8 @@ export class MeetingComponent implements OnInit {
   lookFiles = [];
   lookParticipants = [];
   staff = localStorage.getItem('staff');
+  setStartDate = '';
+  setEndDate = '';
 
   @ViewChild('addStartDate') start: ElementRef;
   @ViewChild('addEndDate') end: ElementRef;
@@ -51,7 +53,6 @@ export class MeetingComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private tokenService: TokenService,
-    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -66,7 +67,14 @@ export class MeetingComponent implements OnInit {
       data => {
         data.forEach(meet => {
           this.allMeet.push(meet);
+          this.allDate.push(meet.startAt.substr(0, 10));
+          this.allDate.push(meet.endAt.substr(0, 10));
         });
+
+        this.allDateSort();
+
+        this.setStartDate = this.allDate[0];
+        this.setEndDate = this.allDate[this.allDate.length - 1];
 
         this.allMeet.forEach(event => {
           event.eventparticipantSet.forEach(participant => {
@@ -154,6 +162,38 @@ export class MeetingComponent implements OnInit {
         });
       }
     }
+  }
+
+  allDateSort() {
+    this.allDate = this.allDate.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
+
+    this.allDate.sort((a, b) => {
+      const startA = a.toUpperCase();
+      const startB = b.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  allMeetSort() {
+    this.allMeet.sort((a, b) => {
+      const startA = a.startAt.toUpperCase();
+      const startB = b.startAt.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   myMeetSort() {

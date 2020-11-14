@@ -8,18 +8,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EventService {
-
-
   resToken = '';
-  reqHeader;
+  reqHeader = new HttpHeaders({
+    Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
+  });
 
 
   constructor(
     private http: HttpClient,
   ) {
-    this.reqHeader = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem('res_access_token')
-    });
   }
 
   postEvent(formData: any): Observable<any> {
