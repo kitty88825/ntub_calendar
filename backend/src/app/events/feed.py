@@ -40,5 +40,11 @@ class EventFeed(ICalFeed):
     def item_start_datetime(self, item):
         return item.start_at
 
+    def item_end_datetime(self, item):
+        return item.end_at
+
     def item_link(self, item):
         return item.link
+
+    def item_attendee(self, item):
+        return item.participants.all()
