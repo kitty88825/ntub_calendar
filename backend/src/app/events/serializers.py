@@ -1,7 +1,8 @@
-from django.core.mail import EmailMultiAlternatives
-from django.db.models import Q
+import environ
 
+from django.core.mail import EmailMultiAlternatives
 from django.template import loader
+from django.db.models import Q
 
 from rest_framework import serializers
 
@@ -11,7 +12,6 @@ from app.users.models import User
 from .models import Event, EventParticipant, EventAttachment
 from .choices import RoleChoice
 
-import environ
 
 env = environ.Env()
 
@@ -110,26 +110,32 @@ class EventSerializer(serializers.ModelSerializer):
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
 
-        if emails is not None:
-            start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
-            end_at = validated_data['end_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
+        if emails:
+            title = validated_data['title']
+            time_format = '%Y/%m/%d %H:%M Taipei(GMT+8)'
+            start_at = validated_data['start_at'].strftime(time_format)
+            end_at = validated_data['end_at'].strftime(time_format)
 
-            subject = f'會議邀請：{validated_data["title"]}，{start_at} ~ {end_at}'
+            subject = f'會議邀請：{title}，{start_at} ~ {end_at}'
             html_message = loader.render_to_string(
                 'email.html',
                 {
-                    'title': validated_data["title"],
+                    'title': title,
                     'start_at': start_at,
                     'end_at': end_at,
                     'participants': ",".join(emails),
-                }
+                },
             )
             from_email = env('EMAIL_HOST_USER')
             recipient_list = emails
 
-            msg = EmailMultiAlternatives(subject, html_message, from_email, recipient_list)  # noqa 501
-            msg.content_subtype = "html"
-
+            msg = EmailMultiAlternatives(
+                subject,
+                html_message,
+                from_email,
+                recipient_list,
+            )
+            msg.content_subtype = 'html'
             msg.send()
 
         return event
@@ -177,32 +183,38 @@ class UpdateEventAttachmentSerializer(EventSerializer):
                 .objects \
                 .values_list('user', flat=True) \
                 .filter(
-                    Q(event=event, role='participants') &
-                    Q(user__email__in=emails)
+                    Q(event=event, role='participants'),
+                    Q(user__email__in=emails),
                 )
             if old:
                 new_participants.remove([i for i in old])
 
-            if emails is not None:
-                start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
-                end_at = validated_data['end_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
+            if emails:
+                title = validated_data['title']
+                time_format = '%Y/%m/%d %H:%M Taipei(GMT+8)'
+                start_at = validated_data['start_at'].strftime(time_format)
+                end_at = validated_data['end_at'].strftime(time_format)
 
-                subject = f'會議邀請：{validated_data["title"]}，{start_at} ~ {end_at}'  # noqa 501
+                subject = f'會議邀請：{title}，{start_at} ~ {end_at}'
                 html_message = loader.render_to_string(
                     'email.html',
                     {
-                        'title': validated_data["title"],
+                        'title': title,
                         'start_at': start_at,
                         'end_at': end_at,
                         'participants': ",".join(new_participants),
-                    }
+                    },
                 )
                 from_email = env('EMAIL_HOST_USER')
                 recipient_list = new_participants
 
-                msg = EmailMultiAlternatives(subject, html_message, from_email, recipient_list)  # noqa 501
-                msg.content_subtype = "html"
-
+                msg = EmailMultiAlternatives(
+                    subject,
+                    html_message,
+                    from_email,
+                    recipient_list,
+                )
+                msg.content_subtype = 'html'
                 msg.send()
 
         Event.participants.through \
