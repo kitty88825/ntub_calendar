@@ -1,9 +1,4 @@
-import environ
-
 from django.db.models import Q
-from django.core.mail import EmailMultiAlternatives
-
-from django.template import loader
 
 from rest_framework import serializers
 
@@ -18,8 +13,6 @@ from .models import (
     EventAttachment,
     EventInviteCalendar,
 )
-
-env = environ.Env()
 
 
 def validate_ntub_email(email: str):
@@ -195,29 +188,6 @@ class EventSerializer(serializers.ModelSerializer):
             invite_calendars_id,
         )
 
-        if emails is not None:
-            start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
-            end_at = validated_data['end_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
-
-            subject = f'會議邀請：{validated_data["title"]}，{start_at} ~ {end_at}'
-            html_message = loader.render_to_string(
-                'email.html',
-                {
-                    'title': validated_data["title"],
-                    'start_at': start_at,
-                    'end_at': end_at,
-                    'participants': ",".join(emails),
-                }
-            )
-            # text_message = strip_tags(html_message)
-            from_email = env('EMAIL_HOST_USER')
-            recipient_list = emails
-
-            msg = EmailMultiAlternatives(subject, html_message, from_email, recipient_list)  # noqa 501
-            msg.content_subtype = "html"
-
-            msg.send()
-
         return event
 
 
@@ -291,14 +261,6 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             main_calendar_id,
             invite_calendars_id,
         )
-        Event.participants.through \
-            .objects \
-            .filter(event=event, role='participants') \
-            .exclude(user__email__in=emails) \
-            .delete()
-
-        self.create_attachment_from_event(event, files)
-        self.create_participant_from_event(event, user, emails)
 
         return event
 
