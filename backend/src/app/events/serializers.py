@@ -1,17 +1,23 @@
-from django.core.mail import EmailMultiAlternatives
+import environ
+
 from django.db.models import Q
+from django.core.mail import EmailMultiAlternatives
 
 from django.template import loader
 
 from rest_framework import serializers
 
 from app.calendars.serializers import CalendarSerializer
+from app.calendars.models import Calendar
 from app.users.models import User
 
-from .models import Event, EventParticipant, EventAttachment
 from .choices import RoleChoice
-
-import environ
+from .models import (
+    Event,
+    EventParticipant,
+    EventAttachment,
+    EventInviteCalendar,
+)
 
 env = environ.Env()
 
@@ -33,9 +39,29 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class EventParticipantSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
-        model = User
-        fields = ('id', 'email')
+        model = EventParticipant
+        fields = ('user', 'role', 'response')
+
+    def get_user(self, event_participnat):
+        return str(event_participnat.user)
+
+
+class EventInviteCalendarSerializer(serializers.ModelSerializer):
+    calendar = serializers.SerializerMethodField()
+    main_calendar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EventInviteCalendar
+        fields = ('calendar', 'main_calendar', 'response')
+
+    def get_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.calendar).data
+
+    def get_main_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.main_calendar).data
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -49,9 +75,21 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
+    main_calendar_id = serializers.IntegerField(write_only=True)
+    invite_calendars_id = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+    )
+    eventinvitecalendar_set = EventInviteCalendarSerializer(
+        many=True,
+        read_only=True,
+    )
     attachments = AttachmentSerializer(many=True, read_only=True)
-    calendars = CalendarSerializer(many=True, read_only=True)
-    participants = EventParticipantSerializer(many=True, read_only=True)
+    eventparticipant_set = EventParticipantSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Event
@@ -62,17 +100,32 @@ class EventSerializer(serializers.ModelSerializer):
             'end_at',
             'description',
             'location',
+            'nature',
             'files',
-            'attachments',
-            'calendars',
             'emails',
-            'participants',
+            'main_calendar_id',
+            'invite_calendars_id',
+            'attachments',
+            'eventinvitecalendar_set',
+            'eventparticipant_set',
         )
         read_only_fields = (
             'id',
             'create_at',
             'update_at',
         )
+
+    def validate_main_calendar_id(self, value):
+        has_calendar_permissions = Calendar.objects.filter(
+            Q(id=value),
+            Q(groups__user=self.context['request'].user),
+            Q(permissions__role=self.context['request'].user.role),
+            Q(permissions__authority='write'),
+        )
+        if not has_calendar_permissions:
+            raise serializers.ValidationError("You don't have permission.")
+
+        return value
 
     def create_attachment_from_event(self, event, files):
         if not files:
@@ -102,13 +155,45 @@ class EventSerializer(serializers.ModelSerializer):
             *User.objects.filter(email__in=emails),
         )
 
+    def create_calendar_from_event(self, event, main_calendar, calendars_id):
+        if not calendars_id:
+            return
+
+        in_db_calendars = event.eventinvitecalendar_set \
+            .values_list('calendar_id', flat=True)
+
+        new_calendars_id = set(calendars_id) - set(in_db_calendars)
+        EventInviteCalendar.objects.bulk_create(
+            [EventInviteCalendar(
+                event_id=event.id,
+                calendar_id=c,
+                main_calendar_id=main_calendar,
+                response='no_reply',
+            ) for c in new_calendars_id],
+        )
+
     def create(self, validated_data):
         user = validated_data.pop('user')
+        main_calendar_id = validated_data.pop('main_calendar_id')
+        invite_calendars_id = validated_data.pop('invite_calendars_id', None)
         files = validated_data.pop('files', None)
         emails = validated_data.pop('emails', None)
         event = super().create(validated_data)
+
+        EventInviteCalendar.objects.create(
+            event_id=event.id,
+            calendar_id=main_calendar_id,
+            main_calendar_id=main_calendar_id,
+            response='accept',
+        )
+
         self.create_attachment_from_event(event, files)
         self.create_participant_from_event(event, user, emails)
+        self.create_calendar_from_event(
+            event,
+            main_calendar_id,
+            invite_calendars_id,
+        )
 
         if emails is not None:
             start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
@@ -124,6 +209,7 @@ class EventSerializer(serializers.ModelSerializer):
                     'participants': ",".join(emails),
                 }
             )
+            # text_message = strip_tags(html_message)
             from_email = env('EMAIL_HOST_USER')
             recipient_list = emails
 
@@ -151,59 +237,60 @@ class UpdateEventAttachmentSerializer(EventSerializer):
             'end_at',
             'description',
             'location',
+            'nature',
+            'main_calendar_id',
+            'invite_calendars_id',
             'files',
-            'attachments',
-            'calendars',
-            'remove_files',
             'emails',
-            'participants',
+            'remove_files',
+            'attachments',
+            'eventinvitecalendar_set',
+            'eventparticipant_set',
         )
 
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
+        main_calendar_id = validated_data.pop('main_calendar_id', None)
+        invite_calendars_id = validated_data.pop('invite_calendars_id', None)
         emails = validated_data.pop('emails', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
         event = super().update(instance, validated_data)
+
+        if main_calendar_id is None:
+            main_calendar_id = event.eventinvitecalendar_set \
+                .values_list('main_calendar', flat=True) \
+                .first()
 
         if remove_files:
             EventAttachment.objects \
                 .filter(id__in=remove_files, event=event) \
                 .delete()
 
-        if emails is not None:
-            new_participants = emails
-            old = Event.participants.through \
+        if emails:
+            Event.participants.through \
                 .objects \
-                .values_list('user', flat=True) \
-                .filter(
-                    Q(event=event, role='participants') &
-                    Q(user__email__in=emails)
-                )
-            if old:
-                new_participants.remove([i for i in old])
+                .filter(event=event, role='participants') \
+                .exclude(user__email__in=emails) \
+                .delete()
 
-            start_at = validated_data['start_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
-            end_at = validated_data['end_at'].strftime('%Y/%m/%d %H:%M Taipei(GMT+8)')  # noqa 501
+        if invite_calendars_id:
+            Event.calendars.through \
+                .objects \
+                .filter(event=event) \
+                .exclude(
+                    calendar_id=main_calendar_id,
+                    main_calendar=main_calendar_id) \
+                .exclude(calendar_id__in=invite_calendars_id) \
+                .delete()
 
-            subject = f'會議邀請：{validated_data["title"]}，{start_at} ~ {end_at}'  # noqa 501
-            html_message = loader.render_to_string(
-                'email.html',
-                {
-                    'title': validated_data["title"],
-                    'start_at': start_at,
-                    'end_at': end_at,
-                    'participants': ",".join(new_participants),
-                }
-            )
-            from_email = env('EMAIL_HOST_USER')
-            recipient_list = new_participants
-
-            msg = EmailMultiAlternatives(subject, html_message, from_email, recipient_list)  # noqa 501
-            msg.content_subtype = "html"
-
-            msg.send()
-
+        self.create_attachment_from_event(event, files)
+        self.create_participant_from_event(event, user, emails)
+        self.create_calendar_from_event(
+            event,
+            main_calendar_id,
+            invite_calendars_id,
+        )
         Event.participants.through \
             .objects \
             .filter(event=event, role='participants') \
@@ -214,3 +301,15 @@ class UpdateEventAttachmentSerializer(EventSerializer):
         self.create_participant_from_event(event, user, emails)
 
         return event
+
+
+class SubscribeEventSerializer(serializers.Serializer):
+    events = serializers.ListField(child=serializers.IntegerField())
+
+    def validate_events(self, value):
+        return Event.objects.filter(
+            Q(calendars__display='public') |
+            Q(calendars__groups__user=self.context['request'].user) |
+            Q(participants=self.context['request'].user.id),
+            Q(id__in=value),
+        ).values_list('id', flat=True)
