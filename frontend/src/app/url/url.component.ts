@@ -68,7 +68,7 @@ export class URLComponent implements OnInit {
         data.forEach(event => {
           this.subEvents.push({
             id: event.id, title: event.title, calendars: event.eventinvitecalendarSet,
-            color: event.eventinvitecalendarSet[0].mainCalendar.color
+            color: event.eventinvitecalendarSet[0].mainCalendar.color, startDate: event.startAt.substr(0, 10)
           });
           this.subCalendarId.push(event.eventinvitecalendarSet[0].mainCalendar.id);
         });
@@ -112,11 +112,13 @@ export class URLComponent implements OnInit {
                 if (event.eventinvitecalendarSet[0].mainCalendar.id === all) {
                   this.showEvent.push({
                     id: event.id, title: event.title, calendars: event.eventinvitecalendarSet,
-                    color: event.eventinvitecalendarSet[0].mainCalendar.color
+                    color: event.eventinvitecalendarSet[0].mainCalendar.color, startDate: event.startAt.substr(0, 10)
                   });
                 }
               });
             });
+            this.showEventSort();
+
             this.loading = !this.loading;
           }
         );
@@ -159,6 +161,20 @@ export class URLComponent implements OnInit {
           this.showEvent.push(event);
         }
       });
+    });
+  }
+
+  showEventSort() {
+    this.showEvent.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
     });
   }
 

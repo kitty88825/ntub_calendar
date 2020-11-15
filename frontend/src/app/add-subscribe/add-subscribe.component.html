@@ -190,7 +190,7 @@
                     <li *ngFor="let event of calendar.events | appFilter: searchText">
                       <label class="container">
                         <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
-                          (change)="changeEvent(calendar)">{{event.title}}
+                          (change)="changeEvent(calendar)">{{event.startDate}}&nbsp;&nbsp;&nbsp;{{event.title}}
                         <span class="checkmark"></span>
                       </label>
                     </li>

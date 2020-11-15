@@ -109,6 +109,12 @@ export class MeetingComponent implements OnInit {
       }
     );
 
+    if (this.myMeet.length === 0 && this.invitedMeet.length === 0 && this.pastMeet.length === 0) {
+      Swal.fire({
+        text: '目前尚無任何會議',
+        icon: 'warning'
+      });
+    }
   }
 
   changeDate() {

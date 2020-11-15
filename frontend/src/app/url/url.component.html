@@ -104,7 +104,7 @@
               <li *ngFor="let event of showEvent | appFilter : searchText">
                 <div class="event">
                   <span class="status" [style.background-color]="event.color"></span>
-                  <span>{{event.title}}</span>
+                  <span>{{event.startDate}}&nbsp;&nbsp;&nbsp;{{event.title}}</span>
                 </div>
               </li>
             </ul>

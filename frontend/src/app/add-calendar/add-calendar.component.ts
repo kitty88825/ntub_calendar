@@ -41,8 +41,9 @@ export class AddCalendarComponent implements OnInit {
   items = [0, 1];
   calendarPermissions = [];
   count = 1;
-  setPermissions = [{ id: 0, groupName: '', role: 'student', authority: 'read', group: [] },
-  { id: 0, groupName: '', role: 'student', authority: 'read', group: [] }];
+  setRole = 'write';
+  setPermissions = [{ id: 0, groupName: '', role: 'student', authority: 'write', group: [] },
+  { id: 0, groupName: '', role: 'student', authority: 'write', group: [] }];
   staff = localStorage.getItem('staff');
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -259,9 +260,9 @@ export class AddCalendarComponent implements OnInit {
     if (this.add === true) {
       this.count++;
       this.items.push(this.count);
-      this.setPermissions.push({ groupName: '', role: 'student', authority: 'read', group: [], id: 0 });
+      this.setPermissions.push({ groupName: '', role: 'student', authority: 'write', group: [], id: 0 });
     } else if (this.edit === true) {
-      this.calendarPermissions.push({ id: 0, authority: 'read', group: [], groupName: '', role: 'student' });
+      this.calendarPermissions.push({ id: 0, authority: 'write', group: [], groupName: '', role: 'student' });
     }
   }
 

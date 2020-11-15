@@ -9,6 +9,7 @@ import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
+import { copyFileSync } from 'fs';
 
 @Component({
   selector: 'app-edit-schedule',
@@ -45,6 +46,7 @@ export class EditScheduleComponent implements OnInit {
   attribute = '';
   group = [];
   role = '';
+  myEmail = '';
   MasterSelected = false;
   selectMainCalendar = '';
   commonUserEmail = [];
@@ -82,6 +84,7 @@ export class EditScheduleComponent implements OnInit {
       re => {
         this.group = re.groups;
         this.role = re.role;
+        this.myEmail = re.email;
       }
     );
 
@@ -99,41 +102,6 @@ export class EditScheduleComponent implements OnInit {
 
     this.shareDataService.getMessage().subscribe(
       data => {
-        this.calendarService.getCalendar().subscribe(
-          result => {
-            result.forEach(re => {
-              this.allCalendar.push({
-                id: re.id, name: re.name, display: re.display, color: re.color,
-                description: re.description, permissions: re.permissions, isChecked: false,
-                response: ''
-              });
-              this.group.forEach(group => {
-                re.permissions.forEach(permission => {
-                  if (group === permission.group && this.role === permission.role && permission.authority === 'write') {
-                    this.calendars.push({ id: re.id, name: re.name, isChecked: false });
-                  }
-                });
-              });
-            });
-
-            this.calendars.forEach(calendar => {
-              if (this.mianCalendarId === calendar.id) {
-                this.selectMainCalendar = calendar.name;
-              }
-            });
-            this.showInviteCalendar(this.selectMainCalendar);
-
-            data.message.eventinvitecalendarSet.forEach(calendar => {
-              this.showAddCalendars.forEach(show => {
-                if (calendar.calendar.id === show.id) {
-                  show.isChecked = true;
-                  show.response = calendar.response;
-                }
-              });
-            });
-          }
-        );
-
         this.id = data.message.id;
         this.title = data.message.title;
         this.attribute = data.message.nature;
@@ -167,6 +135,47 @@ export class EditScheduleComponent implements OnInit {
           this.fileName.push(file.filename);
           this.formData.append('filesId', file.id);
         });
+
+        this.calendarService.getCalendar().subscribe(
+          result => {
+            this.userEmail.forEach(email => {
+              if (email.email === this.myEmail) {
+                email.response = 'creator';
+              }
+            });
+            result.forEach(re => {
+              this.allCalendar.push({
+                id: re.id, name: re.name, display: re.display, color: re.color,
+                description: re.description, permissions: re.permissions, isChecked: false,
+                response: ''
+              });
+              this.group.forEach(group => {
+                re.permissions.forEach(permission => {
+                  if (group === permission.group && this.role === permission.role && permission.authority === 'write') {
+                    this.calendars.push({ id: re.id, name: re.name, isChecked: false });
+                  }
+                });
+              });
+            });
+
+            this.calendars.forEach(calendar => {
+              if (this.mianCalendarId === calendar.id) {
+                this.selectMainCalendar = calendar.name;
+              }
+            });
+            this.showInviteCalendar(this.selectMainCalendar);
+
+            data.message.eventinvitecalendarSet.forEach(calendar => {
+              this.showAddCalendars.forEach(show => {
+                if (calendar.calendar.id === show.id) {
+                  show.isChecked = true;
+                  show.response = calendar.response;
+                }
+              });
+            });
+          }
+        );
+
       }
     );
   }

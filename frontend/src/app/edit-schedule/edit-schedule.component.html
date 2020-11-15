@@ -202,6 +202,9 @@
                       </i>
                       <h3>{{name.email}}</h3>
                       <span>
+                        <i class="creator material-icons" *ngIf="name.response === 'creator'">
+                          person
+                        </i>
                         <i class="noresponse material-icons" *ngIf="name.response === 'no_reply'">
                           info
                         </i>
@@ -352,6 +355,9 @@
                   </i>
                   <h3>{{name.email}}</h3>
                   <span>
+                    <i class="creator material-icons" *ngIf="name.response === 'creator'">
+                      person
+                    </i>
                     <i class="noresponse material-icons" *ngIf="name.response === 'no_reply'">
                       info
                     </i>

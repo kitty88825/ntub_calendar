@@ -272,7 +272,7 @@
                     </select>
                   </div>
                   <div class="otherOffice__permission">
-                    <select class="form-control" (change)="changeAuthority(i, $event)">
+                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="setRole">
                       <option value="read">可讀</option>
                       <option value="write">可寫</option>
                     </select>
@@ -361,7 +361,7 @@
                     </select>
                   </div>
                   <div class="otherOffice__permission">
-                    <select class="form-control" (change)="changeAuthority(i, $event)">
+                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="setRole">
                       <option value="read">可讀</option>
                       <option value="write">可寫</option>
                     </select>
