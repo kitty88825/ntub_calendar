@@ -157,7 +157,17 @@
             <li class="event-list__header" *ngIf="showTitle === true">
               <h1>國立台北商業大學{{setYear}}學年度第1學期行事曆</h1>
             </li>
-            <li *ngFor="let calendar of showEventOne" class="event-list__phase">
+            <!-- <li *ngFor="let calendar of showEventOne" class="event-list__phase">
+              <div class="calendarName">{{calendar.calendar}}</div>
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li> -->
+
+            <li *ngFor="let calendar of eventMonth_1" class="event-list__phase">
               <div class="calendarName">{{calendar.calendar}}</div>
               <div class="event-list__content">
                 <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -166,10 +176,68 @@
                 </div>
               </div>
             </li>
+            <li *ngFor="let calendar of eventMonth_2" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_3" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_4" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_5" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_6" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_7" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+
             <li class="event-list__header" *ngIf="showTitle === true">
               <h1>國立台北商業大學{{setYear}}學年度第2學期行事曆</h1>
             </li>
-            <li *ngFor="let calendar of showEventTwo" class="event-list__phase">
+            <!-- <li *ngFor="let calendar of showEventTwo" class="event-list__phase">
+              <div class="calendarName">{{calendar.calendar}}</div>
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li> -->
+            <li *ngFor="let calendar of eventMonth_8" class="event-list__phase">
               <div class="calendarName">{{calendar.calendar}}</div>
               <div class="event-list__content">
                 <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -178,6 +246,39 @@
                 </div>
               </div>
             </li>
+            <li *ngFor="let calendar of eventMonth_9" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_10" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_11" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+            <li *ngFor="let calendar of eventMonth_12" class="event-list__phase">
+              <div class="event-list__content">
+                <div class="event-list__title" *ngFor="let event of calendar.events">
+                  <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                  <span>{{event.title}}</span>
+                </div>
+              </div>
+            </li>
+
           </ul>
           <div class="subBtn" (click)="savePdf(main)" *ngIf="showTitle === true">
             <i class="material-icons">

@@ -173,6 +173,7 @@
               display  : inline-block;
               font-size: 13px;
               padding: $content-size_top-bottom/2 $content-size_left-right/4;
+              //border: 2px solid $color_text; 
 
               span {
                 font-size  : 14px;
@@ -186,14 +187,19 @@
 
             &__phase {
               display: grid !important;
-              border : 2px solid $color_text;
+              border: 1px solid $color_text;
+              border-right-style: 1.5px solid $color_text;
+              border-left-style: 1.5px solid $color_text;
 
-              .calendarName {
+
+              .calendarName{
+                // display: inline-block !important;
                 text-align   : center;
                 font-size    : 12px;
-                font-weight: 600;
-                border-bottom: 2px solid $color_text;
+                font-weight: 600; //600
+                border-bottom: 1.5px solid $color_text;
               }
+
             }
           }
 
