@@ -186,18 +186,14 @@ export class ExportComponent implements OnInit {
     const eventMonth_11 = [];
     const eventMonth_12 = [];
 
-
     this.openCalendar.forEach(calendar => {
       this.allEvents.forEach(event => {
         if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
           Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)) {
           calendarName = event.mainCalendar;
-            console.log(calendarName);
-          if (event.startDate.substr(5, 2) <= 7) {
+          console.log(calendarName);
+          if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
-              case '01':
-                eventMonth_1.push(event);
-                break;
               case '02':
                 eventMonth_2.push(event);
                 break;
@@ -237,18 +233,19 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
+          } else if (event.startDate.substr(5, 2) < 2) {
+            switch (event.startDate.substr(5, 2)) {
+              case '01':
+                eventMonth_1.push(event);
+                break;
+            }
           }
           // if (event.startDate.substr(5, 2) <= 7) {
           //   showEventOne.push(event);
           // } else if (event.startDate.substr(5, 2) > 7) {
           //   showEventTwo.push(event);
           // }
-        } 
-        // else if(calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
-        //   Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)){
-        //     calendarName = '日間部行事曆'
-            
-        // }
+        }
       });
     });
     // this.showEventOne.push({ calendar: calendarName, events: showEventOne });
@@ -265,12 +262,10 @@ export class ExportComponent implements OnInit {
     this.eventMonth_10.push({ calendar: calendarName, events: eventMonth_10 });
     this.eventMonth_11.push({ calendar: calendarName, events: eventMonth_11 });
     this.eventMonth_12.push({ calendar: calendarName, events: eventMonth_12 });
-
     this.showEventSort();
   }
 
   showEventSort() {
-
     this.eventMonth_1[0].events.sort((a, b) => {
       const startA = a.startDate.toUpperCase();
       const startB = b.startDate.toUpperCase();
@@ -403,8 +398,6 @@ export class ExportComponent implements OnInit {
       }
       return 0;
     });
-
-
     // this.showEventOne[0].events.sort((a, b) => {
     //   const startA = a.startDate.toUpperCase();
     //   const startB = b.startDate.toUpperCase();
@@ -427,6 +420,5 @@ export class ExportComponent implements OnInit {
     //     return 1;
     //   }
     //   return 0;
-    
   }
 }

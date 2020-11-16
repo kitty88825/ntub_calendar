@@ -165,6 +165,15 @@
               }
             }
 
+            &__month {
+              font-size: 16px;
+              height: max-content;
+              display : inline-block;
+              text-align : left;
+              padding: $content-size_top-bottom*2 $content-size_left-right;
+            }
+
+
             &__content {
               display: inline-block;
             }
@@ -173,7 +182,6 @@
               display  : inline-block;
               font-size: 13px;
               padding: $content-size_top-bottom/2 $content-size_left-right/4;
-              //border: 2px solid $color_text; 
 
               span {
                 font-size  : 14px;
@@ -187,13 +195,13 @@
 
             &__phase {
               display: grid !important;
+              // display: inline-block;
               border: 1px solid $color_text;
               border-right-style: 1.5px solid $color_text;
               border-left-style: 1.5px solid $color_text;
 
 
               .calendarName{
-                // display: inline-block !important;
                 text-align   : center;
                 font-size    : 12px;
                 font-weight: 600; //600
