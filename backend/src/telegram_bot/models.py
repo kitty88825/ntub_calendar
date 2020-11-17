@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class TelegramBot(models.Model):
+    chat_id = models.CharField(max_length=255)
+    user_id = models.IntegerField()
