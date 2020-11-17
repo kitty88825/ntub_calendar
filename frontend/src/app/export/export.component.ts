@@ -42,6 +42,19 @@ export class ExportComponent implements OnInit {
   eventMonth_11 = [];
   eventMonth_12 = [];
 
+  eventMonth_1_nd = [];
+  eventMonth_2_nd = [];
+  eventMonth_3_nd = [];
+  eventMonth_4_nd = [];
+  eventMonth_5_nd = [];
+  eventMonth_6_nd = [];
+  eventMonth_7_nd = [];
+  eventMonth_8_nd = [];
+  eventMonth_9_nd = [];
+  eventMonth_10_nd = [];
+  eventMonth_11_nd = [];
+  eventMonth_12_nd = [];
+
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
   @ViewChild('screen') screen: ElementRef;
   @ViewChild('canvas') canvas: ElementRef;
@@ -59,7 +72,7 @@ export class ExportComponent implements OnInit {
         data.forEach(calendar => {
           this.openCalendar.push({
             id: calendar.id, name: calendar.name, display: calendar.display,
-            color: calendar.color, isChecked: false
+            color: calendar.color //isChecked: false
           });
         });
       }
@@ -154,11 +167,7 @@ export class ExportComponent implements OnInit {
 
   resetDate() {
     this.showTitle = true;
-    this.showEventOne = [];
-    this.showEventTwo = [];
-    const showEventOne = [];
     let calendarName = '';
-    const showEventTwo = [];
 
     this.eventMonth_1 = [];
     this.eventMonth_2 = [];
@@ -186,12 +195,41 @@ export class ExportComponent implements OnInit {
     const eventMonth_11 = [];
     const eventMonth_12 = [];
 
+    this.eventMonth_1_nd = [];
+    this.eventMonth_2_nd = [];
+    this.eventMonth_3_nd = [];
+    this.eventMonth_4_nd = [];
+    this.eventMonth_5_nd = [];
+    this.eventMonth_6_nd = [];
+    this.eventMonth_7_nd = [];
+    this.eventMonth_8_nd = [];
+    this.eventMonth_9_nd = [];
+    this.eventMonth_10_nd = [];
+    this.eventMonth_11_nd = [];
+    this.eventMonth_12_nd = [];
+
+    const eventMonth_1_nd = [];
+    const eventMonth_2_nd = [];
+    const eventMonth_3_nd = [];
+    const eventMonth_4_nd = [];
+    const eventMonth_5_nd = [];
+    const eventMonth_6_nd = [];
+    const eventMonth_7_nd = [];
+    const eventMonth_8_nd = [];
+    const eventMonth_9_nd = [];
+    const eventMonth_10_nd = [];
+    const eventMonth_11_nd = [];
+    const eventMonth_12_nd = [];
+
+
+
     this.openCalendar.forEach(calendar => {
       this.allEvents.forEach(event => {
-        if (calendar.isChecked === true && calendar.id === event.calendars[0].mainCalendar.id &&
-          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)) {
+        if (calendar.id === event.calendars[0].mainCalendar.id &&
+          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && 
+          calendar.name === '日間部行事曆') {
           calendarName = event.mainCalendar;
-          console.log(calendarName);
+          //if內 calendar.isChecked === true
           if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
@@ -239,17 +277,63 @@ export class ExportComponent implements OnInit {
                 eventMonth_1.push(event);
                 break;
             }
+            return 0;
           }
-          // if (event.startDate.substr(5, 2) <= 7) {
-          //   showEventOne.push(event);
-          // } else if (event.startDate.substr(5, 2) > 7) {
-          //   showEventTwo.push(event);
-          // }
+        }else if (calendar.id === event.calendars[0].mainCalendar.id &&
+          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && 
+          calendar.name === '進修部行事曆'){
+            if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+            switch (event.startDate.substr(5, 2)) {
+              case '02':
+                eventMonth_2_nd.push(event);
+                break;
+              case '03':
+                eventMonth_3_nd.push(event);
+                break;
+              case '04':
+                eventMonth_4_nd.push(event);
+                break;
+              case '05':
+                eventMonth_5_nd.push(event);
+                break;
+              case '06':
+                eventMonth_6_nd.push(event);
+                break;
+              case '07':
+                eventMonth_7_nd.push(event);
+                break;
+            }
+            return 0;
+          } else if (event.startDate.substr(5, 2) > 7) {
+            switch (event.startDate.substr(5, 2)) {
+              case '08':
+                eventMonth_8_nd.push(event);
+                break;
+              case '09':
+                eventMonth_9_nd.push(event);
+                break;
+              case '10':
+                eventMonth_10_nd.push(event);
+                break;
+              case '11':
+                eventMonth_11_nd.push(event);
+                break;
+              case '12':
+                eventMonth_12_nd.push(event);
+                break;
+            }
+            return 0;
+          } else if (event.startDate.substr(5, 2) < 2) {
+            switch (event.startDate.substr(5, 2)) {
+              case '01':
+                eventMonth_1_nd.push(event);
+                break;
+            }
+            return 0;
+          }
         }
       });
     });
-    // this.showEventOne.push({ calendar: calendarName, events: showEventOne });
-    // this.showEventTwo.push({ calendar: calendarName, events: showEventTwo });
     this.eventMonth_1.push({ calendar: calendarName, events: eventMonth_1 });
     this.eventMonth_2.push({ calendar: calendarName, events: eventMonth_2 });
     this.eventMonth_3.push({ calendar: calendarName, events: eventMonth_3 });
@@ -262,10 +346,26 @@ export class ExportComponent implements OnInit {
     this.eventMonth_10.push({ calendar: calendarName, events: eventMonth_10 });
     this.eventMonth_11.push({ calendar: calendarName, events: eventMonth_11 });
     this.eventMonth_12.push({ calendar: calendarName, events: eventMonth_12 });
+
+    this.eventMonth_1_nd.push({ calendar: calendarName, events: eventMonth_1_nd });
+    this.eventMonth_2_nd.push({ calendar: calendarName, events: eventMonth_2_nd });
+    this.eventMonth_3_nd.push({ calendar: calendarName, events: eventMonth_3_nd });
+    this.eventMonth_4_nd.push({ calendar: calendarName, events: eventMonth_4_nd });
+    this.eventMonth_5_nd.push({ calendar: calendarName, events: eventMonth_5_nd });
+    this.eventMonth_6_nd.push({ calendar: calendarName, events: eventMonth_6_nd });
+    this.eventMonth_7_nd.push({ calendar: calendarName, events: eventMonth_7_nd });
+    this.eventMonth_8_nd.push({ calendar: calendarName, events: eventMonth_8_nd });
+    this.eventMonth_9_nd.push({ calendar: calendarName, events: eventMonth_9_nd });
+    this.eventMonth_10_nd.push({ calendar: calendarName, events: eventMonth_10_nd });
+    this.eventMonth_11_nd.push({ calendar: calendarName, events: eventMonth_11_nd });
+    this.eventMonth_12_nd.push({ calendar: calendarName, events: eventMonth_12_nd });
+
+
     this.showEventSort();
   }
 
   showEventSort() {
+    // 日間部
     this.eventMonth_1[0].events.sort((a, b) => {
       const startA = a.startDate.toUpperCase();
       const startB = b.startDate.toUpperCase();
@@ -398,27 +498,140 @@ export class ExportComponent implements OnInit {
       }
       return 0;
     });
-    // this.showEventOne[0].events.sort((a, b) => {
-    //   const startA = a.startDate.toUpperCase();
-    //   const startB = b.startDate.toUpperCase();
-    //   if (startA < startB) {
-    //     return -1;
-    //   }
-    //   if (startA > startB) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
 
-    // this.showEventTwo[0].events.sort((a, b) => {
-    //   const startA = a.startDate.toUpperCase();
-    //   const startB = b.startDate.toUpperCase();
-    //   if (startA < startB) {
-    //     return -1;
-    //   }
-    //   if (startA > startB) {
-    //     return 1;
-    //   }
-    //   return 0;
+    // 進修部
+    this.eventMonth_1_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_2_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_3_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_4_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_5_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_6_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_7_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_8_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_9_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_10_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_11_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_12_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+
   }
 }
