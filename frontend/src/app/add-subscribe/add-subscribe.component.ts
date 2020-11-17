@@ -38,7 +38,6 @@ export class AddSubscribeComponent implements OnInit {
   term = [1, 2];
   setTerm = '整個學期';
   showEvent = [];
-  calendarSmall = '';
   staff = localStorage.getItem('staff');
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -99,23 +98,11 @@ export class AddSubscribeComponent implements OnInit {
                         calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
                       }
                     });
-                    calendarEvents.sort((a, b) => {
-                      const startA = a.startDate.toUpperCase();
-                      const startB = b.startDate.toUpperCase();
-                      if (startA < startB) {
-                        return -1;
-                      }
-                      if (startA > startB) {
-                        return 1;
-                      }
-                      return 0;
-                    });
-                    if (calendarsName !== '') {
-                      this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: true });
-                    } else if (calendarsName === '') {
-                      this.showEvent.push({ id: calendarId, calendarName: calendar.name, events: calendarEvents, isChecked: false });
-                    }
+                    this.calendarEventSort(calendarEvents);
+                    this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: true });
+
                   }
+
                 });
               }
             );
@@ -129,6 +116,7 @@ export class AddSubscribeComponent implements OnInit {
                 });
 
                 this.calendars.forEach(calendar => {
+                  let count = 0;
                   let unAllCalendarId = [];
                   this.hasSubEvent.forEach(hasSub => {
                     if (calendar.id === hasSub.eventinvitecalendarSet[0].mainCalendar.id) {
@@ -156,21 +144,18 @@ export class AddSubscribeComponent implements OnInit {
                       calendarEvents.forEach(calendarEvent => {
                         if (hasSub.id === calendarEvent.id) {
                           calendarEvent.isChecked = true;
+                          count++;
                         }
                       });
                     });
-                    calendarEvents.sort((a, b) => {
-                      const startA = a.startDate.toUpperCase();
-                      const startB = b.startDate.toUpperCase();
-                      if (startA < startB) {
-                        return -1;
-                      }
-                      if (startA > startB) {
-                        return 1;
-                      }
-                      return 0;
-                    });
+                    this.calendarEventSort(calendarEvents);
                     this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
+
+                    this.showEvent.forEach(event => {
+                      if (count === event.events.length && event.events.length !== 0) {
+                        event.isChecked = true;
+                      }
+                    });
                   }
                 });
 
@@ -263,17 +248,7 @@ export class AddSubscribeComponent implements OnInit {
             }
           }
         });
-        calendarEvents.sort((a, b) => {
-          const startA = a.startDate.toUpperCase();
-          const startB = b.startDate.toUpperCase();
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-          return 0;
-        });
+        this.calendarEventSort(calendarEvents);
         if (calendarsName !== '') {
           this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
         } else if (calendarsName === '') {
@@ -295,112 +270,18 @@ export class AddSubscribeComponent implements OnInit {
     });
   }
 
-  selectCalendarSmall(name) {
-    let count = 0;
-    this.calendars.forEach(calendar => {
-      if (calendar.name === name) {
-        const calendarEvents = [];
-        let calendarsName = '';
-        let calendarId = 0;
-        this.allEvents.forEach(event => {
-          if (Number(this.setTerm) === 1) {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) < 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度' &&
-                Number(event.startAt.substr(5, 2)) < 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
-            }
-          } else if (Number(this.setTerm) === 2) {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) >= 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度' &&
-                Number(event.startAt.substr(5, 2)) >= 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
-            }
-          } else if (this.setTerm === '整個學期') {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度') {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
-            }
-          }
-        });
-        calendarEvents.sort((a, b) => {
-          const startA = a.startDate.toUpperCase();
-          const startB = b.startDate.toUpperCase();
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-          return 0;
-        });
-
-        if (calendarsName !== '') {
-          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
-        } else if (calendarsName === '') {
-          this.showEvent.push({ id: calendarId, calendarName: calendar.name, events: [], isChecked: false });
-        }
-
-        this.showEvent.forEach(event => {
-          if (count === event.events.length && event.events.length !== 0) {
-            event.isChecked = true;
-          }
-        });
+  calendarEventSort(calendarEvent) {
+    calendarEvent.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
       }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
     });
-
   }
 
   changeTerm() {
@@ -493,17 +374,7 @@ export class AddSubscribeComponent implements OnInit {
             }
           }
         });
-        calendarEvents.sort((a, b) => {
-          const startA = a.startDate.toUpperCase();
-          const startB = b.startDate.toUpperCase();
-          if (startA < startB) {
-            return -1;
-          }
-          if (startA > startB) {
-            return 1;
-          }
-          return 0;
-        });
+        this.calendarEventSort(calendarEvents);
         if (calendarsName !== '') {
           this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
         } else if (calendarsName === '') {
@@ -532,79 +403,85 @@ export class AddSubscribeComponent implements OnInit {
     });
   }
 
-  async submit() {
-    this.loading = !this.loading;
+  async submit(main: HTMLElement) {
     await new Promise(resolve => {
-      this.showEvent.forEach(calendarEvents => {
-        if (calendarEvents.isChecked === true && this.setYear === '所有學年度' && this.setTerm === '整個學期') {
-          this.subCalendar.append('calendars', calendarEvents.id);
-          this.allEvents.forEach(event => {
-            if (calendarEvents.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              this.unSubEvent.append('events', event.id);
-            }
-          });
-          this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-            data => {
-              this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
-                res => {
-                }
-              );
-            }
-          );
-        } else if (calendarEvents.isChecked === false) {
-          this.unSubCalendar.append('calendars', calendarEvents.id);
-          this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-            data => {
-              calendarEvents.events.forEach(event => {
-                if (event.isChecked === true) {
-                  this.subEvent.append('events', event.id);
-                  this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-                    res => {
-                    }
-                  );
-                } else if (event.isChecked === false) {
-                  this.unSubEvent.append('events', event.id);
-                  this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-                    res => {
-                    }
-                  );
-                }
-              });
-            }
-          );
-        } else {
-          this.unSubCalendar.append('calendars', calendarEvents.id);
-          this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-            data => {
-              calendarEvents.events.forEach(event => {
-                if (event.isChecked === true) {
-                  this.subEvent.append('events', event.id);
-                  this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-                    res => {
-                    }
-                  );
-                } else if (event.isChecked === false) {
-                  this.unSubEvent.append('events', event.id);
-                  this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-                    res => {
-                    }
-                  );
-                }
-              });
-            }
-          );
-
-        }
-      });
-      resolve();
+      setTimeout(() => {
+        main.scrollIntoView();
+        resolve();
+      }, 500);
     });
     this.loading = !this.loading;
-    Swal.fire({
-      text: '成功！',
-      icon: 'success'
-    }).then((result) => {
-      this.router.navigate(['/my-url']);
+
+    this.showEvent.forEach(calendarEvents => {
+      if (calendarEvents.isChecked === true && this.setYear === '所有學年度' && this.setTerm === '整個學期') {
+        this.subCalendar.append('calendars', calendarEvents.id);
+        this.allEvents.forEach(event => {
+          if (calendarEvents.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+            this.unSubEvent.append('events', event.id);
+          }
+        });
+        this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+          data => {
+            this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
+              res => {
+              }
+            );
+          }
+        );
+      } else if (calendarEvents.isChecked === false) {
+        this.unSubCalendar.append('calendars', calendarEvents.id);
+        this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
+          data => {
+            calendarEvents.events.forEach(event => {
+              if (event.isChecked === true) {
+                this.subEvent.append('events', event.id);
+                this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
+                  res => {
+                  }
+                );
+              } else if (event.isChecked === false) {
+                this.unSubEvent.append('events', event.id);
+                this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+                  res => {
+                  }
+                );
+              }
+            });
+          }
+        );
+      } else {
+        this.unSubCalendar.append('calendars', calendarEvents.id);
+        this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
+          data => {
+            calendarEvents.events.forEach(event => {
+              if (event.isChecked === true) {
+                this.subEvent.append('events', event.id);
+                this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
+                  res => {
+                  }
+                );
+              } else if (event.isChecked === false) {
+                this.unSubEvent.append('events', event.id);
+                this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+                  res => {
+                  }
+                );
+              }
+            });
+          }
+        );
+
+      }
     });
+    setTimeout(() => {
+      this.loading = !this.loading;
+      Swal.fire({
+        text: '成功！',
+        icon: 'success'
+      }).then((result) => {
+        this.router.navigate(['/my-url']);
+      });
+    }, 2000);
   }
 
   changeEvent(calendar) {

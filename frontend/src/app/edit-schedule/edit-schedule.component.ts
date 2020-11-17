@@ -9,7 +9,6 @@ import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
-import { copyFileSync } from 'fs';
 
 @Component({
   selector: 'app-edit-schedule',

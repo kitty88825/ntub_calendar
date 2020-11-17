@@ -94,7 +94,7 @@
   </div>
   <div class="right">
     <app-navbar></app-navbar>
-    <main>
+    <main #main>
       <aside class="aside">
         <ul class="item-categories">
           <li>
@@ -158,12 +158,15 @@
               </div>
             </div>
             <div class="calendar">
-              <span>行事曆</span>
-              <select class="form-control" (change)="selectCalendarSmall(calendarSmall)" [(ngModel)]="calendarSmall">
-                <option *ngFor="let calendar of calendars">
-                  {{calendar.name}}
-                </option>
-              </select>
+              <ul class="item-categories__list">
+                <li *ngFor="let calendar of calendars">
+                  <label class="container origin">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                      (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
             </div>
           </div>
           <div class="header">
@@ -205,7 +208,7 @@
                 </i>
                 <span>重設</span>
               </div>
-              <div class="submit" (click)="submit()">
+              <div class="submit" (click)="submit(main)">
                 <i class="material-icons">
                   done_all
                 </i>

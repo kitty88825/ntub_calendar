@@ -93,7 +93,7 @@
                 <i class="material-icons">
                   event_available
                 </i>
-                <h1>行事曆</h1>
+                <h1>公開行事曆</h1>
               </div>
               <div class="form-group row">
                 <i class="material-icons sideMenu__content__arrow" (click)="isCollapsed = !isCollapsed"
@@ -121,7 +121,7 @@
                 <i class="material-icons">
                   event_available
                 </i>
-                <h1>行事曆</h1>
+                <h1>非公開行事曆</h1>
               </div>
               <div class="form-group row">
                 <i class="material-icons sideMenu__content__arrow" (click)="isCollapsed = !isCollapsed"
@@ -132,7 +132,7 @@
             </div>
             <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
               <ul class="sideMenu__content__list">
-                <li *ngFor="let sub of publicCalendar; let i = index">
+                <li *ngFor="let sub of privateCalendar; let i = index">
                   <label class="container">
                     <input type="checkbox" class="material-icons sideMenu__content__checkbox"
                       (click)="displayTypePrivate(eventTypesPrivate[i])" checked>{{sub.name}}

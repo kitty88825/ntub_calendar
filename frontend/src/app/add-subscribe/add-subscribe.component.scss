@@ -13,7 +13,9 @@
         bottom          : 0;
       }
 
-      #sideMenu-active, .close, .open {
+      #sideMenu-active,
+      .close,
+      .open {
         display: none;
       }
     }
@@ -505,14 +507,10 @@
             }
 
             .calendar {
-              font-size  : 13px;
-              display    : flex;
-              align-items: center;
-              margin-top : $content-size_top-bottom;
-
-              select {
-                width      : 225px;
-                margin-left: $content-size_left-right/2;
+              .item-categories__list {
+                height    : 200px;
+                overflow  : auto;
+                margin-top: $content-size_top-bottom;
               }
             }
           }
