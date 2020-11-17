@@ -1,6 +1,8 @@
 import logging
 import json
 
+from django.db.models import Q
+
 from app.events.models import Event
 from app.users.models import User
 
@@ -34,23 +36,41 @@ def start(update, context):
 def login(update, context):
     chat_id = update.message.chat.id
     reply = text_after_command(update)
-    if not reply:
-        context.bot.send_message(chat_id, '沒有網址沒辦法登入唷🙁，登入請輸入 /login 你的訂閱url')
+    get_id = TelegramBot.objects.filter(chat_id=chat_id)
+    if get_id:
+        context.bot.send_message(chat_id, '您已經登入完成囉🤗不用再重新登入~')
     else:
-        reply_list = reply.split('/')
-        reply = reply_list[4]
-        user_id = User.objects.values_list('id', flat=True).filter(code=reply)
-        TelegramBot.objects.get_or_create(
-            chat_id=chat_id,
-            user_id=user_id[0]
-        )
-        context.bot.send_message(chat_id, '登入成功！開始使用一訂行吧🥰，使用 /help 來查看所有功能👉')
+        if not reply:
+            context.bot.send_message(chat_id, '沒有網址沒辦法登入唷🙁，登入請輸入 /login 你的訂閱url')  # noqa 501
+        else:
+            reply_list = reply.split('/')
+            reply = reply_list[4]
+            user_id = User.objects.values_list('id', flat=True).filter(code=reply)  # noqa 501
+            TelegramBot.objects.get_or_create(
+                chat_id=chat_id,
+                user_id=user_id[0]
+            )
+            context.bot.send_message(
+                chat_id,
+                '登入成功！歡迎{}！🥰如果之後您更換了url，不需要重新登入喔！接下來使用 /help 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                )
 
 
 def get_event(update, context):
     chat_id = update.message.chat.id
-    # .strftime('%Y/%m/%d %H:%M')
-    event = Event.objects.values()
+    get_id = TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id)  # noqa 501
+    event = None
+    if get_id[0]:
+        event = Event.objects \
+            .filter(
+                Q(calendars__groups__user=get_id[0]) |
+                Q(calendars__display='public') |
+                Q(participants=get_id[0]),
+            ) \
+            .distinct()
+    else:
+        event = Event.objects.filter(calendars__display='public').distinct()
+
     serializer = GetSerializer(event, many=True)
 
     data = json.loads(json.dumps(serializer.data))
@@ -66,8 +86,10 @@ def get_event(update, context):
     data = data.replace('"', '')
     data = data.replace('[', '')
     data = data.replace(']', '')
-    data = data.replace('{', '')
-    data = data.replace('}', '')
-
-    context.bot.send_message(chat_id, data.replace(',', '\n'))
-    # context.bot.send_message(chat_id, data)
+    data = data.split('}, {')
+    for i in data:
+        i = i.replace('{', '')
+        i = i.replace('}', '')
+        i = i.replace(',', '\n')
+        print(i+'-'*30)
+        context.bot.send_message(chat_id, i)
