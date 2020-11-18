@@ -27,9 +27,14 @@ class EventViewSet(ModelViewSet):
         if self.request.user.is_authenticated:
             return Event.objects \
                 .filter(
-                    Q(calendars__groups__user=self.request.user) |
                     Q(calendars__display='public') |
-                    Q(participants=self.request.user.id),
+                    (
+                        Q(calendars__groups__user=self.request.user) &
+                        Q(calendars__role=self.request.user.role)
+                    ) |
+                    (
+                        Q(participants=self.request.user.id)
+                    ),
                 ) \
                 .distinct()
         else:
