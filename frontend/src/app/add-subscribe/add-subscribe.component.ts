@@ -19,6 +19,8 @@ const SecondaryBlue = '#006ddd';
 })
 export class AddSubscribeComponent implements OnInit {
   calendars = [];
+  privateCalendars = [];
+  publicCalendars = [];
   unSubEvent = new FormData();
   subEvent = new FormData();
   subCalendar = new FormData();
@@ -63,7 +65,10 @@ export class AddSubscribeComponent implements OnInit {
     this.loading = !this.loading;
     this.calendarService.getCalendar().subscribe(
       data => {
-        data.forEach(calendar => this.calendars.push({ id: calendar.id, name: calendar.name, isChecked: false }));
+        data.forEach(calendar => this.calendars.push({
+          id: calendar.id, name: calendar.name, isChecked: false,
+          display: calendar.display
+        }));
         this.eventService.getEvents().subscribe(
           res => {
             res.forEach(event => {
@@ -164,6 +169,13 @@ export class AddSubscribeComponent implements OnInit {
             );
           }
         );
+        this.calendars.forEach(calendar => {
+          if (calendar.display === 'private') {
+            this.privateCalendars.push(calendar);
+          } else if (calendar.display === 'public') {
+            this.publicCalendars.push(calendar);
+          }
+        });
       }
     );
   }
@@ -249,6 +261,7 @@ export class AddSubscribeComponent implements OnInit {
           }
         });
         this.calendarEventSort(calendarEvents);
+
         if (calendarsName !== '') {
           this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
         } else if (calendarsName === '') {
@@ -420,59 +433,42 @@ export class AddSubscribeComponent implements OnInit {
             this.unSubEvent.append('events', event.id);
           }
         });
-        this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-          data => {
-            this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
-              res => {
-              }
-            );
-          }
-        );
       } else if (calendarEvents.isChecked === false) {
         this.unSubCalendar.append('calendars', calendarEvents.id);
-        this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-          data => {
-            calendarEvents.events.forEach(event => {
-              if (event.isChecked === true) {
-                this.subEvent.append('events', event.id);
-                this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-                  res => {
-                  }
-                );
-              } else if (event.isChecked === false) {
-                this.unSubEvent.append('events', event.id);
-                this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-                  res => {
-                  }
-                );
-              }
-            });
+        calendarEvents.events.forEach(event => {
+          if (event.isChecked === true) {
+            this.subEvent.append('events', event.id);
+          } else if (event.isChecked === false) {
+            this.unSubEvent.append('events', event.id);
           }
-        );
+        });
       } else {
         this.unSubCalendar.append('calendars', calendarEvents.id);
-        this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-          data => {
-            calendarEvents.events.forEach(event => {
-              if (event.isChecked === true) {
-                this.subEvent.append('events', event.id);
-                this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-                  res => {
-                  }
-                );
-              } else if (event.isChecked === false) {
-                this.unSubEvent.append('events', event.id);
-                this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-                  res => {
-                  }
-                );
-              }
-            });
+        calendarEvents.events.forEach(event => {
+          if (event.isChecked === true) {
+            this.subEvent.append('events', event.id);
+          } else if (event.isChecked === false) {
+            this.unSubEvent.append('events', event.id);
           }
-        );
-
+        });
       }
     });
+
+    this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+      data => {}
+    );
+    this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
+      res => {
+      }
+    );
+    this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
+      data => {
+      }
+    );
+    this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
+      res => {
+      }
+    );
     setTimeout(() => {
       this.loading = !this.loading;
       Swal.fire({

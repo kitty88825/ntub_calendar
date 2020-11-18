@@ -370,7 +370,7 @@
           &__list {
             display  : flex;
             flex-flow: column;
-            padding  : $content-size_left-right/2 0;
+            padding  : $content-size_top-bottom $content-size_left-right/2;
 
             li {
               display    : inline-flex;

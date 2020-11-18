@@ -111,7 +111,7 @@
               }
 
               .other {
-                background-color: $color_second;
+                background-color: $color_accent;
                 color           : white;
                 border-radius   : 80px;
                 width           : 160px;
@@ -190,7 +190,7 @@
               align-items     : center;
               text-align      : center;
               justify-content : center;
-              background-color: $color_second;
+              background-color: $color_accent;
               border-radius   : 60px;
               color           : white;
               letter-spacing  : 1px;
@@ -301,7 +301,6 @@
                   color           : white;
                   cursor          : pointer;
                   transition      : box-shadow .4s ease;
-                  box-shadow      : 0px 1px 6px -2px #000000;
 
                   i {
                     color    : white;

@@ -124,15 +124,50 @@
                 </select>
               </div>
               <hr>
-              <ul class="item-categories__list">
-                <li *ngFor="let calendar of calendars">
-                  <label class="container origin">
-                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                      (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                    <span class="checkmark"></span>
-                  </label>
-                </li>
-              </ul>
+              <li>
+                <div class="item-categories__title active">
+                  公開行事曆
+                  <div class="form-group row">
+                    <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                      arrow_left
+                    </i>
+                  </div>
+                </div>
+                <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+                  <ul class="item-categories__list">
+                    <li *ngFor="let calendar of publicCalendars">
+                      <label class="container origin">
+                        <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                          (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                        <span class="checkmark"></span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div class="item-categories__title active">
+                  非公開行事曆
+                  <div class="form-group row">
+                    <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                      arrow_left
+                    </i>
+                  </div>
+                </div>
+                <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+                  <ul class="item-categories__list">
+                    <li *ngFor="let calendar of privateCalendars">
+                      <label class="container origin">
+                        <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                          (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                        <span class="checkmark"></span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </li>
             </div>
           </li>
         </ul>
@@ -158,13 +193,50 @@
               </div>
             </div>
             <div class="calendar">
-              <ul class="item-categories__list">
-                <li *ngFor="let calendar of calendars">
-                  <label class="container origin">
-                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                      (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                    <span class="checkmark"></span>
-                  </label>
+              <ul>
+                <li>
+                  <div class="item-categories__title active">
+                    公開行事曆
+                    <div class="form-group row">
+                      <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                        arrow_left
+                      </i>
+                    </div>
+                  </div>
+                  <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+                    <ul class="item-categories__list">
+                      <li *ngFor="let calendar of publicCalendars">
+                        <label class="container origin">
+                          <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                            (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-categories__title active">
+                    非公開行事曆
+                    <div class="form-group row">
+                      <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                        arrow_left
+                      </i>
+                    </div>
+                  </div>
+                  <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+                    <ul class="item-categories__list">
+                      <li *ngFor="let calendar of privateCalendars">
+                        <label class="container origin">
+                          <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                            (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
                 </li>
               </ul>
             </div>

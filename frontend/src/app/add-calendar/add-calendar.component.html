@@ -443,7 +443,6 @@
                 <div class="otherOffice__content" *ngFor="let item of calendarPermissions; let i = index">
                   <div class="otherOffice__name">
                     <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName">
-                      <option></option>
                       <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
                     </select>
                   </div>
