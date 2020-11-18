@@ -123,10 +123,13 @@
               <ul class="item-categories__list">
                 <li *ngFor="let calendar of openCalendar">
                   <label class="container origin">
-                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                      (change)="changeSelect()">{{calendar.name}}
-                    <span class="checkmark"></span>
+                    <input type="checkbox" class="material-icons">
                   </label>
+                  <!-- <label class="container origin">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                        (change)="changeSelect()">{{calendar.name}}
+                      <span class="checkmark"></span>
+                    </label> -->
                 </li>
               </ul>
             </div>
@@ -146,9 +149,11 @@
             <ul class="item-categories__list">
               <li *ngFor="let calendar of openCalendar">
                 <label class="container origin">
-                  <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                    (change)="changeSelect()">{{calendar.name}}
+                  <input type="checkbox" class="material-icons" >{{calendar.name}}
                   <span class="checkmark"></span>
+                  <!-- <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                    (change)="changeSelect()">{{calendar.name}}
+                  <span class="checkmark"></span> -->
                 </label>
               </li>
             </ul>
@@ -160,11 +165,16 @@
             </div>
             <div class="event-list__calendarName_all">
               <div class="event-list__calendarName_empty"></div>
-              <div class="event-list__calendarName">日間部行事曆</div>
-              <div class="event-list__calendarName_nd">進修部行事曆</div>
+              <div class="event-list__calendarName">日間部行事摘要</div>
+              <div class="event-list__calendarName_nd">進修部行事摘要</div>
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">8月</div>
+              <!-- <div class="event-list__date-picker">
+                <full-calendar #calendar [plugins]="calendarPlugins" [defaultDate]="setDate" [locale]='locale'>
+                  <div class="fc-toolbar fc-header-toolbar"></div>
+                </full-calendar>
+              </div> -->
               <li *ngFor="let calendar of eventMonth_8">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -284,8 +294,9 @@
               <h1>國立台北商業大學{{setYear}}學年度第2學期行事曆</h1>
             </div>
             <div class="event-list__calendarName_all">
-              <div class="event-list__calendarName">日間部行事曆</div>
-              <div class="event-list__calendarName_nd">進修部行事曆</div>
+              <div class="event-list__calendarName_empty"></div>
+              <div class="event-list__calendarName">日間部行事摘要</div>
+              <div class="event-list__calendarName_nd">進修部行事摘要</div>
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">2月</div>
@@ -382,25 +393,25 @@
                 </div>
               </li>
             </div>
-              <div class="event-list__phase">
-                <div class="event-list__month">7月</div>
-                <li *ngFor="let calendar of eventMonth_7">
-                  <div class="event-list__content">
-                    <div class="event-list__title" *ngFor="let event of calendar.events">
-                      <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
-                      <span>{{event.title}}</span>
-                    </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">7月</div>
+              <li *ngFor="let calendar of eventMonth_7">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span>{{event.title}}</span>
                   </div>
-                </li>
-                <li *ngFor="let calendar of eventMonth_7_nd">
-                  <div class="event-list__content">
-                    <div class="event-list__title" *ngFor="let event of calendar.events">
-                      <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
-                      <span>{{event.title}}</span>
-                    </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_7_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span>{{event.title}}</span>
                   </div>
-                </li>
-              </div>
+                </div>
+              </li>
+            </div>
           </ul>
           <div class="subBtn" (click)="savePdf(main)" *ngIf="showTitle === true">
             <i class="material-icons">

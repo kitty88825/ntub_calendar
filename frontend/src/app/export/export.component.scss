@@ -172,14 +172,25 @@
               font-size: 16px;
               height: max-content;
               display : inline-block;
-              text-align : left;
+              text-align : center;
               padding: $content-size_top-bottom*2 $content-size_left-right;
             }
+
+            // &__date-picker {
+            //   display         : flex;
+            //   align-items     : center;
+            //   // justify-content : center;
+            //   height          : 100px;
+            //   background-color: $color_primary;
+
+            //   .full-calendar.fc-toolbar fc-header-toolbar{
+            //     display: none;
+            //   }
+            // }
 
             &__content {
               display: inline-block;
               text-align: left;
-              background-color: gold;
             }
 
             &__title {
@@ -202,17 +213,19 @@
               display: grid;
               grid-template-columns: 80px 1fr 1fr;
               text-align: center;
-              border: 1px solid $color_text;
-              // border-right-style: 1.5px solid $color_text;
-              // border-left-style: 1.5px solid $color_text;
-              background-color: greenyellow;
+              grid-gap: 1.5px;
+              background-color: $color_text;
+              padding: 1.5px;
+
+              >div {
+                background-color: #ffffff;
+              }
               
               .calendarName_empty{
                 display: inline-block;
                 text-align   : center;
                 font-size    : 12px;
                 font-weight: 600; 
-                border-bottom: 1.5px solid $color_text;
               }
 
               .calendarName {
@@ -220,17 +233,13 @@
                 text-align   : center;
                 font-size    : 12px;
                 font-weight: 600; 
-                border-bottom: 1.5px solid $color_text;
-                border-left: 1.5px solid $color_text;
               }
 
               .calendarName_nd {
                 display:inline-block ;
                   text-align   : center;
                   font-size    : 12px;
-                  font-weight: 600; 
-                  border-bottom: 1.5px solid $color_text; 
-                  border-left: 1.5px solid $color_text;               
+                  font-weight: 600;            
               }
             }
 
@@ -239,24 +248,10 @@
               display: grid !important;
               grid-template-columns: 80px 1fr 1fr;
               text-align: left;
-              border: 1px solid $color_text;
-              border-right-style: 1.5px solid $color_text;
-              border-left-style: 1.5px solid $color_text;
-
-              // .calendarName {
-              //   text-align   : center;
-              //   font-size    : 12px;
-              //   font-weight: 600; 
-              //   border-bottom: 1.5px solid $color_text;
-              // }
-
-              // .calendarName_nd {
-              //   text-align   : center;
-              //   font-size    : 12px;
-              //   font-weight: 600; 
-              //   border-bottom: 1.5px solid $color_text;
-              // }
-
+              border-top: 1px solid $color_text;
+              border-bottom: 1px solid $color_text;
+              border-left: 1.5px solid $color_text;
+              border-right: 1.5px solid $color_text;
             }
           }
 

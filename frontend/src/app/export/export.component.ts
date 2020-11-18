@@ -5,6 +5,8 @@ import html2canvas from 'html2canvas';
 import * as jsPDF from 'jspdf';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 
+import dayGridPlugin from '@fullcalendar/daygrid';
+
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
@@ -18,16 +20,10 @@ export class ExportComponent implements OnInit {
   isOpen = false;
   openCalendar = [];
   allEvents = [];
-  showEventOne = [];
-  showEventTwo = [];
   year = [];
   staff = localStorage.getItem('staff');
   setYear = new Date().getFullYear() - 1911;
   showTitle = false;
-
-  // nightDepatment = [];
-  // showEventOne_nd = [];
-  // showEventTwo_nd = [];
 
   eventMonth_1 = [];
   eventMonth_2 = [];
@@ -65,6 +61,10 @@ export class ExportComponent implements OnInit {
     private eventService: EventService
   ) { }
 
+  // calendarPlugins = [dayGridPlugin];
+  // setDate = '2020-08-01';
+  // locale = 'zh-tw';
+
   ngOnInit(): void {
     this.year.push(this.setYear);
     this.calendarService.getCalendar().subscribe(
@@ -96,7 +96,6 @@ export class ExportComponent implements OnInit {
 
       }
     );
-
   }
 
   yearSort() {
@@ -153,21 +152,18 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  changeSelect() {
-    this.resetDate();
-    // this.resetDate_nd();
-    this.showEventSort();
-  }
+  // changeSelect(){
+  //   this.resetDate();
+  //   this.showEventSort();
+  // }
 
   changeYear() {
     this.resetDate();
-    // this.resetDate_nd();
     this.showEventSort();
   }
 
   resetDate() {
     this.showTitle = true;
-    let calendarName = '';
 
     this.eventMonth_1 = [];
     this.eventMonth_2 = [];
@@ -221,15 +217,12 @@ export class ExportComponent implements OnInit {
     const eventMonth_11_nd = [];
     const eventMonth_12_nd = [];
 
-
-
     this.openCalendar.forEach(calendar => {
       this.allEvents.forEach(event => {
         if (calendar.id === event.calendars[0].mainCalendar.id &&
-          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && 
+          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
           calendar.name === '日間部行事曆') {
-          calendarName = event.mainCalendar;
-          //if內 calendar.isChecked === true
+          // if內 calendar.isChecked === true
           if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
@@ -279,10 +272,10 @@ export class ExportComponent implements OnInit {
             }
             return 0;
           }
-        }else if (calendar.id === event.calendars[0].mainCalendar.id &&
-          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && 
-          calendar.name === '進修部行事曆'){
-            if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+        } else if (calendar.id === event.calendars[0].mainCalendar.id &&
+          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
+          calendar.name === '進修部行事曆') {
+          if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
                 eventMonth_2_nd.push(event);
@@ -334,32 +327,31 @@ export class ExportComponent implements OnInit {
         }
       });
     });
-    this.eventMonth_1.push({ calendar: calendarName, events: eventMonth_1 });
-    this.eventMonth_2.push({ calendar: calendarName, events: eventMonth_2 });
-    this.eventMonth_3.push({ calendar: calendarName, events: eventMonth_3 });
-    this.eventMonth_4.push({ calendar: calendarName, events: eventMonth_4 });
-    this.eventMonth_5.push({ calendar: calendarName, events: eventMonth_5 });
-    this.eventMonth_6.push({ calendar: calendarName, events: eventMonth_6 });
-    this.eventMonth_7.push({ calendar: calendarName, events: eventMonth_7 });
-    this.eventMonth_8.push({ calendar: calendarName, events: eventMonth_8 });
-    this.eventMonth_9.push({ calendar: calendarName, events: eventMonth_9 });
-    this.eventMonth_10.push({ calendar: calendarName, events: eventMonth_10 });
-    this.eventMonth_11.push({ calendar: calendarName, events: eventMonth_11 });
-    this.eventMonth_12.push({ calendar: calendarName, events: eventMonth_12 });
+    this.eventMonth_1.push({ events: eventMonth_1 });
+    this.eventMonth_2.push({ events: eventMonth_2 });
+    this.eventMonth_3.push({ events: eventMonth_3 });
+    this.eventMonth_4.push({ events: eventMonth_4 });
+    this.eventMonth_5.push({ events: eventMonth_5 });
+    this.eventMonth_6.push({ events: eventMonth_6 });
+    this.eventMonth_7.push({ events: eventMonth_7 });
+    this.eventMonth_8.push({ events: eventMonth_8 });
+    this.eventMonth_9.push({ events: eventMonth_9 });
+    this.eventMonth_10.push({ events: eventMonth_10 });
+    this.eventMonth_11.push({ events: eventMonth_11 });
+    this.eventMonth_12.push({ events: eventMonth_12 });
 
-    this.eventMonth_1_nd.push({ calendar: calendarName, events: eventMonth_1_nd });
-    this.eventMonth_2_nd.push({ calendar: calendarName, events: eventMonth_2_nd });
-    this.eventMonth_3_nd.push({ calendar: calendarName, events: eventMonth_3_nd });
-    this.eventMonth_4_nd.push({ calendar: calendarName, events: eventMonth_4_nd });
-    this.eventMonth_5_nd.push({ calendar: calendarName, events: eventMonth_5_nd });
-    this.eventMonth_6_nd.push({ calendar: calendarName, events: eventMonth_6_nd });
-    this.eventMonth_7_nd.push({ calendar: calendarName, events: eventMonth_7_nd });
-    this.eventMonth_8_nd.push({ calendar: calendarName, events: eventMonth_8_nd });
-    this.eventMonth_9_nd.push({ calendar: calendarName, events: eventMonth_9_nd });
-    this.eventMonth_10_nd.push({ calendar: calendarName, events: eventMonth_10_nd });
-    this.eventMonth_11_nd.push({ calendar: calendarName, events: eventMonth_11_nd });
-    this.eventMonth_12_nd.push({ calendar: calendarName, events: eventMonth_12_nd });
-
+    this.eventMonth_1_nd.push({ events: eventMonth_1_nd });
+    this.eventMonth_2_nd.push({ events: eventMonth_2_nd });
+    this.eventMonth_3_nd.push({ events: eventMonth_3_nd });
+    this.eventMonth_4_nd.push({ events: eventMonth_4_nd });
+    this.eventMonth_5_nd.push({ events: eventMonth_5_nd });
+    this.eventMonth_6_nd.push({ events: eventMonth_6_nd });
+    this.eventMonth_7_nd.push({ events: eventMonth_7_nd });
+    this.eventMonth_8_nd.push({ events: eventMonth_8_nd });
+    this.eventMonth_9_nd.push({ events: eventMonth_9_nd });
+    this.eventMonth_10_nd.push({ events: eventMonth_10_nd });
+    this.eventMonth_11_nd.push({ events: eventMonth_11_nd });
+    this.eventMonth_12_nd.push({ events: eventMonth_12_nd });
 
     this.showEventSort();
   }
