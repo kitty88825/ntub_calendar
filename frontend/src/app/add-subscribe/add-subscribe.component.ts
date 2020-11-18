@@ -435,6 +435,11 @@ export class AddSubscribeComponent implements OnInit {
         });
       } else if (calendarEvents.isChecked === false) {
         this.unSubCalendar.append('calendars', calendarEvents.id);
+        this.allEvents.forEach(all => {
+          if (calendarEvents.id === all.eventinvitecalendarSet[0].mainCalendar.id && this.hasSubCalendarId.includes(calendarEvents.id)) {
+            this.subEvent.append('events', all.id);
+          }
+        });
         calendarEvents.events.forEach(event => {
           if (event.isChecked === true) {
             this.subEvent.append('events', event.id);
@@ -442,7 +447,7 @@ export class AddSubscribeComponent implements OnInit {
             this.unSubEvent.append('events', event.id);
           }
         });
-      } else {
+      } else if (calendarEvents.isChecked === true) {
         this.unSubCalendar.append('calendars', calendarEvents.id);
         calendarEvents.events.forEach(event => {
           if (event.isChecked === true) {
@@ -453,21 +458,17 @@ export class AddSubscribeComponent implements OnInit {
         });
       }
     });
-
-    this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-      data => {}
-    );
     this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
-      res => {
-      }
+      res => { }
     );
     this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-      data => {
-      }
+      data => { }
     );
     this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-      res => {
-      }
+      res => { }
+    );
+    this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+      data => { }
     );
     setTimeout(() => {
       this.loading = !this.loading;
