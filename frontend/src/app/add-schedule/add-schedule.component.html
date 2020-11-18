@@ -94,7 +94,7 @@
   </div>
   <div class="right">
     <app-navbar></app-navbar>
-    <main>
+    <main #main>
       <article>
         <section class="container">
           <div class="add">
@@ -233,7 +233,7 @@
                 </ul>
               </div>
             </div>
-            <div class="submit" (click)="add()">
+            <div class="submit" (click)="add(main)">
               <i class="material-icons">
                 done_all
               </i>
@@ -390,7 +390,7 @@
                 </i>
                 <span>取消</span>
               </div>
-              <div class="submit" (click)="add()">
+              <div class="submit" (click)="add(main)">
                 <i class="material-icons">
                   done_all
                 </i>
@@ -491,5 +491,9 @@
         </div>
       </div>
     </main>
+    <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+    [template]="loadingTemplate">
+  </ngx-loading>
   </div>
 </div>

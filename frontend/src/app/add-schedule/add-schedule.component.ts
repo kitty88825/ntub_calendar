@@ -1,6 +1,6 @@
 import { TokenService } from './../services/token.service';
 import { UserCommonService } from './../services/user-common.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -8,6 +8,12 @@ import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { CalendarService } from '../services/calendar.service';
 import { formatDate } from '@angular/common';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-add-schedule',
@@ -50,6 +56,19 @@ export class AddScheduleComponent implements OnInit {
   startDate = '';
   endDate = '';
   staff = localStorage.getItem('staff');
+
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
 
   constructor(
     private router: Router,
@@ -175,10 +194,15 @@ export class AddScheduleComponent implements OnInit {
     });
   }
 
-  add() {
+  async add(main: HTMLElement) {
     const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
     const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
-
+    await new Promise(resolve => {
+      setTimeout(() => {
+        main.scrollIntoView();
+        resolve();
+      });
+    });
     if (this.title === '') {
       Swal.fire({
         text: '請輸入標題',
@@ -190,6 +214,7 @@ export class AddScheduleComponent implements OnInit {
         icon: 'error'
       });
     } else {
+      this.loading = !this.loading;
       this.calendars.forEach(calendar => {
         if (this.selectMainCalendar === calendar.name) {
           this.formData.append('main_calendar_id', calendar.id);
@@ -215,7 +240,7 @@ export class AddScheduleComponent implements OnInit {
 
       this.eventService.postEvent(this.formData).subscribe(
         data => {
-          console.log(data);
+          this.loading = !this.loading;
           Swal.fire({
             text: '新增成功',
             icon: 'success',

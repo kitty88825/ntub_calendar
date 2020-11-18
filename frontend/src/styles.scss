@@ -164,7 +164,6 @@ body {
 }
 
 .fc-content {
-  // background-color: #439B91;
   background-color: unset !important;
   height          : 5px;
 }
@@ -321,6 +320,14 @@ body {
 
 a.dropdown-item {
   padding: 5px !important;
+}
+
+.backdrop {
+  position: fixed !important;
+}
+
+.spinner-wandering-cubes {
+  position: fixed !important;
 }
 
 label.container {

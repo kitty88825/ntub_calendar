@@ -1,7 +1,7 @@
 import { formatDate } from '@angular/common';
 import { CommonUserService } from './../services/common-user.service';
 import { TokenService } from './../services/token.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -9,6 +9,12 @@ import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-edit-schedule',
@@ -57,6 +63,19 @@ export class EditScheduleComponent implements OnInit {
   endDate = '';
   staff = localStorage.getItem('staff');
 
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
   constructor(
     private router: Router,
     public eventService: EventService,
@@ -71,6 +90,7 @@ export class EditScheduleComponent implements OnInit {
   @ViewChild('addEndTime') addEndTime: NgbTimepicker;
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
@@ -174,7 +194,7 @@ export class EditScheduleComponent implements OnInit {
             });
           }
         );
-
+        this.loading = !this.loading;
       }
     );
   }
@@ -249,15 +269,27 @@ export class EditScheduleComponent implements OnInit {
     }
   }
 
-  update() {
+  async update(main: HTMLElement) {
     const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
     const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
-    if (end.toUpperCase() < start.toUpperCase()) {
+    await new Promise(resolve => {
+      setTimeout(() => {
+        main.scrollIntoView();
+        resolve();
+      });
+    });
+    if (this.title === '') {
+      Swal.fire({
+        text: '請輸入標題',
+        icon: 'error'
+      });
+    } else if (end.toUpperCase() < start.toUpperCase()) {
       Swal.fire({
         text: '請輸入正確日期',
         icon: 'error'
       });
     } else {
+      this.loading = !this.loading;
       this.showAddCalendars.forEach(calendar => {
         if (calendar.isChecked === true) {
           this.formData.append('invite_calendars_id', calendar.id);
@@ -278,6 +310,7 @@ export class EditScheduleComponent implements OnInit {
 
       this.eventService.patchEvent(this.id, this.formData).subscribe(
         data => {
+          this.loading = !this.loading;
           Swal.fire({
             text: '更新成功',
             icon: 'success',
