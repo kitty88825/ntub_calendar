@@ -95,7 +95,7 @@
   <div class="right">
     <app-navbar></app-navbar>
     <main #main>
-      <aside class="aside">
+      <!-- <aside class="aside">
         <ul class="item-categories">
           <li>
             <div class="item-categories__title active">
@@ -125,19 +125,41 @@
                   <label class="container origin">
                     <input type="checkbox" class="material-icons">
                   </label>
-                  <!-- <label class="container origin">
-                      <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                        (change)="changeSelect()">{{calendar.name}}
-                      <span class="checkmark"></span>
-                    </label> -->
+                  <label class="container origin">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                      (change)="changeSelect()">{{calendar.name}}
+                    <span class="checkmark"></span>
+                  </label>
                 </li>
               </ul>
             </div>
           </li>
         </ul>
-      </aside>
+      </aside> -->
       <article>
         <section class="container">
+          <div class="item-categories">
+            <ul>
+              <li>
+                <div class="item-categories__title active">
+                  <div class="name">
+                    <i class="material-icons">
+                      picture_as_pdf
+                    </i>
+                    <span>匯出學校行事曆</span>
+                  </div>
+                </div>
+                <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+                  <div class="year">
+                    <span>學年度</span>
+                    <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
+                      <option *ngFor="let year of year">{{year}}</option>
+                    </select>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
           <div class="header">
             <div class="year">
               <span>學年度</span>
@@ -149,7 +171,7 @@
             <ul class="item-categories__list">
               <li *ngFor="let calendar of openCalendar">
                 <label class="container origin">
-                  <input type="checkbox" class="material-icons" >{{calendar.name}}
+                  <input type="checkbox" class="material-icons">{{calendar.name}}
                   <span class="checkmark"></span>
                   <!-- <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
                     (change)="changeSelect()">{{calendar.name}}
@@ -161,20 +183,20 @@
           <ul class="event-list" #screen id="screen">
             <!-- <li class="event-list__header" *ngIf="showTitle === true">  -->
             <div class="event-list__header">
-              <h1>國立台北商業大學{{setYear}}學年度第1學期行事曆</h1>
+              <h1>國立臺北商業大學{{setYear}}學年度第1學期行事曆</h1>
             </div>
             <div class="event-list__calendarName_all">
               <div class="event-list__calendarName_empty"></div>
+              <div class="event-list__calendarName_empty2"></div>
               <div class="event-list__calendarName">日間部行事摘要</div>
               <div class="event-list__calendarName_nd">進修部行事摘要</div>
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">8月</div>
-              <!-- <div class="event-list__date-picker">
-                <full-calendar #calendar [plugins]="calendarPlugins" [defaultDate]="setDate" [locale]='locale'>
-                  <div class="fc-toolbar fc-header-toolbar"></div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate8">
                 </full-calendar>
-              </div> -->
+              </div>
               <li *ngFor="let calendar of eventMonth_8">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -194,6 +216,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">9月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate9">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_9">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -214,6 +240,10 @@
 
             <div class="event-list__phase">
               <div class="event-list__month">10月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate10">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_10">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -233,6 +263,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">11月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate11">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_11">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -252,6 +286,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">12月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate12">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_12">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -271,6 +309,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">1月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate1">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_1">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -291,15 +333,20 @@
 
             <!-- <li class="event-list__header" *ngIf="showTitle === true"> -->
             <div class="event-list__header">
-              <h1>國立台北商業大學{{setYear}}學年度第2學期行事曆</h1>
+              <h1>國立臺北商業大學{{setYear}}學年度第2學期行事曆</h1>
             </div>
             <div class="event-list__calendarName_all">
               <div class="event-list__calendarName_empty"></div>
+              <div class="event-list__calendarName_empty2"></div>
               <div class="event-list__calendarName">日間部行事摘要</div>
               <div class="event-list__calendarName_nd">進修部行事摘要</div>
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">2月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate2">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_2">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -319,6 +366,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">3月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate3">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_3">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -338,6 +389,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">4月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate4">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_4">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -357,6 +412,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">5月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate5">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_5">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -376,6 +435,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">6月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate6">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_6">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -395,6 +458,10 @@
             </div>
             <div class="event-list__phase">
               <div class="event-list__month">7月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate7">
+                </full-calendar>
+              </div>
               <li *ngFor="let calendar of eventMonth_7">
                 <div class="event-list__content">
                   <div class="event-list__title" *ngFor="let event of calendar.events">
@@ -413,7 +480,7 @@
               </li>
             </div>
           </ul>
-          <div class="subBtn" (click)="savePdf(main)" *ngIf="showTitle === true">
+          <div class="subBtn" (click)="savePdf(main)">
             <i class="material-icons">
               download
             </i>
