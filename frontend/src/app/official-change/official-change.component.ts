@@ -111,7 +111,12 @@ export class OfficialChangeComponent implements OnInit {
           }
         });
         this.formData.append('title', event[0]);
-        this.formData.append('description', event[1]);
+        this.formData.append('location', '');
+        if (event[1] === undefined) {
+          this.formData.append('description', '');
+        } else {
+          this.formData.append('description', event[1]);
+        }
         this.formData.append('start_at', event[3] + 'T00:00:00+08:00');
         this.formData.append('end_at', event[4] + 'T00:00:00+08:00');
         this.eventService.postEvent(this.formData).subscribe(

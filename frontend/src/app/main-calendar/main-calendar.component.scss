@@ -57,7 +57,6 @@
               box-sizing   : border-box;
               border       : solid $color_border 1px;
               position     : relative;
-              margin-right : $content-size_left-right;
               transition   : 300ms;
               margin-left  : auto;
               z-index      : 99;
@@ -75,12 +74,12 @@
             }
 
             span {
-              position  : absolute;
-              color     : $color_icon;
-              margin-top: 9px;
-              right     : 170px;
-              transition: 300ms;
-              z-index   : 100;
+              i {
+                position: relative;
+                top     : 7px;
+                right   : 130%;
+                z-index : 996;
+              }
             }
 
             .searchbox::placeholder {
@@ -133,6 +132,7 @@
           }
 
           .event-list {
+
             &--small {
               .event-list__content {
                 display: none;
@@ -177,6 +177,7 @@
               }
 
               li.event-list__card {
+                cursor    : pointer;
                 display   : inline-block;
                 width     : 31%;
                 margin    : 0;
@@ -203,6 +204,10 @@
                     margin-top: -$content-size_top-bottom/2;
                   }
                 }
+              }
+
+              li.event-list__card:hover {
+                background-color: $color_primary;
               }
 
               .event-list__tag {
@@ -256,6 +261,14 @@
               label.container {
                 top: -7px;
               }
+            }
+
+            &__event {
+              cursor: pointer;
+            }
+
+            &__event:hover {
+              background-color: $color_primary;
             }
 
             &__content {
@@ -395,10 +408,11 @@
 
       .event_dialog {
         width           : 30%;
-        height          : 66%;
+        height          : 65%;
         overflow        : auto;
         margin-top      : 10.5%;
-        margin-left     : 21%;
+        margin-left     : auto;
+        margin-right    : auto;
         background-color: $color_white;
         box-shadow      : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
         border-radius   : 5px;
@@ -728,9 +742,6 @@
             }
 
             span {
-              margin-top: 5px;
-              right     : 60px;
-
               i {
                 font-size: 17px;
               }
@@ -739,7 +750,6 @@
             .deleteBtn {
               padding-top : 5px;
               margin-right: 0;
-              margin-left : $content-size_left-right/3;
 
               i {
                 font-size: 17px;
@@ -805,6 +815,11 @@
             }
           }
         }
+      }
+
+      .event_dialog {
+        width: 96%;
+        margin-top: $content-size_top-bottom*10;
       }
     }
 

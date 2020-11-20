@@ -464,6 +464,21 @@ export class MainCalendarComponent implements OnInit {
     this.showEventsSort();
   }
 
+  lookEventDetail(event) {
+    this.showEvent = true;
+    this.lookEvent.id = event.id;
+    this.lookEvent.title = event.title;
+    this.eventTitle = event.title;
+    this.eventStart = event.startDate + ' ' + event.sTime;
+    this.eventEnd = event.endDate + ' ' + event.eTime;
+    this.eventDescription = event.description;
+    this.eventOffice = event.mainCalendarName;
+    this.eventParticipant = event.participants.length + '人';
+    this.eventFile = event.files.length + '個';
+    this.eventLocation = event.location;
+    this.permission = event.permission;
+  }
+
   showEventsSort() {
     this.showEvents = this.showEvents.filter((el, i, arr) => {
       return arr.indexOf(el) === i;

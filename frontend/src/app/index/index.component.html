@@ -136,7 +136,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter: searchText">
+            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)" class="event-list__event">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
@@ -202,7 +202,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter: searchText">
+            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)" class="event-list__event">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
@@ -262,7 +262,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
@@ -322,7 +322,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}

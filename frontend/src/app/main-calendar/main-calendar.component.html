@@ -268,7 +268,7 @@
               <div class="event-list__date">開始日期</div>
               <div class="event-list__edit"></div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter: searchText">
+            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)" class="event-list__event">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -356,7 +356,7 @@
               <div class="event-list__date">開始日期</div>
               <div class="event-list__edit"></div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter:searchText">
+            <li *ngFor="let event of showEvents | appFilter:searchText" (click)="lookEventDetail(event)" class="event-list__event">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -444,7 +444,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText" (click)="lookEventDetail(event)">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -532,7 +532,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText" (click)="lookEventDetail(event)">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"

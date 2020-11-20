@@ -182,6 +182,18 @@ export class IndexComponent implements OnInit {
 
   }
 
+  lookEventDetail(event) {
+    this.showEvent = true;
+    this.eventTitle = event.title;
+    this.eventStart = event.startDate + ' ' + event.sTime;
+    this.eventEnd = event.endDate + ' ' + event.eTime;
+    this.eventDescription = event.description;
+    this.eventOffice = event.mainCalendarName;
+    this.eventParticipant = event.participants.length + '人';
+    this.eventFile = event.files.length + '個';
+    this.eventLocation = event.location;
+  }
+
   eventClick(info) {
     this.showEvent = true;
     this.eventTitle = info.event._def.title;
