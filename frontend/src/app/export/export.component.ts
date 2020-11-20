@@ -68,7 +68,6 @@ export class ExportComponent implements OnInit {
   setDate11 = '2020-11-01';
   setDate12 = '2020-12-01';
   setDate1 = '2020-01-01';
-
   setDate2 = '2020-02-01';
   setDate3 = '2020-03-01';
   setDate4 = '2020-04-01';
@@ -107,6 +106,9 @@ export class ExportComponent implements OnInit {
 
       }
     );
+
+    this.resetDate();
+    this.showEventSort();
   }
 
   yearSort() {
@@ -140,7 +142,7 @@ export class ExportComponent implements OnInit {
 
       const pageHeight = contentWidth / 592.28 * 841.89;
       let leftHeight = contentHeight;
-      let position = 0;
+      let position = 10;
 
       const imgWidth = 595.28;
       const imgHeight = 592.28 / contentWidth * contentHeight;
@@ -148,10 +150,10 @@ export class ExportComponent implements OnInit {
       const pdf = new jsPDF('', 'pt', 'a4');
 
       if (leftHeight <= pageHeight) {
-        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        pdf.addImage(pageData, 'JPEG', 10, 10, imgWidth, imgHeight);
       } else {
         while (leftHeight > 0) {
-          pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+          pdf.addImage(pageData, 'JPEG', 10, position, imgWidth, imgHeight)
           leftHeight -= pageHeight;
           position -= 851;
           if (leftHeight > 0) {

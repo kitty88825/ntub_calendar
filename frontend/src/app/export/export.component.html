@@ -95,7 +95,7 @@
   <div class="right">
     <app-navbar></app-navbar>
     <main #main>
-      <!-- <aside class="aside">
+      <aside class="aside">
         <ul class="item-categories">
           <li>
             <div class="item-categories__title active">
@@ -125,20 +125,20 @@
                   <label class="container origin">
                     <input type="checkbox" class="material-icons">
                   </label>
-                  <label class="container origin">
+                  <!-- <label class="container origin">
                     <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
                       (change)="changeSelect()">{{calendar.name}}
                     <span class="checkmark"></span>
-                  </label>
+                  </label> -->
                 </li>
               </ul>
             </div>
           </li>
         </ul>
-      </aside> -->
+      </aside>
       <article>
         <section class="container">
-          <div class="item-categories">
+          <!-- <div class="item-categories">
             <ul>
               <li>
                 <div class="item-categories__title active">
@@ -159,7 +159,7 @@
                 </div>
               </li>
             </ul>
-          </div>
+          </div> -->
           <div class="header">
             <div class="year">
               <span>學年度</span>
@@ -181,8 +181,7 @@
             </ul>
           </div>
           <ul class="event-list" #screen id="screen">
-            <!-- <li class="event-list__header" *ngIf="showTitle === true">  -->
-            <div class="event-list__header">
+            <div class="event-list__header"><!-- *ngIf="showTitle === true"> -->
               <h1>國立臺北商業大學{{setYear}}學年度第1學期行事曆</h1>
             </div>
             <div class="event-list__calendarName_all">
