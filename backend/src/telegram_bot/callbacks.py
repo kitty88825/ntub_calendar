@@ -1,5 +1,8 @@
-import logging
 import json
+import logging
+import environ
+import telegram
+import telegram.ext
 
 from django.db.models import Q
 
@@ -7,6 +10,7 @@ from app.events.models import Event
 from app.users.models import User
 
 from .models import TelegramBot
+
 from .serializers import GetSerializer
 
 
@@ -16,6 +20,8 @@ logging.basicConfig(
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
+
+env = environ.Env()
 
 
 def text_after_command(update):
@@ -52,7 +58,7 @@ def login(update, context):
             )
             context.bot.send_message(
                 chat_id,
-                '登入成功！歡迎{}！🥰如果之後您更換了url，不需要重新登入喔！接下來使用 /help 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                '登入成功！歡迎{}！🥰如果之後您更換了url，不需要重新登入喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
                 )
 
 
@@ -91,5 +97,18 @@ def get_event(update, context):
         i = i.replace('{', '')
         i = i.replace('}', '')
         i = i.replace(',', '\n')
-        print(i+'-'*30)
         context.bot.send_message(chat_id, i)
+
+
+# jobQueue
+def callback_alarm(context: telegram.ext.CallbackContext):
+    context.bot.send_message(chat_id=context.job.context, text='BEEP')
+
+
+def callback_timer(update: telegram.Update, context: telegram.ext.CallbackContext):  # noqa 501
+    chat_id = update.message.chat_id
+    context.bot.send_message(
+        chat_id=chat_id,
+        text='Setting a timer for 1 minute!')
+    print('='*30)
+    context.job_queue.run_once(callback_alarm, 60, context=chat_id)
