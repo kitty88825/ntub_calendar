@@ -14,6 +14,7 @@ import environ
 
 from datetime import timedelta
 
+
 root = environ.Path(__file__) - 2
 
 env = environ.Env()
