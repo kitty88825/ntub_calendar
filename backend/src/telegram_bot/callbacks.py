@@ -52,7 +52,7 @@ def login(update, context):
             )
             context.bot.send_message(
                 chat_id,
-                '登入成功！歡迎{}！🥰如果之後您更換了url，不需要重新登入喔！接下來使用 /help 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                '登入成功！歡迎{}！🥰如果之後您更換了url，不需要重新登入喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
                 )
 
 
@@ -91,5 +91,8 @@ def get_event(update, context):
         i = i.replace('{', '')
         i = i.replace('}', '')
         i = i.replace(',', '\n')
-        print(i+'-'*30)
         context.bot.send_message(chat_id, i)
+
+
+def today(update, context):
+    chat_id = update.message.id
