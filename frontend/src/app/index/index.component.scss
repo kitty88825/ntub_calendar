@@ -20,6 +20,8 @@
     }
 
     .right {
+      width: 100%;
+
       .header {
         position        : fixed;
         z-index         : $z-index_first;
@@ -278,8 +280,8 @@
             border       : solid $color_border 1px;
             position     : relative;
             transition   : 300ms;
-            margin-left  : auto;
             z-index      : 99;
+            margin-right : $content-size_left-right;
             padding      : $content-size_top-bottom/2 $content-size_left-right/2;
           }
 
@@ -290,7 +292,7 @@
             border       : $color_border solid 1px;
             align-items  : center;
             margin-top   : $content-size_top-bottom/2;
-            margin-right: $content-size_left-right/2;
+            margin-right : $content-size_left-right/2;
             border-radius: 5px;
             padding      : 5px;
             cursor       : pointer;
@@ -311,13 +313,12 @@
             border-color: $color_accent;
           }
 
-          span {
-            i {
-              position: relative;
-              top     : 7px;
-              right   : 130%;
-              z-index : 996;
-            }
+          i.search {
+            position   : relative;
+            top        : 8px;
+            z-index    : 996;
+            left       : 180px;
+            margin-left: auto;
           }
 
           .searchbox::placeholder {
@@ -640,7 +641,7 @@
             justify-content: space-between;
             padding        : $content-size_left-right/1.5 0;
             border-bottom  : $color_border solid 1px;
-            font-size      : 1.2rem;
+            font-size      : 0.9rem;
             margin-top     : $content-size_top-bottom;
 
             &:hover,
@@ -773,10 +774,9 @@
               margin-top  : 0;
             }
 
-            span {
-              i {
-                font-size: 17px;
-              }
+            i.search {
+              font-size: 17px;
+              left: 130px;
             }
           }
 
@@ -786,7 +786,7 @@
             &__title,
             &__office,
             &__date {
-              font-size: 1px;
+              font-size: 12px;
             }
 
             &__content {
@@ -824,7 +824,7 @@
       }
 
       .event_dialog {
-        width: 96%;
+        width     : 96%;
         margin-top: $content-size_top-bottom*10;
       }
     }

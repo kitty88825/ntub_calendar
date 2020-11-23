@@ -96,12 +96,10 @@
             <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
               <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
             </select>
+            <i class="search material-icons">
+              search
+            </i>
             <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
-            <span>
-              <i class="material-icons">
-                search
-              </i>
-            </span>
             <div class="openDataBtn" (click)="openData()">
               <h3>OpenData</h3>
               <i class="material-icons">
@@ -136,7 +134,8 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)" class="event-list__event">
+            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)"
+              class="event-list__event">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
@@ -162,12 +161,10 @@
             <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
               <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
             </select>
+            <i class="search material-icons">
+              search
+            </i>
             <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
-            <span>
-              <i class="material-icons">
-                search
-              </i>
-            </span>
             <div class="openDataBtn" (click)="openData()">
               <h3>OpenData</h3>
               <i class="material-icons">
@@ -202,7 +199,8 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)" class="event-list__event">
+            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)"
+              class="event-list__event">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
@@ -223,12 +221,10 @@
             <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
               <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
             </select>
+            <i class="search material-icons">
+              search
+            </i>
             <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
-            <span>
-              <i class="material-icons">
-                search
-              </i>
-            </span>
             <div class="openDataBtn" (click)="openData()">
               <h3>OpenData</h3>
               <i class="material-icons">
@@ -262,7 +258,8 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText"
+              (click)="lookEventDetail(event)">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
@@ -283,12 +280,10 @@
             <select class="month form-control" id="exampleSelect2" [(ngModel)]="selectMonth" (change)="onChange()">
               <option [ngValue]="month" *ngFor="let month of eventsMonth">{{month}}</option>
             </select>
+            <i class="search material-icons">
+              search
+            </i>
             <input type="text" placeholder="keyword" class="searchbox" [(ngModel)]="searchText">
-            <span>
-              <i class="material-icons">
-                search
-              </i>
-            </span>
             <div class="openDataBtn" (click)="openData()">
               <h3>OpenData</h3>
               <i class="material-icons">
@@ -322,7 +317,8 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter: searchText"
+              (click)="lookEventDetail(event)">
               <div class="event-list__title">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
