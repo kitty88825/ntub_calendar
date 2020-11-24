@@ -103,12 +103,10 @@ export class ExportComponent implements OnInit {
         });
 
         this.yearSort();
-
+        this.resetDate();
+        this.showEventSort();
       }
     );
-
-    this.resetDate();
-    this.showEventSort();
   }
 
   yearSort() {
@@ -142,7 +140,7 @@ export class ExportComponent implements OnInit {
 
       const pageHeight = contentWidth / 592.28 * 841.89;
       let leftHeight = contentHeight;
-      let position = 10;
+      let position = 0;
 
       const imgWidth = 595.28;
       const imgHeight = 592.28 / contentWidth * contentHeight;
@@ -150,12 +148,12 @@ export class ExportComponent implements OnInit {
       const pdf = new jsPDF('', 'pt', 'a4');
 
       if (leftHeight <= pageHeight) {
-        pdf.addImage(pageData, 'JPEG', 10, 10, imgWidth, imgHeight);
+        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
       } else {
         while (leftHeight > 0) {
-          pdf.addImage(pageData, 'JPEG', 10, position, imgWidth, imgHeight)
+          pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
           leftHeight -= pageHeight;
-          position -= 851;
+          position -= 881;
           if (leftHeight > 0) {
             pdf.addPage();
           }
@@ -164,11 +162,6 @@ export class ExportComponent implements OnInit {
       pdf.save('demo.pdf');
     });
   }
-
-  // changeSelect(){
-  //   this.resetDate();
-  //   this.showEventSort();
-  // }
 
   changeYear() {
     this.resetDate();
@@ -232,11 +225,11 @@ export class ExportComponent implements OnInit {
 
     this.openCalendar.forEach(calendar => {
       this.allEvents.forEach(event => {
-        if (calendar.id === event.calendars[0].mainCalendar.id &&
-          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
+        if (calendar.id === event.calendars[0].mainCalendar.id && 
           calendar.name === '日間部行事曆') {
           // if內 calendar.isChecked === true
-          if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+          if ( Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && 
+          event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
                 eventMonth_2.push(event);
@@ -258,7 +251,8 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if (event.startDate.substr(5, 2) > 7) {
+          } else if ( Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && 
+          event.startDate.substr(5, 2) > 7) {
             switch (event.startDate.substr(5, 2)) {
               case '08':
                 eventMonth_8.push(event);
@@ -277,7 +271,7 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if (event.startDate.substr(5, 2) < 2) {
+          } else if ( Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) < 2) {
             switch (event.startDate.substr(5, 2)) {
               case '01':
                 eventMonth_1.push(event);
@@ -286,9 +280,8 @@ export class ExportComponent implements OnInit {
             return 0;
           }
         } else if (calendar.id === event.calendars[0].mainCalendar.id &&
-          Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
           calendar.name === '進修部行事曆') {
-          if (event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+          if ( Number(this.setYear)+1 === Number(event.startDate.substr(0, 4) - 1911)&& event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
                 eventMonth_2_nd.push(event);
@@ -310,7 +303,7 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if (event.startDate.substr(5, 2) > 7) {
+          } else if ( Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)&& event.startDate.substr(5, 2) > 7) {
             switch (event.startDate.substr(5, 2)) {
               case '08':
                 eventMonth_8_nd.push(event);
@@ -329,7 +322,7 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if (event.startDate.substr(5, 2) < 2) {
+          } else if ( Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911)&& event.startDate.substr(5, 2) < 2) {
             switch (event.startDate.substr(5, 2)) {
               case '01':
                 eventMonth_1_nd.push(event);

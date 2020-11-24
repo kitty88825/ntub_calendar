@@ -95,21 +95,15 @@
   <div class="right">
     <app-navbar></app-navbar>
     <main #main>
-      <aside class="aside">
-        <ul class="item-categories">
-          <li>
+      <article>
+        <section class="container">
+          <div class="item-categories">
             <div class="item-categories__title active">
               <div class="name">
                 <i class="material-icons">
                   picture_as_pdf
                 </i>
-                <span>選擇匯出項目</span>
-              </div>
-              <div class="form-group row">
-                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-                  arrow_left
-                </i>
+                <span>匯出學校行事曆</span>
               </div>
             </div>
             <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
@@ -119,69 +113,12 @@
                   <option *ngFor="let year of year">{{year}}</option>
                 </select>
               </div>
-              <hr>
-              <ul class="item-categories__list">
-                <li *ngFor="let calendar of openCalendar">
-                  <label class="container origin">
-                    <input type="checkbox" class="material-icons">
-                  </label>
-                  <!-- <label class="container origin">
-                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                      (change)="changeSelect()">{{calendar.name}}
-                    <span class="checkmark"></span>
-                  </label> -->
-                </li>
-              </ul>
             </div>
-          </li>
-        </ul>
-      </aside>
-      <article>
-        <section class="container">
-          <!-- <div class="item-categories">
-            <ul>
-              <li>
-                <div class="item-categories__title active">
-                  <div class="name">
-                    <i class="material-icons">
-                      picture_as_pdf
-                    </i>
-                    <span>匯出學校行事曆</span>
-                  </div>
-                </div>
-                <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-                  <div class="year">
-                    <span>學年度</span>
-                    <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
-                      <option *ngFor="let year of year">{{year}}</option>
-                    </select>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div> -->
-          <div class="header">
-            <div class="year">
-              <span>學年度</span>
-              <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
-                <option *ngFor="let year of year">{{year}}</option>
-              </select>
-            </div>
-            <hr>
-            <ul class="item-categories__list">
-              <li *ngFor="let calendar of openCalendar">
-                <label class="container origin">
-                  <input type="checkbox" class="material-icons">{{calendar.name}}
-                  <span class="checkmark"></span>
-                  <!-- <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                    (change)="changeSelect()">{{calendar.name}}
-                  <span class="checkmark"></span> -->
-                </label>
-              </li>
-            </ul>
           </div>
+        </section>
+        <section class="body">
           <ul class="event-list" #screen id="screen">
-            <div class="event-list__header"><!-- *ngIf="showTitle === true"> -->
+            <div class="event-list__header">
               <h1>國立臺北商業大學{{setYear}}學年度第1學期行事曆</h1>
             </div>
             <div class="event-list__calendarName_all">
@@ -330,7 +267,6 @@
               </li>
             </div>
 
-            <!-- <li class="event-list__header" *ngIf="showTitle === true"> -->
             <div class="event-list__header">
               <h1>國立臺北商業大學{{setYear}}學年度第2學期行事曆</h1>
             </div>
