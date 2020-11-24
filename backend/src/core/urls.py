@@ -25,6 +25,8 @@ from rest_framework import permissions
 
 from app.events.feed import EventFeed
 
+from telegram_bot.views import webhook
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -47,6 +49,8 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
     path('api/v2/', include(api_urlpatterns)),
     path('feed/<str:code>/', EventFeed(), name='ical'),
+
+    path('webhook', webhook, name='webhook'),
 ]
 
 if settings.DEBUG:
