@@ -1,3 +1,4 @@
+import { RouterModule, Routes } from '@angular/router';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
