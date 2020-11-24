@@ -103,12 +103,11 @@
                 <i class="material-icons">
                   picture_as_pdf
                 </i>
-                <span>匯出學校行事曆</span>
+                <span>選擇匯出學年度</span>
               </div>
             </div>
             <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
               <div class="year">
-                <span>學年度</span>
                 <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
                   <option *ngFor="let year of year">{{year}}</option>
                 </select>
