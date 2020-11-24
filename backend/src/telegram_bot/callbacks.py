@@ -10,6 +10,8 @@ from app.users.models import User
 from .models import TelegramBot
 from .serializers import GetSerializer, MeetingSerializer
 
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+
 
 # Set logging
 logging.basicConfig(
@@ -118,7 +120,7 @@ def meeting(update, context):
                 i['回應'] = '接受'
             elif i['回應'] == 'maybe':
                 i['回應'] = '不確定'
-            elif ['回應'] == 'no_reply':
+            elif i['回應'] == 'no_reply':
                 i['回應'] = '未回應'
 
         data = json.dumps(data, ensure_ascii=False)
