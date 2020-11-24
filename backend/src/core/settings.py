@@ -54,12 +54,15 @@ THIRD_PARTY_APPS = [
     'django_extensions',
     'django_filters',
     'colorfield',
+    'django_q',
 ]
 
 LOCAL_APPS = [
     'app.users',
     'app.events',
     'app.calendars',
+
+    'telegram_bot',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -185,3 +188,17 @@ EMAIL_USE_TLS = True
 # Email redirect url
 BACKEND_URL = env('BACKEND_URL')
 FRONTEND_URL = env('FRONTEND_URL')
+
+# django-q
+Q_CLUSTER = {
+    'name': 'telegram_bot',
+    'workers': 1,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q',
+    'orm': 'default',
+}
