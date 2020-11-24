@@ -3,11 +3,12 @@ import json
 
 from django.db.models import Q
 
-from app.events.models import Event
+from app.events.models import Event, EventParticipant
+from app.events.choices import RoleChoice, EventParticipantResponseChoice
 from app.users.models import User
 
 from .models import TelegramBot
-from .serializers import GetSerializer
+from .serializers import GetSerializer, MeetingSerializer
 
 
 # Set logging
@@ -60,7 +61,7 @@ def get_event(update, context):
     chat_id = update.message.chat.id
     get_id = TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id)  # noqa 501
     event = None
-    if get_id[0]:
+    if get_id:
         event = Event.objects \
             .filter(
                 Q(calendars__groups__user=get_id[0]) |
@@ -94,5 +95,41 @@ def get_event(update, context):
         context.bot.send_message(chat_id, i)
 
 
-def today(update, context):
-    chat_id = update.message.id
+def meeting(update, context):
+    chat_id = update.message.chat.id
+    get_id = TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id)
+    if get_id:
+        meeting = EventParticipant.objects.filter(
+            Q(user=get_id[0]) &
+            (
+                Q(response='accept') |
+                Q(response='maybe') |
+                Q(response='no_reply')
+            )
+            ).distinct()
+
+        serializer = MeetingSerializer(meeting, many=True)
+        data = json.loads(json.dumps(serializer.data))
+        for i in data:
+            i['行程'] = i.pop('event')
+            i['使用者'] = i.pop('user')
+            i['回應'] = i.pop('response')
+            if i['回應'] == 'accept':
+                i['回應'] = '接受'
+            elif i['回應'] == 'maybe':
+                i['回應'] = '不確定'
+            elif ['回應'] == 'no_reply':
+                i['回應'] = '未回應'
+
+        data = json.dumps(data, ensure_ascii=False)
+        data = data.replace('"', '')
+        data = data.replace('[', '')
+        data = data.replace(']', '')
+        data = data.split('}, {')
+        for i in data:
+            i = i.replace('{', '')
+            i = i.replace('}', '')
+            i = i.replace(',', '\n')
+            context.bot.send_message(chat_id, i)
+    else:
+        context.bot.send_message(chat_id, '您尚未登入無法使用此功能唷')

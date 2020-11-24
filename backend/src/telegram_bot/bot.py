@@ -16,6 +16,8 @@ def webhook_handler(data):
     dispatcher.add_handler(CommandHandler('start', callbacks.start))
     dispatcher.add_handler(CommandHandler('get', callbacks.get_event))
     dispatcher.add_handler(CommandHandler('login', callbacks.login))
+    dispatcher.add_handler(CommandHandler('meeting', callbacks.meeting))
+
     # Process update
     update = Update.de_json(data, bot)
     dispatcher.process_update(update)
