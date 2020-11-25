@@ -17,32 +17,12 @@ from .serializers import (
 )
 from .permission import HasCalendarPermissionOrParticipant
 from .filters import SubscriberEventsFilter
-from .functions import DateTimeMerge
-
-
-def datetime_to_timestamp(data: list):
-    if not data:
-        return
-
-    response = []
-    for d in data:
-        response.append([d['start_at'].timestamp(), d['end_at'].timestamp()])
-
-    return response
-
-
-def timestamp_to_datetime(data: list):
-    if not data:
-        return
-
-    response = []
-    for d in data:
-        response.append([
-            datetime.fromtimestamp(d[0]),
-            datetime.fromtimestamp(d[1]),
-        ])
-
-    return response
+from .functions import (
+    DateTimeMerge,
+    datetime_to_timestamp,
+    timestamp_to_datetime,
+    get_free_time,
+)
 
 
 class EventViewSet(ModelViewSet):
@@ -133,11 +113,16 @@ class EventViewSet(ModelViewSet):
         if event_list.count() > 1:
             time_obj = DateTimeMerge()
             busy_time = time_obj.merge(datetime_to_timestamp(event_list))
+        else:
+            busy_time = datetime_to_timestamp(event_list)
 
-            return Response(timestamp_to_datetime(busy_time))
-
-        one_time = timestamp_to_datetime(datetime_to_timestamp(event_list))
-        if one_time:
-            return Response(one_time)
+        if busy_time:
+            return Response(
+                get_free_time(
+                    busy_time,
+                    serializer.data['start_at'],
+                    serializer.data['end_at'],
+                ),
+            )
         else:
             return Response([])
