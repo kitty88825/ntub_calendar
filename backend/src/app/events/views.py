@@ -1,4 +1,5 @@
 from django.db.models import Q
+from datetime import datetime
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -12,9 +13,36 @@ from .serializers import (
     EventSerializer,
     UpdateEventAttachmentSerializer,
     SubscribeEventSerializer,
+    SuggestedTimeSerializer,
 )
 from .permission import HasCalendarPermissionOrParticipant
 from .filters import SubscriberEventsFilter
+from .functions import DateTimeMerge
+
+
+def datetime_to_timestamp(data: list):
+    if not data:
+        return
+
+    response = []
+    for d in data:
+        response.append([d['start_at'].timestamp(), d['end_at'].timestamp()])
+
+    return response
+
+
+def timestamp_to_datetime(data: list):
+    if not data:
+        return
+
+    response = []
+    for d in data:
+        response.append([
+            datetime.fromtimestamp(d[0]),
+            datetime.fromtimestamp(d[1]),
+        ])
+
+    return response
 
 
 class EventViewSet(ModelViewSet):
@@ -44,6 +72,8 @@ class EventViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action.endswith('subscribe'):
             return SubscribeEventSerializer
+        elif self.action == 'suggested_time':
+            return SuggestedTimeSerializer
         elif self.action == 'partial_update' or self.action == 'update':
             serializer_class = UpdateEventAttachmentSerializer
         else:
@@ -88,3 +118,20 @@ class EventViewSet(ModelViewSet):
         )
 
         return Response(res_serializer.data)
+
+    @action(['POST'], False, permission_classes=[IsAuthenticated])
+    def suggested_time(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        event_list = Event.objects.filter(
+            Q(eventparticipant__user__email__in=serializer.data['emails']),
+            Q(start_at__gte=serializer.data['start_at']),
+            Q(end_at__lte=serializer.data['end_at']),
+        ).values('start_at', 'end_at').distinct()
+
+        if event_list.count() > 1:
+            time_obj = DateTimeMerge()
+            busy_time = time_obj.merge(datetime_to_timestamp(event_list))
+
+            return Response(timestamp_to_datetime(busy_time))
