@@ -135,3 +135,7 @@ class EventViewSet(ModelViewSet):
             busy_time = time_obj.merge(datetime_to_timestamp(event_list))
 
             return Response(timestamp_to_datetime(busy_time))
+
+        return Response(
+            timestamp_to_datetime(datetime_to_timestamp(event_list))
+        )
