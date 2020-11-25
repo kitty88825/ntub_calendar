@@ -116,13 +116,11 @@ class EventViewSet(ModelViewSet):
         else:
             busy_time = datetime_to_timestamp(event_list)
 
-        if busy_time:
-            return Response(
-                get_free_time(
-                    busy_time,
-                    serializer.data['start_at'],
-                    serializer.data['end_at'],
-                ),
-            )
-        else:
-            return Response([])
+        if not busy_time:
+            return Response('All participants can attend!')
+
+        return Response(get_free_time(
+            busy_time,
+            serializer.data['start_at'],
+            serializer.data['end_at'],
+        ))
