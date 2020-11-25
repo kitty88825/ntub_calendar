@@ -275,3 +275,11 @@ class SubscribeEventSerializer(serializers.Serializer):
             Q(participants=self.context['request'].user.id),
             Q(id__in=value),
         ).values_list('id', flat=True)
+
+
+class SuggestedTimeSerializer(serializers.Serializer):
+    emails = serializers.ListField(
+        child=serializers.EmailField(validators=[validate_ntub_email]),
+    )
+    start_at = serializers.DateTimeField()
+    end_at = serializers.DateTimeField()
