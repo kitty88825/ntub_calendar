@@ -163,7 +163,7 @@ def calendar(update, context):
             data = data.replace(' ', '')
             data = data.split(',')
             keyboard = [
-                [KeyboardButton(text='點選想訂閱的行事曆')],
+                [KeyboardButton(text='點選此處來移除鍵盤')],
             ]
 
             for i in data:
@@ -200,12 +200,10 @@ def calendarSubscribe(update, context):
     data = json.dumps(serializer.data, ensure_ascii=False)
     if text in data:
         c = Calendar.objects.filter(name=text)
-        print(c)
         c[0].subscribers.add(user[0].id)
-        print(c)
         context.bot.send_message(chat_id, '已訂閱此行事曆😉')
-    elif text == '點選想訂閱的行事曆':
-        context.bot.send_message(chat_id, '這不是行事曆無法訂閱')
+    elif text == '點選此處來移除鍵盤':
+        context.bot.send_message(chat_id, reply_markup=ReplyKeyboardRemove())
     else:
         context.bot.send_message(
             chat_id=chat_id,
