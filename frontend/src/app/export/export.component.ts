@@ -137,8 +137,8 @@ export class ExportComponent implements OnInit {
     html2canvas(this.screen.nativeElement).then(canvas => {
       const pageWidth = 841.89;
       const pageHeight = 592.28;
-      const contentWidth = canvas.width*3/4;
-      const contentHeight = canvas.height*3/4;
+      const contentWidth = canvas.width * 3 / 4;
+      const contentHeight = canvas.height * 3 / 4;
       const imgWidth = pageWidth;
       const imgHeight = pageWidth / contentWidth * contentHeight;
 
