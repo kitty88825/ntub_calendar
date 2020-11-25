@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class DateTimeMerge(object):
     def merge(self, intervals):
         """
@@ -35,3 +38,43 @@ class DateTimeMerge(object):
             partition_index = self.partition(array, start, end)
             self.quicksort(array, start, partition_index-1)
             self.quicksort(array, partition_index+1, end)
+
+
+def datetime_to_timestamp(data: list):
+    if not data:
+        return
+
+    response = []
+    for d in data:
+        response.append([d['start_at'].timestamp(), d['end_at'].timestamp()])
+
+    return response
+
+
+def timestamp_to_datetime(data: list):
+    if not data:
+        return
+
+    response = []
+    for d in data:
+        response.append([
+            datetime.fromtimestamp(d[0]),
+            datetime.fromtimestamp(d[1]),
+        ])
+
+    return response
+
+
+def get_free_time(data: list, start_at: str, end_at: str):
+    response = []
+    time_list = [k for d in data for k in d]
+    s_list = time_list[::2]
+    e_list = time_list[1::2]
+
+    s_list.append(datetime.fromisoformat(end_at).timestamp())
+    e_list.insert(0, datetime.fromisoformat(start_at).timestamp())
+    for i in range(len(s_list)):
+        if s_list[i] - e_list[i] > 1800:
+            response.append([e_list[i], s_list[i]])
+
+    return timestamp_to_datetime(response)
