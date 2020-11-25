@@ -136,6 +136,8 @@ class EventViewSet(ModelViewSet):
 
             return Response(timestamp_to_datetime(busy_time))
 
-        return Response(
-            timestamp_to_datetime(datetime_to_timestamp(event_list))
-        )
+        one_time = timestamp_to_datetime(datetime_to_timestamp(event_list))
+        if one_time:
+            return Response(one_time)
+        else:
+            return Response([])
