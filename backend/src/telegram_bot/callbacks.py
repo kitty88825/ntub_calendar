@@ -10,13 +10,13 @@ from app.calendars.models import Calendar
 from .models import TelegramBot
 from .serializers import GetSerializer, MeetingSerializer, CalendarSerializer
 
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 
 
 # Set logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG
+    level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
@@ -148,53 +148,67 @@ def calendar(update, context):
                 Q(permissions__group__user=user[0])
             ),
         ).exclude(subscribers__in=user_id).distinct()
-        serializer = CalendarSerializer(calendar, many=True)
-        data = json.dumps(serializer.data, ensure_ascii=False)
+        if calendar:
 
-        data = data.replace('"', '')
-        data = data.replace('[', '')
-        data = data.replace(']', '')
-        data = data.replace('}', '')
-        data = data.replace('{', '')
-        data = data.replace(':', '')
-        data = data.replace('name', '')
-        data = data.replace(' ', '')
-        # data = data.replace(',', '\n')
-        data = data.split(',')
+            serializer = CalendarSerializer(calendar, many=True)
+            data = json.dumps(serializer.data, ensure_ascii=False)
 
-        for i in data:
+            data = data.replace('"', '')
+            data = data.replace('[', '')
+            data = data.replace(']', '')
+            data = data.replace('}', '')
+            data = data.replace('{', '')
+            data = data.replace(':', '')
+            data = data.replace('name', '')
+            data = data.replace(' ', '')
+            data = data.split(',')
             keyboard = [
-                [InlineKeyboardButton(i, callback_data=i)],
+                [KeyboardButton(text='點選想訂閱的行事曆')],
             ]
 
-            reply_markup = InlineKeyboardMarkup(keyboard)
+            for i in data:
+                keyboard.append([KeyboardButton(text=i)])
+
+            reply_markup = ReplyKeyboardMarkup(
+                keyboard,
+                resize_keyboard=True,
+            )
             context.bot.send_message(
                 chat_id=chat_id,
                 text='點選想訂閱的行事曆',
                 reply_markup=reply_markup,
                 )
+        else:
+            context.bot.send_message(chat_id, '行事曆都已訂閱，沒有可以訂閱的行事曆了')
     else:
         context.bot.send_message(chat_id, '您尚未登入無法使用此功能😢')
 
 
 def calendarSubscribe(update, context):
-    chat_id = update.message.from_user.id
-    text = update.data
-    print(chat_id)
-    print(text)
-    if text:
-        # replay_markup = InlineKeyboardMarkup(
-        #     [
-        #         [InlineKeyboardButton('已訂閱行事曆😌')]
-        #     ]
-        # )
-        # bot.edit_message_reply_markup(
-        #     chat_id=chat_id,
-        #     message_id=update.callback_query.message.message_id,
-        #     reply_markup=replay_markup,
-        #     )
-        context.edit_message_text(
-            '已訂閱行事曆😌',
+    chat_id = update.message.chat.id
+    user_id = list(TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id))  # noqa 501
+    user = User.objects.filter(id__in=user_id)
+    text = update.message.text
+    calendar = Calendar.objects.filter(
+            Q(display='public') |
+            (
+                Q(permissions__role=user[0].role) &
+                Q(permissions__group__user=user[0])
+            ),
+        ).exclude(subscribers__in=user_id).distinct()
+    serializer = CalendarSerializer(calendar, many=True)
+    data = json.dumps(serializer.data, ensure_ascii=False)
+    if text in data:
+        c = Calendar.objects.filter(name=text)
+        print(c)
+        c[0].subscribers.add(user[0].id)
+        print(c)
+        context.bot.send_message(chat_id, '已訂閱此行事曆😉')
+    elif text == '點選想訂閱的行事曆':
+        context.bot.send_message(chat_id, '這不是行事曆無法訂閱')
+    else:
+        context.bot.send_message(
             chat_id=chat_id,
-            message_id=update.message.message_id,
+            text='此行事曆已經訂閱過了',
+            reply_markup=ReplyKeyboardRemove()
         )
