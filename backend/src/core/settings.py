@@ -54,15 +54,12 @@ THIRD_PARTY_APPS = [
     'django_extensions',
     'django_filters',
     'colorfield',
-    'django_q',
 ]
 
 LOCAL_APPS = [
     'app.users',
     'app.events',
     'app.calendars',
-
-    'telegram_bot',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -175,19 +172,4 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),  # noqa: E501
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
-
-
-# django-q
-Q_CLUSTER = {
-    'name': 'telegram_bot',
-    'workers': 1,
-    'recycle': 500,
-    'timeout': 60,
-    'compress': True,
-    'save_limit': 250,
-    'queue_limit': 500,
-    'cpu_affinity': 1,
-    'label': 'Django Q',
-    'orm': 'default',
 }
