@@ -137,15 +137,17 @@ export class ExportComponent implements OnInit {
     html2canvas(this.screen.nativeElement).then(canvas => {
       const contentWidth = canvas.width;
       const contentHeight = canvas.height;
+      console.log(canvas.width);
+      console.log(canvas.height);
 
       const pageHeight = contentWidth / 592.28 * 841.89;
       let leftHeight = contentHeight;
       let position = 0;
 
-      const imgWidth = 595.28;
-      const imgHeight = 592.28 / contentWidth * contentHeight;
+      const imgWidth = 590; //595.28
+      const imgHeight = 592.28 / contentWidth * contentHeight;  //592.28
       const pageData = canvas.toDataURL('image/jpeg', 1.0);
-      const pdf = new jsPDF('', 'pt', 'a4');
+      const pdf = new jsPDF('1', 'pt', 'a4');
 
       if (leftHeight <= pageHeight) {
         pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);

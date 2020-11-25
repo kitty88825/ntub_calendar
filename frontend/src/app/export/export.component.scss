@@ -53,6 +53,7 @@
               justify-content: space-between;
               padding        : $content-size_left-right/1.5 0;
               font-size      : 1.2rem;
+              padding-left   : 25%;
   
               &:hover,
               &.active {
@@ -150,7 +151,7 @@
               }
 
               >div {
-                padding: $content-size_top-bottom $content-size_left-right/4;
+                padding: $content-size_top-bottom/2 $content-size_left-right/4;
               }
 
               h1 {
@@ -165,6 +166,8 @@
               display : inline-block;
               text-align : center;
               padding: $content-size_top-bottom*2 $content-size_left-right;
+              margin:auto auto;
+              writing-mode: vertical-lr;
             }
 
             &__datapicker{
@@ -179,18 +182,19 @@
 
             &__title {
               display  : inline-flex;
-              font-size: 13px;
-              padding: $content-size_top-bottom/2 $content-size_left-right/4;
+              font-size: 12px;
+              // padding: $content-size_top-bottom/5 $content-size_left-right/10;
+              padding: 4px 4px;
 
               span {
-                font-size  : 14px;
+                font-size  : 12px;
                 margin-left: $content-size_left-right/4;
               }
 
               span.date {
-                margin-left: $content-size_left-right/2;
+                margin-left: $content-size_left-right/4;
                 display:inline-block ;
-                width:50px;
+                width:45px;
                 word-wrap:break-word;
                 white-space:normal;
               }
@@ -203,7 +207,7 @@
 
             &__calendarName_all{
               display: grid;
-              grid-template-columns: 80px 1.25fr 2fr 1.5fr;
+              grid-template-columns: 60px 1.1fr 2.25fr 1.5fr; 
               text-align: center;
               grid-gap: 1.5px;
               background-color: $color_text;
@@ -213,28 +217,28 @@
                 background-color: #ffffff;
               }
               
-              .calendarName_empty{
+              .calendarName_all__empty{
                 display: inline-block;
                 text-align   : center;
                 font-size    : 12px;
                 font-weight: 600; 
               }
 
-              .calendarName_empty2{
+              .calendarName_all__empty2{
                 display: inline-block;
                 text-align   : center;
                 font-size    : 12px;
                 font-weight: 600; 
               }
 
-              .calendarName {
+              .calendarName_all__ds {
                 display: inline-block;
                 text-align   : center;
                 font-size    : 12px;
                 font-weight: 600; 
               }
 
-              .calendarName_nd {
+              .calendarName_all__nd {
                 display:inline-block ;
                 text-align   : center;
                 font-size    : 12px;
@@ -242,10 +246,9 @@
               }
             }
 
-
             &__phase {
               display: grid !important;
-              grid-template-columns: 80px 1.25fr 2fr 1.5fr;
+              grid-template-columns: 60px 1.1fr 2.25fr 1.5fr;
               text-align: left;
               border-top: 1px solid $color_text;
               border-bottom: 1px solid $color_text;
@@ -253,31 +256,30 @@
               border-right: 1.5px solid $color_text;
             }
           }
-        }
 
-        .subBtn {
-          display         : flex;
-          align-items     : center;
-          width           : 10%;
-          background-color: $color_accent;
-          border-radius   : 5px;
-          padding         : $content-size_top-bottom/2 $content-size_left-right/2;
-          justify-content : center;
-          color           : white;
-          letter-spacing  : 1px;
-          margin-top      : $content-size_top-bottom*2;
-          margin-left     : auto;
-          margin-right    : $content-size_left-right;
-          margin-bottom   : $content-size_top-bottom;
-          cursor          : pointer;
-
-          i {
-            color: white;
-          }
-
-          span {
-            margin-left: $content-size_left-right/2;
-          }
+          .subBtn {
+            display         : flex;
+            align-items     : center;
+            width           : 10%;
+            background-color: $color_accent;
+            border-radius   : 5px;
+            padding         : $content-size_top-bottom/2 $content-size_left-right/2;
+            justify-content : center;
+            color           : white;
+            letter-spacing  : 1px;
+            margin-top      : $content-size_top-bottom*2;
+            margin-left     : auto;
+            margin-right    : $content-size_left-right;
+            margin-bottom   : $content-size_top-bottom;
+            cursor          : pointer;
+  
+            i {
+              color: white;
+            }
+  
+            span {
+              margin-left: $content-size_left-right/2;
+            }
         }
 
         #nodownload {
@@ -553,49 +555,111 @@
             }
           }  
         section.body{
+          width     : 100%;
+          margin    : 0;
+          margin-top: $content-size_top-bottom;
+          padding   : $content-size_top-bottom*2 $content-size_top-bottom;
+         
+          // display:none;
+          .event-list {
+            margin-top: $content-size_top-bottom;
 
-          display:none;
-          // .event-list {
-          //   margin-top: $content-size_top-bottom;
+            &__header {
+              font-size: 11px;
+              padding  : $content-size_top-bottom/2;
+            }
 
-          //   &__header {
-          //     font-size: 11px;
-          //     padding  : $content-size_top-bottom/2;
-          //   }
+            &__phase {
+              font-size: 9px;
+              display: grid !important;
+              grid-template-columns: 30px 2.25fr 2fr 0fr; //60px 1.1fr 2.25fr 1.5fr; 
+              // text-align: left;
+              // border-top: 1px solid $color_text;
+              // border-bottom: 1px solid $color_text;
+              // border-left: 1.5px solid $color_text;
+              // border-right: 1.5px solid $color_text;
+              
+            }
 
-          //   &__phase {
-          //     font-size: 11px;
-          //   }
+            &__month{
+              font-size: 10px;
+              padding: $content-size_top-bottom/2 $content-size_left-right/4;
+            }
 
-          //   &__datapicker{
-          //     display:none;
-          //   }
+            &__datapicker{
+              display:none;
+            }
 
-          //   &__title,
-          //   &__content,
-          //   &__date {
-          //     padding: $content-size_top-bottom/2 $content-size_left-right/4;
-          //   }
+            &__calendarName_all{
+              // grid-template-columns: 60px 1.1fr 2.25fr 1.5fr; 
+              grid-template-columns: 30px 0fr 2.25fr 2fr;
+              grid-template-rows: 20px;
 
-          //   &__title {
-          //     flex: 1.5;
-          //   }
+              >div{
+                font-size: 9px;
+              }
 
-          //   &__content {
-          //     flex: 2;
-          //   }
 
-          //   &__date {
-          //     flex: 1;
-          //   }
-          // }
-        }
+              .calendarName_all__empty{
+                display: inline-block;
+                text-align   : center;
+                font-size    : 9px;
+                font-weight: 600; 
+              }
+
+              .calendarName_all__empty2{
+                display: none;
+                // text-align   : center;
+                // font-size    : 12px;
+                // font-weight: 600; 
+              }
+
+              .calendarName_all__ds {
+                display: inline-block;
+                text-align   : center;
+                font-size    : 9px;
+                //font-weight: 600; 
+              }
+
+              .calendarName_all__nd {
+                display:inline-block ;
+                text-align   : center;
+                font-size    : 9px;
+                //font-weight: 600;            
+              }
+
+            } 
+
+            &__title,
+            &__content,
+            &__date {
+              padding: $content-size_top-bottom/2 $content-size_left-right/4;       
+            }
+
+            &__title {
+              flex: 1.5;
+
+              span{
+                font-size: 6px;
+              }
+            }
+
+            &__content {
+              flex: 2;
+            }
+
+            &__date {
+              flex: 1;
+            }
+          }
+
           .subBtn {
             width: 90px;
             margin: $content-size_top-bottom*2 auto;
           }
         }
-      
+        }
+    }
     }
   }
 }
