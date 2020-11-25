@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from app.events.models import Event, EventParticipant
+from app.calendars.models import Calendar
 
 
 class GetSerializer(serializers.ModelSerializer):
@@ -10,15 +11,17 @@ class GetSerializer(serializers.ModelSerializer):
 
 
 class MeetingSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
     event = serializers.SerializerMethodField()
 
     class Meta:
         model = EventParticipant
-        fields = ['event', 'user', 'response']
-
-    def get_user(self, event_participnat):
-        return str(event_participnat.user)
+        fields = ['event', 'response']
 
     def get_event(self, event):
         return str(event.event)
+
+
+class CalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = ['name']

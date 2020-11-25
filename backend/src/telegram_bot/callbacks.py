@@ -4,11 +4,11 @@ import json
 from django.db.models import Q
 
 from app.events.models import Event, EventParticipant
-from app.events.choices import RoleChoice, EventParticipantResponseChoice
 from app.users.models import User
+from app.calendars.models import Calendar
 
 from .models import TelegramBot
-from .serializers import GetSerializer, MeetingSerializer
+from .serializers import GetSerializer, MeetingSerializer, CalendarSerializer
 
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -16,7 +16,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 # Set logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    level=logging.DEBUG
 )
 logger = logging.getLogger(__name__)
 
@@ -99,7 +99,7 @@ def get_event(update, context):
 
 def meeting(update, context):
     chat_id = update.message.chat.id
-    get_id = TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id)
+    get_id = TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id)  # noqa 501
     if get_id:
         meeting = EventParticipant.objects.filter(
             Q(user=get_id[0]) &
@@ -114,14 +114,13 @@ def meeting(update, context):
         data = json.loads(json.dumps(serializer.data))
         for i in data:
             i['行程'] = i.pop('event')
-            i['使用者'] = i.pop('user')
-            i['回應'] = i.pop('response')
-            if i['回應'] == 'accept':
-                i['回應'] = '接受'
-            elif i['回應'] == 'maybe':
-                i['回應'] = '不確定'
-            elif i['回應'] == 'no_reply':
-                i['回應'] = '未回應'
+            i['是否參加'] = i.pop('response')
+            if i['是否參加'] == 'accept':
+                i['是否參加'] = '是'
+            elif i['是否參加'] == 'maybe':
+                i['是否參加'] = '不確定'
+            elif i['是否參加'] == 'no_reply':
+                i['是否參加'] = '未回應'
 
         data = json.dumps(data, ensure_ascii=False)
         data = data.replace('"', '')
@@ -134,4 +133,68 @@ def meeting(update, context):
             i = i.replace(',', '\n')
             context.bot.send_message(chat_id, i)
     else:
-        context.bot.send_message(chat_id, '您尚未登入無法使用此功能唷')
+        context.bot.send_message(chat_id, '您尚未登入無法使用此功能😢')
+
+
+def calendar(update, context):
+    chat_id = update.message.chat.id
+    user_id = list(TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id))  # noqa 501
+    user = User.objects.filter(id__in=user_id)
+    if user:
+        calendar = Calendar.objects.filter(
+            Q(display='public') |
+            (
+                Q(permissions__role=user[0].role) &
+                Q(permissions__group__user=user[0])
+            ),
+        ).exclude(subscribers__in=user_id).distinct()
+        serializer = CalendarSerializer(calendar, many=True)
+        data = json.dumps(serializer.data, ensure_ascii=False)
+
+        data = data.replace('"', '')
+        data = data.replace('[', '')
+        data = data.replace(']', '')
+        data = data.replace('}', '')
+        data = data.replace('{', '')
+        data = data.replace(':', '')
+        data = data.replace('name', '')
+        data = data.replace(' ', '')
+        # data = data.replace(',', '\n')
+        data = data.split(',')
+
+        for i in data:
+            keyboard = [
+                [InlineKeyboardButton(i, callback_data=i)],
+            ]
+
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            context.bot.send_message(
+                chat_id=chat_id,
+                text='點選想訂閱的行事曆',
+                reply_markup=reply_markup,
+                )
+    else:
+        context.bot.send_message(chat_id, '您尚未登入無法使用此功能😢')
+
+
+def calendarSubscribe(update, context):
+    chat_id = update.message.from_user.id
+    text = update.data
+    print(chat_id)
+    print(text)
+    if text:
+        # replay_markup = InlineKeyboardMarkup(
+        #     [
+        #         [InlineKeyboardButton('已訂閱行事曆😌')]
+        #     ]
+        # )
+        # bot.edit_message_reply_markup(
+        #     chat_id=chat_id,
+        #     message_id=update.callback_query.message.message_id,
+        #     reply_markup=replay_markup,
+        #     )
+        context.edit_message_text(
+            '已訂閱行事曆😌',
+            chat_id=chat_id,
+            message_id=update.message.message_id,
+        )

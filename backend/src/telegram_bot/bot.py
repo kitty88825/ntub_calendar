@@ -1,5 +1,5 @@
 from telegram import Bot as TelegramBot, Update
-from telegram.ext import Dispatcher, CommandHandler
+from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler
 
 import environ
 
@@ -17,6 +17,8 @@ def webhook_handler(data):
     dispatcher.add_handler(CommandHandler('get', callbacks.get_event))
     dispatcher.add_handler(CommandHandler('login', callbacks.login))
     dispatcher.add_handler(CommandHandler('meeting', callbacks.meeting))
+    dispatcher.add_handler(CommandHandler('calendar', callbacks.calendar))
+    dispatcher.add_handler(CallbackQueryHandler(callbacks.calendarSubscribe))
 
     # Process update
     update = Update.de_json(data, bot)
