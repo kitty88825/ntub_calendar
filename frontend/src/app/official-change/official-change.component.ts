@@ -27,7 +27,7 @@ export class OfficialChangeComponent implements OnInit {
   data: AOA;
   formData = new FormData();
   datas = [];
-  header = ['發布標題', '內容概要', '發布單位', '開始日期', '結束日期'];
+  header = ['發布標題', '內容概要', '開始日期', '結束日期'];
   istrue = 0;
   selectedValue = '';
   group = [];
@@ -90,58 +90,84 @@ export class OfficialChangeComponent implements OnInit {
   }
 
   add() {
-    this.datas.forEach(event => {
-      if (typeof event[0] === 'string' && event[3].length === 10 &&
-        event[4].length === 10 && this.selectedValue.length !== 0 && event[4].toUpperCase() >= event[3].toUpperCase()) {
-        this.istrue = this.istrue + 1;
+    this.dataTrue();
+
+    if (this.selectedValue.length !== 0) {
+      if (this.istrue === this.datas.length && this.datas.length !== 0) {
+        this.loading = !this.loading;
+        this.datas.forEach(event => {
+          this.permissionCalendars.forEach(calendar => {
+            if (calendar.name === this.selectedValue) {
+              this.formData.append('main_calendar_id', calendar.id);
+            }
+          });
+          this.formData.append('title', event[0]);
+          this.formData.append('location', '');
+          if (event[1] === undefined) {
+            this.formData.append('description', '');
+          } else {
+            this.formData.append('description', event[1]);
+          }
+          this.formData.append('start_at', event[2] + 'T00:00:00+08:00');
+          this.formData.append('end_at', event[3] + 'T00:00:00+08:00');
+          this.eventService.postEvent(this.formData).subscribe(
+            data => {
+            }
+          );
+          this.loading = !this.loading;
+          setTimeout(() => {
+            if (this.loading === false) {
+              Swal.fire({
+                text: '新增成功',
+                icon: 'success',
+              }).then((result) => {
+                this.router.navigate(['calendar']);
+              });
+            }
+          }, 1000);
+        });
       } else {
         Swal.fire({
-          text: '請輸入正確資料',
+          text: '新增失敗',
           icon: 'error'
         });
       }
-    });
-
-    if (this.istrue === this.datas.length) {
-      this.loading = !this.loading;
-      this.datas.forEach(event => {
-        this.permissionCalendars.forEach(calendar => {
-          if (calendar.name === event[2]) {
-            this.formData.append('main_calendar_id', calendar.id);
-          }
-        });
-        this.formData.append('title', event[0]);
-        this.formData.append('location', '');
-        if (event[1] === undefined) {
-          this.formData.append('description', '');
-        } else {
-          this.formData.append('description', event[1]);
-        }
-        this.formData.append('start_at', event[3] + 'T00:00:00+08:00');
-        this.formData.append('end_at', event[4] + 'T00:00:00+08:00');
-        this.eventService.postEvent(this.formData).subscribe(
-          data => { }
-        );
+    } else {
+      Swal.fire({
+        text: '請選擇匯入行事曆',
+        icon: 'warning'
       });
-      this.loading = !this.loading;
-      setTimeout(() => {
-        if (this.loading === false) {
-          Swal.fire({
-            text: '新增成功',
-            icon: 'success',
-          }).then((result) => {
-            this.router.navigate(['calendar']);
-          });
-        }
-      }, 1000);
     }
 
   }
 
-  onChange() {
-    this.permissionCalendars.forEach(calendar => {
-      if (this.selectedValue === calendar[1]) {
-        this.formData.append('main_calendar_id', calendar[0]);
+  dataTrue() {
+    this.istrue = 0;
+    this.datas.forEach(event => {
+      if (typeof event[0] === 'string' && event[2].length === 10 &&
+        event[3].length === 10 && event[3].toUpperCase() >= event[2].toUpperCase()) {
+        this.istrue = this.istrue + 1;
+      } else {
+        Swal.fire({
+          text: '請輸入正確資料',
+          icon: 'error',
+        }).then((result) => {
+          if (result.value === true) {
+            Swal.fire({
+              text: '是否前往使用教學查看正確格式?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#aaa',
+              confirmButtonText: '確定',
+              cancelButtonText: '取消'
+            }).then((res) => {
+              if (res.value === true) {
+                this.router.navigate(['/user-teach']);
+              }
+            });
+          }
+        });
       }
     });
   }
@@ -149,8 +175,7 @@ export class OfficialChangeComponent implements OnInit {
   onFileChange(evt: any) {
     this.data = [];
     this.datas = [];
-    let count = 0;
-    const permissionCalendarsCount = this.permissionCalendars.length;
+
     const target: DataTransfer = (evt.target) as DataTransfer;
     if (target.files.length > 1) {
       Swal.fire({
@@ -170,34 +195,10 @@ export class OfficialChangeComponent implements OnInit {
       this.data = XLSX.utils.sheet_to_json(ws, { dateNF: 'yyyy-MM-dd', header: 0, raw: false });
 
       this.data.forEach(event => {
-        this.datas.push([event.發布標題, event.內容概要, event.發布單位, event.開始日期, event.結束日期]);
+        this.datas.push([event.發布標題, event.內容概要, event.開始日期, event.結束日期]);
       });
 
-      if (this.datas.length === 0) {
-        Swal.fire({
-          text: '請輸入正確格式',
-          icon: 'error'
-        });
-      } else {
-        this.permissionCalendars.forEach(calendar => {
-          if (this.data[0].發布單位 !== calendar.name) {
-            count++;
-          }
-        });
-
-        if (count === permissionCalendarsCount) {
-          Swal.fire({
-            text: '您沒有變更該行事曆的權限',
-            icon: 'error'
-          }).then((result) => {
-            if (result.value) {
-              window.location.reload();
-            }
-          });
-        } else if (count !== permissionCalendarsCount) {
-          this.selectedValue = this.data[0].發布單位;
-        }
-      }
+      this.dataTrue();
     };
     reader.readAsBinaryString(target.files[0]);
   }

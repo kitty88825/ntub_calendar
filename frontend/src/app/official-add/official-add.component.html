@@ -118,7 +118,7 @@
                   <h1>選擇行事曆：</h1>
                   <select class="form-control calendar" id="exampleSelect1" [(ngModel)]="selectCalendar"
                     (change)="onChange()">
-                    <option *ngFor="let sub of outputCalendar">{{sub.name}}</option>
+                    <option *ngFor="let sub of permissionCalendars">{{sub.name}}</option>
                   </select>
                   <div class="start">
                     <h1>開始時間：</h1>
@@ -146,7 +146,7 @@
               <h1>選擇行事曆</h1>
               <select class="form-control calendar" id="exampleSelect1" [(ngModel)]="selectCalendar"
                 (change)="onChange()">
-                <option *ngFor="let sub of outputCalendar">{{sub.name}}</option>
+                <option *ngFor="let sub of permissionCalendars">{{sub.name}}</option>
               </select>
             </div>
             <div class="time">

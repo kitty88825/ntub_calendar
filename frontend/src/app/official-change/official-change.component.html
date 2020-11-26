@@ -127,7 +127,8 @@
               <h2>選擇行事曆：</h2>
               <ul class="item-categories__list">
                 <div class="form-group">
-                  <select class="form-control" [(ngModel)]="selectedValue" (change)="onChange()">
+                  <select class="form-control" [(ngModel)]="selectedValue">
+                    <option></option>
                     <option *ngFor="let calendar of permissionCalendars">{{calendar.name}}</option>
                   </select>
                 </div>
@@ -153,7 +154,8 @@
             </div>
             <div class="calendar">
               <h2>選擇行事曆</h2>
-              <select class="form-control" [(ngModel)]="selectedValue" (change)="onChange()">
+              <select class="form-control" [(ngModel)]="selectedValue">
+                <option></option>
                 <option *ngFor="let calendar of permissionCalendars">{{calendar.name}}</option>
               </select>
             </div>

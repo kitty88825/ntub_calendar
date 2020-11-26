@@ -525,7 +525,8 @@
                   <div class="look" (click)="changeTime()">查看</div>
                 </div>
                 <div class="suggestTime">
-                  <h3 *ngIf="allSuggestTime.length === 0">該時間區段無推薦時間</h3>
+                  <h3 *ngIf="unsuggestTime === true">該時間區段無推薦時間</h3>
+                  <h3 *ngIf="allTimeCan === true">所有參與人員皆可參與！</h3>
                   <ul>
                     <li *ngFor="let time of allSuggestTime; let i = index">
                       <label class="container">

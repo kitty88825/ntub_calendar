@@ -27,13 +27,18 @@ export class MeetingComponent implements OnInit {
   isOpen = false;
   edit = false;
   lookMeet = [];
-  lookTitle; lookOffice; lookSTime;
-  lookLocation; lookETime; lookDes;
+  lookTitle; lookOffice; lookSTime; lookSDate; lookCalendarId;
+  lookLocation; lookETime; lookDes; lookEDate;
   lookFiles = [];
   lookParticipants = [];
   staff = localStorage.getItem('staff');
   setStartDate = '';
   setEndDate = '';
+  invite: boolean;
+  showEvent: boolean;
+  data = { current: '0' };
+  formDate = {};
+  role = '';
 
   @ViewChild('addStartDate') start: ElementRef;
   @ViewChild('addEndDate') end: ElementRef;
@@ -60,6 +65,7 @@ export class MeetingComponent implements OnInit {
     this.tokenService.getUser().subscribe(
       data => {
         this.myEmail = data.email;
+        this.role = data.role;
       }
     );
 
@@ -114,7 +120,7 @@ export class MeetingComponent implements OnInit {
         }
       }
     );
- }
+  }
 
   changeDate() {
     if (this.end.nativeElement.value < this.start.nativeElement.value) {
@@ -248,14 +254,23 @@ export class MeetingComponent implements OnInit {
     this.lookFiles = [];
     this.lookParticipants = [];
     this.edit = true;
+    this.invite = false;
     this.allMeet.forEach(event => {
       if (event.id === id) {
         this.lookMeet.push(event);
       }
     });
+    this.invitedMeet.forEach(event => {
+      if (event.id === id) {
+        this.invite = true;
+      }
+    });
 
     this.lookTitle = this.lookMeet[0].title;
+    this.lookCalendarId = this.lookMeet[0].eventinvitecalendarSet[0].mainCalendar.id;
     this.lookOffice = this.lookMeet[0].eventinvitecalendarSet[0].mainCalendar.name;
+    this.lookSDate = this.lookMeet[0].startAt;
+    this.lookEDate = this.lookMeet[0].endAt;
     this.lookSTime = this.lookMeet[0].startAt.substr(0, 10) + ' ' + this.lookMeet[0].startAt.substr(11, 5);
     this.lookETime = this.lookMeet[0].endAt.substr(0, 10) + ' ' + this.lookMeet[0].endAt.substr(11, 5);
     this.lookLocation = this.lookMeet[0].location;
@@ -265,13 +280,11 @@ export class MeetingComponent implements OnInit {
     });
     this.lookMeet[0].eventparticipantSet.forEach(participant => {
       if (participant.role === 'editors') {
-        this.lookParticipants.push({user: participant.user, role: participant.role, response: 'creator'});
+        this.lookParticipants.push({ user: participant.user, role: participant.role, response: 'creator' });
       } else {
         this.lookParticipants.push(participant);
       }
     });
-
-    console.log(this.lookParticipants);
   }
 
   goback() {
@@ -288,6 +301,47 @@ export class MeetingComponent implements OnInit {
       this.primaryColour = PrimaryWhite;
       this.secondaryColour = SecondaryGrey;
     }
+  }
+
+  hide() {
+    this.showEvent = false;
+  }
+
+  setCurrent(param) {
+    this.data.current = param;
+  }
+
+  showResponse() {
+    this.showEvent = true;
+  }
+
+  changeResponse() {
+    this.formDate = {};
+    if (Number(this.data.current) === 1) {
+      this.formDate = {
+        title: this.lookTitle, start_at: this.lookSDate, end_at: this.lookEDate,
+        main_calendar_id: this.lookCalendarId, eventparticipant_set: [{ user: this.myEmail, role: this.role, response: 'accept' }]
+      };
+    } else if (Number(this.data.current) === 2) {
+      this.formDate = {
+        title: this.lookTitle, start_at: this.lookSDate, end_at: this.lookEDate,
+        main_calendar_id: this.lookCalendarId, eventparticipant_set: [{ user: this.myEmail, role: this.role, response: 'decline' }]
+      };
+    } else if (Number(this.data.current) === 3) {
+      this.formDate = {
+        title: this.lookTitle, start_at: this.lookSDate, end_at: this.lookEDate,
+        main_calendar_id: this.lookCalendarId, eventparticipant_set: [{ user: this.myEmail, role: this.role, response: 'maybe' }]
+      };
+    }
+    this.eventService.postEvent(this.formDate).subscribe(
+      data => {
+        Swal.fire({
+          text: '成功回覆',
+          icon: 'warning'
+        });
+      }
+    );
+    this.showEvent = false;
   }
 
 }

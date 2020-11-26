@@ -55,11 +55,12 @@ export class AddScheduleComponent implements OnInit {
   title = '';
   description = '';
   location = '';
-  startDate = '';
-  endDate = '';
+  startDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+  endDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   staff = localStorage.getItem('staff');
   allSuggestTime = [];
-
+  unsuggestTime: boolean;
+  allTimeCan: boolean;
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -121,13 +122,6 @@ export class AddScheduleComponent implements OnInit {
         }
 
         this.showInviteCalendar(this.selectMainCalendar);
-
-        if (this.calendars.length === 0) {
-          Swal.fire({
-            text: '您無任何行事曆新增權限',
-            icon: 'warning'
-          });
-        }
       }
     );
 
@@ -299,6 +293,17 @@ export class AddScheduleComponent implements OnInit {
     const index = this.allCalendars.findIndex(calendar => calendar.name === calendarName);
     allCalendar.splice(index, 1);
     this.showAddCalendars = allCalendar;
+
+    if (this.calendars.length === 0) {
+      Swal.fire({
+        text: '您無任何行事曆新增權限',
+        icon: 'warning'
+      }).then((result) => {
+        if (result.value === true) {
+          this.router.navigate(['/calendar']);
+        }
+      });
+    }
   }
 
   meet(value) {
@@ -402,6 +407,8 @@ export class AddScheduleComponent implements OnInit {
 
   adviseTime() {
     this.allSuggestTime = [];
+    this.unsuggestTime = false;
+    this.allTimeCan = false;
 
     if (this.startDate.length === 0 || this.endDate.length === 0) {
       Swal.fire({
@@ -429,12 +436,18 @@ export class AddScheduleComponent implements OnInit {
 
         this.eventService.postSuggestTime(this.suggestTime).subscribe(
           data => {
-            data.forEach(time => {
-              this.allSuggestTime.push({
-                startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
-                endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+            if (data.length === 0) {
+              this.unsuggestTime = true;
+            } else if (data === 'All participants can attend!') {
+              this.allTimeCan = true;
+            } else {
+              data.forEach(time => {
+                this.allSuggestTime.push({
+                  startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+                  endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+                });
               });
-            });
+            }
           }
         );
       }
@@ -466,6 +479,8 @@ export class AddScheduleComponent implements OnInit {
   }
 
   changeTime() {
+    this.allTimeCan = false;
+    this.unsuggestTime = false;
     this.allSuggestTime = [];
     const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
     const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
@@ -477,12 +492,18 @@ export class AddScheduleComponent implements OnInit {
 
     this.eventService.postSuggestTime(this.suggestTime).subscribe(
       data => {
-        data.forEach(time => {
-          this.allSuggestTime.push({
-            startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
-            endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+        if (data.length === 0) {
+          this.unsuggestTime = true;
+        } else if (data === 'All participants can attend!') {
+          this.allTimeCan = true;
+        } else {
+          data.forEach(time => {
+            this.allSuggestTime.push({
+              startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+              endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+            });
           });
-        });
+        }
       }
     );
   }

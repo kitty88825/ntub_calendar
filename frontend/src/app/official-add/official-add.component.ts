@@ -5,6 +5,7 @@ import { EventService } from '../services/event.service';
 import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+import { TokenService } from './../services/token.service';
 
 const PrimaryWhite = '#ffffff';
 const SecondaryGrey = '#ccc';
@@ -18,17 +19,19 @@ const SecondaryBlue = '#006ddd';
 })
 export class OfficialAddComponent implements OnInit {
   showDatas = [];
-  header = ['發布標題', '內容概要', '發布單位', '開始日期', '結束日期'];
+  header = ['發布標題', '內容概要', '開始日期', '結束日期'];
   isCollapsed = false;
   selectCalendar = '';
   calendarId = [];
-  outputCalendar = [];
-  todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+  permissionCalendars = [];
+  todayDate = new Date();
   startDate = this.todayDate;
   endDate = this.todayDate;
   isOpen = false;
   isTrue = false;
   staff = localStorage.getItem('staff');
+  group = [];
+  role = '';
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -44,7 +47,8 @@ export class OfficialAddComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private tokenService: TokenService
   ) { }
 
   @ViewChild('addStartDate') addStartDate: ElementRef;
@@ -53,12 +57,34 @@ export class OfficialAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = !this.loading;
+    this.startDate.setMonth(this.startDate.getMonth() - 6);
+    this.endDate = new Date();
+
+    this.tokenService.getUser().subscribe(
+      data => {
+        this.group = data.groups;
+        this.role = data.role;
+      }
+    );
+
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => {
-          this.outputCalendar.push(calendar);
+          this.group.forEach(group => {
+            calendar.permissions.forEach(permission => {
+              if (permission.group === group && permission.role === this.role && permission.authority === 'write') {
+                this.permissionCalendars.push({ id: calendar.id, name: calendar.name, color: calendar.color });
+              }
+            });
+          });
         });
-        this.selectCalendar = this.outputCalendar[0].name;
+        this.selectCalendar = this.permissionCalendars[0].name;
+      },
+      error => {
+        Swal.fire({
+          text: '獲取資料失敗',
+          icon: 'error'
+        });
       }
     );
     this.loading = !this.loading;
@@ -97,18 +123,17 @@ export class OfficialAddComponent implements OnInit {
   changeDate() {
     this.loading = !this.loading;
     this.showDatas = [];
-    this.endDate = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
-    this.startDate = formatDate(this.startDate, 'yyyy-MM-dd', 'en')
-    if (this.endDate.toUpperCase() >= this.startDate.toUpperCase()) {
+
+    if (this.endDate >= this.startDate) {
       this.eventService.getEvents().subscribe(
         data => {
           data.forEach(event => {
-            this.outputCalendar.forEach(calendar => {
+            this.permissionCalendars.forEach(calendar => {
               if (event.eventinvitecalendarSet[0].mainCalendar.id === calendar.id &&
                 calendar.name === this.selectCalendar &&
                 this.addStartDate.nativeElement.value.toUpperCase() <= event.startAt.substr(0, 10).toUpperCase() &&
                 this.addEndDate.nativeElement.value.toUpperCase() >= event.endAt.substr(0, 10).toUpperCase()) {
-                this.showDatas.push([event.title, event.description, calendar.name,
+                this.showDatas.push([event.title, event.description,
                 event.startAt.substr(0, 10), event.endAt.substr(0, 10)]);
               }
             });
@@ -123,8 +148,8 @@ export class OfficialAddComponent implements OnInit {
           }
 
           this.showDatas.sort((a, b) => {
-            const startA = a[3].toUpperCase();
-            const startB = b[3].toUpperCase();
+            const startA = a[2].toUpperCase();
+            const startB = b[2].toUpperCase();
             if (startA < startB) {
               return -1;
             }
