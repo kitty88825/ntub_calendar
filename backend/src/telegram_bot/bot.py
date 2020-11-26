@@ -23,3 +23,8 @@ def webhook_handler(data):
     # Process update
     update = Update.de_json(data, bot)
     dispatcher.process_update(update)
+
+
+def auto_message():
+    bot = TelegramBot(env('TG_TOKEN'))
+    callbacks.today(bot)

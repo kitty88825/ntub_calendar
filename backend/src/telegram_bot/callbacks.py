@@ -1,7 +1,9 @@
 import logging
 import json
+import datetime
 
 from django.db.models import Q
+from django.utils import timezone
 
 from app.events.models import Event, EventParticipant
 from app.users.models import User
@@ -12,6 +14,9 @@ from .serializers import GetSerializer, MeetingSerializer, CalendarSerializer
 
 from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 
+
+# timezone
+timezone.now()
 
 # Set logging
 logging.basicConfig(
@@ -163,7 +168,7 @@ def calendar(update, context):
             data = data.replace(' ', '')
             data = data.split(',')
             keyboard = [
-                [KeyboardButton(text='點選此處來移除鍵盤')],
+                [KeyboardButton(text='結束訂閱')],
             ]
 
             for i in data:
@@ -202,11 +207,50 @@ def calendarSubscribe(update, context):
         c = Calendar.objects.filter(name=text)
         c[0].subscribers.add(user[0].id)
         context.bot.send_message(chat_id, '已訂閱此行事曆😉')
-    elif text == '點選此處來移除鍵盤':
+    elif text == '結束訂閱':
         context.bot.send_message(chat_id, text='如過想再訂閱請用 /calendar', reply_markup=ReplyKeyboardRemove())
-    # else:
-    #     context.bot.send_message(
-    #         chat_id=chat_id,
-    #         text='此行事曆已經訂閱過了',
-    #         reply_markup=ReplyKeyboardRemove()
-    #     )
+
+
+def today(bot):
+    chat_id = list(TelegramBot.objects.values_list('chat_id', flat=True))
+
+    user = list(TelegramBot.objects.values_list('user_id', flat=True).all())
+    for c in chat_id:
+        for u in user:
+            event = Event.objects.filter(
+                subscribers=u,
+                start_at__contains=datetime.date.today()
+            )
+            calendar = Event.objects.filter(
+                Q(calendars__subscribers=u) &
+                Q(start_at__contains=datetime.date.today())
+            )
+            serializer = GetSerializer(event, many=True)
+            serializer_calendar = GetSerializer(calendar, many=True)
+            data_event = json.loads(json.dumps(serializer.data))
+            data_calendar = json.loads(json.dumps(serializer_calendar.data))
+            data = data_event + data_calendar
+
+            if data.count() != 0:
+                for i in data:
+                    i['行程'] = i.pop('title')
+                    i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
+                    i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
+                    i['備註'] = i.pop('description')
+                    i['地點'] = i.pop('location')
+
+                data = json.dumps(data, ensure_ascii=False)
+                data = data.replace('"', '')
+                data = data.replace('[', '')
+                data = data.replace(']', '')
+                data = data.split('}, {')
+
+                bot.send_message(c, '今日行程:\n')
+
+                for i in data:
+                    i = i.replace('{', '')
+                    i = i.replace('}', '')
+                    i = i.replace(',', '\n')
+                    bot.send_message(c, i)
+            else:
+                bot.send_message(c, '今日沒有行程~')
