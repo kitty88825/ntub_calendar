@@ -36,14 +36,50 @@ export class AddCalendarComponent implements OnInit {
   edit = false;
   editSmall = false;
   color = '#839B91';
-  allCalendar = [];
-  raw = { name: '', display: '', description: '', color: '', permissions: [{ id: 0, authority: '', group: [], groupName: '', role: '' }] };
+  allCalendar = [
+    { id: 1, name: '秘書室' },
+    { id: 2, name: '副校長室'},
+    { id: 3, name: '校長室'},
+    { id: 4, name: '軍訓室'},
+    { id: 5, name: '主計室'},
+    { id: 6, name: '人事室'},
+    { id: 7, name: '圖書館'},
+    { id: 8, name: '總務處'},
+    { id: 9, name: '專科進修學校'},
+    { id: 10, name: '空中進修學院'},
+    { id: 11, name: '校務研究中心'},
+    { id: 12, name: '教學發展中心'},
+    { id: 13, name: '學生事務處'},
+    { id: 14, name: '國際事務處'},
+    { id: 15, name: '研究發展處'},
+    { id: 16, name: '教務處'},
+    { id: 17, name: '資訊與網路中心'},
+    { id: 18, name: '體育室'},
+    { id: 19, name: '通識教育中心'},
+    { id: 20, name: '商品創意經營系'},
+    { id: 21, name: '商業設計管理系'},
+    { id: 22, name: '數位多媒體設計系'},
+    { id: 23, name: '創意設計與經營研究所'},
+    { id: 24, name: '創新經營學院'},
+    { id: 25, name: '資訊與決策科學研究所'},
+    { id: 26, name: '應用外語系'},
+    { id: 27, name: '資訊管理系'},
+    { id: 28, name: '企業管理系(所)'},
+    { id: 29, name: '管理學院'},
+    { id: 30, name: '貿易實務法律暨談判碩士學位學程'},
+    { id: 31, name: '國際商務系(所)'},
+    { id: 32, name: '財務金融系(所)'},
+    { id: 33, name: '會計資訊系(所)'},
+    { id: 34, name: '財經學院'},
+    { id: 35, name: '開發人員'}
+  ];
+  raw = { name: '', display: '', description: '', color: '', permissions: [{ authority: '', group: 0, groupName: '', role: '' }] };
   items = [0, 1];
   calendarPermissions = [];
   count = 1;
   setRole = 'write';
-  setPermissions = [{ id: 0, groupName: '', role: 'student', authority: 'write', group: [] },
-  { id: 0, groupName: '', role: 'student', authority: 'write', group: [] }];
+  setPermissions = [{ groupName: '', role: 'student', authority: 'write', group: 0 },
+  { groupName: '', role: 'student', authority: 'write', group: 0 }];
   staff = localStorage.getItem('staff');
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -75,7 +111,6 @@ export class AddCalendarComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => {
-          this.allCalendar.push({ id: calendar.id, name: calendar.name });
           this.group.forEach(group => {
             calendar.permissions.forEach(permission => {
               if (permission.group === group && permission.role === this.role && permission.authority === 'write' &&
@@ -155,11 +190,12 @@ export class AddCalendarComponent implements OnInit {
         icon: 'error'
       });
     } else if (this.setPermissions.length === 1 && this.setPermissions[0].groupName !== '') {
-      this.raw.permissions[0].id = this.setPermissions[0].id;
       this.raw.permissions[0].groupName = this.setPermissions[0].groupName;
       this.raw.permissions[0].role = this.setPermissions[0].role;
       this.raw.permissions[0].authority = this.setPermissions[0].authority;
       this.raw.permissions[0].group = this.setPermissions[0].group;
+
+      console.log(this.raw);
 
       this.calendarService.postCalendar(this.raw).subscribe(
         data => {
@@ -184,12 +220,11 @@ export class AddCalendarComponent implements OnInit {
     } else if (this.setPermissions.length > 1) {
       const count = this.setPermissions.length - 1;
       for (let j = 0; j < count; j++) {
-        this.raw.permissions.push({ authority: '', group: [], groupName: '', role: '', id: 0 });
+        this.raw.permissions.push({ authority: '', group: 0, groupName: '', role: ''});
       }
 
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < this.setPermissions.length; i++) {
-        this.raw.permissions[i].id = this.setPermissions[i].id;
         this.raw.permissions[i].groupName = this.setPermissions[i].groupName;
         this.raw.permissions[i].role = this.setPermissions[i].role;
         this.raw.permissions[i].authority = this.setPermissions[i].authority;
@@ -260,7 +295,7 @@ export class AddCalendarComponent implements OnInit {
     if (this.add === true) {
       this.count++;
       this.items.push(this.count);
-      this.setPermissions.push({ groupName: '', role: 'student', authority: 'write', group: [], id: 0 });
+      this.setPermissions.push({ groupName: '', role: 'student', authority: 'write', group: 0});
     } else if (this.edit === true) {
       this.calendarPermissions.push({ id: 0, authority: 'write', group: [], groupName: '', role: 'student' });
     }
@@ -329,7 +364,6 @@ export class AddCalendarComponent implements OnInit {
           icon: 'error'
         });
       } else if (this.calendarPermissions.length === 1 && this.calendarPermissions[0].groupName !== '') {
-        this.raw.permissions[0].id = this.calendarPermissions[0].id;
         this.raw.permissions[0].groupName = this.calendarPermissions[0].groupName;
         this.raw.permissions[0].role = this.calendarPermissions[0].role;
         this.raw.permissions[0].authority = this.calendarPermissions[0].authority;
@@ -337,12 +371,11 @@ export class AddCalendarComponent implements OnInit {
       } else if (this.calendarPermissions.length > 1) {
         const count = this.calendarPermissions.length - 1;
         for (let j = 0; j < count; j++) {
-          this.raw.permissions.push({ authority: '', group: [], groupName: '', role: '', id: 0 });
+          this.raw.permissions.push({ authority: '', group: 0, groupName: '', role: ''});
         }
 
         // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < this.calendarPermissions.length; i++) {
-          this.raw.permissions[i].id = this.calendarPermissions[i].id;
           this.raw.permissions[i].groupName = this.calendarPermissions[i].groupName;
           this.raw.permissions[i].role = this.calendarPermissions[i].role;
           this.raw.permissions[i].authority = this.calendarPermissions[i].authority;

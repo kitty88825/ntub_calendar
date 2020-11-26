@@ -106,16 +106,15 @@ export class MeetingComponent implements OnInit {
           this.pastMeetSort();
         });
         this.loading = !this.loading;
+        if (this.myMeet.length === 0 && this.invitedMeet.length === 0 && this.pastMeet.length === 0) {
+          Swal.fire({
+            text: '目前尚無任何會議',
+            icon: 'warning'
+          });
+        }
       }
     );
-
-    if (this.myMeet.length === 0 && this.invitedMeet.length === 0 && this.pastMeet.length === 0) {
-      Swal.fire({
-        text: '目前尚無任何會議',
-        icon: 'warning'
-      });
-    }
-  }
+ }
 
   changeDate() {
     if (this.end.nativeElement.value < this.start.nativeElement.value) {
@@ -265,10 +264,14 @@ export class MeetingComponent implements OnInit {
       this.lookFiles.push(file.filename);
     });
     this.lookMeet[0].eventparticipantSet.forEach(participant => {
-      if (participant.user !== this.myEmail) {
+      if (participant.role === 'editors') {
+        this.lookParticipants.push({user: participant.user, role: participant.role, response: 'creator'});
+      } else {
         this.lookParticipants.push(participant);
       }
     });
+
+    console.log(this.lookParticipants);
   }
 
   goback() {

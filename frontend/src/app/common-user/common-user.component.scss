@@ -486,7 +486,7 @@
               }
 
               input {
-                width: 180px;
+                width: 190px;
                 font-size: 14px;
                 margin-left: $content-size_left-right/2;
               }
@@ -498,7 +498,7 @@
               }
 
               input.addEmail {
-                width: 150px;
+                width: 150px !important;
                 font-size: 13px;
                 margin-left: $content-size_left-right/2;
               }
@@ -515,7 +515,7 @@
             }
 
             &__equipment {
-              width: 100%;
+              width: 100% !important;
               margin-top: $content-size_top-bottom;
 
               span {

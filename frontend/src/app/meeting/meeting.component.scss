@@ -98,6 +98,7 @@
             }
 
             i {
+              cursor: unset;
               font-size: 18px;
             }
 
@@ -148,12 +149,21 @@
               color: $color_accent;
             }
 
+            i.creator {
+              margin-left: $content-size_left-right/2;
+              color: $color_text;
+            }
+
             i.deny {
               margin-left: $content-size_left-right/2;
               color: rgba($color: red, $alpha: 0.6);
             }
 
             i.noresponse {
+              margin-left: $content-size_left-right/2;
+            }
+
+            i.maybe {
               margin-left: $content-size_left-right/2;
               color: wheat;
             }

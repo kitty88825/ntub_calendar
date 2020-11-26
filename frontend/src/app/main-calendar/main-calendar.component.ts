@@ -34,6 +34,7 @@ export class MainCalendarComponent implements OnInit {
   isPrivate = false;
   isOpen = false;
   isTrue = false;
+  isShowCheckAll = false;
   showEvent: boolean;
   events = [];
   eventTitle = '';
@@ -516,6 +517,7 @@ export class MainCalendarComponent implements OnInit {
   }
 
   showEventsChange() {
+    this.isShowCheckAll = false;
     this.events.forEach(event => {
       if (event.startDate.substr(0, 4) === this.selectYear
         && Number(event.startDate.substr(5, 2)) === this.selectMonth) {
@@ -523,6 +525,12 @@ export class MainCalendarComponent implements OnInit {
       }
     });
     this.showEventsSort();
+
+    this.showEvents.forEach(event => {
+      if (event.permission === true) {
+        this.isShowCheckAll = true;
+      }
+    });
   }
 
 

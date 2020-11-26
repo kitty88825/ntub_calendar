@@ -28,6 +28,7 @@ export class AddScheduleComponent implements OnInit {
   meridian = true;
   uploadForm: FormGroup;
   formData = new FormData();
+  suggestTime = new FormData();
   fileName = [];
   sendEmailForm: FormGroup;
   emailPattern = /^\w+([-+.']\w+)*@ntub.edu.tw(, ?\w+([-+.']\w+)*@ntub.edu.tw)*$/;
@@ -39,13 +40,14 @@ export class AddScheduleComponent implements OnInit {
   isOpen = false;
   isMeet = true;
   isSchedule = !this.isMeet;
-  attribute = '';
+  attribute = 'meeting';
   allCommonUser = [];
   group = [];
   role = '';
   selectMainCalendar = '';
   showCalendar: boolean;
   showModal: boolean;
+  showTime: boolean;
   commonUserEmail = [];
   MasterSelected = false;
   userEmail = [];
@@ -56,6 +58,7 @@ export class AddScheduleComponent implements OnInit {
   startDate = '';
   endDate = '';
   staff = localStorage.getItem('staff');
+  allSuggestTime = [];
 
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -118,6 +121,13 @@ export class AddScheduleComponent implements OnInit {
         }
 
         this.showInviteCalendar(this.selectMainCalendar);
+
+        if (this.calendars.length === 0) {
+          Swal.fire({
+            text: '您無任何行事曆新增權限',
+            icon: 'warning'
+          });
+        }
       }
     );
 
@@ -195,84 +205,92 @@ export class AddScheduleComponent implements OnInit {
   }
 
   async add(main: HTMLElement) {
-    const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
-    const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
-    await new Promise(resolve => {
-      setTimeout(() => {
-        main.scrollIntoView();
-        resolve();
-      });
-    });
-    if (this.title === '') {
+    if (this.startDate.length === 0 || this.endDate.length === 0) {
       Swal.fire({
-        text: '請輸入標題',
-        icon: 'error'
-      });
-    } else if (String(this.startDate).toUpperCase() > String(this.endDate).toUpperCase()) {
-      Swal.fire({
-        text: '請輸入正確時間',
-        icon: 'error'
+        text: '請輸入時間',
+        icon: 'warning'
       });
     } else {
-      this.loading = !this.loading;
-      this.calendars.forEach(calendar => {
-        if (this.selectMainCalendar === calendar.name) {
-          this.formData.append('main_calendar_id', calendar.id);
-        }
-      });
-      this.showAddCalendars.forEach(calendar => {
-        if (calendar.isChecked === true) {
-          this.formData.append('invite_calendars_id', calendar.id);
-        }
-      });
-      this.formData.append('attributes', this.attribute);
-      this.formData.append('title', this.title);
-      this.formData.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
-        + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
-      this.formData.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
-        + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
-
-      this.formData.append('description', this.description);
-      this.formData.append('location', this.location);
-      this.userEmail.forEach(email => {
-        this.formData.append('emails', email);
+      const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+      const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+      await new Promise(resolve => {
+        setTimeout(() => {
+          main.scrollIntoView();
+          resolve();
+        });
       });
 
-      this.eventService.postEvent(this.formData).subscribe(
-        data => {
-          this.loading = !this.loading;
-          Swal.fire({
-            text: '新增成功',
-            icon: 'success',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: '返回首頁',
-            cancelButtonText: '再添一筆'
-          }).then((result) => {
-            if (result.value) {
-              this.router.navigate(['/calendar']);
-            }
-          });
-        },
-        error => {
-          console.log(error);
-          Swal.fire({
-            text: '新增失敗',
-            icon: 'error',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: '返回首頁',
-            cancelButtonText: '再添一筆'
-          }).then((result) => {
-            if (result.value) {
-              this.router.navigate(['/calendar']);
-            }
-          });
-        }
-      );
+      if (this.title === '') {
+        Swal.fire({
+          text: '請輸入標題',
+          icon: 'error'
+        });
+      } else if (start.toUpperCase() > end.toUpperCase()) {
+        Swal.fire({
+          text: '請輸入正確時間',
+          icon: 'error'
+        });
+      } else {
+        this.loading = !this.loading;
+        this.calendars.forEach(calendar => {
+          if (this.selectMainCalendar === calendar.name) {
+            this.formData.append('main_calendar_id', calendar.id);
+          }
+        });
+        this.showAddCalendars.forEach(calendar => {
+          if (calendar.isChecked === true) {
+            this.formData.append('invite_calendars_id', calendar.id);
+          }
+        });
+        this.formData.append('nature', this.attribute);
+        this.formData.append('title', this.title);
+        this.formData.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
+          + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+        this.formData.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
+          + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
 
+        this.formData.append('description', this.description);
+        this.formData.append('location', this.location);
+        this.userEmail.forEach(email => {
+          this.formData.append('emails', email);
+        });
+
+        this.eventService.postEvent(this.formData).subscribe(
+          data => {
+            this.loading = !this.loading;
+            Swal.fire({
+              text: '新增成功',
+              icon: 'success',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#aaa',
+              confirmButtonText: '返回首頁',
+              cancelButtonText: '再添一筆'
+            }).then((result) => {
+              if (result.value) {
+                this.router.navigate(['/calendar']);
+              }
+            });
+          },
+          error => {
+            console.log(error);
+            Swal.fire({
+              text: '新增失敗',
+              icon: 'error',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#aaa',
+              confirmButtonText: '返回首頁',
+              cancelButtonText: '再添一筆'
+            }).then((result) => {
+              if (result.value) {
+                this.router.navigate(['/calendar']);
+              }
+            });
+          }
+        );
+
+      }
     }
   }
 
@@ -289,13 +307,14 @@ export class AddScheduleComponent implements OnInit {
       this.attribute = value.target.value;
     } else {
       this.isSchedule = true;
-      this.attribute = '行程';
+      this.attribute = 'event';
     }
   }
 
   importEmail() {
     this.commonUserEmail.forEach(email => {
       if (email.isChecked === true) {
+        this.formData.append('emails', email.emails);
         this.userEmail.push(email.emails);
       }
     });
@@ -308,7 +327,7 @@ export class AddScheduleComponent implements OnInit {
       this.attribute = value.target.value;
     } else {
       this.isMeet = true;
-      this.attribute = '會議';
+      this.attribute = 'meeting';
     }
   }
 
@@ -318,6 +337,10 @@ export class AddScheduleComponent implements OnInit {
 
   hideCalendar() {
     this.showCalendar = false;
+  }
+
+  hideTime() {
+    this.showTime = false;
   }
 
   hide() {
@@ -378,10 +401,90 @@ export class AddScheduleComponent implements OnInit {
   }
 
   adviseTime() {
-    Swal.fire({
-      text: '功能開發中請耐心等待',
-      icon: 'warning'
+    this.allSuggestTime = [];
+
+    if (this.startDate.length === 0 || this.endDate.length === 0) {
+      Swal.fire({
+        text: '請先輸入日期與時間',
+        icon: 'warning'
+      });
+    } else {
+      if (this.userEmail.length === 0) {
+        Swal.fire({
+          text: '請輸入至少一位參與人員',
+          icon: 'warning'
+        });
+      } else {
+        const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+        const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+
+        this.showTime = true;
+        this.userEmail.forEach(email => {
+          this.suggestTime.append('emails', email);
+        });
+        this.suggestTime.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
+          + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+        this.suggestTime.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
+          + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
+
+        this.eventService.postSuggestTime(this.suggestTime).subscribe(
+          data => {
+            data.forEach(time => {
+              this.allSuggestTime.push({
+                startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+                endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+              });
+            });
+          }
+        );
+      }
+    }
+
+  }
+
+  chooseSuggestTime() {
+    this.allSuggestTime.forEach(time => {
+      if (time.isChecked === true) {
+        this.startDate = time.startDate;
+        this.endDate = time.endDate;
+        this.addStartTime.model.hour = Number(time.startTime.substr(0, 2));
+        this.addStartTime.model.minute = time.startTime.substr(3, 2);
+        this.addEndTime.model.hour = time.endTime.substr(0, 2);
+        this.addEndTime.model.minute = time.endTime.substr(3, 2);
+      }
     });
+    this.showTime = false;
+  }
+
+  changeSuggestTime(index) {
+    this.allSuggestTime.forEach(time => {
+      time.isChecked = false;
+    });
+
+    this.allSuggestTime[index].isChecked = true;
+
+  }
+
+  changeTime() {
+    this.allSuggestTime = [];
+    const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+    const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+
+    this.suggestTime.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
+      + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+    this.suggestTime.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
+      + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
+
+    this.eventService.postSuggestTime(this.suggestTime).subscribe(
+      data => {
+        data.forEach(time => {
+          this.allSuggestTime.push({
+            startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+            endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+          });
+        });
+      }
+    );
   }
 
 }

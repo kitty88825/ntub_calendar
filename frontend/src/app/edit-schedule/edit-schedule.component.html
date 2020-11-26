@@ -79,7 +79,7 @@
                     <span>OpenData</span>
                   </div>
                   <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
-                    <span>匯出PDF</span>
+                    <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
               </ul>
@@ -218,8 +218,8 @@
                     </li>
                   </ul>
                 </div>
-                <div class="all_common-user">
-                  <input type="button" class="form-control" value="推薦時間" (click)="adviseTime()">
+                <div class="all_common-user" (click)="adviseTime()">
+                  <h3>推薦時間</h3>
                 </div>
               </div>
               <div class="add__file">
@@ -371,8 +371,8 @@
                 </li>
               </ul>
             </div>
-            <div class="all_common-user">
-              <input type="button" class="form-control" value="推薦時間" (click)="adviseTime()">
+            <div class="all_common-user" (click)="adviseTime()">
+              <h3>推薦時間</h3>
             </div>
             <hr>
             <div class="add__description">
@@ -531,10 +531,67 @@
         </div>
 
       </div>
+      <!-- Creates the bootstrap modal where the image will appear -->
+      <div [style.display]="showTime ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="time_dialog">
+          <div class="time_body">
+            <div class="time_border">
+              <i class="cancel material-icons" (click)="hideTime()">
+                cancel
+              </i>
+              <div class="time_content">
+                <div class="time_header">
+                  <div class="add__time">
+                    <i class="material-icons">
+                      access_time
+                    </i>
+                    <h2>開始</h2>
+                    <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                      required [(ngModel)]="startDate">
+                    <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners"
+                      [meridian]="meridian" class="timepicker" #addStartTime required></ngb-timepicker>
+                  </div>
+                  <div class="add__time">
+                    <i class="material-icons">
+                      access_time
+                    </i>
+                    <h2>結束</h2>
+                    <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                      [(ngModel)]="endDate" required>
+                    <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners"
+                      [meridian]="meridian" class="timepicker" #addEndTime required></ngb-timepicker>
+                  </div>
+                  <div class="look" (click)="changeTime()">查看</div>
+                </div>
+                <div class="suggestTime">
+                  <h3 *ngIf="allSuggestTime.length === 0">該時間區段無推薦時間</h3>
+                  <ul>
+                    <li *ngFor="let time of allSuggestTime; let i = index">
+                      <label class="container">
+                        <input type="checkbox" class="material-icons" [(ngModel)]="time.isChecked"
+                          (change)="changeSuggestTime(i)">
+                        <span class="checkmark"></span>
+                      </label>
+                      <h4>
+                        {{time.startDate}}&nbsp;{{time.startTime}}&nbsp;&nbsp;至&nbsp;&nbsp;{{time.endDate}}&nbsp;{{time.endTime}}
+                      </h4>
+                    </li>
+                  </ul>
+                </div>
+                <div class="btn">
+                  <div class="cancel" (click)="hideTime()">取消</div>
+                  <div class="import" (click)="chooseSuggestTime()">選擇</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
     <ngx-loading [show]="loading"
-    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
-    [template]="loadingTemplate">
-  </ngx-loading>
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
   </div>
 </div>

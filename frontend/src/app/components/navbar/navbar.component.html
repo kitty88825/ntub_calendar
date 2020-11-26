@@ -17,7 +17,7 @@
           <a class="dropdown-item" [routerLink]="['/official-add']" ngbDropdownItem *ngIf="staff === 'true'">匯出修改</a>
           <a class="dropdown-item" [routerLink]="['/official-change']" ngbDropdownItem *ngIf="staff === 'true'">匯入建立</a>
           <a class="dropdown-item" [routerLink]="['/opendata']" ngbDropdownItem>OpenData</a>
-          <a class="dropdown-item" [routerLink]="['/export']" ngbDropdownItem *ngIf="staff === 'true'">匯出PDF</a>
+          <a class="dropdown-item" [routerLink]="['/export']" ngbDropdownItem *ngIf="staff === 'true'">匯出&nbsp;PDF</a>
         </div>
       </li>
       <li>
@@ -47,7 +47,7 @@
           <div class="dropdown-menu" ngbDropdownMenu>
             <a class="dropdown-item" [routerLink]="['/my-url']" ngbDropdownItem>我的訂閱</a>
             <a class="dropdown-item" [routerLink]="['/common-user']" ngbDropdownItem>常用參與人員</a>
-            <a class="dropdown-item" (click)="addCalendar()" ngbDropdownItem>行事曆管理</a>
+            <a class="dropdown-item" (click)="addCalendar()" ngbDropdownItem *ngIf="staff === 'true'">行事曆管理</a>
             <a class="dropdown-item" ngbDropdownItem (click)="logout()">登出</a>
           </div>
         </li>

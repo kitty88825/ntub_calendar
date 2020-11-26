@@ -79,7 +79,7 @@
                     <span>OpenData</span>
                   </div>
                   <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
-                    <span>匯出PDF</span>
+                    <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
               </ul>
@@ -227,7 +227,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn">
+            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -256,7 +256,7 @@
           <ul class="event-list">
             <li class="event-list__header">
               <div class="event-list__checkbox">
-                <label class="container">
+                <label class="container" *ngIf="isShowCheckAll === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
                     [(ngModel)]="selectAll">
                   <span class="checkmark"></span>
@@ -268,7 +268,7 @@
               <div class="event-list__date">開始日期</div>
               <div class="event-list__edit"></div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter: searchText" (click)="lookEventDetail(event)" class="event-list__event">
+            <li *ngFor="let event of showEvents | appFilter: searchText">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -276,7 +276,7 @@
                   <span class="checkmark"></span>
                 </label>
               </div>
-              <div class="event-list__title">
+              <div class="event-list__title" (click)="lookEventDetail(event)">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>
@@ -315,7 +315,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn">
+            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -344,7 +344,7 @@
           <ul class="event-list event-list--small">
             <li class="event-list__header">
               <div class="event-list__checkbox">
-                <label class="container">
+                <label class="container" *ngIf="isShowCheckAll === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
                     [(ngModel)]="selectAll">
                   <span class="checkmark"></span>
@@ -356,7 +356,7 @@
               <div class="event-list__date">開始日期</div>
               <div class="event-list__edit"></div>
             </li>
-            <li *ngFor="let event of showEvents | appFilter:searchText" (click)="lookEventDetail(event)" class="event-list__event">
+            <li *ngFor="let event of showEvents | appFilter:searchText">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -364,7 +364,7 @@
                   <span class="checkmark"></span>
                 </label>
               </div>
-              <div class="event-list__title">
+              <div class="event-list__title"  (click)="lookEventDetail(event)">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>
@@ -403,7 +403,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn">
+            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -433,7 +433,7 @@
             <li class="event-list__header">
               <div class="event-list__title">
                 <div class="event-list__checkbox">
-                  <label class="container">
+                  <label class="container" *ngIf="isShowCheckAll === true">
                     <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
                       [(ngModel)]="selectAll">
                     <span class="checkmark"></span>
@@ -444,7 +444,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText" (click)="lookEventDetail(event)">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -465,7 +465,7 @@
                   </div>
                 </div>
               </div>
-              <div class="event-list__title">
+              <div class="event-list__title" (click)="lookEventDetail(event)">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>
@@ -491,7 +491,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn">
+            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -521,7 +521,7 @@
             <li class="event-list__header">
               <div class="event-list__title">
                 <div class="event-list__checkbox">
-                  <label class="container">
+                  <label class="container" *ngIf="isShowCheckAll === true">
                     <input type="checkbox" class="material-icons item-categories__checkbox" (change)="checkAll()"
                       [(ngModel)]="selectAll">
                     <span class="checkmark"></span>
@@ -532,7 +532,7 @@
               <div class="event-list__office">發布單位</div>
               <div class="event-list__date">開始日期</div>
             </li>
-            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText" (click)="lookEventDetail(event)">
+            <li class="event-list__card" *ngFor="let event of showEvents | appFilter:searchText">
               <div class="event-list__checkbox">
                 <label class="container" *ngIf="event.permission === true">
                   <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="event.isChecked"
@@ -553,7 +553,7 @@
                   </div>
                 </div>
               </div>
-              <div class="event-list__title">
+              <div class="event-list__title" (click)="lookEventDetail(event)">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>

@@ -141,12 +141,24 @@ export class URLComponent implements OnInit {
   }
 
   renewURL() {
-    this.formData.append('email', this.userEmail);
-    this.urlService.postRenewURL(this.formData).subscribe(
-      data => {
-        this.url = data.url;
+    Swal.fire({
+      text: '確定要註銷並獲取一個新的URL?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '確定',
+      cancelButtonText: '取消'
+    }).then((result) => {
+      if (result.value === true) {
+        this.formData.append('email', this.userEmail);
+        this.urlService.postRenewURL(this.formData).subscribe(
+          data => {
+            this.url = data.url;
+          }
+        );
       }
-    );
+    });
   }
 
   edit() {

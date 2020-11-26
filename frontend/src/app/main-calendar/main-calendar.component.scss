@@ -177,7 +177,6 @@
               }
 
               li.event-list__card {
-                cursor    : pointer;
                 display   : inline-block;
                 width     : 31%;
                 margin    : 0;
@@ -188,6 +187,11 @@
                 .event-list__title {
                   width : fit-content;
                   margin: 0px auto;
+                }
+
+                .event-list__title:hover {
+                  color : $color_accent;
+                  cursor: pointer;
                 }
 
                 .event-list__checkbox {
@@ -204,10 +208,6 @@
                     margin-top: -$content-size_top-bottom/2;
                   }
                 }
-              }
-
-              li.event-list__card:hover {
-                background-color: $color_primary;
               }
 
               .event-list__tag {
@@ -239,11 +239,24 @@
               background-color: $color_table-header;
               color           : $color_text-light;
               font-size       : 0.9rem;
+
+              .event-list__title {
+                cursor: unset !important;
+              }
+
+              .event-list__title:hover {
+                color: unset !important;
+              }
             }
 
             &__title {
               display: flex;
               flex   : 1.5;
+              cursor : pointer;
+            }
+
+            &__title:hover {
+              color: $color_accent;
             }
 
             &__radius {
@@ -261,14 +274,6 @@
               label.container {
                 top: -7px;
               }
-            }
-
-            &__event {
-              cursor: pointer;
-            }
-
-            &__event:hover {
-              background-color: $color_primary;
             }
 
             &__content {
@@ -352,6 +357,7 @@
           justify-content : center;
           height          : 250px;
           background-color: $color_primary;
+          box-shadow      : 1px 13px 15px -15px rgba(0, 0, 0, 0.75);
           z-index         : 999;
         }
 
@@ -818,7 +824,7 @@
       }
 
       .event_dialog {
-        width: 96%;
+        width     : 96%;
         margin-top: $content-size_top-bottom*10;
       }
     }

@@ -91,7 +91,7 @@ export class OfficialAddComponent implements OnInit {
 
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    XLSX.writeFile(wb, 'demo.xlsx');
+    XLSX.writeFile(wb, this.selectCalendar + '.xlsx');
   }
 
   changeDate() {

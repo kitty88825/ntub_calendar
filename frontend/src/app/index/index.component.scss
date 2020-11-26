@@ -413,7 +413,6 @@
             }
 
             li.event-list__card {
-              cursor    : pointer;
               display   : inline-block;
               width     : 31%;
               margin    : 0;
@@ -422,8 +421,9 @@
               box-shadow: 1px 1px 7px -3px rgba(0, 0, 0, 0.75);
             }
 
-            li.event-list__card:hover {
-              background-color: $color_primary;
+            .event-list__title:hover {
+              cursor    : pointer;
+              color: $color_accent;
             }
           }
 
@@ -451,19 +451,24 @@
             background-color: $color_table-header;
             color           : $color_text-light;
             font-size       : 0.9rem;
+
+            .event-list__title {
+              cursor: unset;
+            }
+
+            .event-list__title:hover {
+              color: unset;
+            }
           }
 
-          &__event {
-            cursor: pointer;
-          }
-
-          &__event:hover {
-            background-color: $color_primary;
+          &__title:hover {
+            color: $color_accent;
           }
 
           &__title {
             display: flex;
             flex   : 1;
+            cursor: pointer;
           }
 
           &__radius {
@@ -537,6 +542,7 @@
           align-items     : center;
           justify-content : center;
           height          : 250px;
+          box-shadow      : 1px 13px 15px -15px rgba(0, 0, 0, 0.75);
           background-color: $color_primary;
         }
 

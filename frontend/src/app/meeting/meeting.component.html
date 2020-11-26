@@ -79,7 +79,7 @@
                     <span>OpenData</span>
                   </div>
                   <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
-                    <span>匯出PDF</span>
+                    <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
               </ul>
@@ -239,8 +239,12 @@
                   highlight_off
                 </i>
                 <h4>拒絕</h4>
-                <i class="noresponse material-icons">
+                <i class="maybe material-icons">
                   info
+                </i>
+                <h4>不確定</h4>
+                <i class="noresponse material-icons">
+                  remove_circle
                 </i>
                 <h4>未回應</h4>
               </div>
@@ -248,9 +252,19 @@
                 <ul>
                   <li *ngFor="let participant of lookParticipants">
                     <h5>{{participant.user}}</h5>
+                    <div class="response" *ngIf="participant.response === 'maybe'">
+                      <i class="maybe material-icons">
+                        info
+                      </i>
+                    </div>
+                    <div class="response" *ngIf="participant.response === 'creator'">
+                      <i class="creator material-icons">
+                        person
+                      </i>
+                    </div>
                     <div class="response" *ngIf="participant.response === 'no_reply'">
                       <i class="noresponse material-icons">
-                        info
+                        remove_circle
                       </i>
                     </div>
                     <div class="response" *ngIf="participant.response === 'decline'">

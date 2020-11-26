@@ -59,4 +59,8 @@ export class EventService {
     return this.http.post<any>(environment.serverIp + 'event/events/subscribe', formData, { headers: this.reqHeader });
   }
 
+  postSuggestTime(formData: any): Observable<any> {
+    return this.http.post<any>(environment.serverIp + 'event/events/suggested_time', formData, {headers: this.reqHeader});
+  }
+
 }

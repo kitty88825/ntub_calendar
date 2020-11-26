@@ -110,7 +110,7 @@ export class OpenDataComponent implements OnInit {
 
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    XLSX.writeFile(wb, 'demo.' + info.target.innerText);
+    XLSX.writeFile(wb, '台北商業大學.' + info.target.innerText);
   }
 
   change() {

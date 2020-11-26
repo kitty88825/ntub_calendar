@@ -29,10 +29,12 @@ export class EditScheduleComponent implements OnInit {
   meridian = true;
   uploadForm: FormGroup;
   formData = new FormData();
+  suggestTime = new FormData();
   fileName = [];
   title = '';
   showModal: boolean;
   showCalendar: boolean;
+  showTime: boolean;
   allCommonUser = [];
   location = '';
   description = '';
@@ -62,6 +64,7 @@ export class EditScheduleComponent implements OnInit {
   startDate = '';
   endDate = '';
   staff = localStorage.getItem('staff');
+  allSuggestTime = [];
 
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -367,6 +370,10 @@ export class EditScheduleComponent implements OnInit {
     this.showModal = false;
   }
 
+  hideTime() {
+    this.showTime = false;
+  }
+
   commonUser() {
     this.showModal = true;
   }
@@ -444,10 +451,90 @@ export class EditScheduleComponent implements OnInit {
   }
 
   adviseTime() {
-    Swal.fire({
-      text: '功能開發中請耐心等待！',
-      icon: 'warning'
+    this.allSuggestTime = [];
+
+    if (this.startDate.length === 0 || this.endDate.length === 0) {
+      Swal.fire({
+        text: '請先輸入日期與時間',
+        icon: 'warning'
+      });
+    } else {
+      if (this.userEmail.length === 0) {
+        Swal.fire({
+          text: '請輸入至少一位參與人員',
+          icon: 'warning'
+        });
+      } else {
+        const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+        const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+
+        this.showTime = true;
+        this.userEmail.forEach(email => {
+          this.suggestTime.append('emails', email);
+        });
+        this.suggestTime.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
+          + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+        this.suggestTime.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
+          + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
+
+        this.eventService.postSuggestTime(this.suggestTime).subscribe(
+          data => {
+            data.forEach(time => {
+              this.allSuggestTime.push({
+                startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+                endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+              });
+            });
+          }
+        );
+      }
+    }
+
+  }
+
+  chooseSuggestTime() {
+    this.allSuggestTime.forEach(time => {
+      if (time.isChecked === true) {
+        this.startDate = time.startDate;
+        this.endDate = time.endDate;
+        this.addStartTime.model.hour = Number(time.startTime.substr(0, 2));
+        this.addStartTime.model.minute = time.startTime.substr(3, 2);
+        this.addEndTime.model.hour = time.endTime.substr(0, 2);
+        this.addEndTime.model.minute = time.endTime.substr(3, 2);
+      }
     });
+    this.showTime = false;
+  }
+
+  changeSuggestTime(index) {
+    this.allSuggestTime.forEach(time => {
+      time.isChecked = false;
+    });
+
+    this.allSuggestTime[index].isChecked = true;
+
+  }
+
+  changeTime() {
+    this.allSuggestTime = [];
+    const start = formatDate(this.startDate, 'yyyy-MM-dd', 'en');
+    const end = formatDate(this.endDate, 'yyyy-MM-dd', 'en');
+
+    this.suggestTime.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
+      + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
+    this.suggestTime.append('end_at', end + 'T' + this.addEndTime.model.hour + ':'
+      + this.addEndTime.model.minute + ':' + this.addEndTime.model.second + '+08:00');
+
+    this.eventService.postSuggestTime(this.suggestTime).subscribe(
+      data => {
+        data.forEach(time => {
+          this.allSuggestTime.push({
+            startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+            endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+          });
+        });
+      }
+    );
   }
 
   showInviteCalendar(calendarName) {
