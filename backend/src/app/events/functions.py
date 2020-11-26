@@ -9,6 +9,7 @@ class DateTimeMerge(object):
         """
         if len(intervals) == 0:
             return []
+
         self.quicksort(intervals, 0, len(intervals)-1)
         stack = []
         stack.append(intervals[0])
@@ -29,6 +30,7 @@ class DateTimeMerge(object):
             if array[i][0] <= array[end][0]:
                 array[i], array[pivot_index] = array[pivot_index], array[i]
                 pivot_index += 1
+
         array[end], array[pivot_index] = array[pivot_index], array[end]
 
         return pivot_index
@@ -76,5 +78,8 @@ def get_free_time(data: list, start_at: str, end_at: str):
     for i in range(len(s_list)):
         if s_list[i] - e_list[i] > 1800:
             response.append([e_list[i], s_list[i]])
+
+    if not response:
+        return 'No suggested time!'
 
     return timestamp_to_datetime(response)

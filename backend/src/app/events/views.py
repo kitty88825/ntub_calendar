@@ -1,5 +1,4 @@
 from django.db.models import Q
-from datetime import datetime
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -20,7 +19,6 @@ from .filters import SubscriberEventsFilter
 from .functions import (
     DateTimeMerge,
     datetime_to_timestamp,
-    timestamp_to_datetime,
     get_free_time,
 )
 
@@ -103,24 +101,26 @@ class EventViewSet(ModelViewSet):
     def suggested_time(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        emails = serializer.data['emails']
+        start_at = serializer.data['start_at']
+        end_at = serializer.data['end_at']
 
-        event_list = Event.objects.filter(
-            Q(eventparticipant__user__email__in=serializer.data['emails']),
-            Q(start_at__gte=serializer.data['start_at']),
-            Q(end_at__lte=serializer.data['end_at']),
-        ).values('start_at', 'end_at').distinct()
+        event_list = Event.objects \
+            .values('start_at', 'end_at') \
+            .filter(Q(eventparticipant__user__email__in=emails)) \
+            .exclude(Q(start_at__gte=end_at) | Q(end_at__lte=start_at)) \
+            .distinct()
 
         if event_list.count() > 1:
+            # 交集得時間 > 1
             time_obj = DateTimeMerge()
             busy_time = time_obj.merge(datetime_to_timestamp(event_list))
         else:
+            # 交集得時間 1 or 0
             busy_time = datetime_to_timestamp(event_list)
 
+        # 交集時間 == 0
         if not busy_time:
             return Response('All participants can attend!')
 
-        return Response(get_free_time(
-            busy_time,
-            serializer.data['start_at'],
-            serializer.data['end_at'],
-        ))
+        return Response(get_free_time(busy_time, start_at, end_at))
