@@ -44,7 +44,7 @@ def login(update, context):
         context.bot.send_message(chat_id, '您已經登入完成囉🤗不用再重新登入~')
     else:
         if not reply:
-            context.bot.send_message(chat_id, '沒有網址沒辦法登入唷🙁，登入請輸入 /login 你的訂閱url')  # noqa 501
+            context.bot.send_message(chat_id, '沒有網址沒辦法登入唷🙁，登入請輸入 /login 你的訂閱網址(URL)')  # noqa 501
         else:
             reply_list = reply.split('/')
             reply = reply_list[4]
@@ -55,7 +55,7 @@ def login(update, context):
             )
             context.bot.send_message(
                 chat_id,
-                '登入成功！歡迎{}！🥰如果之後您更換了url，不需要重新登入喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                '登入成功！歡迎{}！🥰如果之後您更換了訂閱網址(URL)，不需要重新登入喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
                 )
 
 
@@ -203,10 +203,10 @@ def calendarSubscribe(update, context):
         c[0].subscribers.add(user[0].id)
         context.bot.send_message(chat_id, '已訂閱此行事曆😉')
     elif text == '點選此處來移除鍵盤':
-        context.bot.send_message(chat_id, reply_markup=ReplyKeyboardRemove())
-    else:
-        context.bot.send_message(
-            chat_id=chat_id,
-            text='此行事曆已經訂閱過了',
-            reply_markup=ReplyKeyboardRemove()
-        )
+        context.bot.send_message(chat_id, text='如過想再訂閱請用 /calendar', reply_markup=ReplyKeyboardRemove())
+    # else:
+    #     context.bot.send_message(
+    #         chat_id=chat_id,
+    #         text='此行事曆已經訂閱過了',
+    #         reply_markup=ReplyKeyboardRemove()
+    #     )
