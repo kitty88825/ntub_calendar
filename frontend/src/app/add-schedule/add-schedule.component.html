@@ -349,7 +349,7 @@
                 </li>
               </ul>
             </div>
-            <div class="all_common-user"  (click)="adviseTime()">
+            <div class="all_common-user" (click)="adviseTime()">
               <h3>推薦時間</h3>
             </div>
             <hr>
@@ -413,11 +413,12 @@
               <div class="event_content">
                 <div class="event_block">
                   <span class="title">選擇常用參與人員</span>
+                  <hr>
                   <ul class="allCommonUserForm">
                     <li *ngFor="let commonUser of allCommonUser">
                       <label class="container">
                         <input type="checkbox" class="material-icons" [(ngModel)]="commonUser.isChecked"
-                          (change)="changeSelectCommon(commonUser.title)">{{commonUser.title}}
+                          (change)="changeSelectCommon()">{{commonUser.title}}
                         <span class="checkmark"></span>
                       </label>
                     </li>
@@ -425,9 +426,10 @@
                 </div>
                 <div class="event_participants">
                   <div class="all">
+                    <h5>所有常用參與人員</h5>
                     <label class="container">
                       <input type="checkbox" class="material-icons" (change)="CheckUncheckAll()"
-                        [(ngModel)]="MasterSelected">全選
+                        [(ngModel)]="MasterSelected"><span class="all_text">全選</span>
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -436,7 +438,33 @@
                       <li *ngFor="let email of commonUserEmail">
                         <label class="container">
                           <input type="checkbox" class="material-icons" [(ngModel)]="email.isChecked"
-                            (change)="changeSelectEmail()">{{email.emails}}
+                            (change)="changeSelectEmail()"><span class="all_text">{{email.emails}}</span>
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="changeBtn">
+                    <i class="import material-icons" (click)="chooseUser()">
+                      outbond
+                    </i>
+                    <i class="export material-icons" (click)="removeChooseUser()">
+                      outbond
+                    </i>
+                  </div>
+                  <div class="choose">
+                    <h5>已選擇常用參與人員</h5>
+                    <label class="container">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="AllSelected" (change)="chooseUserEmailAll()"><span class="all_text">全選</span>
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="chooseEmails">
+                    <ul>
+                      <li *ngFor="let email of chooseUserEmail">
+                        <label class="container">
+                          <input type="checkbox" class="material-icons"
+                          (change)="changeChooseEmail()" [(ngModel)]="email.isChecked"><span class="all_text">{{email.emails}}</span>
                           <span class="checkmark"></span>
                         </label>
                       </li>
@@ -509,8 +537,8 @@
                     <h2>開始</h2>
                     <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
                       required [(ngModel)]="startDate">
-                    <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-                      class="timepicker" #addStartTime required></ngb-timepicker>
+                    <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners"
+                      [meridian]="meridian" class="timepicker" #addStartTime required></ngb-timepicker>
                   </div>
                   <div class="add__time">
                     <i class="material-icons">
@@ -519,8 +547,8 @@
                     <h2>結束</h2>
                     <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
                       [(ngModel)]="endDate" required>
-                    <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-                      class="timepicker" #addEndTime required></ngb-timepicker>
+                    <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners"
+                      [meridian]="meridian" class="timepicker" #addEndTime required></ngb-timepicker>
                   </div>
                   <div class="look" (click)="changeTime()">查看</div>
                 </div>
@@ -530,10 +558,13 @@
                   <ul>
                     <li *ngFor="let time of allSuggestTime; let i = index">
                       <label class="container">
-                        <input type="checkbox" class="material-icons" [(ngModel)]="time.isChecked" (change)="changeSuggestTime(i)">
+                        <input type="checkbox" class="material-icons" [(ngModel)]="time.isChecked"
+                          (change)="changeSuggestTime(i)">
                         <span class="checkmark"></span>
                       </label>
-                      <h4>{{time.startDate}}&nbsp;{{time.startTime}}&nbsp;&nbsp;至&nbsp;&nbsp;{{time.endDate}}&nbsp;{{time.endTime}}</h4>
+                      <h4>
+                        {{time.startDate}}&nbsp;{{time.startTime}}&nbsp;&nbsp;至&nbsp;&nbsp;{{time.endDate}}&nbsp;{{time.endTime}}
+                      </h4>
                     </li>
                   </ul>
                 </div>

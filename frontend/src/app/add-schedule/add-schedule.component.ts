@@ -50,6 +50,7 @@ export class AddScheduleComponent implements OnInit {
   showTime: boolean;
   commonUserEmail = [];
   MasterSelected = false;
+  AllSelected = false;
   userEmail = [];
   addCalendarChecked = false;
   title = '';
@@ -61,6 +62,8 @@ export class AddScheduleComponent implements OnInit {
   allSuggestTime = [];
   unsuggestTime: boolean;
   allTimeCan: boolean;
+  chooseUserEmail = [];
+  hasUserEmail = [];
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -119,9 +122,18 @@ export class AddScheduleComponent implements OnInit {
 
         if (this.calendars.length !== 0) {
           this.selectMainCalendar = this.calendars[0].name;
+          this.showInviteCalendar(this.selectMainCalendar);
+        } else if (this.calendars.length === 0) {
+          Swal.fire({
+            text: '您無任何行事曆新增權限',
+            icon: 'warning'
+          }).then((a) => {
+            if (a.value === true) {
+              this.router.navigate(['/calendar']);
+            }
+          });
         }
 
-        this.showInviteCalendar(this.selectMainCalendar);
       }
     );
 
@@ -129,10 +141,6 @@ export class AddScheduleComponent implements OnInit {
       res => {
         res.forEach(common => {
           this.allCommonUser.push({ title: common.title, participant: common.participant, isChecked: false });
-        });
-        this.allCommonUser[0].isChecked = true;
-        this.allCommonUser[0].participant.forEach(email => {
-          this.commonUserEmail.push({ emails: email, isChecked: false });
         });
       }
     );
@@ -161,8 +169,15 @@ export class AddScheduleComponent implements OnInit {
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
-      this.userEmail.push(emails);
-      this.formData.append('emails', emails);
+      if (this.userEmail.includes(emails[0]) === false) {
+        this.userEmail.push(String(emails));
+        this.formData.append('emails', emails);
+      } else {
+        Swal.fire({
+          text: '該Email已在欲邀請參與人員中',
+          icon: 'warning'
+        });
+      }
     } else {
       Swal.fire({
         text: '請輸入Google信箱',
@@ -293,17 +308,6 @@ export class AddScheduleComponent implements OnInit {
     const index = this.allCalendars.findIndex(calendar => calendar.name === calendarName);
     allCalendar.splice(index, 1);
     this.showAddCalendars = allCalendar;
-
-    if (this.calendars.length === 0) {
-      Swal.fire({
-        text: '您無任何行事曆新增權限',
-        icon: 'warning'
-      }).then((result) => {
-        if (result.value === true) {
-          this.router.navigate(['/calendar']);
-        }
-      });
-    }
   }
 
   meet(value) {
@@ -317,13 +321,18 @@ export class AddScheduleComponent implements OnInit {
   }
 
   importEmail() {
-    this.commonUserEmail.forEach(email => {
-      if (email.isChecked === true) {
-        this.formData.append('emails', email.emails);
-        this.userEmail.push(email.emails);
-      }
+    this.chooseUserEmail.forEach(email => {
+      this.formData.append('emails', email.emails);
+      this.userEmail.push(email.emails);
     });
+    this.userEmailFiter();
     this.hide();
+  }
+
+  userEmailFiter() {
+    this.userEmail = this.userEmail.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
   }
 
   schedule(value) {
@@ -362,17 +371,118 @@ export class AddScheduleComponent implements OnInit {
     });
   }
 
-  changeSelectCommon(info) {
+  changeSelectCommon() {
+    this.AllSelected = false;
+    this.MasterSelected = false;
     this.commonUserEmail = [];
+    let userEmails = [];
     this.allCommonUser.forEach(common => {
-      common.isChecked = false;
-      if (info === common.title) {
-        common.isChecked = true;
+      if (common.isChecked === true) {
         common.participant.forEach(email => {
-          this.commonUserEmail.push({ emails: email, isChecked: false });
+          const index = this.hasUserEmail.findIndex(e => {
+            return e === email;
+          });
+
+          if (index === -1) {
+            userEmails.push(email);
+          }
         });
       }
     });
+    userEmails = userEmails.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
+
+    userEmails.forEach(email => {
+      this.commonUserEmail.push({ emails: email, isChecked: false });
+    });
+  }
+
+  chooseUserEmailAll() {
+    this.chooseUserEmail.forEach(email => {
+      email.isChecked = this.AllSelected;
+    });
+  }
+
+  changeChooseEmail() {
+    let count = 0;
+    this.chooseUserEmail.forEach(emails => {
+      if (emails.isChecked === true) {
+        count++;
+      }
+    });
+    if (count === this.chooseUserEmail.length) {
+      this.AllSelected = true;
+    } else {
+      this.AllSelected = false;
+    }
+  }
+
+  chooseUser() {
+    const userEmails = [];
+    this.AllSelected = false;
+    let count = 0;
+    const common = [];
+    this.commonUserEmail.forEach(email => {
+      if (email.isChecked === true) {
+        count++;
+        userEmails.push(email.emails);
+        this.chooseUserEmail.push({ emails: email.emails, isChecked: false });
+      }
+    });
+
+    this.chooseUserEmail.forEach(email => {
+      this.hasUserEmail.push(email.emails);
+    });
+
+    this.commonUserEmail.forEach(email => {
+      const index = userEmails.findIndex(a => {
+        return a === email.emails;
+      });
+      if (index === -1) {
+        common.push(email);
+      }
+    });
+
+    if (userEmails.length !== 0) {
+      this.commonUserEmail = [];
+      this.commonUserEmail = common;
+    }
+
+    this.MasterSelected = false;
+
+  }
+
+  removeChooseUser() {
+    let count = 0;
+    const userEmails = [];
+    const choose = [];
+    this.chooseUserEmail.forEach(email => {
+      if (email.isChecked === true) {
+        count++;
+        this.commonUserEmail.push({ emails: email.emails, isChecked: false });
+        userEmails.push(email.emails);
+      }
+    });
+
+    this.chooseUserEmail.forEach(email => {
+      const index = userEmails.findIndex(a => {
+        return a === email.emails;
+      });
+      if (index === -1) {
+        choose.push(email);
+      }
+    });
+
+    if (userEmails.length !== 0 && count !== 0) {
+      this.chooseUserEmail = [];
+      this.hasUserEmail = [];
+      this.chooseUserEmail = choose;
+      choose.forEach(email => {
+        this.hasUserEmail.push(email.emails);
+      });
+    }
+    this.AllSelected = false;
   }
 
   changeSelectCalendar(calendarName) {

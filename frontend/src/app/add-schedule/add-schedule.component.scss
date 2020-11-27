@@ -363,8 +363,8 @@
 
       .event_dialog {
         width      : 50%;
-        height     : 420px;
-        margin-top : 10.5%;
+        height     : 500px;
+        margin-top : 7.5%;
         margin-left: 25%;
 
         .event_body {
@@ -372,7 +372,7 @@
 
           .event_border {
             width           : 100%;
-            height          : 400px;
+            height          : 480px;
             border-radius   : 5px;
             background-color: white;
             box-shadow      : 0px 0px 5px 5px rgba(0, 0, 0, 0.13);
@@ -407,7 +407,7 @@
                 border-radius: 5px 0 0 5px;
                 z-index      : 999;
                 width        : 30%;
-                height       : 400px;
+                height       : 480px;
                 margin-top   : -30px;
                 box-shadow   : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
 
@@ -417,16 +417,11 @@
                 }
 
                 ul.allCommonUserForm {
-                  padding-top: $content-size_top-bottom;
 
                   li {
                     display    : flex;
                     align-items: center;
                     margin-top : $content-size_top-bottom;
-
-                    span {
-                      border-radius: 30px;
-                    }
                   }
                 }
               }
@@ -437,39 +432,95 @@
                 z-index         : 998;
                 margin-left     : 30%;
                 width           : 70%;
-                height          : 397px;
-                margin-top      : -397px;
+                height          : 477px;
+                margin-top      : -477px;
                 background-color: $color_primary;
 
-                .all {
-                  display       : flex;
-                  align-items   : center;
-                  cursor        : pointer;
-                  width         : 25%;
-                  font-size     : 14px;
-                  letter-spacing: 1px;
-                  margin-left   : 78%;
-                  margin-top    : $content-size_top-bottom*2;
-
-                  span {
-                    top: 0;
-                  }
+                span.all_text {
+                  font-size: 13px;
                 }
 
-                .allEmails {
+                label.container .checkmark:after {
+                  top : 1px;
+                  left: 5px;
+                }
+
+                label.container {
+                  padding-left : 25px !important;
+                  margin-bottom: $content-size_top-bottom/2;
+                }
+
+                .allEmails,
+                .chooseEmails {
                   overflow    : auto;
                   width       : 90%;
                   margin-left : 5%;
                   margin-right: 5%;
-                  height      : 75%;
+                  height      : 35%;
                   padding     : $content-size_top-bottom $content-size_left-right;
                   border      : $color_border 2px solid;
 
                   li {
                     display    : flex;
                     align-items: center;
+
+                    span.checkmark {
+                      width : 15px;
+                      height: 15px;
+                      top   : 6px;
+                    }
                   }
 
+                }
+
+                .all,
+                .choose {
+                  width           : 90%;
+                  margin-left     : 5%;
+                  margin-right    : 5%;
+                  display         : flex;
+                  background-color: $color_border;
+                  align-items     : center;
+                  padding         : $content-size_top-bottom/5 $content-size_left-right;
+                  border          : $color_border 2px solid;
+
+                  h5 {
+                    font-size: 13px;
+                    width    : 200px;
+                  }
+
+                  label.container {
+                    width        : 60px;
+                    margin-left  : auto;
+                    margin-bottom: 0;
+                  }
+
+                  span.checkmark {
+                    border-color: $color_text;
+                    width       : 15px;
+                    height      : 15px;
+                    top         : 6px;
+                  }
+                }
+
+                .changeBtn {
+                  display     : flex;
+                  width       : 10%;
+                  margin-left : auto;
+                  margin-right: auto;
+                  padding     : $content-size_top-bottom/2 $content-size_left-right/2;
+
+                  i.import {
+                    transform: rotate(135deg);
+                  }
+
+                  i.export {
+                    transform:rotate(-45deg);
+                  }
+
+                  i:hover {
+                    color: $color_accent;
+                  }
                 }
 
                 .btn {
@@ -1215,6 +1266,7 @@
 
             .event_content {
               letter-spacing: 1px;
+              overflow: auto;
 
               .event_block {
                 padding   : 0 $content-size_left-right;
@@ -1228,10 +1280,10 @@
                   display    : flex;
                   align-items: center;
                   margin-top : 0;
+                }
 
-                  span.checkmark {
-                    border-radius: 30px;
-                  }
+                hr {
+                  display: none;
                 }
 
                 span.title {
@@ -1261,25 +1313,28 @@
                   align-items: center;
                 }
 
-                .all {
-                  display       : flex;
-                  align-items   : center;
-                  cursor        : pointer;
-                  width         : 25%;
-                  font-size     : 14px;
-                  letter-spacing: 1px;
-                  margin-left   : 78%;
-                  margin-top    : 0;
+                .all, .choose {
+                  width: 94%;
+                  margin-left: 3%;
+                  margin-right: 3%;
                 }
 
-                .allEmails {
+                .all {
+                  margin-top: $content-size_top-bottom;
+                }
+
+                .allEmails, .chooseEmails {
                   overflow    : auto;
                   width       : 94%;
                   margin-left : 3%;
                   margin-right: 3%;
-                  height      : 75%;
+                  height      : 65%;
                   border      : $color_border 2px solid;
                   padding     : $content-size_top-bottom $content-size_left-right/2;
+                }
+
+                .changeBtn {
+                  width: 30%;
                 }
 
                 .btn {
