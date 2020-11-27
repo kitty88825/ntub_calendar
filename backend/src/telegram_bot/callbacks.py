@@ -73,33 +73,43 @@ def get_event(update, context):
             .filter(
                 Q(calendars__groups__user=get_id[0]) |
                 Q(calendars__display='public') |
-                Q(participants=get_id[0]),
+                Q(participants=get_id[0]) &
+                (
+                    Q(start_at__year__gte=datetime.date.today().year) &
+                    Q(start_at__month__gte=datetime.date.today().month) &
+                    Q(start_at__day__gte=datetime.date.today().day)
+                )
+
             ) \
             .distinct()
     else:
         event = Event.objects.filter(calendars__display='public').distinct()
 
-    serializer = GetSerializer(event, many=True)
+    if event:
 
-    data = json.loads(json.dumps(serializer.data))
+        serializer = GetSerializer(event, many=True)
 
-    for i in data:
-        i['行程'] = i.pop('title')
-        i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
-        i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
-        i['備註'] = i.pop('description')
-        i['地點'] = i.pop('location')
+        data = json.loads(json.dumps(serializer.data))
 
-    data = json.dumps(data, ensure_ascii=False)
-    data = data.replace('"', '')
-    data = data.replace('[', '')
-    data = data.replace(']', '')
-    data = data.split('}, {')
-    for i in data:
-        i = i.replace('{', '')
-        i = i.replace('}', '')
-        i = i.replace(',', '\n')
-        context.bot.send_message(chat_id, i)
+        for i in data:
+            i['行程'] = i.pop('title')
+            i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
+            i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
+            i['備註'] = i.pop('description')
+            i['地點'] = i.pop('location')
+
+        data = json.dumps(data, ensure_ascii=False)
+        data = data.replace('"', '')
+        data = data.replace('[', '')
+        data = data.replace(']', '')
+        data = data.split('}, {')
+        for i in data:
+            i = i.replace('{', '')
+            i = i.replace('}', '')
+            i = i.replace(',', '\n')
+            context.bot.send_message(chat_id, i)
+    else:
+        context.bot.send_message(chat_id, '您暫時沒有行程唷😌')
 
 
 def meeting(update, context):
@@ -212,45 +222,47 @@ def calendarSubscribe(update, context):
 
 
 def today(bot):
-    chat_id = list(TelegramBot.objects.values_list('chat_id', flat=True))
-
     user = list(TelegramBot.objects.values_list('user_id', flat=True).all())
-    for c in chat_id:
-        for u in user:
-            event = Event.objects.filter(
-                subscribers=u,
-                start_at__contains=datetime.date.today()
+    for u in user:
+        chat_id = list(TelegramBot.objects.values_list('chat_id', flat=True).filter(user_id=u))
+        event = Event.objects.filter(
+            subscribers=u,
+            start_at__contains=datetime.date.today()
+        )
+        calendar = Event.objects.filter(
+            Q(calendars__subscribers=u) &
+            (
+                Q(start_at__contains=datetime.date.today()) |
+                Q(end_at__contains=datetime.date.today())
             )
-            calendar = Event.objects.filter(
-                Q(calendars__subscribers=u) &
-                Q(start_at__contains=datetime.date.today())
-            )
-            serializer = GetSerializer(event, many=True)
-            serializer_calendar = GetSerializer(calendar, many=True)
-            data_event = json.loads(json.dumps(serializer.data))
-            data_calendar = json.loads(json.dumps(serializer_calendar.data))
-            data = data_event + data_calendar
 
-            if data.count() != 0:
-                for i in data:
-                    i['行程'] = i.pop('title')
-                    i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
-                    i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
-                    i['備註'] = i.pop('description')
-                    i['地點'] = i.pop('location')
+        )
+        serializer = GetSerializer(event, many=True)
+        serializer_calendar = GetSerializer(calendar, many=True)
+        data_event = json.loads(json.dumps(serializer.data))
+        data_calendar = json.loads(json.dumps(serializer_calendar.data))
+        data = data_event + data_calendar
 
-                data = json.dumps(data, ensure_ascii=False)
-                data = data.replace('"', '')
-                data = data.replace('[', '')
-                data = data.replace(']', '')
-                data = data.split('}, {')
+        if data:
+            for i in data:
+                i['行程'] = i.pop('title')
+                i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
+                i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
+                i['備註'] = i.pop('description')
+                i['地點'] = i.pop('location')
 
-                bot.send_message(c, '今日行程:\n')
+            data = json.dumps(data, ensure_ascii=False)
+            data = data.replace('"', '')
+            data = data.replace('[', '')
+            data = data.replace(']', '')
+            data = data.split('}, {')
 
-                for i in data:
-                    i = i.replace('{', '')
-                    i = i.replace('}', '')
-                    i = i.replace(',', '\n')
-                    bot.send_message(c, i)
-            else:
-                bot.send_message(c, '今日沒有行程~')
+            bot.send_message(chat_id[0], '今日行程:\n')
+
+            for i in data:
+                i = i.replace('{', '')
+                i = i.replace('}', '')
+                i = i.replace(',', '\n')
+                bot.send_message(chat_id[0], i)
+        else:
+            bot.send_message(chat_id[0], '今日沒有行程~')
