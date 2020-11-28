@@ -2,18 +2,25 @@
 <html>
     <body>
       <p>
-          您已收到來自一訂行系統上建立的以下會議的邀請。
-          <h3>{{title}}</h3>
-          時間：{{start_at}}～{{end_at}}
+          <h2>北商資管系 專題109405組一訂行系統</h2>
+          <p>會議詳細資訊如下：</p>
+          <p>會議名稱：{{title}}</p>
+          <p>時間：{{start_at}}~{{end_at}}</p>
+          <p>地點：{{location}}</p>
+          <p>參與者：</p>
+          {% for email in participants %}
+            <p>{{email}}</p>
+          {% endfor %}
           <br>
-          參與者：
-          {{participants}}
+          詳細資訊：
+          <br>
+          {{description}}
       </p>
 
       是否參加?
       <br>
       <a href="http://127.0.0.1:8000" style="color:green;">是</a>
-      <a href="http://127.0.0.1:8000" style="color:red;">不確定</a>
-      <a href="http://127.0.0.1:8000" style="color:gray;">否</a>
+      <a href="http://127.0.0.1:8000" style="color:black;">不確定</a>
+      <a href="http://127.0.0.1:8000" style="color:red;">否</a>
     </body>
 </html>

@@ -7,6 +7,7 @@ from app.calendars.models import Calendar
 from app.users.models import User
 
 from .choices import RoleChoice
+from .functions import send_email
 from .models import (
     Event,
     EventParticipant,
@@ -147,6 +148,16 @@ class EventSerializer(serializers.ModelSerializer):
         event.participants.add(
             *User.objects.filter(email__in=emails),
         )
+        # 發信給未回應的使用者
+        participants = User.objects \
+            .values_list('email', flat=True) \
+            .filter(
+                Q(eventparticipant__event=event),
+                Q(eventparticipant__response='no_reply'),
+                Q(eventparticipant__role='participants'),
+            )
+        if participants:
+            send_email(event, participants)
 
     def create_calendar_from_event(self, event, main_calendar, calendars_id):
         if not calendars_id:
