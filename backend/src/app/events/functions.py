@@ -1,5 +1,10 @@
 from datetime import datetime
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+from core import settings
+
 
 class DateTimeMerge(object):
     def merge(self, intervals):
@@ -83,3 +88,21 @@ def get_free_time(data: list, start_at: str, end_at: str):
         return 'No suggested time!'
 
     return timestamp_to_datetime(response)
+
+
+def send_email(title, start_at, end_at, participants):
+    try:
+        subject, from_email, to = title, settings.EMAIL_HOST_USER, participants
+        text_content = '北商資管系專題109405組一訂行系統發送會議邀請信件！'
+        context = {
+            'title': title,
+            'start_at': start_at,
+            'end_at': end_at,
+            'participants': participants,
+        }
+        html_content = render_to_string('email.html', context)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send()
+    except Exception as e:
+        print(f'發信錯誤：{e}')
