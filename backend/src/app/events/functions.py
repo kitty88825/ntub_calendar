@@ -100,7 +100,7 @@ def send_email(instance, participants):
             'title': instance.title,
             'start_at': instance.start_at.strftime(datetime_format),
             'end_at': instance.end_at.strftime(datetime_format),
-            'participants': participants,
+            'participants': instance.participants.all(),
             'description': instance.description,
             'location': instance.location,
         }
