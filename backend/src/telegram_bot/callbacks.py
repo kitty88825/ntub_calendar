@@ -113,7 +113,6 @@ def get_event(update, context):
                 context.bot.send_message(chat_id, '沒有搜尋到相關行程或會議🤔')
     else:
         event = Event.objects.filter(calendars__display='public').distinct()
-        print('='*30)
     if event:
 
         serializer = GetSerializer(event, many=True)
@@ -448,4 +447,20 @@ def calendarSubscribe(update, context):
         c[0].subscribers.add(user[0].id)
         context.bot.send_message(chat_id, '已訂閱此行事曆😉')
     elif text == '結束訂閱':
+        calendar = Calendar.objects.filter(subscribers__in=user_id).distinct()
+        if calendar:
+            serializer = CalendarSerializer(calendar, many=True)
+            data = json.dumps(serializer.data, ensure_ascii=False)
+
+            data = data.replace('"', '')
+            data = data.replace('[', '')
+            data = data.replace(']', '')
+            data = data.replace('}', '')
+            data = data.replace('{', '')
+            data = data.replace(':', '')
+            data = data.replace('name', '')
+            data = data.replace(' ', '')
+            data = data.replace(',', '\n')
+
         context.bot.send_message(chat_id, text='如過想再訂閱請用 /calendar', reply_markup=ReplyKeyboardRemove())
+        context.bot.send_message(chat_id, text=f'已經訂閱的行事曆：\n{data}')
