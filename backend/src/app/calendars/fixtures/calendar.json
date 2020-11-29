@@ -3,20 +3,20 @@
     "model": "calendars.calendar",
     "pk": 1,
     "fields": {
-      "name": "祕書室",
-      "description": "",
-      "display": "private",
-      "color": "#690000"
+      "name": "日間部行事曆",
+      "description": "臺北商業大學日間部行事曆",
+      "display": "public",
+      "color": "#839B91"
     }
   },
   {
     "model": "calendars.calendar",
     "pk": 2,
     "fields": {
-      "name": "副校長室",
-      "description": "",
-      "display": "private",
-      "color": "#759789"
+      "name": "進修部行事曆",
+      "description": "臺北商業大學進修部行事曆",
+      "display": "public",
+      "color": "#908EC0"
     }
   },
   {
@@ -35,7 +35,7 @@
     "fields": {
       "name": "軍訓室",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#6E8360"
     }
   },
@@ -45,7 +45,7 @@
     "fields": {
       "name": "主計室",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#604C52"
     }
   },
@@ -55,7 +55,7 @@
     "fields": {
       "name": "人事室",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#8EB4D1"
     }
   },
@@ -65,7 +65,7 @@
     "fields": {
       "name": "圖書館",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#A6A35E"
     }
   },
@@ -75,7 +75,7 @@
     "fields": {
       "name": "總務處",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#8972A7"
     }
   },
@@ -85,7 +85,7 @@
     "fields": {
       "name": "專科進修學校",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#589F54"
     }
   },
@@ -95,7 +95,7 @@
     "fields": {
       "name": "空中進修學院",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#605C72"
     }
   },
@@ -115,7 +115,7 @@
     "fields": {
       "name": "教學發展中心",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#486C46"
     }
   },
@@ -125,7 +125,7 @@
     "fields": {
       "name": "學生事務處",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#CE848B"
     }
   },
@@ -135,7 +135,7 @@
     "fields": {
       "name": "國際事務處",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#A79A52"
     }
   },
@@ -145,7 +145,7 @@
     "fields": {
       "name": "研究發展處",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#FFB34B"
     }
   },
@@ -155,7 +155,7 @@
     "fields": {
       "name": "教務處",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#359AA2"
     }
   },
@@ -165,7 +165,7 @@
     "fields": {
       "name": "資訊與網路中心",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#CE928E"
     }
   },
@@ -175,7 +175,7 @@
     "fields": {
       "name": "體育室",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#806D87"
     }
   },
@@ -185,7 +185,7 @@
     "fields": {
       "name": "通識教育中心",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#B6B493"
     }
   },
@@ -195,7 +195,7 @@
     "fields": {
       "name": "商品創意經營系",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#597572"
     }
   },
@@ -205,7 +205,7 @@
     "fields": {
       "name": "商業設計管理系",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#BCCEAA"
     }
   },
@@ -215,7 +215,7 @@
     "fields": {
       "name": "數位多媒體設計系",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#9D8573"
     }
   },
@@ -225,7 +225,7 @@
     "fields": {
       "name": "創意設計與經營研究所",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#147481"
     }
   },
@@ -235,7 +235,7 @@
     "fields": {
       "name": "創新經營學院",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#A97F23"
     }
   },
@@ -245,7 +245,7 @@
     "fields": {
       "name": "資訊與決策科學研究所",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#BA62A2"
     }
   },
@@ -255,7 +255,7 @@
     "fields": {
       "name": "應用外語系",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#917466"
     }
   },
@@ -265,7 +265,7 @@
     "fields": {
       "name": "資訊管理系",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#78A1C6"
     }
   },
@@ -275,7 +275,7 @@
     "fields": {
       "name": "企業管理系(所)",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#1D6522"
     }
   },
@@ -285,7 +285,7 @@
     "fields": {
       "name": "管理學院",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#CEBB75"
     }
   },
@@ -295,7 +295,7 @@
     "fields": {
       "name": "貿易實務法律暨談判碩士學位學程",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#FF9A80"
     }
   },
@@ -305,7 +305,7 @@
     "fields": {
       "name": "國際商務系(所)",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#947A42"
     }
   },
@@ -315,7 +315,7 @@
     "fields": {
       "name": "財務金融系(所)",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#8A8FFF"
     }
   },
@@ -325,7 +325,7 @@
     "fields": {
       "name": "會計資訊系(所)",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#87AA40"
     }
   },
@@ -335,8 +335,28 @@
     "fields": {
       "name": "財經學院",
       "description": "",
-      "display": "public",
+      "display": "private",
       "color": "#FF7981"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 35,
+    "fields": {
+      "name": "祕書室",
+      "description": "",
+      "display": "private",
+      "color": "#690000"
+    }
+  },
+  {
+    "model": "calendars.calendar",
+    "pk": 36,
+    "fields": {
+      "name": "副校長室",
+      "description": "",
+      "display": "private",
+      "color": "#759789"
     }
   }
 ]
