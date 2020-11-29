@@ -146,12 +146,13 @@ def meeting(update, context):
     get_id = TelegramBot.objects.filter(chat_id=chat_id)
 
     meeting = Event.objects.filter(
-        Q(nature='meeting') &
+        Q(nature='meeting'),
         Q(eventparticipant__user_id=get_id[0].user_id) &
         (
             Q(start_at__year__gte=datetime.date.today().year) &
             Q(start_at__month__gte=datetime.date.today().month) &
             Q(start_at__day__gte=datetime.date.today().day)
+
         )
     )
     if meeting:
@@ -159,18 +160,12 @@ def meeting(update, context):
         data = json.loads(json.dumps(serializer.data))
 
         for i in data:
-            # event_id = i.pop('id')
             i['行程'] = i.pop('title')
             i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
             i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
             i['備註'] = i.pop('description')
             i['地點'] = i.pop('location')
             i['參與人員'] = i.pop('eventparticipant_set')
-            # print(i['參與人員'] )
-            # print(type(i['參與人員']))
-
-            # for a in i['參與人員'] :
-            #     if a['user'] == User.objects.get(id=get_id[0].user_id).emails and a['response'] == 'no_reply'
 
             i = json.dumps(i, ensure_ascii=False)
             i = i.replace('"', '')
@@ -221,6 +216,7 @@ def meeting_callback(update, context):
         Q(start_at__date=dt.strptime(text[1], '%Y-%m-%d%H:%M:%S')) &
         Q(end_at__date=dt.strptime(text[2], '%Y-%m-%d%H:%M:%S'))
     )
+
     query = update.callback_query.data
     if query == '1':
         reply_markup = InlineKeyboardMarkup(
@@ -250,12 +246,41 @@ def meeting_callback(update, context):
                 [InlineKeyboardButton('已修改出席狀態爲參加', callback_data='5')]
             ]
         )
+        event = Event.objects.filter(id=event[0].id)
+
+        serializer = MeetingDetailSerializer(event, many=True)
+        data = json.loads(json.dumps(serializer.data))
+
+        data[0]['行程'] = data[0].pop('title')
+        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
+        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
+        data[0]['備註'] = data[0].pop('description')
+        data[0]['地點'] = data[0].pop('location')
+        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
+
+        data[0] = json.dumps(data[0], ensure_ascii=False)
+        data[0] = data[0].replace('"', '')
+        data[0] = data[0].replace('[', '')
+        data[0] = data[0].replace(']', '')
+        data[0] = data[0].replace('}', '')
+        data[0] = data[0].replace('{', '')
+        data[0] = data[0].replace("user:", '')
+        data[0] = data[0].replace('editors', '(會議發起人)')
+        data[0] = data[0].replace('role:', '')
+        data[0] = data[0].replace('participants', '')
+        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace('accept', '參加')
+        data[0] = data[0].replace('maybe', '不確定')
+        data[0] = data[0].replace('no_reply', '未回應')
+        data[0] = data[0].replace('decline', '不參加')
+        data[0] = data[0].replace(',', '\n')
+
         context.bot.edit_message_reply_markup(
             chat_id=chat_id,
             message_id=update.callback_query.message.message_id,
             reply_markup=reply_markup
         )
-        context.bot.send_message(chat_id, '已幫您修改出席狀態爲參加')
+        context.bot.send_message(chat_id, f'已幫您修改出席狀態爲參加:\n{data[0]}')
 
     elif query == '3':
         user = TelegramBot.objects.filter(chat_id=chat_id)
@@ -264,6 +289,36 @@ def meeting_callback(update, context):
             Q(user=user[0].user_id)
         )
         reply.update(response='maybe')
+
+        event = Event.objects.filter(id=event[0].id)
+
+        serializer = MeetingDetailSerializer(event, many=True)
+        data = json.loads(json.dumps(serializer.data))
+
+        data[0]['行程'] = data[0].pop('title')
+        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
+        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
+        data[0]['備註'] = data[0].pop('description')
+        data[0]['地點'] = data[0].pop('location')
+        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
+
+        data[0] = json.dumps(data[0], ensure_ascii=False)
+        data[0] = data[0].replace('"', '')
+        data[0] = data[0].replace('[', '')
+        data[0] = data[0].replace(']', '')
+        data[0] = data[0].replace('}', '')
+        data[0] = data[0].replace('{', '')
+        data[0] = data[0].replace("user:", '')
+        data[0] = data[0].replace('editors', '(會議發起人)')
+        data[0] = data[0].replace('role:', '')
+        data[0] = data[0].replace('participants', '')
+        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace('accept', '參加')
+        data[0] = data[0].replace('maybe', '不確定')
+        data[0] = data[0].replace('no_reply', '未回應')
+        data[0] = data[0].replace('decline', '不參加')
+        data[0] = data[0].replace(',', '\n')
+
         reply_markup = InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton('已修改出席狀態爲不確定', callback_data='5')]
@@ -274,7 +329,7 @@ def meeting_callback(update, context):
             message_id=update.callback_query.message.message_id,
             reply_markup=reply_markup
         )
-        context.bot.send_message(chat_id, '已幫您修改出席狀態爲不確定')
+        context.bot.send_message(chat_id, f'已幫您修改出席狀態爲不確定:\n{data[0]}')
 
     elif query == '4':
         user = TelegramBot.objects.filter(chat_id=chat_id)
@@ -283,6 +338,36 @@ def meeting_callback(update, context):
             Q(user=user[0].user_id)
         )
         reply.update(response='decline')
+
+        event = Event.objects.filter(id=event[0].id)
+
+        serializer = MeetingDetailSerializer(event, many=True)
+        data = json.loads(json.dumps(serializer.data))
+
+        data[0]['行程'] = data[0].pop('title')
+        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
+        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
+        data[0]['備註'] = data[0].pop('description')
+        data[0]['地點'] = data[0].pop('location')
+        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
+
+        data[0] = json.dumps(data[0], ensure_ascii=False)
+        data[0] = data[0].replace('"', '')
+        data[0] = data[0].replace('[', '')
+        data[0] = data[0].replace(']', '')
+        data[0] = data[0].replace('}', '')
+        data[0] = data[0].replace('{', '')
+        data[0] = data[0].replace("user:", '')
+        data[0] = data[0].replace('editors', '(會議發起人)')
+        data[0] = data[0].replace('role:', '')
+        data[0] = data[0].replace('participants', '')
+        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace('accept', '參加')
+        data[0] = data[0].replace('maybe', '不確定')
+        data[0] = data[0].replace('no_reply', '未回應')
+        data[0] = data[0].replace('decline', '不參加')
+        data[0] = data[0].replace(',', '\n')
+
         reply_markup = InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton('已修改出席狀態爲不參加', callback_data='5')]
@@ -293,7 +378,7 @@ def meeting_callback(update, context):
             message_id=update.callback_query.message.message_id,
             reply_markup=reply_markup
         )
-        context.bot.send_message(chat_id, '已幫您修改出席狀態爲參加')
+        context.bot.send_message(chat_id, f'已幫您修改出席狀態爲不參加\n{data[0]}')
 
 
 def calendar(update, context):

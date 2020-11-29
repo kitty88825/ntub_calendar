@@ -33,6 +33,6 @@ def auto_message():
     task.today(bot)
 
 
-def auto_invite(event_id, user_id):
+def auto_invite(event_id):
     bot = TelegramBot(env('TG_TOKEN'))
-    task.invite_meeting(bot, event_id, user_id)
+    task.invite_meeting(bot, event_id)
