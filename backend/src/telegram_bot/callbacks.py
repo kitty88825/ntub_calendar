@@ -12,7 +12,7 @@ from app.users.models import User
 from app.calendars.models import Calendar
 
 from .models import TelegramBot
-from .serializers import GetSerializer, MeetingSerializer, CalendarSerializer, MeetingDetailSerializer
+from .serializers import GetSerializer, CalendarSerializer, MeetingDetailSerializer
 
 from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -172,7 +172,7 @@ def meeting(update, context):
             # for a in i['參與人員'] :
             #     if a['user'] == User.objects.get(id=get_id[0].user_id).emails and a['response'] == 'no_reply'
 
-            i = json.dumps(i, ensure_ascii = False)
+            i = json.dumps(i, ensure_ascii=False)
             i = i.replace('"', '')
             i = i.replace('[', '')
             i = i.replace(']', '')

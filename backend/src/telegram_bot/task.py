@@ -55,40 +55,10 @@ def today(bot):
             bot.send_message(chat_id[0], '今日沒有行程~')
 
 
-def invite_meeting(bot):
-    chat_id = update.message.chat.id
-    get_id = TelegramBot.objects.values_list('user_id', flat=True).filter(chat_id=chat_id)  # noqa 501
-    if get_id:
-        meeting = EventParticipant.objects.filter(
-            Q(user=get_id[0]) &
-            (
-                Q(response='accept') |
-                Q(response='maybe') |
-                Q(response='no_reply')
-            )
-            ).distinct()
-
-        serializer = MeetingSerializer(meeting, many=True)
-        data = json.loads(json.dumps(serializer.data))
-        for i in data:
-            i['行程'] = i.pop('event')
-            i['是否參加'] = i.pop('response')
-            if i['是否參加'] == 'accept':
-                i['是否參加'] = '是'
-            elif i['是否參加'] == 'maybe':
-                i['是否參加'] = '不確定'
-            elif i['是否參加'] == 'no_reply':
-                i['是否參加'] = '未回應'
-
-        data = json.dumps(data, ensure_ascii=False)
-        data = data.replace('"', '')
-        data = data.replace('[', '')
-        data = data.replace(']', '')
-        data = data.split('}, {')
-        for i in data:
-            i = i.replace('{', '')
-            i = i.replace('}', '')
-            i = i.replace(',', '\n')
-            context.bot.send_message(chat_id, i)
-    else:
-        context.bot.send_message(chat_id, '您尚未登入無法使用此功能😢')
+def invite_meeting(bot, event_id, user_id):
+    # user = list(TelegramBot.objects.values_list('user_id', flat=True).all())
+    # for u in user:
+    #     chat_id = list(TelegramBot.objects.values_list('chat_id', flat=True).filter(user_id=u))
+    #     else:
+    #         pass
+    print(event_id, user_id)

@@ -7,6 +7,7 @@ from app.calendars.models import Calendar
 from app.users.models import User
 
 from .choices import RoleChoice
+from .schedule import schedule
 from .models import (
     Event,
     EventParticipant,
@@ -187,6 +188,8 @@ class EventSerializer(serializers.ModelSerializer):
             main_calendar_id,
             invite_calendars_id,
         )
+
+        schedule(event.id, user.id)
 
         return event
 

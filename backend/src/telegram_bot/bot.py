@@ -31,3 +31,8 @@ def webhook_handler(data):
 def auto_message():
     bot = TelegramBot(env('TG_TOKEN'))
     task.today(bot)
+
+
+def auto_invite(event_id, user_id):
+    bot = TelegramBot(env('TG_TOKEN'))
+    task.invite_meeting(bot, event_id, user_id)
