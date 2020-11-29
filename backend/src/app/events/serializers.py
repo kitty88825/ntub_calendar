@@ -6,7 +6,7 @@ from app.calendars.serializers import CalendarSerializer
 from app.calendars.models import Calendar
 from app.users.models import User
 
-from .choices import RoleChoice
+from .choices import RoleChoice, EventParticipantResponseChoice
 from .functions import send_email
 from .models import (
     Event,
@@ -19,6 +19,13 @@ from .models import (
 def validate_ntub_email(email: str):
     if not email.endswith('@ntub.edu.tw'):
         raise serializers.ValidationError('This is not a ntub email.')
+
+
+def validate_response_particiapnt(response: str):
+    try:
+        EventParticipantResponseChoice(response)
+    except Exception:
+        raise serializers.ValidationError('Response content does not match.')
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -294,3 +301,9 @@ class SuggestedTimeSerializer(serializers.Serializer):
     )
     start_at = serializers.DateTimeField()
     end_at = serializers.DateTimeField()
+
+
+class ResponseParticipantSerializer(serializers.Serializer):
+    response = serializers.CharField(
+        validators=[validate_response_particiapnt],
+    )

@@ -7,12 +7,14 @@ from rest_framework.response import Response
 
 from django_filters import rest_framework as filters
 
-from .models import Event
+from .models import Event, EventParticipant
 from .serializers import (
     EventSerializer,
     UpdateEventAttachmentSerializer,
     SubscribeEventSerializer,
     SuggestedTimeSerializer,
+    ResponseParticipantSerializer,
+    EventParticipantSerializer,
 )
 from .permission import HasCalendarPermissionOrParticipant
 from .filters import SubscriberEventsFilter
@@ -52,6 +54,8 @@ class EventViewSet(ModelViewSet):
             return SubscribeEventSerializer
         elif self.action == 'suggested_time':
             return SuggestedTimeSerializer
+        elif self.action == 'response':
+            return ResponseParticipantSerializer
         elif self.action == 'partial_update' or self.action == 'update':
             serializer_class = UpdateEventAttachmentSerializer
         else:
@@ -124,3 +128,17 @@ class EventViewSet(ModelViewSet):
             return Response('All participants can attend!')
 
         return Response(get_free_time(busy_time, start_at, end_at))
+
+    @action(['POST'], True, permission_classes=[IsAuthenticated])
+    def response(self, request, pk=None):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response = serializer.data['response']
+        try:
+            event = EventParticipant.objects.get(event=pk, user=request.user)
+            event.response = response
+            event.save()
+
+            return Response(EventParticipantSerializer(event).data)
+        except Exception:
+            return Response("You don't have permission.")
