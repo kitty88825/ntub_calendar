@@ -42,6 +42,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     code = models.UUIDField(default=uuid.uuid4, editable=True)
+    verification_code = models.UUIDField(default=uuid.uuid4, editable=True)
     role = models.CharField(
         max_length=15,
         choices=RoleChoice.choices,
