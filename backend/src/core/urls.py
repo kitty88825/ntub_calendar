@@ -24,6 +24,7 @@ from drf_yasg import openapi
 from rest_framework import permissions
 
 from app.events.feed import EventFeed
+from app.events.views import response_event
 
 
 schema_view = get_schema_view(
@@ -47,6 +48,7 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
     path('api/v2/', include(api_urlpatterns)),
     path('feed/<str:code>/', EventFeed(), name='ical'),
+    path('response/<str:code>/<str:eid>/<str:response>', response_event),
 ]
 
 if settings.DEBUG:

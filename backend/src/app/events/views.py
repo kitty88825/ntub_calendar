@@ -1,11 +1,16 @@
 from django.db.models import Q
+from django.shortcuts import redirect
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.generics import get_object_or_404
 
 from django_filters import rest_framework as filters
+
+from app.users.models import User
+from core import settings
 
 from .models import Event, EventParticipant
 from .serializers import (
@@ -142,3 +147,12 @@ class EventViewSet(ModelViewSet):
             return Response(EventParticipantSerializer(event).data)
         except Exception:
             return Response("You don't have permission.")
+
+
+def response_event(request, code, eid, response):
+    user = get_object_or_404(User, verification_code=code)
+    event = EventParticipant.objects.get(event=eid, user=user)
+    event.response = response
+    event.save()
+
+    return redirect(f'{settings.FRONTEND_URL}{eid}')
