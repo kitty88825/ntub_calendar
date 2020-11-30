@@ -94,7 +94,7 @@ def send_email(instance, participants):
     from_email = settings.EMAIL_HOST_USER
     try:
         datetime_format = '%Y/%m/%d %H:%M'
-        subject, to = instance.title, participants
+        subject, to = instance.title, participants.email
         text_content = '北商資管系專題109405組一訂行系統發送會議邀請信件！'
         context = {
             'title': instance.title,
@@ -103,9 +103,12 @@ def send_email(instance, participants):
             'participants': instance.participants.all(),
             'description': instance.description,
             'location': instance.location,
+            'url': settings.BACKEND_URL,
+            'code': participants.verification_code,
+            'eid': instance.id,
         }
         html_content = render_to_string('email.html', context)
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
         msg.attach_alternative(html_content, 'text/html')
         msg.send()
         print(f'已發送信件給！{participants}')

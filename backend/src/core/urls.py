@@ -48,7 +48,7 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
     path('api/v2/', include(api_urlpatterns)),
     path('feed/<str:code>/', EventFeed(), name='ical'),
-    path('response/<str:code>/<str:eid>/<str:response>', response_event),
+    path('<str:code>/<str:eid>/<str:response>', response_event),
 ]
 
 if settings.DEBUG:

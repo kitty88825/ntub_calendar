@@ -156,15 +156,14 @@ class EventSerializer(serializers.ModelSerializer):
             *User.objects.filter(email__in=emails),
         )
         # 發信給未回應的使用者
-        participants = User.objects \
-            .values_list('email', flat=True) \
-            .filter(
-                Q(eventparticipant__event=event),
-                Q(eventparticipant__response='no_reply'),
-                Q(eventparticipant__role='participants'),
-            )
-        if participants:
-            send_email(event, participants)
+        users = User.objects.filter(
+            Q(eventparticipant__event=event),
+            Q(eventparticipant__response='no_reply'),
+            Q(eventparticipant__role='participants'),
+        )
+        if users:
+            for user in users:
+                send_email(event, user)
 
     def create_calendar_from_event(self, event, main_calendar, calendars_id):
         if not calendars_id:
