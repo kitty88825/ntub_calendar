@@ -113,6 +113,8 @@ class EventViewSet(ModelViewSet):
         emails = serializer.data['emails']
         start_at = serializer.data['start_at']
         end_at = serializer.data['end_at']
+        if start_at == end_at:
+            return Response('No suggested time!')
 
         event_list = Event.objects \
             .values('start_at', 'end_at') \
