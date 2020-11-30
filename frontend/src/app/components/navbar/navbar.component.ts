@@ -1,3 +1,5 @@
+import { TokenService } from './../../services/token.service';
+import { CalendarService } from './../../services/calendar.service';
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
@@ -11,15 +13,38 @@ import { AuthService } from 'angularx-social-login';
 export class NavbarComponent implements OnInit {
   userName = '';
   staff = '';
+  group = [];
+  role;
+  permission = '';
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private calendarService: CalendarService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName').substr(0, 1);
     this.staff = localStorage.getItem('staff');
+    this.tokenService.getUser().subscribe(
+      data => {
+        this.role = data.role;
+        this.group = data.groups;
+      }
+    );
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        data.forEach(res => {
+          res.permissions.forEach(permission => {
+            if (this.group.includes(permission.group) && this.role === permission.role && permission.authority === 'write') {
+              this.permission = 'true';
+              localStorage.setItem('permission', 'true');
+            }
+          });
+        });
+      }
+    );
   }
 
   addCalendar() {
@@ -42,13 +67,10 @@ export class NavbarComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.authService.signOut();
-        localStorage.removeItem('res_refresh_token');
-        localStorage.removeItem('res_access_token');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('loggin');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('staff');
-        this.router.navigate(['/index']);
+        localStorage.clear();
+        this.router.navigate(['']).then((a) => {
+          window.location.reload();
+        });
       }
     });
   }

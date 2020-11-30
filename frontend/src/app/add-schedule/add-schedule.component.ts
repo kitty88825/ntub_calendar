@@ -58,7 +58,7 @@ export class AddScheduleComponent implements OnInit {
   location = '';
   startDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   endDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
   allSuggestTime = [];
   unsuggestTime: boolean;
   allTimeCan: boolean;
@@ -172,6 +172,14 @@ export class AddScheduleComponent implements OnInit {
       if (this.userEmail.includes(emails[0]) === false) {
         this.userEmail.push(String(emails));
         this.formData.append('emails', emails);
+        if (this.isMeet === false) {
+          this.isMeet = true;
+          this.isSchedule = false;
+          Swal.fire({
+            text: '您已邀請參與人員，並自動將行程類型變更為「會議」',
+            icon: 'info'
+          });
+        }
       } else {
         Swal.fire({
           text: '該Email已在欲邀請參與人員中',
@@ -327,6 +335,14 @@ export class AddScheduleComponent implements OnInit {
     });
     this.userEmailFiter();
     this.hide();
+    if (this.chooseUserEmail.length !== 0 && this.isMeet === false) {
+      this.isMeet = true;
+      this.isSchedule = false;
+      Swal.fire({
+        text: '您已邀請參與人員，並自動將行程類型變更為「會議」',
+        icon: 'info'
+      });
+    }
   }
 
   userEmailFiter() {
@@ -546,10 +562,10 @@ export class AddScheduleComponent implements OnInit {
 
         this.eventService.postSuggestTime(this.suggestTime).subscribe(
           data => {
-            if (data.length === 0) {
-              this.unsuggestTime = true;
-            } else if (data === 'All participants can attend!') {
+            if (data === 'All participants can attend!') {
               this.allTimeCan = true;
+            } else if (data === 'No suggested time!') {
+              this.unsuggestTime = true;
             } else {
               data.forEach(time => {
                 this.allSuggestTime.push({

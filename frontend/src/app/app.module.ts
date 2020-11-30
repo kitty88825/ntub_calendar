@@ -37,11 +37,17 @@ import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar
 import { URLComponent } from './url/url.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { NgxLoadingModule } from 'ngx-loading';
+import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
+
+
+const googleLoginOptions = {
+  hosted_domain: 'ntub.edu.tw'
+};
 
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider('1035929255551-0a4248ua8cabhe19s8v946td1i211u5r.apps.googleusercontent.com')
+    provider: new GoogleLoginProvider('1035929255551-0a4248ua8cabhe19s8v946td1i211u5r.apps.googleusercontent.com', googleLoginOptions),
   },
 ]);
 
@@ -68,6 +74,7 @@ export function provideConfig() {
     AddCalendarComponent,
     AddCalendarUnstaffComponent,
     URLComponent,
+    MeetingDetailComponent,
   ],
   imports: [
     BrowserModule,

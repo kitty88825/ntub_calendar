@@ -139,12 +139,14 @@
 
                 .allFiles {
                   width        : 300px;
-                  border       : 1px solid $color_form-control;
-                  border-radius: 5px;
-                  height       : 50px;
+                  height       : fit-content;
                   padding      : $content-size_top-bottom/2 $content-size_left-right/2;
                   overflow     : auto;
                   margin-left  : $content-size_left-right;
+
+                  a {
+                    color: $color_accent;
+                  }
                 }
               }
             }
@@ -777,6 +779,17 @@
               margin-top: $content-size_top-bottom*2;
             }
           }
+        }
+      }
+
+      .calendar_dialog {
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 25%;
+
+        .notsure {
+          width: 35% !important;
         }
       }
     }

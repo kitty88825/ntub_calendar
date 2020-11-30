@@ -36,7 +36,7 @@ export class OfficialChangeComponent implements OnInit {
   isTrue = false;
   isOpen = false;
   permissionCalendars = [];
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -114,19 +114,22 @@ export class OfficialChangeComponent implements OnInit {
             data => {
             }
           );
-          this.loading = !this.loading;
-          setTimeout(() => {
-            if (this.loading === false) {
-              Swal.fire({
-                text: '新增成功',
-                icon: 'success',
-              }).then((result) => {
-                this.router.navigate(['calendar']);
-              });
-            }
-          }, 1000);
         });
+        setTimeout(() => {
+          this.loading = !this.loading;
+
+          if (this.loading === false) {
+            Swal.fire({
+              text: '新增成功',
+              icon: 'success',
+            }).then((result) => {
+              this.router.navigate(['calendar']);
+            });
+          }
+        }, 2000);
+
       } else {
+        this.loading = !this.loading;
         Swal.fire({
           text: '新增失敗',
           icon: 'error'

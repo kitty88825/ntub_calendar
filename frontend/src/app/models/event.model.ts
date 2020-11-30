@@ -5,7 +5,7 @@ export interface Event {
   endAt: string;
   description?: string;
   location?: string;
-  natrue: string;
+  nature: string;
   main_calendar_id: number;
   invite_calendars_id: [];
   eventinvitecalendarSet: [{
@@ -58,7 +58,11 @@ export interface Event {
       role: string
     }]
   }];
-  attachments?: File;
+  attachments?: [{
+    filename: string,
+    id: string,
+    file: string
+  }];
   attribute: string;
   participants?: [];
 }

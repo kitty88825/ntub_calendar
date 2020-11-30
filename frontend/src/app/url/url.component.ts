@@ -32,6 +32,9 @@ export class URLComponent implements OnInit {
   showEvent = [];
   subEvents = [];
   allCalendar = [];
+  group = [];
+  role = '';
+  permission = '';
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -60,6 +63,20 @@ export class URLComponent implements OnInit {
       data => {
         this.url = data.url;
         this.userEmail = data.email;
+        this.group = data.groups;
+        this.role = data.role;
+      }
+    );
+
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        data.forEach(res => {
+          res.permissions.forEach(permission => {
+            if (this.group.includes(permission.group) && this.role === permission.role && permission.authority === 'write') {
+              this.permission = 'true';
+            }
+          });
+        });
       }
     );
 
@@ -118,7 +135,6 @@ export class URLComponent implements OnInit {
               });
             });
             this.showEventSort();
-
             this.loading = !this.loading;
           }
         );

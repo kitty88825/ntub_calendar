@@ -66,7 +66,7 @@
             </div>
             <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
               <ul class="sideMenu__content__list">
-                <li *ngIf="staff === 'true'">
+                <li *ngIf="permission === 'true'">
                   <div class="sideMenu__content__add" routerLink="/official-add">
                     <span>匯出修改</span>
                   </div>
@@ -78,7 +78,7 @@
                   <div class="sideMenu__content__add" routerLink="/opendata">
                     <span>OpenData</span>
                   </div>
-                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
                     <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
@@ -106,7 +106,7 @@
               <i class="material-icons">
                 edit_attributes
               </i>
-              <h2>行程屬性：</h2>
+              <h2>行程類型：</h2>
               <ul>
                 <li>
                   <label class="container">
@@ -253,7 +253,7 @@
               <i class="material-icons">
                 edit_attributes
               </i>
-              <h2>行程屬性</h2>
+              <h2>行程類型</h2>
               <ul>
                 <li>
                   <label class="container">

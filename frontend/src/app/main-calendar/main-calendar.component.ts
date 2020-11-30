@@ -2,11 +2,10 @@ import { TokenService } from './../services/token.service';
 import { Component, ViewChild, OnInit, HostListener, TemplateRef } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { EventInput } from '@fullcalendar/core';
+import { Calendar, EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
-import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
 import { formatDate } from '@angular/common';
 import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
@@ -54,9 +53,10 @@ export class MainCalendarComponent implements OnInit {
   IsLoadingEnd: boolean;
   Loading: boolean;
   showEvents = [];
+  allPermission = localStorage.getItem('permission');
   permission: boolean;
-  staff = localStorage.getItem('staff');
   lookEvent = { id: 0, title: '' };
+  options;
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -74,10 +74,34 @@ export class MainCalendarComponent implements OnInit {
   constructor(
     private router: Router,
     private eventService: EventService,
-    private shareDataService: ShareDataService,
     private calendarService: CalendarService,
     private tokenService: TokenService,
-  ) { }
+  ) {
+    this.options = {
+      customButtons: {
+        prev: {
+          click: () => {
+            this.calendarComponent.getApi().prev();
+            let date = '';
+            date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
+            this.selectYear = date.substr(0, 4);
+            this.selectMonth = Number(date.substr(5, 2));
+            this.onChange();
+          }
+        },
+        next: {
+          click: () => {
+            this.calendarComponent.getApi().next();
+            let date = '';
+            date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
+            this.selectYear = date.substr(0, 4);
+            this.selectMonth = Number(date.substr(5, 2));
+            this.onChange();
+          }
+        }
+      }
+    };
+  }
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
 
@@ -360,14 +384,7 @@ export class MainCalendarComponent implements OnInit {
   }
 
   edit(info) {
-    let editEvent;
-    this.eventService.getEvent(info.id).subscribe(
-      data => {
-        editEvent = data;
-        this.shareDataService.sendMessage(editEvent);
-      }
-    );
-    this.router.navigate(['/edit-schedule']);
+    this.router.navigate([`edit-schedule`, info.id]);
   }
 
   hide() {
@@ -460,6 +477,11 @@ export class MainCalendarComponent implements OnInit {
   }
 
   onChange() {
+    if (this.selectMonth > 9) {
+      this.calendarComponent.getApi().gotoDate(this.selectYear + '-' + this.selectMonth + '-01');
+    } else {
+      this.calendarComponent.getApi().gotoDate(this.selectYear + '-0' + this.selectMonth + '-01');
+    }
     this.showEvents = [];
     this.showEventsChange();
     this.showEventsSort();

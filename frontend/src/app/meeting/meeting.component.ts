@@ -1,3 +1,5 @@
+import { CalendarService } from './../services/calendar.service';
+import { Router } from '@angular/router';
 import { TokenService } from './../services/token.service';
 import { EventService } from './../services/event.service';
 import { formatDate } from '@angular/common';
@@ -25,20 +27,17 @@ export class MeetingComponent implements OnInit {
   pastMeet = [];
   isTrue = false;
   isOpen = false;
-  edit = false;
   lookMeet = [];
-  lookTitle; lookOffice; lookSTime; lookSDate; lookCalendarId;
-  lookLocation; lookETime; lookDes; lookEDate;
-  lookFiles = [];
-  lookParticipants = [];
-  staff = localStorage.getItem('staff');
+  lookEventId;
+  permission = '';
   setStartDate = '';
   setEndDate = '';
-  invite: boolean;
-  showEvent: boolean;
   data = { current: '0' };
   formDate = {};
   role = '';
+  initInvitedMeet = [];
+  initMyMeet = [];
+  group = [];
 
   @ViewChild('addStartDate') start: ElementRef;
   @ViewChild('addEndDate') end: ElementRef;
@@ -58,6 +57,8 @@ export class MeetingComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private tokenService: TokenService,
+    private router: Router,
+    private calendarService: CalendarService
   ) { }
 
   ngOnInit(): void {
@@ -66,6 +67,18 @@ export class MeetingComponent implements OnInit {
       data => {
         this.myEmail = data.email;
         this.role = data.role;
+        this.group = data.groups;
+      }
+    );
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        data.forEach(res => {
+          res.permissions.forEach(permission => {
+            if (this.group.includes(permission.group) && this.role === permission.role && permission.authority === 'write') {
+              this.permission = 'true';
+            }
+          });
+        });
       }
     );
 
@@ -110,6 +123,8 @@ export class MeetingComponent implements OnInit {
           this.myMeetSort();
           this.invitedMeetSort();
           this.pastMeetSort();
+          this.initInvitedMeet = this.invitedMeet;
+          this.initMyMeet = this.myMeet;
         });
         this.loading = !this.loading;
         if (this.myMeet.length === 0 && this.invitedMeet.length === 0 && this.pastMeet.length === 0) {
@@ -132,41 +147,31 @@ export class MeetingComponent implements OnInit {
       this.loading = !this.loading;
       this.invitedMeet = [];
       this.myMeet = [];
-      this.pastMeet = [];
 
-      this.allMeet.forEach(event => {
-        event.eventparticipantSet.forEach(participant => {
-          if (event.startAt.substr(0, 10).toUpperCase() >= this.start.nativeElement.value.toUpperCase() &&
-            event.startAt.substr(0, 10).toUpperCase() <= this.end.nativeElement.value.toUpperCase()) {
-            if (participant.user === this.myEmail && participant.role === 'editors') {
-              this.myMeet.push({
-                id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
-                sTime: event.startAt.substr(11, 5)
-              });
-            }
-            if (participant.user === this.myEmail && participant.role === 'participants') {
-              this.invitedMeet.push({
-                id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
-                sTime: event.startAt.substr(11, 5)
-              });
-            }
-          } else if (event.startAt.substr(0, 10).toUpperCase() < this.end.nativeElement.value.toUpperCase()) {
-            if (participant.user === this.myEmail && participant.role === 'participants' || participant.role === 'editors') {
-              this.pastMeet.push({
-                id: event.id, title: event.title, startDate: event.startAt.substr(0, 10),
-                sTime: event.startAt.substr(11, 5)
-              });
-            }
+      if (this.initMyMeet.length !== 0) {
+        this.initMyMeet.forEach(event => {
+          if (event.startDate.toUpperCase() >= this.start.nativeElement.value.toUpperCase() &&
+            event.startDate.toUpperCase() <= this.end.nativeElement.value.toUpperCase()) {
+            this.myMeet.push(event);
           }
         });
-      });
+      }
+
+      if (this.initInvitedMeet.length !== 0) {
+        this.initInvitedMeet.forEach(event => {
+          if (event.startDate.toUpperCase() >= this.start.nativeElement.value.toUpperCase() &&
+            event.startDate.toUpperCase() <= this.end.nativeElement.value.toUpperCase()) {
+            this.invitedMeet.push(event);
+          }
+        });
+
+      }
 
       this.myMeetSort();
       this.invitedMeetSort();
-      this.pastMeetSort();
       this.loading = !this.loading;
 
-      if (this.myMeet.length === 0 && this.invitedMeet.length === 0 && this.pastMeet.length === 0) {
+      if (this.myMeet.length === 0 && this.invitedMeet.length === 0) {
         Swal.fire({
           text: '查無會議',
           icon: 'warning'
@@ -251,44 +256,14 @@ export class MeetingComponent implements OnInit {
 
   editMeet(id) {
     this.lookMeet = [];
-    this.lookFiles = [];
-    this.lookParticipants = [];
-    this.edit = true;
-    this.invite = false;
     this.allMeet.forEach(event => {
       if (event.id === id) {
         this.lookMeet.push(event);
       }
     });
-    this.invitedMeet.forEach(event => {
-      if (event.id === id) {
-        this.invite = true;
-      }
-    });
 
-    this.lookTitle = this.lookMeet[0].title;
-    this.lookCalendarId = this.lookMeet[0].eventinvitecalendarSet[0].mainCalendar.id;
-    this.lookOffice = this.lookMeet[0].eventinvitecalendarSet[0].mainCalendar.name;
-    this.lookSDate = this.lookMeet[0].startAt;
-    this.lookEDate = this.lookMeet[0].endAt;
-    this.lookSTime = this.lookMeet[0].startAt.substr(0, 10) + ' ' + this.lookMeet[0].startAt.substr(11, 5);
-    this.lookETime = this.lookMeet[0].endAt.substr(0, 10) + ' ' + this.lookMeet[0].endAt.substr(11, 5);
-    this.lookLocation = this.lookMeet[0].location;
-    this.lookDes = this.lookMeet[0].description;
-    this.lookMeet[0].attachments.forEach(file => {
-      this.lookFiles.push(file.filename);
-    });
-    this.lookMeet[0].eventparticipantSet.forEach(participant => {
-      if (participant.role === 'editors') {
-        this.lookParticipants.push({ user: participant.user, role: participant.role, response: 'creator' });
-      } else {
-        this.lookParticipants.push(participant);
-      }
-    });
-  }
-
-  goback() {
-    this.edit = false;
+    this.lookEventId = this.lookMeet[0].id;
+    this.router.navigate([`meeting`, this.lookEventId]);
   }
 
   toggleColours(): void {
@@ -301,47 +276,6 @@ export class MeetingComponent implements OnInit {
       this.primaryColour = PrimaryWhite;
       this.secondaryColour = SecondaryGrey;
     }
-  }
-
-  hide() {
-    this.showEvent = false;
-  }
-
-  setCurrent(param) {
-    this.data.current = param;
-  }
-
-  showResponse() {
-    this.showEvent = true;
-  }
-
-  changeResponse() {
-    this.formDate = {};
-    if (Number(this.data.current) === 1) {
-      this.formDate = {
-        title: this.lookTitle, start_at: this.lookSDate, end_at: this.lookEDate,
-        main_calendar_id: this.lookCalendarId, eventparticipant_set: [{ user: this.myEmail, role: this.role, response: 'accept' }]
-      };
-    } else if (Number(this.data.current) === 2) {
-      this.formDate = {
-        title: this.lookTitle, start_at: this.lookSDate, end_at: this.lookEDate,
-        main_calendar_id: this.lookCalendarId, eventparticipant_set: [{ user: this.myEmail, role: this.role, response: 'decline' }]
-      };
-    } else if (Number(this.data.current) === 3) {
-      this.formDate = {
-        title: this.lookTitle, start_at: this.lookSDate, end_at: this.lookEDate,
-        main_calendar_id: this.lookCalendarId, eventparticipant_set: [{ user: this.myEmail, role: this.role, response: 'maybe' }]
-      };
-    }
-    this.eventService.postEvent(this.formDate).subscribe(
-      data => {
-        Swal.fire({
-          text: '成功回覆',
-          icon: 'warning'
-        });
-      }
-    );
-    this.showEvent = false;
   }
 
 }

@@ -77,7 +77,7 @@
           center: 'title',
           right: 'next'
         }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
-            (eventClick)="eventClick($event)">
+            (eventClick)="eventClick($event)" [customButtons]="options.customButtons">
           </full-calendar>
         </div>
         <ul class="item-categories__list">
@@ -261,11 +261,11 @@
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
               </div>
-              <div class="event-list__office">
+              <div class="event-list__office" (click)="lookEventDetail(event)">
                 <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
                 </div>
               </div>
-              <div class="event-list__date">{{event.startDate}}</div>
+              <div class="event-list__date" (click)="lookEventDetail(event)">{{event.startDate}}</div>
             </li>
           </ul>
         </section>
@@ -319,38 +319,15 @@
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 {{event.title}}
               </div>
-              <div class="event-list__office">
+              <div class="event-list__office" (click)="lookEventDetail(event)">
                 <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
                 </div>
               </div>
-              <div class="event-list__date">{{event.startDate}}</div>
+              <div class="event-list__date" (click)="lookEventDetail(event)">{{event.startDate}}</div>
             </li>
           </ul>
         </section>
       </article>
-      <!-- Creates the bootstrap modal where the image will appear -->
-      <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal_dialog">
-          <div class="modal_header">
-            <i class="material-icons" (click)="hideExcel()">
-              cancel
-            </i>
-          </div>
-          <div class="modal_body">
-            <span>下載格式：</span>
-            <div class="item" (click)="daochu($event)">
-              <h4>csv</h4>
-            </div>
-            <div class="item" (click)="daochu($event)">
-              <h4>xlsx</h4>
-            </div>
-            <div class="item" (click)="daochu($event)">
-              <h4>xls</h4>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Creates the bootstrap modal where the image will appear -->
       <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel" aria-hidden="true">

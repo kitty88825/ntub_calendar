@@ -66,7 +66,7 @@
             </div>
             <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
               <ul class="sideMenu__content__list">
-                <li *ngIf="staff === 'true'">
+                <li *ngIf="permission === 'true'">
                   <div class="sideMenu__content__add" routerLink="/official-add">
                     <span>匯出修改</span>
                   </div>
@@ -78,7 +78,7 @@
                   <div class="sideMenu__content__add" routerLink="/opendata">
                     <span>OpenData</span>
                   </div>
-                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
                     <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
@@ -251,16 +251,24 @@
               </div>
               <div class="otherOffice">
                 <div class="otherOffice__title">
+                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__name">單位名稱</div>
                   <div class="otherOffice__role">使用者身分</div>
-                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__delete">刪除</div>
                 </div>
-                <div class="otherOffice__content" *ngFor="let item of items; let i = index">
+                <div class="otherOffice__content" *ngFor="let item of setPermissions; let i = index">
+                  <div class="otherOffice__permission">
+                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
+                      <option value="read">可讀</option>
+                      <option value="write">可寫</option>
+                    </select>
+                  </div>
                   <div class="otherOffice__name">
-                    <select class="form-control" (change)="changeOffice(i, $event)">
-                      <option></option>
+                    <select class="form-control" (change)="changeOffice(i, $event)" *ngIf="item.authority === 'read'">
                       <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
+                    </select>
+                    <select class="form-control" (change)="changeOffice(i, $event)" *ngIf="item.authority === 'write'" [(ngModel)]="item.groupName">
+                      <option *ngFor="let calendar of groupName">{{calendar.name}}</option>
                     </select>
                   </div>
                   <div class="otherOffice__role">
@@ -269,12 +277,6 @@
                       <option value="system">系統管理者</option>
                       <option value="teacher">老師</option>
                       <option value="unknow">不知名</option>
-                    </select>
-                  </div>
-                  <div class="otherOffice__permission">
-                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="setRole">
-                      <option value="read">可讀</option>
-                      <option value="write">可寫</option>
                     </select>
                   </div>
                   <div class="otherOffice__delete">
@@ -340,16 +342,24 @@
               </div>
               <div class="otherOffice">
                 <div class="otherOffice__title">
+                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__name">單位名稱</div>
                   <div class="otherOffice__role">使用者身分</div>
-                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__delete">刪除</div>
                 </div>
-                <div class="otherOffice__content" *ngFor="let item of items; let i = index">
+                <div class="otherOffice__content" *ngFor="let item of setPermissions; let i = index">
+                  <div class="otherOffice__permission">
+                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
+                      <option value="read">可讀</option>
+                      <option value="write">可寫</option>
+                    </select>
+                  </div>
                   <div class="otherOffice__name">
-                    <select class="form-control" (change)="changeOffice(i, $event)">
-                      <option></option>
+                    <select class="form-control" (change)="changeOffice(i, $event)"  *ngIf="item.authority === 'read'">
                       <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
+                    </select>
+                    <select class="form-control" (change)="changeOffice(i, $event)" *ngIf="item.authority === 'write'">
+                      <option *ngFor="let calendar of groupName">{{calendar.name}}</option>
                     </select>
                   </div>
                   <div class="otherOffice__role">
@@ -358,12 +368,6 @@
                       <option value="system">系統管理者</option>
                       <option value="teacher">老師</option>
                       <option value="unknow">不知名</option>
-                    </select>
-                  </div>
-                  <div class="otherOffice__permission">
-                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="setRole">
-                      <option value="read">可讀</option>
-                      <option value="write">可寫</option>
                     </select>
                   </div>
                   <div class="otherOffice__delete">
@@ -435,15 +439,24 @@
               </div>
               <div class="otherOffice">
                 <div class="otherOffice__title">
+                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__name">單位名稱</div>
                   <div class="otherOffice__role">使用者身分</div>
-                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__delete">刪除</div>
                 </div>
                 <div class="otherOffice__content" *ngFor="let item of calendarPermissions; let i = index">
+                  <div class="otherOffice__permission">
+                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
+                      <option value="read">可讀</option>
+                      <option value="write">可寫</option>
+                    </select>
+                  </div>
                   <div class="otherOffice__name">
-                    <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName">
+                    <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName"  *ngIf="item.authority === 'read'">
                       <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
+                    </select>
+                    <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName"  *ngIf="item.authority === 'write'">
+                      <option *ngFor="let calendar of groupName">{{calendar.name}}</option>
                     </select>
                   </div>
                   <div class="otherOffice__role">
@@ -452,12 +465,6 @@
                       <option value="system">系統管理者</option>
                       <option value="teacher">老師</option>
                       <option value="unknow">不知名</option>
-                    </select>
-                  </div>
-                  <div class="otherOffice__permission">
-                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
-                      <option value="read">可讀</option>
-                      <option value="write">可寫</option>
                     </select>
                   </div>
                   <div class="otherOffice__delete">
@@ -529,16 +536,24 @@
               </div>
               <div class="otherOffice">
                 <div class="otherOffice__title">
+                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__name">單位名稱</div>
                   <div class="otherOffice__role">使用者身分</div>
-                  <div class="otherOffice__permission">權限</div>
                   <div class="otherOffice__delete">刪除</div>
                 </div>
                 <div class="otherOffice__content" *ngFor="let item of calendarPermissions; let i = index">
+                  <div class="otherOffice__permission">
+                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
+                      <option value="read">可讀</option>
+                      <option value="write">可寫</option>
+                    </select>
+                  </div>
                   <div class="otherOffice__name">
-                    <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName">
-                      <option></option>
+                    <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName"  *ngIf="item.authority === 'read'">
                       <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
+                    </select>
+                    <select class="form-control" (change)="changeOffice(i, $event)" [(ngModel)]="item.groupName"  *ngIf="item.authority === 'write'">
+                      <option *ngFor="let calendar of groupName">{{calendar.name}}</option>
                     </select>
                   </div>
                   <div class="otherOffice__role">
@@ -547,12 +562,6 @@
                       <option value="system">系統管理者</option>
                       <option value="teacher">老師</option>
                       <option value="unknow">不知名</option>
-                    </select>
-                  </div>
-                  <div class="otherOffice__permission">
-                    <select class="form-control" (change)="changeAuthority(i, $event)" [(ngModel)]="item.authority">
-                      <option value="read">可讀</option>
-                      <option value="write">可寫</option>
                     </select>
                   </div>
                   <div class="otherOffice__delete">

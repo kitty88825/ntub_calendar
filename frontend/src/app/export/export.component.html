@@ -66,7 +66,7 @@
             </div>
             <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
               <ul class="sideMenu__content__list">
-                <li *ngIf="staff === 'true'">
+                <li *ngIf="permission === 'true'">
                   <div class="sideMenu__content__add" routerLink="/official-add">
                     <span>匯出修改</span>
                   </div>
@@ -78,7 +78,7 @@
                   <div class="sideMenu__content__add" routerLink="/opendata">
                     <span>OpenData</span>
                   </div>
-                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
                     <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
@@ -427,5 +427,9 @@
         </div>
       </article>
     </main>
+    <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+    [template]="loadingTemplate">
+  </ngx-loading>
   </div>
 </div>

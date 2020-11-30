@@ -20,7 +20,6 @@ export class TokenInterceptor implements HttpInterceptor {
 
   accessTokenRefreshed: Subject<any> = new Subject();
 
-
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
 
     // call next() and handle the response
@@ -45,15 +44,12 @@ export class TokenInterceptor implements HttpInterceptor {
 
           // 401 error so we are unauthorized
           window.location.reload();
-
-        } else if (localStorage.getItem('loggin') === null) {
-          alert('請先登入系統');
-          this.router.navigate(['/index']);
-        } else if (localStorage.getItem('loggin') === null && error.status === 403) {
-          alert('請使用北商google帳號登入');
-          this.router.navigate(['/index']);
-          window.location.reload();
-        } else if (localStorage.getItem('loggin') != null && error.status === 403) {
+        } else if (localStorage.getItem('loggin') === null && localStorage.getItem('url') === null) {
+          localStorage.setItem('url', window.location.hash.substr(2));
+          this.router.navigate(['']);
+        } else if (localStorage.getItem('url') !== null) {
+          this.router.navigate(['']);
+        } else if (localStorage.getItem('loggin') === 'true' && error.status === 403) {
           alert('您沒有權限進行操作');
         }
 

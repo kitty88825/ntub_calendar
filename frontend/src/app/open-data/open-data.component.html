@@ -66,7 +66,7 @@
             </div>
             <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
               <ul class="sideMenu__content__list">
-                <li *ngIf="staff === 'true'">
+                <li *ngIf="permission === 'true'">
                   <div class="sideMenu__content__add" routerLink="/official-add">
                     <span>匯出修改</span>
                   </div>
@@ -78,7 +78,7 @@
                   <div class="sideMenu__content__add" routerLink="/opendata">
                     <span>OpenData</span>
                   </div>
-                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
                     <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
@@ -93,7 +93,22 @@
     </label>
   </div>
   <div class="right">
-    <app-navbar></app-navbar>
+    <app-navbar *ngIf="loggin === 'true'"></app-navbar>
+    <header class="header__unlogin" *ngIf="loggin === null">
+      <h1 class="header__unlogin__title" [routerLink]="['/index']">
+        <i class="header__unlogin__icon">
+          <img src="../../assets/images/一訂行_湖水綠.png">
+        </i>
+        <span class=" header__unlogin__name">
+          一訂行
+        </span>
+      </h1>
+      <nav class="header__unlogin__navbar">
+        <div class="header__unlogin__person">
+          <div class="header__unlogin__avatar" [routerLink]="['/index']">回首頁</div>
+        </div>
+      </nav>
+    </header>
     <main>
       <aside class="aside">
         <ul class="item-categories">
@@ -103,7 +118,7 @@
                 <i class="material-icons">
                   content_paste
                 </i>
-                <span>選擇匯出資料</span>
+                <span>選擇匯出年度</span>
               </div>
               <div class="form-group row">
                 <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"

@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
 import { NgbTimepicker } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ShareDataService } from '../services/share-data.service';
 import { CalendarService } from '../services/calendar.service';
 import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
 
@@ -55,6 +54,7 @@ export class EditScheduleComponent implements OnInit {
   role = '';
   myEmail = '';
   MasterSelected = false;
+  AllSelected = false;
   selectMainCalendar = '';
   commonUserEmail = [];
   allCalendar = [];
@@ -63,9 +63,12 @@ export class EditScheduleComponent implements OnInit {
   mianCalendarId = 0;
   startDate = '';
   endDate = '';
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
   allSuggestTime = [];
-
+  chooseUserEmail = [];
+  hasUserEmail = [];
+  unsuggestTime: boolean;
+  allTimeCan: boolean;
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -83,7 +86,6 @@ export class EditScheduleComponent implements OnInit {
     private router: Router,
     public eventService: EventService,
     private formBuilder: FormBuilder,
-    private shareDataService: ShareDataService,
     private calendarService: CalendarService,
     private tokenService: TokenService,
     private commonUserService: CommonUserService
@@ -101,6 +103,7 @@ export class EditScheduleComponent implements OnInit {
     this.sendEmailForm = this.formBuilder.group({
       toAddress: ['', Validators.pattern(this.emailPattern)]
     });
+    this.id = Number(this.router.url.substr(15));
 
     this.tokenService.getUser().subscribe(
       re => {
@@ -115,18 +118,13 @@ export class EditScheduleComponent implements OnInit {
         data.forEach(common => {
           this.allCommonUser.push({ id: common.id, title: common.title, participant: common.participant, isChecked: false });
         });
-        this.allCommonUser[0].isChecked = true;
-        this.allCommonUser[0].participant.forEach(email => {
-          this.commonUserEmail.push({ emails: email, isChecked: false });
-        });
       }
     );
 
-    this.shareDataService.getMessage().subscribe(
+    this.eventService.getEvent(this.id).subscribe(
       data => {
-        this.id = data.message.id;
-        this.title = data.message.title;
-        this.attribute = data.message.nature;
+        this.title = data.title;
+        this.attribute = data.nature;
         if (this.attribute === 'event') {
           this.isMeet = false;
           this.isSchedule = true;
@@ -134,34 +132,33 @@ export class EditScheduleComponent implements OnInit {
           this.isMeet = true;
           this.isSchedule = false;
         }
-        this.startDate = data.message.startAt.substring(0, 10);
-        const sHour = data.message.startAt.substring(11, 13);
+        this.startDate = data.startAt.substring(0, 10);
+        const sHour = data.startAt.substring(11, 13);
         this.addStartTime.model.hour = Number(sHour);
-        const sMinute = data.message.startAt.substring(14, 16);
+        const sMinute = data.startAt.substring(14, 16);
         this.addStartTime.model.minute = Number(sMinute);
-        this.endDate = data.message.endAt.substring(0, 10);
-        const eHour = data.message.endAt.substring(11, 13);
+        this.endDate = data.endAt.substring(0, 10);
+        const eHour = data.endAt.substring(11, 13);
         this.addEndTime.model.hour = Number(eHour);
-        const eMinute = data.message.endAt.substring(14, 16);
+        const eMinute = data.endAt.substring(14, 16);
         this.addEndTime.model.minute = Number(eMinute);
-        this.location = data.message.location;
-        this.description = data.message.description;
-        this.mianCalendarId = data.message.eventinvitecalendarSet[0].mainCalendar.id;
-
-        data.message.eventparticipantSet.forEach(email => {
-          this.userEmail.push({ email: email.user, response: email.response });
+        this.location = data.location;
+        this.description = data.description;
+        this.mianCalendarId = data.eventinvitecalendarSet[0].mainCalendar.id;
+        data.eventparticipantSet.forEach(email => {
+          this.userEmail.push({ email: email.user, response: email.response, role: email.role });
           this.formData.append('emails', email.user);
         });
 
-        data.message.attachments.forEach(file => {
-          this.fileName.push(file.filename);
+        data.attachments.forEach(file => {
+          this.fileName.push({ fileName: file.filename, fileLink: file.file });
           this.formData.append('filesId', file.id);
         });
 
         this.calendarService.getCalendar().subscribe(
           result => {
             this.userEmail.forEach(email => {
-              if (email.email === this.myEmail) {
+              if (email.role === 'editors') {
                 email.response = 'creator';
               }
             });
@@ -187,7 +184,7 @@ export class EditScheduleComponent implements OnInit {
             });
             this.showInviteCalendar(this.selectMainCalendar);
 
-            data.message.eventinvitecalendarSet.forEach(calendar => {
+            data.eventinvitecalendarSet.forEach(calendar => {
               this.showAddCalendars.forEach(show => {
                 if (calendar.calendar.id === show.id) {
                   show.isChecked = true;
@@ -211,8 +208,15 @@ export class EditScheduleComponent implements OnInit {
   send(value) {
     if (value.toAddress.length !== 0) {
       const emails = this.sendEmailForm.value.toAddress.split(',');
-      this.userEmail.push({ email: emails, response: '' });
-      this.formData.append('emails', emails);
+      if (this.userEmail.includes(emails[0]) === false) {
+        this.userEmail.push({ email: String(emails), response: '' });
+        this.formData.append('emails', emails);
+      } else {
+        Swal.fire({
+          text: '該Email已在欲邀請參與人員中',
+          icon: 'warning'
+        });
+      }
     } else {
       Swal.fire({
         text: '請輸入Google信箱',
@@ -228,9 +232,95 @@ export class EditScheduleComponent implements OnInit {
     users.splice(index, 1);
     this.formData.delete('emails');
     users.forEach(user => {
-      console.log(user);
       this.formData.append('emails', user);
     });
+  }
+
+  chooseUser() {
+    const userEmails = [];
+    this.AllSelected = false;
+    let count = 0;
+    const common = [];
+    this.commonUserEmail.forEach(email => {
+      if (email.isChecked === true) {
+        count++;
+        userEmails.push(email.emails);
+        this.chooseUserEmail.push({ emails: email.emails, isChecked: false });
+      }
+    });
+
+    this.chooseUserEmail.forEach(email => {
+      this.hasUserEmail.push(email.emails);
+    });
+
+    this.commonUserEmail.forEach(email => {
+      const index = userEmails.findIndex(a => {
+        return a === email.emails;
+      });
+      if (index === -1) {
+        common.push(email);
+      }
+    });
+
+    if (userEmails.length !== 0) {
+      this.commonUserEmail = [];
+      this.commonUserEmail = common;
+    }
+
+    this.MasterSelected = false;
+
+  }
+
+  removeChooseUser() {
+    let count = 0;
+    const userEmails = [];
+    const choose = [];
+    this.chooseUserEmail.forEach(email => {
+      if (email.isChecked === true) {
+        count++;
+        this.commonUserEmail.push({ emails: email.emails, isChecked: false });
+        userEmails.push(email.emails);
+      }
+    });
+
+    this.chooseUserEmail.forEach(email => {
+      const index = userEmails.findIndex(a => {
+        return a === email.emails;
+      });
+      if (index === -1) {
+        choose.push(email);
+      }
+    });
+
+    if (userEmails.length !== 0 && count !== 0) {
+      this.chooseUserEmail = [];
+      this.hasUserEmail = [];
+      this.chooseUserEmail = choose;
+      choose.forEach(email => {
+        this.hasUserEmail.push(email.emails);
+      });
+    }
+    this.AllSelected = false;
+  }
+
+  chooseUserEmailAll() {
+    this.chooseUserEmail.forEach(email => {
+      email.isChecked = this.AllSelected;
+    });
+  }
+
+  changeChooseEmail() {
+    let count = 0;
+    this.chooseUserEmail.forEach(emails => {
+      if (emails.isChecked === true) {
+        count++;
+      }
+    });
+    if (count === this.chooseUserEmail.length) {
+      this.AllSelected = true;
+    } else {
+      this.AllSelected = false;
+    }
   }
 
   fileSelected(event) {
@@ -327,7 +417,7 @@ export class EditScheduleComponent implements OnInit {
           });
         },
         error => {
-          console.log(error);
+          this.loading = !this.loading;
           Swal.fire({
             text: '更新失敗',
             icon: 'error',
@@ -386,16 +476,30 @@ export class EditScheduleComponent implements OnInit {
     this.showCalendar = false;
   }
 
-  changeSelectCommon(info) {
+  changeSelectCommon() {
+    this.AllSelected = false;
+    this.MasterSelected = false;
     this.commonUserEmail = [];
+    let userEmails = [];
     this.allCommonUser.forEach(common => {
-      common.isChecked = false;
-      if (info === common.title) {
-        common.isChecked = true;
+      if (common.isChecked === true) {
         common.participant.forEach(email => {
-          this.commonUserEmail.push({ emails: email, isChecked: false });
+          const index = this.hasUserEmail.findIndex(e => {
+            return e === email;
+          });
+
+          if (index === -1) {
+            userEmails.push(email);
+          }
         });
       }
+    });
+    userEmails = userEmails.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
+
+    userEmails.forEach(email => {
+      this.commonUserEmail.push({ emails: email, isChecked: false });
     });
   }
 
@@ -414,14 +518,19 @@ export class EditScheduleComponent implements OnInit {
   }
 
   importEmail() {
-    this.commonUserEmail.forEach(email => {
-      if (email.isChecked === true) {
-        this.userEmail.push({ email: email.emails, response: '' });
-        this.formData.append('emails', email.emails);
-      }
+    this.chooseUserEmail.forEach(email => {
+      this.userEmail.push({ email: email.emails, response: '' });
+      this.formData.append('emails', email.emails);
     });
-
+    this.userEmailFiter();
+    console.log(this.userEmail);
     this.hide();
+  }
+
+  userEmailFiter() {
+    this.userEmail = this.userEmail.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
   }
 
   changeSelectCalendar(calendarName) {
@@ -470,7 +579,7 @@ export class EditScheduleComponent implements OnInit {
 
         this.showTime = true;
         this.userEmail.forEach(email => {
-          this.suggestTime.append('emails', email);
+          this.suggestTime.append('emails', email.email);
         });
         this.suggestTime.append('start_at', start + 'T' + this.addStartTime.model.hour + ':'
           + this.addStartTime.model.minute + ':' + this.addStartTime.model.second + '+08:00');
@@ -479,12 +588,18 @@ export class EditScheduleComponent implements OnInit {
 
         this.eventService.postSuggestTime(this.suggestTime).subscribe(
           data => {
-            data.forEach(time => {
-              this.allSuggestTime.push({
-                startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
-                endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+            if (data === 'All participants can attend!') {
+              this.allTimeCan = true;
+            } else if (data === 'No suggested time!') {
+              this.unsuggestTime = true;
+            } else {
+              data.forEach(time => {
+                this.allSuggestTime.push({
+                  startDate: time[0].substr(0, 10), startTime: time[0].substr(11, 5),
+                  endDate: time[1].substr(0, 10), endTime: time[1].substr(11, 5), isChecked: false
+                });
               });
-            });
+            }
           }
         );
       }

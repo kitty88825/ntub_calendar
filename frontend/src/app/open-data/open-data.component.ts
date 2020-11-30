@@ -29,7 +29,8 @@ export class OpenDataComponent implements OnInit {
   showModal: boolean;
   exportDatas = [];
   allEvents = [];
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
+  loggin = '';
 
   constructor(
     private eventService: EventService,
@@ -50,9 +51,10 @@ export class OpenDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = !this.loading;
-    this.eventService.getEvents_event().subscribe(
+    this.loggin = localStorage.getItem('loggin');
+    this.eventService.fGetEvents().subscribe(
       data => {
-        this.calendarService.getCalendar().subscribe(
+        this.calendarService.fGetCalendar().subscribe(
           result => {
             data.forEach(event => {
               result.forEach(calendar => {
@@ -66,10 +68,10 @@ export class OpenDataComponent implements OnInit {
             this.yearSort();
 
             this.setYear = Number(this.todayDate.substr(0, 4)) - 1911;
-            if (Number(this.todayDate.substr(5, 2)) >= 7) {
-              this.setTerm = 2;
-            } else {
+            if (Number(this.todayDate.substr(5, 2)) >= 7 || Number(this.todayDate.substr(5, 2)) === 1) {
               this.setTerm = 1;
+            } else {
+              this.setTerm = 2;
             }
 
             this.changeEvent();
@@ -177,13 +179,21 @@ export class OpenDataComponent implements OnInit {
     this.allEvents.forEach(event => {
       if (Number(event.startAt.substr(0, 4)) - 1911 === Number(this.setYear)) {
         if (Number(this.setTerm) === 1) {
-          if (Number(event.startAt.substr(5, 2)) < 7) {
+          if (Number(event.startAt.substr(5, 2)) > 7) {
+            this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
+            this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
+            event.endAt.substr(0, 10), '', '', '', event.title]);
+          }
+        }
+      } else if (Number(event.startAt.substr(0, 4)) - 1911 === Number(this.setYear) + 1) {
+        if (Number(this.setTerm) === 1) {
+          if (Number(event.startAt.substr(5, 2)) === 1) {
             this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
             this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
             event.endAt.substr(0, 10), '', '', '', event.title]);
           }
         } else if (Number(this.setTerm) === 2) {
-          if (Number(event.startAt.substr(5, 2)) >= 7) {
+          if (Number(event.startAt.substr(5, 2)) <= 7 && Number(event.startAt.substr(5, 2)) !== 1) {
             this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
             this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 2, event.startAt.substr(0, 10),
             event.endAt.substr(0, 10), '', '', '', event.title]);

@@ -1,3 +1,4 @@
+import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
 import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
 import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { OpenDataComponent } from './open-data/open-data.component';
@@ -18,16 +19,16 @@ import { URLComponent } from './url/url.component';
 
 const routes: Routes = [
   { path: '', component: IndexComponent },
-  { path: 'index', component: IndexComponent },
   { path: 'calendar', component: MainCalendarComponent },
   { path: 'add-schedule', component: AddScheduleComponent },
   { path: 'add-subscribe', component: AddSubscribeComponent },
   { path: 'export', component: ExportComponent },
   { path: 'official-add', component: OfficialAddComponent },
   { path: 'official-change', component: OfficialChangeComponent },
-  { path: 'edit-schedule', component: EditScheduleComponent },
+  { path: 'edit-schedule/:id', component: EditScheduleComponent },
   { path: 'user-teach', component: UserTeachComponent },
   { path: 'meeting', component: MeetingComponent },
+  { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: 'common-user', component: CommonUserComponent },
   { path: 'opendata', component: OpenDataComponent },
   { path: 'add-calendar', component: AddCalendarComponent },

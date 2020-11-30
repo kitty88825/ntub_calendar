@@ -25,6 +25,7 @@ export class AddCalendarComponent implements OnInit {
   calendarName = '';
   description = '';
   group = [];
+  groupName = [];
   role = '';
   publicCalendar = [];
   privateCalendar = [];
@@ -38,49 +39,45 @@ export class AddCalendarComponent implements OnInit {
   color = '#839B91';
   allCalendar = [
     { id: 1, name: '秘書室' },
-    { id: 2, name: '副校長室'},
-    { id: 3, name: '校長室'},
-    { id: 4, name: '軍訓室'},
-    { id: 5, name: '主計室'},
-    { id: 6, name: '人事室'},
-    { id: 7, name: '圖書館'},
-    { id: 8, name: '總務處'},
-    { id: 9, name: '專科進修學校'},
-    { id: 10, name: '空中進修學院'},
-    { id: 11, name: '校務研究中心'},
-    { id: 12, name: '教學發展中心'},
-    { id: 13, name: '學生事務處'},
-    { id: 14, name: '國際事務處'},
-    { id: 15, name: '研究發展處'},
-    { id: 16, name: '教務處'},
-    { id: 17, name: '資訊與網路中心'},
-    { id: 18, name: '體育室'},
-    { id: 19, name: '通識教育中心'},
-    { id: 20, name: '商品創意經營系'},
-    { id: 21, name: '商業設計管理系'},
-    { id: 22, name: '數位多媒體設計系'},
-    { id: 23, name: '創意設計與經營研究所'},
-    { id: 24, name: '創新經營學院'},
-    { id: 25, name: '資訊與決策科學研究所'},
-    { id: 26, name: '應用外語系'},
-    { id: 27, name: '資訊管理系'},
-    { id: 28, name: '企業管理系(所)'},
-    { id: 29, name: '管理學院'},
-    { id: 30, name: '貿易實務法律暨談判碩士學位學程'},
-    { id: 31, name: '國際商務系(所)'},
-    { id: 32, name: '財務金融系(所)'},
-    { id: 33, name: '會計資訊系(所)'},
-    { id: 34, name: '財經學院'},
-    { id: 35, name: '開發人員'}
+    { id: 2, name: '副校長室' },
+    { id: 3, name: '校長室' },
+    { id: 4, name: '軍訓室' },
+    { id: 5, name: '主計室' },
+    { id: 6, name: '人事室' },
+    { id: 7, name: '圖書館' },
+    { id: 8, name: '總務處' },
+    { id: 9, name: '專科進修學校' },
+    { id: 10, name: '空中進修學院' },
+    { id: 11, name: '校務研究中心' },
+    { id: 12, name: '教學發展中心' },
+    { id: 13, name: '學生事務處' },
+    { id: 14, name: '國際事務處' },
+    { id: 15, name: '研究發展處' },
+    { id: 16, name: '教務處' },
+    { id: 17, name: '資訊與網路中心' },
+    { id: 18, name: '體育室' },
+    { id: 19, name: '通識教育中心' },
+    { id: 20, name: '商品創意經營系' },
+    { id: 21, name: '商業設計管理系' },
+    { id: 22, name: '數位多媒體設計系' },
+    { id: 23, name: '創意設計與經營研究所' },
+    { id: 24, name: '創新經營學院' },
+    { id: 25, name: '資訊與決策科學研究所' },
+    { id: 26, name: '應用外語系' },
+    { id: 27, name: '資訊管理系' },
+    { id: 28, name: '企業管理系(所)' },
+    { id: 29, name: '管理學院' },
+    { id: 30, name: '貿易實務法律暨談判碩士學位學程' },
+    { id: 31, name: '國際商務系(所)' },
+    { id: 32, name: '財務金融系(所)' },
+    { id: 33, name: '會計資訊系(所)' },
+    { id: 34, name: '財經學院' },
+    { id: 35, name: '開發人員' }
   ];
-  raw = { name: '', display: '', description: '', color: '', permissions: [{ authority: '', group: 0, groupName: '', role: '' }] };
-  items = [0, 1];
+  raw = { name: '', display: '', description: '', color: '', permissions: [] };
   calendarPermissions = [];
-  count = 1;
-  setRole = 'write';
-  setPermissions = [{ groupName: '', role: 'student', authority: 'write', group: 0 },
-  { groupName: '', role: 'student', authority: 'write', group: 0 }];
-  staff = localStorage.getItem('staff');
+  setPermissions = [];
+  permission = localStorage.getItem('permission');
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -123,7 +120,13 @@ export class AddCalendarComponent implements OnInit {
                 this.permissionCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
               }
             });
+            if (group === calendar.id) {
+              this.groupName.push({ name: calendar.name, id: calendar.id });
+            }
           });
+        });
+        this.groupName.forEach(name => {
+          this.setPermissions.push({ groupName: name.name, role: this.role, authority: 'write', group: name.id });
         });
         this.loading = !this.loading;
       },
@@ -170,88 +173,63 @@ export class AddCalendarComponent implements OnInit {
   }
 
   addCalendar() {
-    this.setPermissions.forEach(all => {
-      const index = this.setPermissions.findIndex(permission => {
-        return permission.groupName.length === 0;
-      });
-      if (index >= 0) {
-        this.setPermissions.splice(index, 1);
-        this.items.splice(index, 1);
-      }
-    });
-
+    let countPermission = 0;
+    let allGroupName = [];
     this.raw.name = this.calendarName;
     this.raw.description = this.description;
     this.raw.color = this.color;
     this.raw.display = this.attribute;
-    if (this.setPermissions[0].authority === 'read') {
+    this.setPermissions.forEach(permission => {
+      allGroupName.push(permission.groupName);
+      if (permission.authority === 'write' && permission.groupName.length !== 0) {
+        countPermission++;
+      }
+    });
+    allGroupName = allGroupName.filter((element, index, arr) => {
+      return arr.indexOf(element) !== index;
+    });
+    if (allGroupName.length !== 0) {
       Swal.fire({
-        text: '請至少輸入一個可寫權限',
+        text: '請勿設定相同單位名稱',
         icon: 'error'
       });
-    } else if (this.setPermissions.length === 1 && this.setPermissions[0].groupName !== '') {
-      this.raw.permissions[0].groupName = this.setPermissions[0].groupName;
-      this.raw.permissions[0].role = this.setPermissions[0].role;
-      this.raw.permissions[0].authority = this.setPermissions[0].authority;
-      this.raw.permissions[0].group = this.setPermissions[0].group;
-
-      console.log(this.raw);
-
-      this.calendarService.postCalendar(this.raw).subscribe(
-        data => {
-          Swal.fire({
-            text: '新增成功',
-            icon: 'success',
-          }).then((result) => {
-            if (result.value) {
-              window.location.reload();
-            }
-          });
-        },
-        error => {
-          console.log(error);
-          Swal.fire({
-            text: '新增失敗',
-            icon: 'error',
-          });
-        }
-      );
-
-    } else if (this.setPermissions.length > 1) {
-      const count = this.setPermissions.length - 1;
-      for (let j = 0; j < count; j++) {
-        this.raw.permissions.push({ authority: '', group: 0, groupName: '', role: ''});
+    } else {
+      if (countPermission === 0) {
+        Swal.fire({
+          text: '請至少輸入一個可寫權限',
+          icon: 'error'
+        });
+      } else {
+        this.setPermissions.forEach(permission => {
+          if (permission.groupName.length !== 0) {
+            this.raw.permissions.push({
+              authority: permission.authority, group: permission.group,
+              groupName: permission.groupName, role: permission.role
+            });
+          }
+        });
+        this.calendarService.postCalendar(this.raw).subscribe(
+          data => {
+            Swal.fire({
+              text: '新增成功',
+              icon: 'success',
+            }).then((result) => {
+              if (result.value) {
+                window.location.reload();
+              }
+            });
+          },
+          error => {
+            console.log(error);
+            Swal.fire({
+              text: '新增失敗',
+              icon: 'error',
+            });
+          }
+        );
       }
-
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < this.setPermissions.length; i++) {
-        this.raw.permissions[i].groupName = this.setPermissions[i].groupName;
-        this.raw.permissions[i].role = this.setPermissions[i].role;
-        this.raw.permissions[i].authority = this.setPermissions[i].authority;
-        this.raw.permissions[i].group = this.setPermissions[i].group;
-      }
-
-      this.calendarService.postCalendar(this.raw).subscribe(
-        data => {
-          Swal.fire({
-            text: '新增成功',
-            icon: 'success',
-          }).then((result) => {
-            if (result.value) {
-              window.location.reload();
-            }
-          });
-        },
-        error => {
-          console.log(error);
-          Swal.fire({
-            text: '新增失敗',
-            icon: 'error',
-          });
-        }
-      );
-
     }
+
   }
 
   lookCalendar(info) {
@@ -293,11 +271,9 @@ export class AddCalendarComponent implements OnInit {
 
   addOffice() {
     if (this.add === true) {
-      this.count++;
-      this.items.push(this.count);
-      this.setPermissions.push({ groupName: '', role: 'student', authority: 'write', group: 0});
+      this.setPermissions.push({ groupName: '', role: 'student', authority: 'write', group: 0 });
     } else if (this.edit === true) {
-      this.calendarPermissions.push({ id: 0, authority: 'write', group: [], groupName: '', role: 'student' });
+      this.calendarPermissions.push({ id: 0, authority: 'write', group: 0, groupName: '', role: 'student' });
     }
   }
 
@@ -307,7 +283,6 @@ export class AddCalendarComponent implements OnInit {
 
   deleteOffice(index) {
     this.setPermissions.splice(index, 1);
-    this.items.splice(index, 1);
     this.calendarPermissions.splice(index, 1);
   }
 
@@ -339,71 +314,65 @@ export class AddCalendarComponent implements OnInit {
   }
 
   editCalendar() {
-    if (this.calendarPermissions.length === 0) {
+    let countPermission = 0;
+    let allGroupName = [];
+    this.raw.name = this.lookCalendarName;
+    this.raw.color = this.color;
+    this.raw.description = this.description;
+    this.raw.display = this.attribute;
+    this.calendarPermissions.forEach(permission => {
+      allGroupName.push(permission.groupName);
+      if (permission.authority === 'write' && permission.groupName.length !== 0) {
+        countPermission++;
+      }
+    });
+    allGroupName = allGroupName.filter((element, index, arr) => {
+      return arr.indexOf(element) !== index;
+    });
+    if (allGroupName.length !== 0) {
       Swal.fire({
-        text: '請至少輸入一個權限',
+        text: '請勿設定相同單位名稱',
         icon: 'error'
       });
-    } else if (this.calendarPermissions.length !== 0) {
-      this.calendarPermissions.forEach(all => {
-        const index = this.calendarPermissions.findIndex(permission => {
-          return permission.groupName.length === 0;
-        });
-        if (index >= 0) {
-          this.calendarPermissions.splice(index, 1);
-        }
-      });
-
-      this.raw.name = this.lookCalendarName;
-      this.raw.color = this.color;
-      this.raw.description = this.description;
-      this.raw.display = this.attribute;
-      if (this.calendarPermissions[0].groupName === '') {
+    } else {
+      if (countPermission === 0) {
         Swal.fire({
-          text: '請至少輸入一個權限',
+          text: '請至少輸入一個可寫權限',
           icon: 'error'
         });
-      } else if (this.calendarPermissions.length === 1 && this.calendarPermissions[0].groupName !== '') {
-        this.raw.permissions[0].groupName = this.calendarPermissions[0].groupName;
-        this.raw.permissions[0].role = this.calendarPermissions[0].role;
-        this.raw.permissions[0].authority = this.calendarPermissions[0].authority;
-        this.raw.permissions[0].group = this.calendarPermissions[0].group;
-      } else if (this.calendarPermissions.length > 1) {
-        const count = this.calendarPermissions.length - 1;
-        for (let j = 0; j < count; j++) {
-          this.raw.permissions.push({ authority: '', group: 0, groupName: '', role: ''});
-        }
+      } else {
+        this.calendarPermissions.forEach(permission => {
+          if (permission.groupName.length !== 0) {
+            this.raw.permissions.push({
+              authority: permission.authority, group: permission.group,
+              groupName: permission.groupName, role: permission.role
+            });
+          }
+        });
+        this.permissionCalendar.forEach(calendar => {
+          if (calendar.name === this.lookCalendarName) {
+            this.calendarService.patchCalendar(calendar.id, this.raw).subscribe(
+              data => {
+                Swal.fire({
+                  text: '更新成功',
+                  icon: 'success'
+                }).then((result) => {
+                  window.location.reload();
+                });
+              }, error => {
+                Swal.fire({
+                  text: '更新失敗',
+                  icon: 'error'
+                }).then((result) => {
+                  window.location.reload();
+                });
+              }
+            );
+          }
+        });
 
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < this.calendarPermissions.length; i++) {
-          this.raw.permissions[i].groupName = this.calendarPermissions[i].groupName;
-          this.raw.permissions[i].role = this.calendarPermissions[i].role;
-          this.raw.permissions[i].authority = this.calendarPermissions[i].authority;
-          this.raw.permissions[i].group = this.calendarPermissions[i].group;
-        }
       }
-      this.permissionCalendar.forEach(calendar => {
-        if (calendar.name === this.lookCalendarName) {
-          this.calendarService.patchCalendar(calendar.id, this.raw).subscribe(
-            data => {
-              Swal.fire({
-                text: '更新成功',
-                icon: 'success'
-              }).then((result) => {
-                window.location.reload();
-              });
-            }, error => {
-              Swal.fire({
-                text: '更新失敗',
-                icon: 'error'
-              });
-            }
-          );
-        }
-      });
-
     }
-
   }
 
   deleteCalendar() {

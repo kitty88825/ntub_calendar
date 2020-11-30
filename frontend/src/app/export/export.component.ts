@@ -1,11 +1,17 @@
 import { EventService } from './../services/event.service';
 import { CalendarService } from './../services/calendar.service';
-import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, ElementRef, TemplateRef } from '@angular/core';
 import html2canvas from 'html2canvas';
 import * as jsPDF from 'jspdf';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-export',
@@ -21,7 +27,7 @@ export class ExportComponent implements OnInit {
   openCalendar = [];
   allEvents = [];
   year = [];
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
   setYear = new Date().getFullYear() - 1911;
   showTitle = false;
 
@@ -56,6 +62,19 @@ export class ExportComponent implements OnInit {
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('downloadLink') downloadLink: ElementRef;
 
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
   constructor(
     private calendarService: CalendarService,
     private eventService: EventService
@@ -76,6 +95,7 @@ export class ExportComponent implements OnInit {
   setDate7 = '2020-07-01';
 
   ngOnInit(): void {
+    this.loading = !this.loading;
     this.year.push(this.setYear);
     this.calendarService.getCalendar().subscribe(
       data => {
@@ -105,6 +125,7 @@ export class ExportComponent implements OnInit {
         this.yearSort();
         this.resetDate();
         this.showEventSort();
+        this.loading = !this.loading;
       }
     );
   }
@@ -229,8 +250,8 @@ export class ExportComponent implements OnInit {
         if (calendar.id === event.calendars[0].mainCalendar.id &&
           calendar.name === '日間部行事曆') {
           // if內 calendar.isChecked === true
-          if ( Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) &&
-          event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+          if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) &&
+            event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
                 eventMonth_2.push(event);
@@ -252,8 +273,8 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if ( Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
-          event.startDate.substr(5, 2) > 7) {
+          } else if (Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
+            event.startDate.substr(5, 2) > 7) {
             switch (event.startDate.substr(5, 2)) {
               case '08':
                 eventMonth_8.push(event);
@@ -272,7 +293,7 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if ( Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) < 2) {
+          } else if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) < 2) {
             switch (event.startDate.substr(5, 2)) {
               case '01':
                 eventMonth_1.push(event);
@@ -282,7 +303,7 @@ export class ExportComponent implements OnInit {
           }
         } else if (calendar.id === event.calendars[0].mainCalendar.id &&
           calendar.name === '進修部行事曆') {
-          if ( Number(this.setYear)+1 === Number(event.startDate.substr(0, 4) - 1911)&& event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+          if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
                 eventMonth_2_nd.push(event);
@@ -304,7 +325,7 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if ( Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911)&& event.startDate.substr(5, 2) > 7) {
+          } else if (Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) > 7) {
             switch (event.startDate.substr(5, 2)) {
               case '08':
                 eventMonth_8_nd.push(event);
@@ -323,7 +344,7 @@ export class ExportComponent implements OnInit {
                 break;
             }
             return 0;
-          } else if ( Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911)&& event.startDate.substr(5, 2) < 2) {
+          } else if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) < 2) {
             switch (event.startDate.substr(5, 2)) {
               case '01':
                 eventMonth_1_nd.push(event);

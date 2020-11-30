@@ -9,10 +9,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarService } from '../services/calendar.service';
 import { EventService } from '../services/event.service';
-import * as XLSX from 'xlsx';
-import { EventInput } from '@fullcalendar/core';
+import { Calendar, EventInput } from '@fullcalendar/core';
 import { formatDate } from '@angular/common';
 import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+import { state } from '@angular/animations';
 
 const PrimaryWhite = '#ffffff';
 const SecondaryGrey = '#ccc';
@@ -30,19 +30,15 @@ export class IndexComponent implements OnInit {
   resToken = '';
   authToken = '';
   loggedIn: boolean;
-  showModal: boolean;
   showEvent: boolean;
   selectYear = String(new Date().getFullYear());
-  selectMonth = '';
+  selectMonth: number;
   eventsYear = [];
-  eventsMonth = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+  eventsMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   publicEvents = [];
   publicCalendar = [];
   showEvents = [];
-  initShowEvents = [];
-  opendataDatas = [];
   views = { current: '1' };
-  header = ['學年度', '設立別', '學校類別', '學校代碼', '學校名稱', '學期別', '起始日期', '結束日期', '性質', '類別', '對象', '說明'];
   searchText = '';
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   eventTitle = '';
@@ -55,6 +51,7 @@ export class IndexComponent implements OnInit {
   eventLocation = '';
   IsLoadingEnd: boolean;
   Loading: boolean;
+  options;
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -75,17 +72,42 @@ export class IndexComponent implements OnInit {
     private authService: AuthService,
     private calendarService: CalendarService,
     private eventService: EventService,
-  ) { }
+  ) {
+    this.options = {
+      customButtons: {
+        prev: {
+          click: () => {
+            this.calendarComponent.getApi().prev();
+            let date = '';
+            date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
+            this.selectYear = date.substr(0, 4);
+            this.selectMonth = Number(date.substr(5, 2));
+            this.onChange();
+          }
+        },
+        next: {
+          click: () => {
+            this.calendarComponent.getApi().next();
+            let date = '';
+            date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
+            this.selectYear = date.substr(0, 4);
+            this.selectMonth = Number(date.substr(5, 2));
+            this.onChange();
+          }
+        }
+      }
+    };
+  }
 
-  @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
 
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   calendarPlugins = [dayGridPlugin];
   calendarWeekends = true;
   calendarEvents: EventInput[];
 
   ngOnInit() {
     this.loading = !this.loading;
-    this.selectMonth = this.todayDate.substr(5, 2);
+    this.selectMonth = Number(this.todayDate.substr(5, 2));
     this.eventsYear.push(this.todayDate.substr(0, 4));
 
     this.calendarService.fGetCalendar().subscribe(
@@ -116,16 +138,6 @@ export class IndexComponent implements OnInit {
 
         this.publicEvents.forEach(event => {
           this.eventsYear.push(event.startDate.substr(0, 4));
-
-          if (Number(event.startDate.substr(6, 2)) <= 7) {
-            this.opendataDatas.push([String(Number(event.startDate.substr(0, 4)) - 1911),
-              '公立', '技專校院', '0051', '國立台北商業大學', '1', event.startDate,
-            event.endDate, '', '', '', event.title]);
-          } else {
-            this.opendataDatas.push([String(Number(event.startDate.substr(0, 4)) - 1911),
-              '公立', '技專校院', '0051', '國立台北商業大學', '2', event.startDate,
-            event.endDate, '', '', '', event.title]);
-          }
         });
 
         this.showEventsChange();
@@ -133,6 +145,13 @@ export class IndexComponent implements OnInit {
         this.eventsYearFilter();
         this.eventYearSort();
         this.loading = false;
+
+        if (localStorage.getItem('url') !== null && localStorage.getItem('url').length !== 0) {
+          Swal.fire({
+            text: '請先登入本系統',
+            icon: 'warning'
+          });
+        }
       }
     );
   }
@@ -161,21 +180,23 @@ export class IndexComponent implements OnInit {
           localStorage.setItem('res_access_token', this.resToken);
           localStorage.setItem('res_refresh_token', data.token.refresh);
 
-          setTimeout(() => {
-            if (localStorage.getItem('res_access_token').length !== null) {
-              this.loading = !this.loading;
-              this.router.navigate(['/calendar']);
+          if (localStorage.getItem('res_access_token').length !== null) {
+            this.loading = !this.loading;
+            if (localStorage.getItem('url') !== null) {
+              this.router.navigateByUrl(localStorage.getItem('url'));
             } else {
-              Swal.fire({
-                text: '請重新登入！',
-                icon: 'error'
-              }).then((re) => {
-                if (re.value) {
-                  window.location.reload();
-                }
-              });
+              this.router.navigate(['/calendar']);
             }
-          }, 1000);
+          } else {
+            Swal.fire({
+              text: '請重新登入！',
+              icon: 'error'
+            }).then((re) => {
+              if (re.value) {
+                window.location.reload();
+              }
+            });
+          }
         }
       );
     });
@@ -210,46 +231,20 @@ export class IndexComponent implements OnInit {
     this.views.current = param;
   }
 
-  daochu(info) {
-    const output = [];
-    output.push(this.header);
-    this.opendataDatas.forEach(data => {
-      output.push(data);
-    });
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(output);
-    const wscols = [
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 20 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 30 },
-      { wch: 20 },
-      { wch: 100 },
-    ];
-    ws['!cols'] = wscols;
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, '台北商業大學.' + info.target.innerText);
-  }
-
-  hideExcel() {
-    this.showModal = false;
-  }
-
   hideEvent() {
     this.showEvent = false;
   }
 
   openData() {
-    this.showModal = true;
+    this.router.navigate(['/opendata']);
   }
 
   onChange() {
+    if (Number(this.selectMonth) > 9) {
+      this.calendarComponent.getApi().gotoDate(this.selectYear + '-' + this.selectMonth + '-01');
+    } else {
+      this.calendarComponent.getApi().gotoDate(this.selectYear + '-0' + this.selectMonth + '-01');
+    }
     this.showEvents = [];
     this.showEventsChange();
     this.showEventsSort();
@@ -291,11 +286,10 @@ export class IndexComponent implements OnInit {
 
   showEventsChange() {
     this.publicEvents.forEach(event => {
-      if (event.startDate.substr(0, 4) === this.selectYear && event.startDate.substr(5, 2) === this.selectMonth) {
+      if (event.startDate.substr(0, 4) === this.selectYear && Number(event.startDate.substr(5, 2)) === Number(this.selectMonth)) {
         this.showEvents.push(event);
       }
     });
-    this.showEventsSort();
   }
 
   toggleColours(): void {

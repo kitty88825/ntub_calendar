@@ -136,15 +136,14 @@
               input.addUserBtn {
                 width           : 40px;
                 height          : 25px;
-                background-color: $color_accent;
-                color           : white;
                 font-size       : 0.8rem;
                 border-radius   : 3px;
                 text-align      : center;
                 margin-left     : $content-size_left-right/2;
                 margin-top      : $content-size_top-bottom/2;
                 cursor          : pointer;
-                border          : none;
+                background-color: $color_border;
+                border          : 1px solid $color_form_control;
               }
 
               input.addEmail {
@@ -345,6 +344,7 @@
           position   : fixed;
           right      : 10%;
           top        : 3%;
+          transform: rotate(180deg);
           line-height: 40px;
           text-align : center;
 

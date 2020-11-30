@@ -248,7 +248,12 @@
                     }
 
                     i.noresponse {
-                      color: wheat;
+                      margin-left: $content-size_left-right/2;
+                    }
+
+                    i.maybe {
+                      margin-left: $content-size_left-right/2;
+                      color      : wheat;
                     }
 
                     i.attend {
@@ -357,6 +362,10 @@
                   h4 {
                     margin-left: $content-size_left-right/2;
                   }
+
+                  a {
+                    color: $color_accent;
+                  }
                 }
               }
             }
@@ -408,11 +417,10 @@
           display: none;
         }
       }
-
       .event_dialog {
         width      : 50%;
-        height     : 420px;
-        margin-top : 10.5%;
+        height     : 500px;
+        margin-top : 7.5%;
         margin-left: 25%;
 
         .event_body {
@@ -420,11 +428,10 @@
 
           .event_border {
             width           : 100%;
-            height          : 400px;
+            height          : 480px;
             border-radius   : 5px;
-            border          : $color_border 2px solid;
             background-color: white;
-            box-shadow      : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
+            box-shadow      : 0px 0px 5px 5px rgba(0, 0, 0, 0.13);
 
 
             i.cancel {
@@ -437,7 +444,7 @@
               margin-left: 95%;
               position   : relative;
               top        : -10px;
-              left       : 23px;
+              left       : 20px;
             }
 
             i.cancel:hover {
@@ -445,35 +452,20 @@
               transition: $transition_short;
             }
 
-            i {
-              color      : $color_icon;
-              font-size  : 17px;
-              margin-left: $content-size_left-right;
-            }
-
             .event_content {
               letter-spacing: 1px;
 
               .event_block {
-                padding-top: $content-size_top-bottom*2;
-                overflow   : auto;
-                padding    : $content-size_top-bottom $content-size_left-right;
-                position   : relative;
-                z-index    : 999;
-                width      : 30%;
-                height     : 397px;
-                margin-top : -24px;
-                box-shadow : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
-
-                li {
-                  display    : flex;
-                  align-items: center;
-                  margin-top : $content-size_top-bottom;
-
-                  span.checkmark {
-                    border-radius: 30px;
-                  }
-                }
+                padding-top  : $content-size_top-bottom*2;
+                overflow     : auto;
+                padding      : $content-size_top-bottom $content-size_left-right;
+                position     : relative;
+                border-radius: 5px 0 0 5px;
+                z-index      : 999;
+                width        : 30%;
+                height       : 480px;
+                margin-top   : -30px;
+                box-shadow   : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
 
                 span.title {
                   font-size  : 16px;
@@ -481,7 +473,12 @@
                 }
 
                 ul.allCommonUserForm {
-                  padding-top: $content-size_top-bottom;
+
+                  li {
+                    display    : flex;
+                    align-items: center;
+                    margin-top : $content-size_top-bottom;
+                  }
                 }
               }
 
@@ -491,34 +488,95 @@
                 z-index         : 998;
                 margin-left     : 30%;
                 width           : 70%;
-                height          : 397px;
-                margin-top      : -397px;
+                height          : 477px;
+                margin-top      : -477px;
                 background-color: $color_primary;
 
-                li {
-                  display    : flex;
-                  align-items: center;
+                span.all_text {
+                  font-size: 13px;
                 }
 
-                .all {
-                  display       : flex;
-                  align-items   : center;
-                  cursor        : pointer;
-                  width         : 25%;
-                  font-size     : 14px;
-                  letter-spacing: 1px;
-                  margin-left   : 78%;
-                  margin-top    : $content-size_top-bottom*2;
+                label.container .checkmark:after {
+                  top : 1px;
+                  left: 5px;
                 }
 
-                .allEmails {
+                label.container {
+                  padding-left : 25px !important;
+                  margin-bottom: $content-size_top-bottom/2;
+                }
+
+                .allEmails,
+                .chooseEmails {
                   overflow    : auto;
                   width       : 90%;
                   margin-left : 5%;
                   margin-right: 5%;
-                  height      : 75%;
+                  height      : 35%;
                   padding     : $content-size_top-bottom $content-size_left-right;
                   border      : $color_border 2px solid;
+
+                  li {
+                    display    : flex;
+                    align-items: center;
+
+                    span.checkmark {
+                      width : 15px;
+                      height: 15px;
+                      top   : 6px;
+                    }
+                  }
+
+                }
+
+                .all,
+                .choose {
+                  width           : 90%;
+                  margin-left     : 5%;
+                  margin-right    : 5%;
+                  display         : flex;
+                  background-color: $color_border;
+                  align-items     : center;
+                  padding         : $content-size_top-bottom/5 $content-size_left-right;
+                  border          : $color_border 2px solid;
+
+                  h5 {
+                    font-size: 13px;
+                    width    : 200px;
+                  }
+
+                  label.container {
+                    width        : 60px;
+                    margin-left  : auto;
+                    margin-bottom: 0;
+                  }
+
+                  span.checkmark {
+                    border-color: $color_text;
+                    width       : 15px;
+                    height      : 15px;
+                    top         : 6px;
+                  }
+                }
+
+                .changeBtn {
+                  display     : flex;
+                  width       : 10%;
+                  margin-left : auto;
+                  margin-right: auto;
+                  padding     : $content-size_top-bottom/2 $content-size_left-right/2;
+
+                  i.import {
+                    transform: rotate(135deg);
+                  }
+
+                  i.export {
+                    transform:rotate(-45deg);
+                  }
+
+                  i:hover {
+                    color: $color_accent;
+                  }
                 }
 
                 .btn {
@@ -866,6 +924,7 @@
           position   : fixed;
           right      : 10%;
           top        : 3%;
+          transform: rotate(180deg);
           line-height: 40px;
           text-align : center;
 
@@ -1143,8 +1202,8 @@
                     color: black;
                   }
 
-                  i.noresponse {
-                    color: wheat;
+                  i.maybe {
+                    color      : wheat;
                   }
 
                   i.attend {
@@ -1217,6 +1276,10 @@
                   h4 {
                     font-size: 13px;
                   }
+
+                  a {
+                    color: $color_accent;
+                  }
                 }
               }
             }
@@ -1246,15 +1309,43 @@
         margin-left: 1%;
 
         .event_body {
+          padding: 10px;
 
           .event_border {
-            height: 500px;
+            width           : 100%;
+            height          : 500px;
+            border-radius   : 5px;
+            border          : $color_border 2px solid;
+            background-color: white;
+            box-shadow      : 0px 0px 5px 0px rgba(0, 0, 0, 0.13);
 
             i.cancel {
-              left: 10px;
+              position   : relative;
+              z-index    : 1000;
+              height     : 20px;
+              width      : 20px;
+              cursor     : pointer;
+              color      : black;
+              margin-left: 95%;
+              position   : relative;
+              top        : -10px;
+              left       : 10px;
+            }
+
+            i.cancel:hover {
+              color     : $color_accent;
+              transition: $transition_short;
+            }
+
+            i {
+              color      : $color_icon;
+              font-size  : 17px;
+              margin-left: $content-size_left-right;
             }
 
             .event_content {
+              letter-spacing: 1px;
+              overflow: auto;
 
               .event_block {
                 padding   : 0 $content-size_left-right;
@@ -1265,7 +1356,18 @@
                 box-shadow: none;
 
                 li {
-                  margin-top: 0;
+                  display    : flex;
+                  align-items: center;
+                  margin-top : 0;
+                }
+
+                hr {
+                  display: none;
+                }
+
+                span.title {
+                  font-size  : 16px;
+                  font-weight: 600;
                 }
 
                 ul.allCommonUserForm {
@@ -1285,18 +1387,64 @@
                 background-color: white;
                 margin-left     : 0;
 
-                .all {
-                  margin-top: 0;
+                li {
+                  display    : flex;
+                  align-items: center;
                 }
 
-                .allEmails {
+                .all, .choose {
+                  width: 94%;
+                  margin-left: 3%;
+                  margin-right: 3%;
+                }
+
+                .all {
+                  margin-top: $content-size_top-bottom;
+                }
+
+                .allEmails, .chooseEmails {
+                  overflow    : auto;
                   width       : 94%;
                   margin-left : 3%;
                   margin-right: 3%;
+                  height      : 65%;
+                  border      : $color_border 2px solid;
                   padding     : $content-size_top-bottom $content-size_left-right/2;
                 }
 
+                .changeBtn {
+                  width: 30%;
+                }
+
+                .btn {
+                  display    : flex;
+                  align-items: center;
+                  margin-top : $content-size_top-bottom;
+
+                  .cancel,
+                  .import {
+                    padding      : $content-size_top-bottom/2 $content-size_left-right/2;
+                    text-align   : center;
+                    width        : 50px;
+                    font-size    : 14px;
+                    border-radius: 5px;
+                  }
+
+                  .cancel {
+                    background-color: $color_border;
+                    margin-left     : auto;
+                    margin-right    : $content-size_left-right/2;
+                  }
+
+                  .import {
+                    background-color: $color_accent;
+                    color           : white;
+                    margin-right    : $content-size_left-right;
+                  }
+                }
+
               }
+
             }
 
           }

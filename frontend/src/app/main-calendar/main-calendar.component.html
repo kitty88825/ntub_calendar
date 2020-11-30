@@ -66,7 +66,7 @@
             </div>
             <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
               <ul class="sideMenu__content__list">
-                <li *ngIf="staff === 'true'">
+                <li *ngIf="allPermission === 'true'">
                   <div class="sideMenu__content__add" routerLink="/official-add">
                     <span>匯出修改</span>
                   </div>
@@ -78,7 +78,7 @@
                   <div class="sideMenu__content__add" routerLink="/opendata">
                     <span>OpenData</span>
                   </div>
-                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="staff === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="allPermission === 'true'">
                     <span>匯出&nbsp;PDF</span>
                   </div>
                 </li>
@@ -160,7 +160,7 @@
         center: 'title',
         right: 'next'
       }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents | appFilter : searchText"
-            (eventClick)="eventClick($event)">
+            (eventClick)="eventClick($event)"  [customButtons]="options.customButtons">
           </full-calendar>
         </div>
         <ul class="item-categories">
@@ -227,7 +227,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
+            <div class="deleteBtn" *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -315,7 +315,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
+            <div class="deleteBtn" *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -364,7 +364,7 @@
                   <span class="checkmark"></span>
                 </label>
               </div>
-              <div class="event-list__title"  (click)="lookEventDetail(event)">
+              <div class="event-list__title" (click)="lookEventDetail(event)">
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>
@@ -403,7 +403,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
+            <div class="deleteBtn" *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -469,11 +469,11 @@
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>
-              <div class="event-list__office">
+              <div class="event-list__office" (click)="lookEventDetail(event)">
                 <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
                 </div>
               </div>
-              <div class="event-list__date">{{event.startDate}}</div>
+              <div class="event-list__date" (click)="lookEventDetail(event)">{{event.startDate}}</div>
             </li>
           </ul>
         </section>
@@ -491,7 +491,7 @@
                 search
               </i>
             </span>
-            <div class="deleteBtn"  *ngIf="isShowCheckAll === true">
+            <div class="deleteBtn" *ngIf="isShowCheckAll === true">
               <i class="material-icons" (click)="deleteAll()">
                 delete
               </i>
@@ -557,11 +557,11 @@
                 <span class="event-list__radius" [style.background-color]="event.backgroundColor"></span>
                 <span>{{event.title}}</span>
               </div>
-              <div class="event-list__office">
+              <div class="event-list__office" (click)="lookEventDetail(event)">
                 <div class="event-list__tag" [style.background-color]="event.backgroundColor">{{event.mainCalendarName}}
                 </div>
               </div>
-              <div class="event-list__date">{{event.startDate}}</div>
+              <div class="event-list__date" (click)="lookEventDetail(event)">{{event.startDate}}</div>
             </li>
           </ul>
         </section>

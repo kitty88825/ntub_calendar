@@ -18,7 +18,7 @@ export class AddCalendarUnstaffComponent implements OnInit {
   items = [0, 1];
   setPermissions = [{ id: 0, groupName: '', role: 'student', authority: 'read', group: [] },
   { id: 0, groupName: '', role: 'student', authority: 'read', group: [] }];
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
 
   constructor(
     private calendarService: CalendarService

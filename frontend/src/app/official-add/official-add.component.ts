@@ -29,7 +29,7 @@ export class OfficialAddComponent implements OnInit {
   endDate = this.todayDate;
   isOpen = false;
   isTrue = false;
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
   group = [];
   role = '';
 

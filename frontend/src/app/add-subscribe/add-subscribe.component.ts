@@ -40,7 +40,7 @@ export class AddSubscribeComponent implements OnInit {
   term = [1, 2];
   setTerm = '整個學期';
   showEvent = [];
-  staff = localStorage.getItem('staff');
+  permission = localStorage.getItem('permission');
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
@@ -470,79 +470,67 @@ export class AddSubscribeComponent implements OnInit {
   }
 
   submit(main: HTMLElement) {
-    Swal.fire({
-      text: '是否確定更新?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#aaa',
-      confirmButtonText: '確定',
-      cancelButtonText: '取消'
-    }).then((result) => {
-      if (result.value === true) {
-        setTimeout(() => {
-          main.scrollIntoView();
-        }, 500);
-        this.loading = !this.loading;
+    setTimeout(() => {
+      main.scrollIntoView();
+    }, 500);
+    this.loading = !this.loading;
 
-        this.showEvent.forEach(calendarEvents => {
-          if (calendarEvents.isChecked === true && this.setYear === '所有學年度' && this.setTerm === '整個學期') {
-            this.subCalendar.append('calendars', calendarEvents.id);
-            this.allEvents.forEach(event => {
-              if (calendarEvents.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-                this.unSubEvent.append('events', event.id);
-              }
-            });
-          } else if (calendarEvents.isChecked === false) {
-            this.unSubCalendar.append('calendars', calendarEvents.id);
-            this.allEvents.forEach(all => {
-              if (calendarEvents.id === all.eventinvitecalendarSet[0].mainCalendar.id &&
-                this.hasSubCalendarId.includes(calendarEvents.id)) {
-                this.subEvent.append('events', all.id);
-              }
-            });
-            calendarEvents.events.forEach(event => {
-              if (event.isChecked === true) {
-                this.subEvent.append('events', event.id);
-              } else if (event.isChecked === false) {
-                this.unSubEvent.append('events', event.id);
-              }
-            });
-          } else if (calendarEvents.isChecked === true) {
-            this.unSubCalendar.append('calendars', calendarEvents.id);
-            calendarEvents.events.forEach(event => {
-              if (event.isChecked === true) {
-                this.subEvent.append('events', event.id);
-              } else if (event.isChecked === false) {
-                this.unSubEvent.append('events', event.id);
-              }
-            });
+    this.showEvent.forEach(calendarEvents => {
+      if (calendarEvents.isChecked === true && this.setYear === '所有學年度' && this.setTerm === '整個學期') {
+        this.subCalendar.append('calendars', calendarEvents.id);
+        this.allEvents.forEach(event => {
+          if (calendarEvents.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+            this.unSubEvent.append('events', event.id);
           }
         });
-        this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
-          res => { }
-        );
-        this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-          data => { }
-        );
-        this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-          res => { }
-        );
-        this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-          data => { }
-        );
-        setTimeout(() => {
-          this.loading = !this.loading;
-          Swal.fire({
-            text: '成功！',
-            icon: 'success'
-          }).then((re) => {
-            this.router.navigate(['/my-url']);
-          });
-        }, 2000);
-
+      } else if (calendarEvents.isChecked === false) {
+        this.unSubCalendar.append('calendars', calendarEvents.id);
+        this.allEvents.forEach(all => {
+          if (calendarEvents.id === all.eventinvitecalendarSet[0].mainCalendar.id &&
+            this.hasSubCalendarId.includes(calendarEvents.id)) {
+            this.subEvent.append('events', all.id);
+          }
+        });
+        calendarEvents.events.forEach(event => {
+          if (event.isChecked === true) {
+            this.subEvent.append('events', event.id);
+          } else if (event.isChecked === false) {
+            this.unSubEvent.append('events', event.id);
+          }
+        });
+      } else if (calendarEvents.isChecked === true) {
+        this.unSubCalendar.append('calendars', calendarEvents.id);
+        calendarEvents.events.forEach(event => {
+          if (event.isChecked === true) {
+            this.subEvent.append('events', event.id);
+          } else if (event.isChecked === false) {
+            this.unSubEvent.append('events', event.id);
+          }
+        });
       }
     });
+    this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
+      res => { }
+    );
+    this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
+      data => { }
+    );
+    this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
+      res => { }
+    );
+    this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+      data => { }
+    );
+    setTimeout(() => {
+      this.loading = !this.loading;
+      Swal.fire({
+        text: '成功！',
+        icon: 'success'
+      }).then((re) => {
+        this.router.navigate(['/my-url']);
+      });
+    }, 2000);
+
   }
 
   changeEvent(calendar) {

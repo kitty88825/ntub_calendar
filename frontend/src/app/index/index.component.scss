@@ -63,6 +63,7 @@
           padding-right: $content-size_left-right/1.2;
           border-right : $color_border solid 1px;
           font-size    : 2.2rem;
+          cursor    : unset;
         }
 
         &__function {
@@ -201,7 +202,7 @@
 
             i {
               color      : $color_icon;
-              font-size  : 17px;
+              font-size  : 20px;
               margin-left: $content-size_left-right;
             }
           }
@@ -422,8 +423,8 @@
             }
 
             .event-list__title:hover {
-              cursor    : pointer;
-              color: $color_accent;
+              cursor: pointer;
+              color : $color_accent;
             }
           }
 
@@ -468,7 +469,7 @@
           &__title {
             display: flex;
             flex   : 1;
-            cursor: pointer;
+            cursor : pointer;
           }
 
           &__radius {
@@ -603,6 +604,7 @@
           right      : 10%;
           top        : 3%;
           line-height: 40px;
+          transform  : rotate(180deg);
           text-align : center;
 
           i {
@@ -781,7 +783,7 @@
 
             i.search {
               font-size: 17px;
-              left: 120px;
+              left     : 120px;
             }
           }
 
