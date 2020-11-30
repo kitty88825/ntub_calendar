@@ -181,4 +181,7 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-URL = env('URL')
+
+# Email redirect url
+BACKEND_URL = env('BACKEND_URL')
+FRONTEND_URL = env('FRONTEND_URL')
