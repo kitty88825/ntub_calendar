@@ -7,7 +7,9 @@ from .models import User, CommonParticipant
 
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
-    list_display = ('id', 'username', 'email', 'code', 'role')
+    list_display = (
+        'id', 'username', 'email', 'code', 'role', 'verification_code',
+    )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
@@ -19,7 +21,7 @@ class UserAdmin(AuthUserAdmin):
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         ('role', {'fields': ('role',)}),
-        ('url', {'fields': ('code',)}),
+        ('url', {'fields': ('code', 'verification_code')}),
     )
     add_fieldsets = (
         (None, {
@@ -27,9 +29,9 @@ class UserAdmin(AuthUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
         ('role', {'fields': ('role',)}),
-        ('url', {'fields': ('code',)}),
+        ('url', {'fields': ('code', 'verification_code')}),
     )
-    readonly_fields = ('code',)
+    readonly_fields = ('code', 'verification_code')
     ordering = ('email',)
 
 
