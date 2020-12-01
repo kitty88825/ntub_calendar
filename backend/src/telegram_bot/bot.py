@@ -1,9 +1,15 @@
-from telegram import Bot as TelegramBot, Update
-from telegram.ext import Dispatcher, CommandHandler
-
 import environ
 
-from . import callbacks
+from telegram import Bot as TelegramBot, Update
+from telegram.ext import (
+    Dispatcher,
+    CommandHandler,
+    CallbackQueryHandler,
+    MessageHandler,
+    Filters,
+)
+
+from . import callbacks, task
 
 env = environ.Env()
 
@@ -14,10 +20,25 @@ def webhook_handler(data):
 
     # Handlers
     dispatcher.add_handler(CommandHandler('start', callbacks.start))
-    dispatcher.add_handler(CommandHandler('get', callbacks.get_event))
+    dispatcher.add_handler(CommandHandler('event', callbacks.get_event))
     dispatcher.add_handler(CommandHandler('login', callbacks.login))
     dispatcher.add_handler(CommandHandler('meeting', callbacks.meeting))
+    dispatcher.add_handler(CommandHandler('subscribe', callbacks.calendar))
+    dispatcher.add_handler(
+        MessageHandler(Filters.text, callbacks.calendarSubscribe),
+    )
+    dispatcher.add_handler(CallbackQueryHandler(callbacks.meeting_callback))
 
     # Process update
     update = Update.de_json(data, bot)
     dispatcher.process_update(update)
+
+
+def auto_message():
+    bot = TelegramBot(env('TG_TOKEN'))
+    task.today(bot)
+
+
+def auto_invite(event_id):
+    bot = TelegramBot(env('TG_TOKEN'))
+    task.invite_meeting(bot, event_id)
