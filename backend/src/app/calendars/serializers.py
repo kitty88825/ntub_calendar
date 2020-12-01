@@ -1,36 +1,56 @@
 from rest_framework import serializers
 
-from .models import Calendar, Subscription
+from .models import Calendar, CalendarPermission
+
+
+class CalendarPermissionSerializer(serializers.ModelSerializer):
+    group_name = serializers.CharField(source='group.name', read_only=True)
+
+    class Meta:
+        model = CalendarPermission
+        fields = ('id', 'group', 'group_name', 'role', 'authority')
+        read_only_fields = ('id',)
 
 
 class CalendarSerializer(serializers.ModelSerializer):
+    permissions = CalendarPermissionSerializer(many=True, required=True)
+
     class Meta:
         model = Calendar
-        fields = ('id', 'name')
+        fields = (
+            'id',
+            'name',
+            'description',
+            'display',
+            'color',
+            'permissions',
+        )
+        read_only_fields = ('id',)
+        extra_kwargs = {
+            'display': {'required': True},
+            'color': {'required': True},
+        }
 
-
-class SubscriptionSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Subscription
-        fields = ('id', 'calendar', 'name')
-        ready_only_fields = ('id', 'user')
-
-    def get_name(self, subscription):
-        return str(subscription.calendar.name)
-
-
-class SubscriptionCreateSerializer(serializers.Serializer):
-    calendar = serializers.ListField(
-        child=serializers.IntegerField(write_only=True),
-    )
+    def create_permissions(self, calendar, permissions):
+        CalendarPermission.objects.bulk_create(
+            [CalendarPermission(calendar=calendar, **p) for p in permissions],
+        )
 
     def create(self, validated_data):
-        user = validated_data['user']
-        calendar_ids = validated_data['calendar']
-        calendars = Calendar.objects.filter(id__in=calendar_ids)
-        Subscription.objects.bulk_create(
-            [Subscription(user=user, calendar=id) for id in calendars],
-        )
-        return validated_data
+        permissions = validated_data.pop('permissions')
+        calendar = super().create(validated_data)
+        self.create_permissions(calendar, permissions)
+
+        return calendar
+
+    def update(self, instance, validated_data):
+        permissions = validated_data.pop('permissions')
+        calendar = super().update(instance, validated_data)
+        CalendarPermission.objects.filter(calendar=calendar).delete()
+        self.create_permissions(calendar, permissions)
+
+        return calendar
+
+
+class SubscribeCalendarSerializer(serializers.Serializer):
+    calendars = serializers.ListField(child=serializers.IntegerField())

@@ -1,22 +1,48 @@
-from rest_framework.viewsets import GenericViewSet
+import uuid
+
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from requests.exceptions import HTTPError
 
-from .serializers import LoginSerializer, UserSerializer
+from .serializers import (
+    LoginSerializer,
+    UserSerializer,
+    CommonParticipantSerializer,
+)
+from .models import CommonParticipant
 from .inc_auth_api import IncAuthClient
 from .handlers import update_user
 
-from rest_framework.authtoken.models import Token
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'access': str(refresh.access_token),
+        'refresh': str(refresh),
+    }
 
 
 class AccountView(GenericViewSet):
     serializer_class = LoginSerializer
     api_client = IncAuthClient
+
+    def get_serializer_class(self):
+        if self.action == 'me' or self.action == 'update_code':
+            return UserSerializer
+
+        return super().get_serializer_class()
+
+    @property
+    def inc_auth(self):
+        return self.api_client()
 
     @action(['POST'], detail=False)
     def login(self, request: Request) -> Response:
@@ -33,21 +59,41 @@ class AccountView(GenericViewSet):
         token = response['access']
         user_data = self.inc_auth.current_user(token)
         user = update_user(user_data)
+        access_token = get_tokens_for_user(user)
 
-        user_token, created = Token.objects.get_or_create(user=user)
-
-        return Response(dict(email=user.email, token=user_token.key), status=status.HTTP_200_OK)  # noqa: E501
-
-    @property
-    def inc_auth(self):
-        return self.api_client()
+        return Response(
+            dict(
+                email=user.email,
+                staff=user.is_staff,
+                token=access_token,
+            ), status=status.HTTP_200_OK,
+        )
 
     @action(['GET'], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(instance=request.user)
+
         return Response(serializer.data)
 
-    def get_serializer_class(self):
-        if self.action == 'me':
-            return UserSerializer
-        return super().get_serializer_class()
+    @action(['POST'], detail=False, permission_classes=[IsAuthenticated])
+    def update_code(self, request):
+        request.user.code = uuid.uuid4()
+        request.user.save()
+        serializer = self.get_serializer(request.user)
+
+        return Response(serializer.data)
+
+
+class CommonParticipantViewSet(ModelViewSet):
+    queryset = CommonParticipant.objects.all()
+    serializer_class = CommonParticipantSerializer
+    permission_classes = [IsAuthenticated]
+
+    # 只回傳使用者建立的 CommonParticipant
+    def get_queryset(self):
+        creator = self.request.user
+        if creator:
+            return CommonParticipant.objects.filter(creator=creator.id)
+
+    def perform_create(self, serializers):
+        serializers.save(creator=self.request.user)

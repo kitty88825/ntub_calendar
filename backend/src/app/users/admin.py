@@ -1,16 +1,41 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
+from django.utils.translation import gettext_lazy as _
 
-from .models import User
+from .models import User, CommonParticipant
 
 
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
-    list_display = ('username', 'email', 'code')
-    fieldsets = AuthUserAdmin.fieldsets + (
-        ('url', {'fields': ('code',)}),
+    list_display = (
+        'id', 'username', 'email', 'code', 'role', 'verification_code',
     )
-    add_fieldsets = AuthUserAdmin.add_fieldsets + (
-        ('url', {'fields': ('code',)}),
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Permissions'), {
+            'fields': (
+                'is_active', 'is_staff', 'is_superuser',
+                'groups', 'user_permissions',
+            ),
+        }),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        ('role', {'fields': ('role',)}),
+        ('url', {'fields': ('code', 'verification_code')}),
     )
-    readonly_fields = ('code',)
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2'),
+        }),
+        ('role', {'fields': ('role',)}),
+        ('url', {'fields': ('code', 'verification_code')}),
+    )
+    readonly_fields = ('code', 'verification_code')
+    ordering = ('email',)
+
+
+@admin.register(CommonParticipant)
+class CommonParticipantAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'creator')
+    filter_horizontal = admin.ModelAdmin.filter_vertical + ('participant',)

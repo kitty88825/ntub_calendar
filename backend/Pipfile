@@ -6,17 +6,23 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 flake8-commas = "*"
+ipython = "*"
 
 [packages]
 django = "*"
 django-environ = "*"
-djangorestframework = "*"
-requests = "*"
-drf-yasg = "*"
+djangorestframework = "==3.11.2"
+djangorestframework-simplejwt = "*"
 django-ical = "*"
-djangorestframework-camel-case = "*"
 django-cors-headers = "*"
 psycopg2-binary = "*"
+djangorestframework-camel-case = "*"
+django-extensions = "*"
+django-filter = "*"
+drf-yasg = "*"
+django-colorfield = "*"
+python-telegram-bot = "*"
+django-q = "*"
 
 [requires]
 python_version = "3.8"

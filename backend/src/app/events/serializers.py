@@ -1,31 +1,70 @@
+from django.db.models import Q
+
 from rest_framework import serializers
 
+from app.calendars.serializers import CalendarSerializer
+from app.calendars.models import Calendar
 from app.users.models import User
-from app.users.handlers import get_match
+from telegram_bot.models import TelegramBot
 
-from .models import Attachment, Event, Participant
+from .choices import RoleChoice, EventParticipantResponseChoice
+from .functions import send_email
+from .schedule import schedule
+from .models import (
+    Event,
+    EventParticipant,
+    EventAttachment,
+    EventInviteCalendar,
+)
+
+
+def validate_ntub_email(email: str):
+    if not email.endswith('@ntub.edu.tw'):
+        raise serializers.ValidationError('This is not a ntub email.')
+
+
+def validate_response_particiapnt(response: str):
+    try:
+        EventParticipantResponseChoice(response)
+    except Exception:
+        raise serializers.ValidationError('Response content does not match.')
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
 
     class Meta:
-        model = Attachment
+        model = EventAttachment
         fields = ('id', 'event', 'file', 'filename')
 
     def get_filename(self, attachment):
         return str(attachment.file).split('/')[-1]
 
 
-class ParticipantSerializer(serializers.ModelSerializer):
-    email = serializers.SerializerMethodField()
+class EventParticipantSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
 
     class Meta:
-        model = Participant
-        fields = ('id', 'user', 'email')
+        model = EventParticipant
+        fields = ('user', 'role', 'response')
 
-    def get_email(self, participant):
-        return str(participant.user.email)
+    def get_user(self, event_participnat):
+        return str(event_participnat.user)
+
+
+class EventInviteCalendarSerializer(serializers.ModelSerializer):
+    calendar = serializers.SerializerMethodField()
+    main_calendar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EventInviteCalendar
+        fields = ('calendar', 'main_calendar', 'response')
+
+    def get_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.calendar).data
+
+    def get_main_calendar(self, event_invite_calendar):
+        return CalendarSerializer(event_invite_calendar.main_calendar).data
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -34,13 +73,26 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
-    attachments = AttachmentSerializer(many=True, read_only=True)
-    participants = serializers.ListField(
-        child=serializers.EmailField(),
+    emails = serializers.ListField(
+        child=serializers.EmailField(validators=[validate_ntub_email]),
         write_only=True,
         required=False,
     )
-    participant_set = ParticipantSerializer(many=True, read_only=True)
+    main_calendar_id = serializers.IntegerField(write_only=True)
+    invite_calendars_id = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+    )
+    eventinvitecalendar_set = EventInviteCalendarSerializer(
+        many=True,
+        read_only=True,
+    )
+    attachments = AttachmentSerializer(many=True, read_only=True)
+    eventparticipant_set = EventParticipantSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Event
@@ -51,81 +103,125 @@ class EventSerializer(serializers.ModelSerializer):
             'end_at',
             'description',
             'location',
+            'nature',
             'files',
+            'emails',
+            'main_calendar_id',
+            'invite_calendars_id',
             'attachments',
-            'calendars',
-            'participants',
-            'participant_set',
+            'eventinvitecalendar_set',
+            'eventparticipant_set',
         )
         read_only_fields = (
             'id',
             'create_at',
             'update_at',
-            'attachments',
-            'participant_set',
         )
 
-    def create_attachment_for_event(self, event, files):
+    def validate_main_calendar_id(self, value):
+        has_calendar_permissions = Calendar.objects.filter(
+            Q(id=value),
+            Q(groups__user=self.context['request'].user),
+            Q(permissions__role=self.context['request'].user.role),
+            Q(permissions__authority='write'),
+        )
+        if not has_calendar_permissions:
+            raise serializers.ValidationError("You don't have permission.")
+
+        return value
+
+    def create_attachment_from_event(self, event, files):
         if not files:
             return
 
-        Attachment.objects.bulk_create(
-            [Attachment(event=event, file=file) for file in files],
+        EventAttachment.objects.bulk_create(
+            [EventAttachment(event=event, file=file) for file in files],
         )
 
-    def create_participant_for_event(self, event, user, participants):
-        if not Participant.objects.filter(user=user, event=event):
-            Participant.objects.create(
-                event=event,
-                user=user,
-                role=Participant.RoleChoice.editors,
-            )
-
-        if not participants:
+    def create_participant_from_event(self, event, user, emails):
+        if not emails:
             return
 
-        in_user_model = User.objects.values_list('email', flat=True) \
-                            .filter(email__in=participants)
+        EventParticipant.objects.get_or_create(
+            event=event,
+            user=user,
+            role=RoleChoice.editors,
+        )
 
-        for email in set(participants) - set(in_user_model):
-            if get_match(email) is not None:
-                User.objects.create(username=email, email=email)
+        in_db_emails = User.objects \
+            .filter(email__in=emails) \
+            .values_list('email', flat=True)
 
-        for user_email in User.objects.filter(email__in=participants):
-            if user_email.participant_set.filter(event=event):
-                participants.remove(user_email.email)
+        new_emails = set(emails) - set(in_db_emails)
+        User.objects.bulk_create([User(email=email) for email in new_emails])
+        event.participants.add(
+            *User.objects.filter(email__in=emails),
+        )
+        # 發信給未回應的使用者
+        users = User.objects.filter(
+            Q(eventparticipant__event=event),
+            Q(eventparticipant__response='no_reply'),
+            Q(eventparticipant__role='participants'),
+        )
+        if users:
+            for user in users:
+                send_email(event, user)
 
-        Participant.objects.bulk_create(
-            [Participant(
-                event=event,
-                user=user,
-                role=Participant.RoleChoice.participants,
-            ) for user in User.objects.filter(email__in=participants)],
+    def create_calendar_from_event(self, event, main_calendar, calendars_id):
+        if not calendars_id:
+            return
+
+        in_db_calendars = event.eventinvitecalendar_set \
+            .values_list('calendar_id', flat=True)
+
+        new_calendars_id = set(calendars_id) - set(in_db_calendars)
+        EventInviteCalendar.objects.bulk_create(
+            [EventInviteCalendar(
+                event_id=event.id,
+                calendar_id=c,
+                main_calendar_id=main_calendar,
+                response='no_reply',
+            ) for c in new_calendars_id],
         )
 
     def create(self, validated_data):
         user = validated_data.pop('user')
+        main_calendar_id = validated_data.pop('main_calendar_id')
+        invite_calendars_id = validated_data.pop('invite_calendars_id', None)
         files = validated_data.pop('files', None)
-        participants = validated_data.pop('participants', None)
+        emails = validated_data.pop('emails', None)
         event = super().create(validated_data)
-        self.create_attachment_for_event(event, files)
-        self.create_participant_for_event(event, user, participants)
+
+        EventInviteCalendar.objects.create(
+            event_id=event.id,
+            calendar_id=main_calendar_id,
+            main_calendar_id=main_calendar_id,
+            response='accept',
+        )
+
+        self.create_attachment_from_event(event, files)
+        self.create_participant_from_event(event, user, emails)
+        self.create_calendar_from_event(
+            event,
+            main_calendar_id,
+            invite_calendars_id,
+        )
+        if emails:
+            user_id = User.objects.values('id').filter(email__in=emails)
+            user = TelegramBot.objects.filter(user_id__in=user_id)
+            if validated_data['nature'] == 'meeting' and user:
+                schedule(event.id)
+
         return event
 
 
-class UpdateAttachmentSerializer(EventSerializer):
+class UpdateEventAttachmentSerializer(EventSerializer):
     remove_files = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True,
         required=False,
     )
 
-    remove_users = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False,
-    )
-
     class Meta:
         model = Event
         fields = (
@@ -135,36 +231,85 @@ class UpdateAttachmentSerializer(EventSerializer):
             'end_at',
             'description',
             'location',
+            'nature',
+            'main_calendar_id',
+            'invite_calendars_id',
             'files',
-            'attachments',
-            'calendars',
+            'emails',
             'remove_files',
-            'participants',
-            'remove_users',
-            'participant_set',
+            'attachments',
+            'eventinvitecalendar_set',
+            'eventparticipant_set',
         )
 
     def update(self, instance, validated_data):
         user = validated_data.pop('user')
-        participants = validated_data.pop('participants', None)
-        remove_users = validated_data.pop('remove_users', None)
+        main_calendar_id = validated_data.pop('main_calendar_id', None)
+        invite_calendars_id = validated_data.pop('invite_calendars_id', None)
+        emails = validated_data.pop('emails', None)
         remove_files = validated_data.pop('remove_files', None)
         files = validated_data.pop('files', None)
         event = super().update(instance, validated_data)
 
+        if main_calendar_id is None:
+            main_calendar_id = event.eventinvitecalendar_set \
+                .values_list('main_calendar', flat=True) \
+                .first()
+
         if remove_files:
-            Attachment.objects \
+            EventAttachment.objects \
                 .filter(id__in=remove_files, event=event) \
                 .delete()
 
-        if remove_users:
-            Participant.objects \
-                .filter(
-                    id__in=remove_users,
-                    event=event,
-                    role=Participant.RoleChoice.participants) \
+        if emails:
+            Event.participants.through \
+                .objects \
+                .filter(event=event, role='participants') \
+                .exclude(user__email__in=emails) \
                 .delete()
 
-        self.create_participant_for_event(event, user, participants)
-        self.create_attachment_for_event(event, files)
+        if invite_calendars_id:
+            Event.calendars.through \
+                .objects \
+                .filter(event=event) \
+                .exclude(
+                    calendar_id=main_calendar_id,
+                    main_calendar=main_calendar_id) \
+                .exclude(calendar_id__in=invite_calendars_id) \
+                .delete()
+
+        self.create_attachment_from_event(event, files)
+        self.create_participant_from_event(event, user, emails)
+        self.create_calendar_from_event(
+            event,
+            main_calendar_id,
+            invite_calendars_id,
+        )
+
         return event
+
+
+class SubscribeEventSerializer(serializers.Serializer):
+    events = serializers.ListField(child=serializers.IntegerField())
+
+    def validate_events(self, value):
+        return Event.objects.filter(
+            Q(calendars__display='public') |
+            Q(calendars__groups__user=self.context['request'].user) |
+            Q(participants=self.context['request'].user.id),
+            Q(id__in=value),
+        ).values_list('id', flat=True)
+
+
+class SuggestedTimeSerializer(serializers.Serializer):
+    emails = serializers.ListField(
+        child=serializers.EmailField(validators=[validate_ntub_email]),
+    )
+    start_at = serializers.DateTimeField()
+    end_at = serializers.DateTimeField()
+
+
+class ResponseParticipantSerializer(serializers.Serializer):
+    response = serializers.CharField(
+        validators=[validate_response_particiapnt],
+    )

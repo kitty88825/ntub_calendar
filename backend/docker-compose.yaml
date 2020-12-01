@@ -28,18 +28,22 @@ services:
       - NTUB_AUTH_API_URL=${NTUB_AUTH_API_URL}
       - DATABASE_URL=${DATABASE_URL}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-    ports:
-      - "8000:8000"
     depends_on:
       - db
-  nginx:
-    image: nginx:alpine
+
+  caddy:
+    image: caddy:alpine
     restart: always
-    volumes:
-      - ${DJANGO_ROOT}/media/:/var/www/media/
-      - ${DJANGO_ROOT}/assets/:/var/www/assets/:ro
-      - ${DOCKER_ROOT}/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ${DOCKER_ROOT}/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
       - app
+
+volumes:
+  caddy_data:
+  caddy_config:

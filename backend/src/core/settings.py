@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import environ
 
+from datetime import timedelta
+
 
 root = environ.Path(__file__) - 2
 
@@ -47,25 +49,23 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'rest_framework.authtoken',
     'drf_yasg',
     'corsheaders',
+    'django_extensions',
+    'django_filters',
+    'colorfield',
+    'django_q',
 ]
 
 LOCAL_APPS = [
     'app.users',
     'app.events',
     'app.calendars',
+
+    'telegram_bot',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
-# REST_FRAMEWORK
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -163,6 +163,45 @@ AUTH_USER_MODEL = 'users.User'
 NTUB_AUTH_API_URL = env('NTUB_AUTH_API_URL')
 NTUB_AUTH_API_DOMAIN = env('NTUB_AUTH_API_DOMAIN')
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:4200',
-]
+CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST')
+
+# REST_FRAMEWORK
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(env('ACCESS_TOKEN_LIFETIME'))),  # noqa: E501
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+# Send email setting
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+
+# Email redirect url
+BACKEND_URL = env('BACKEND_URL')
+FRONTEND_URL = env('FRONTEND_URL')
+
+# django-q
+Q_CLUSTER = {
+    'name': 'telegram_bot',
+    'workers': 1,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q',
+    'orm': 'default',
+}
+
+# Telgram bot settings
+TG_TOKEN = env('TG_TOKEN')
