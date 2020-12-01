@@ -49,7 +49,7 @@ class Event(models.Model):
 
     @property
     def link(self):
-        return f'/event/{self.id}'
+        return self.id
 
 
 class EventAttachment(models.Model):

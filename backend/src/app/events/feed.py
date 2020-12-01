@@ -5,6 +5,7 @@ from django_ical.views import ICalFeed
 from rest_framework.generics import get_object_or_404
 
 from app.users.models import User
+from core import settings
 
 from .models import Event
 
@@ -44,7 +45,7 @@ class EventFeed(ICalFeed):
         return item.end_at
 
     def item_link(self, item):
-        return item.link
+        return f'{settings.FRONTEND_URL}{item.link}'
 
     def item_attendee(self, item):
         return item.participants.all()
