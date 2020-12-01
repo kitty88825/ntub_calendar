@@ -202,3 +202,6 @@ Q_CLUSTER = {
     'label': 'Django Q',
     'orm': 'default',
 }
+
+# Telgram bot settings
+TG_TOKEN = env('TG_TOKEN')

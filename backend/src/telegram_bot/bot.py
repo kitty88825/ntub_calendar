@@ -1,5 +1,3 @@
-import environ
-
 from telegram import Bot as TelegramBot, Update
 from telegram.ext import (
     Dispatcher,
@@ -9,13 +7,13 @@ from telegram.ext import (
     Filters,
 )
 
-from . import callbacks, task
+from core import settings
 
-env = environ.Env()
+from . import callbacks, task
 
 
 def webhook_handler(data):
-    bot = TelegramBot(env('TG_TOKEN'))
+    bot = TelegramBot(settings.TG_TOKEN)
     dispatcher = Dispatcher(bot, None)
 
     # Handlers
@@ -35,10 +33,10 @@ def webhook_handler(data):
 
 
 def auto_message():
-    bot = TelegramBot(env('TG_TOKEN'))
+    bot = TelegramBot(settings.TG_TOKEN)
     task.today(bot)
 
 
 def auto_invite(event_id):
-    bot = TelegramBot(env('TG_TOKEN'))
+    bot = TelegramBot(settings.TG_TOKEN)
     task.invite_meeting(bot, event_id)
