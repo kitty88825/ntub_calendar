@@ -44,7 +44,6 @@ const googleLoginOptions = {
   hosted_domain: 'ntub.edu.tw'
 };
 
-
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
