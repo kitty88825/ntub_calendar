@@ -5,11 +5,9 @@ from rest_framework import serializers
 from app.calendars.serializers import CalendarSerializer
 from app.calendars.models import Calendar
 from app.users.models import User
-from telegram_bot.models import TelegramBot
 
 from .choices import RoleChoice, EventParticipantResponseChoice
 from .functions import send_email
-from .schedule import schedule
 from .models import (
     Event,
     EventParticipant,
@@ -206,11 +204,6 @@ class EventSerializer(serializers.ModelSerializer):
             main_calendar_id,
             invite_calendars_id,
         )
-        if emails:
-            user_id = User.objects.values('id').filter(email__in=emails)
-            user = TelegramBot.objects.filter(user_id__in=user_id)
-            if validated_data['nature'] == 'meeting' and user:
-                schedule(event.id)
 
         return event
 
