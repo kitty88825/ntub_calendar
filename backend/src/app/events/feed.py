@@ -44,6 +44,9 @@ class EventFeed(ICalFeed):
     def item_end_datetime(self, item):
         return item.end_at
 
+    def item_location(self, item):
+        return item.location
+
     def item_link(self, item):
         return f'{settings.FRONTEND_URL}{item.link}'
 
