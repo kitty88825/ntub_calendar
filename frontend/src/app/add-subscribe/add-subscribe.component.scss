@@ -51,8 +51,7 @@
             }
 
             input.searchbox {
-              width      : 250px;
-              margin-left: auto;
+              width: 250px;
             }
 
             input.searchbox:hover,
@@ -61,8 +60,9 @@
             }
 
             i {
-              position: absolute;
-              left    : 94%;
+              margin-left: auto;
+              position   : relative;
+              left       : 240px;
             }
           }
 
@@ -191,17 +191,10 @@
             padding        : $content-size_left-right/1.5 0;
             border-bottom  : $color_border solid 1px;
             font-size      : 1.2rem;
-
-            &:hover,
-            &.active {
-              .item-categories__arrow {
-                transform: rotate(-90deg);
-              }
-            }
           }
 
           &__arrow {
-            transition: $transition_short;
+            transform: rotate(-90deg);
           }
 
           &__list {
@@ -278,13 +271,14 @@
         transform     : translateX(-100%);
         transition    : 0.4s;
         z-index       : 1000;
+        font-size     : 15.6px;
 
         label.close {
           display    : block;
           width      : 20px;
           height     : 40px;
           position   : fixed;
-          transform: rotate(180deg);
+          transform  : rotate(180deg);
           right      : 10%;
           top        : 3%;
           line-height: 40px;
@@ -334,13 +328,6 @@
             font-size      : 1.2rem;
             margin-top     : $content-size_top-bottom;
 
-            &:hover,
-            &.active {
-              .sideMenu__content__arrow {
-                transform: rotate(-90deg);
-              }
-            }
-
             .title {
               display    : flex;
               align-items: center;
@@ -352,7 +339,7 @@
           }
 
           &__arrow {
-            transition: $transition_short;
+            transform: rotate(-90deg);
           }
 
           &__subscribe,
@@ -451,7 +438,7 @@
             }
 
             i {
-              left: 82%;
+              left: 140px;
             }
 
             label.container {
@@ -516,17 +503,10 @@
                   padding        : $content-size_left-right/1.5 0;
                   border-bottom  : $color_border solid 1px;
                   font-size      : 1.2rem;
-
-                  &:hover,
-                  &.active {
-                    .item-categories__arrow {
-                      transform: rotate(-90deg);
-                    }
-                  }
                 }
 
                 &__arrow {
-                  transition: $transition_short;
+                  transform: rotate(-90deg);
                 }
 
                 &__list {

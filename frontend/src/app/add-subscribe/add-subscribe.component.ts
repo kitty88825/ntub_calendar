@@ -26,6 +26,7 @@ export class AddSubscribeComponent implements OnInit {
   subCalendar = new FormData();
   unSubCalendar = new FormData();
   isCollapsed = false;
+  isClose = false;
   isTrue = false;
   isOpen = false;
   searchText = '';

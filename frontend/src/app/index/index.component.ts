@@ -35,7 +35,6 @@ export class IndexComponent implements OnInit {
   selectMonth: number;
   eventsYear = [];
   eventsMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  publicEvents = [];
   publicCalendar = [];
   showEvents = [];
   views = { current: '1' };
@@ -121,30 +120,18 @@ export class IndexComponent implements OnInit {
       }
     );
 
+    this.showEventsChange();
+    this.showEventsSort();
+    this.loading = false;
+
     this.eventService.fGetEvents().subscribe(
       data => {
         data.forEach(event => {
-          this.publicEvents.push({
-            id: event.id, title: event.title, start: event.startAt, participants: event.eventparticipantSet,
-            end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
-            endDate: event.endAt.substr(0, 10), description: event.description, sTime: event.startAt.substring(11, 16),
-            eTime: event.endAt.substring(11, 16), files: event.attachments,
-            backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
-            mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name
-          });
+          this.eventsYear.push(event.startAt.substr(0, 4));
         });
 
-        this.calendarEvents = this.publicEvents;
-
-        this.publicEvents.forEach(event => {
-          this.eventsYear.push(event.startDate.substr(0, 4));
-        });
-
-        this.showEventsChange();
-        this.showEventsSort();
         this.eventsYearFilter();
         this.eventYearSort();
-        this.loading = false;
 
         if (localStorage.getItem('url') !== null && localStorage.getItem('url').length !== 0) {
           Swal.fire({
@@ -285,11 +272,39 @@ export class IndexComponent implements OnInit {
   }
 
   showEventsChange() {
-    this.publicEvents.forEach(event => {
-      if (event.startDate.substr(0, 4) === this.selectYear && Number(event.startDate.substr(5, 2)) === Number(this.selectMonth)) {
-        this.showEvents.push(event);
-      }
-    });
+    if (this.selectMonth > 9) {
+      this.eventService.fGetEventsTime(this.selectYear + '-' + String(this.selectMonth)).subscribe(
+        data => {
+          data.forEach(event => {
+            this.showEvents.push({
+              id: event.id, title: event.title, start: event.startAt, participants: event.eventparticipantSet,
+              end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
+              endDate: event.endAt.substr(0, 10), description: event.description, sTime: event.startAt.substring(11, 16),
+              eTime: event.endAt.substring(11, 16), files: event.attachments,
+              backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
+              mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name
+            });
+            this.calendarEvents = this.showEvents;
+
+          });
+        });
+    } else if (this.selectMonth <= 9) {
+      this.eventService.fGetEventsTime(this.selectYear + '-0' + String(this.selectMonth)).subscribe(
+        data => {
+          data.forEach(event => {
+            this.showEvents.push({
+              id: event.id, title: event.title, start: event.startAt, participants: event.eventparticipantSet,
+              end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
+              endDate: event.endAt.substr(0, 10), description: event.description, sTime: event.startAt.substring(11, 16),
+              eTime: event.endAt.substring(11, 16), files: event.attachments,
+              backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
+              mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name
+            });
+          });
+          this.calendarEvents = this.showEvents;
+
+        });
+    }
   }
 
   toggleColours(): void {

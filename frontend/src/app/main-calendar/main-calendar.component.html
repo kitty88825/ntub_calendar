@@ -124,13 +124,13 @@
                 <h1>非公開行事曆</h1>
               </div>
               <div class="form-group row">
-                <i class="material-icons sideMenu__content__arrow" (click)="isCollapsed = !isCollapsed"
-                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                <i class="material-icons sideMenu__content__arrow" (click)="isPrivate = !isPrivate"
+                  [attr.aria-expanded]="!isPrivate" aria-controls="collapseBasic">
                   arrow_left
                 </i>
               </div>
             </div>
-            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+            <div id="collapseBasic" [collapse]="isPrivate" [isAnimated]="true">
               <ul class="sideMenu__content__list">
                 <li *ngFor="let sub of privateCalendar; let i = index">
                   <label class="container">

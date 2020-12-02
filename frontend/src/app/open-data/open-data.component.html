@@ -95,7 +95,7 @@
   <div class="right">
     <app-navbar *ngIf="loggin === 'true'"></app-navbar>
     <header class="header__unlogin" *ngIf="loggin === null">
-      <h1 class="header__unlogin__title" [routerLink]="['/index']">
+      <h1 class="header__unlogin__title" [routerLink]="['']">
         <i class="header__unlogin__icon">
           <img src="../../assets/images/一訂行_湖水綠.png">
         </i>
@@ -105,7 +105,7 @@
       </h1>
       <nav class="header__unlogin__navbar">
         <div class="header__unlogin__person">
-          <div class="header__unlogin__avatar" [routerLink]="['/index']">回首頁</div>
+          <div class="header__unlogin__avatar" [routerLink]="['']">回首頁</div>
         </div>
       </nav>
     </header>

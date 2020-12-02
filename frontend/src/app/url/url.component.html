@@ -8,16 +8,15 @@
       <div class="sideMenu__content">
         <ul class="item-categories">
           <li>
-            <div class="item-categories__title active">
+            <div class="item-categories__title">
               我的訂閱
               <div class="form-group row">
-                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                <i class="material-icons item-categories__arrow">
                   arrow_left
                 </i>
               </div>
             </div>
-            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+            <div class="info">
               <ul class="item-categories__list">
                 <li *ngFor="let sub of subCalendar">
                   <label class="container">
@@ -43,16 +42,15 @@
       <aside class="aside">
         <ul class="item-categories">
           <li>
-            <div class="item-categories__title active">
+            <div class="item-categories__title">
               我的訂閱
               <div class="form-group row">
-                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                <i class="material-icons item-categories__arrow">
                   arrow_left
                 </i>
               </div>
             </div>
-            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+            <div class="info">
               <ul class="item-categories__list">
                 <li *ngFor="let sub of subCalendar">
                   <label class="container">

@@ -135,6 +135,7 @@
 
             i {
               position: relative;
+              cursor  : unset;
               left    : -30px;
             }
           }
@@ -185,8 +186,7 @@
         .item-categories {
 
           i {
-            color : $color_icon;
-            cursor: pointer;
+            color: $color_icon;
           }
 
 
@@ -197,17 +197,10 @@
             padding        : $content-size_left-right/1.5 0;
             border-bottom  : $color_border solid 1px;
             font-size      : 1.2rem;
-
-            &:hover,
-            &.active {
-              .item-categories__arrow {
-                transform: rotate(-90deg);
-              }
-            }
           }
 
           &__arrow {
-            transition: $transition_short;
+            transform: rotate(-90deg);
           }
 
           &__list {
@@ -220,12 +213,12 @@
               display    : inline-flex;
               align-items: center;
               padding    : $content-size_top-bottom/2 0;
-              cursor     : pointer;
             }
           }
 
           &__checkbox {
             margin-right: $content-size_left-right/2;
+            cursor      : pointer;
           }
 
           &__status {
@@ -257,6 +250,7 @@
         transform     : translateX(-100%);
         transition    : 0.4s;
         z-index       : 1000;
+        font-size     : 15.6px;
 
         label.close {
           display    : block;
@@ -266,7 +260,7 @@
           right      : 10%;
           top        : 3%;
           line-height: 40px;
-          transform: rotate(180deg);
+          transform  : rotate(180deg);
           text-align : center;
 
           i {
@@ -294,17 +288,10 @@
               padding        : $content-size_left-right/1.5 0;
               border-bottom  : $color_border solid 1px;
               font-size      : 1.2rem;
-
-              &:hover,
-              &.active {
-                .item-categories__arrow {
-                  transform: rotate(-90deg);
-                }
-              }
             }
 
             &__arrow {
-              transition: $transition_short;
+              transform: rotate(-90deg);
             }
 
             &__list {

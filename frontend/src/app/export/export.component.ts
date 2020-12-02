@@ -147,14 +147,13 @@ export class ExportComponent implements OnInit {
   }
 
   async savePdf(main: HTMLElement) {
-    for (let i = 0; i < 2; i++) {
-      await new Promise(resolve => {
-        setTimeout(() => {
-          main.scrollIntoView();
-          resolve();
-        }, 500);
-      });
-    }
+    this.loading = !this.loading;
+    await new Promise(resolve => {
+      setTimeout(() => {
+        main.scrollIntoView();
+        resolve();
+      }, 500);
+    });
     html2canvas(this.screen.nativeElement).then(canvas => {
       const pageWidth = 841.89;
       const pageHeight = 592.28;
@@ -181,7 +180,8 @@ export class ExportComponent implements OnInit {
           }
         }
       }
-      pdf.save('demo.pdf');
+      this.loading = !this.loading;
+      pdf.save('台北商業大學' + this.setYear + '.pdf');
     });
   }
 

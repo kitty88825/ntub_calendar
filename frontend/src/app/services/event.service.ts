@@ -31,6 +31,15 @@ export class EventService {
     return this.http.get<Event[]>(environment.serverIp + 'event/events');
   }
 
+  fGetEventsTime(time: any): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?time=' + time + '-01T00%3A00%3A00%2B08%3A00');
+  }
+
+  getEventsTime(time: any): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?time=' + time + '-01T00%3A00%3A00%2B08%3A00'
+      , { headers: this.reqHeader });
+  }
+
   getEvents(): Observable<Event[]> {
     return this.http.get<Event[]>(environment.serverIp + 'event/events', { headers: this.reqHeader });
   }
@@ -60,11 +69,11 @@ export class EventService {
   }
 
   postSuggestTime(formData: any): Observable<any> {
-    return this.http.post<any>(environment.serverIp + 'event/events/suggested_time', formData, {headers: this.reqHeader});
+    return this.http.post<any>(environment.serverIp + 'event/events/suggested_time', formData, { headers: this.reqHeader });
   }
 
   postEventResponse(id: number, formData: any): Observable<any> {
-    return this.http.post<any>(environment.serverIp + 'event/events/' + id + '/response', formData, {headers: this.reqHeader});
+    return this.http.post<any>(environment.serverIp + 'event/events/' + id + '/response', formData, { headers: this.reqHeader });
   }
 
 }

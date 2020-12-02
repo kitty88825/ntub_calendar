@@ -186,37 +186,45 @@
               <div class="participant__block__all">
                 <ul>
                   <li *ngFor="let participant of lookParticipants">
-                    <h5>{{participant.user}}</h5>
-                    <div class="resBtn"
+                    <div class="user">
+                      <h5>{{participant.user}}</h5>
+                      <div class="resBtn"
+                        *ngIf="participant.user === myEmail && participant.response === 'no_reply' && noRes === true">
+                        <div class="yes btn" (click)="setCurrent(1); changeResponse()">參加</div>
+                        <div class="no btn" (click)="setCurrent(2); changeResponse()">拒絕</div>
+                        <div class="maybe btn" (click)="setCurrent(3); changeResponse()">不確定</div>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'maybe'">
+                        <i class="maybe material-icons">
+                          info
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'creator'">
+                        <i class="creator material-icons">
+                          person
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'no_reply'">
+                        <i class="noresponse material-icons">
+                          remove_circle
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'decline'">
+                        <i class="deny material-icons">
+                          highlight_off
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'accept'">
+                        <i class="attend material-icons">
+                          done_all
+                        </i>
+                      </div>
+                    </div>
+                    <div class="resBtn_small"
                       *ngIf="participant.user === myEmail && participant.response === 'no_reply' && noRes === true">
                       <div class="yes btn" (click)="setCurrent(1); changeResponse()">參加</div>
                       <div class="no btn" (click)="setCurrent(2); changeResponse()">拒絕</div>
                       <div class="maybe btn" (click)="setCurrent(3); changeResponse()">不確定</div>
-                    </div>
-                    <div class="response" *ngIf="participant.response === 'maybe'">
-                      <i class="maybe material-icons">
-                        info
-                      </i>
-                    </div>
-                    <div class="response" *ngIf="participant.response === 'creator'">
-                      <i class="creator material-icons">
-                        person
-                      </i>
-                    </div>
-                    <div class="response" *ngIf="participant.response === 'no_reply'">
-                      <i class="noresponse material-icons">
-                        remove_circle
-                      </i>
-                    </div>
-                    <div class="response" *ngIf="participant.response === 'decline'">
-                      <i class="deny material-icons">
-                        highlight_off
-                      </i>
-                    </div>
-                    <div class="response" *ngIf="participant.response === 'accept'">
-                      <i class="attend material-icons">
-                        done_all
-                      </i>
                     </div>
                   </li>
                 </ul>

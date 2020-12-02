@@ -138,11 +138,11 @@
               &__file {
 
                 .allFiles {
-                  width        : 300px;
-                  height       : fit-content;
-                  padding      : $content-size_top-bottom/2 $content-size_left-right/2;
-                  overflow     : auto;
-                  margin-left  : $content-size_left-right;
+                  width      : 300px;
+                  height     : fit-content;
+                  padding    : $content-size_top-bottom/2 $content-size_left-right/2;
+                  overflow   : auto;
+                  margin-left: $content-size_left-right;
 
                   a {
                     color: $color_accent;
@@ -200,20 +200,25 @@
                 padding      : $content-size_top-bottom $content-size_left-right;
 
                 li {
-                  margin-top : $content-size_top-bottom/2;
-                  display    : flex;
-                  align-items: center;
+                  margin-top: $content-size_top-bottom/2;
 
-                  .response {
-                    width      : 20px;
-                    margin-left: auto;
+                  .user {
+                    display    : flex;
+                    align-items: center;
 
-                    i.attend {
-                      margin-left: $content-size_left-right/2;
+                    .response {
+                      width      : 20px;
+                      margin-left: auto;
+
+                      i.attend {
+                        margin-left: $content-size_left-right/2;
+                      }
                     }
+
                   }
 
-                  .resBtn {
+                  .resBtn,
+                  .resBtn_small {
                     display    : flex;
                     align-items: center;
                     font-size  : 13px;
@@ -243,6 +248,11 @@
                     .maybe {
                       margin-left: $content-size_left-right/2;
                     }
+                  }
+
+
+                  .resBtn_small {
+                    display: none;
                   }
                 }
               }
@@ -499,6 +509,7 @@
         transform     : translateX(-100%);
         transition    : 0.4s;
         z-index       : 1000;
+        font-size     : 15.6px;
 
         label.close {
           display    : block;
@@ -738,6 +749,10 @@
                 .resBtn {
                   display: none !important;
                 }
+
+                .resBtn_small {
+                  display: block !important;
+                }
               }
             }
           }
@@ -783,10 +798,10 @@
       }
 
       .calendar_dialog {
-        width: 90%;
-        margin-left: 5%;
+        width       : 90%;
+        margin-left : 5%;
         margin-right: 5%;
-        margin-top: 25%;
+        margin-top  : 25%;
 
         .notsure {
           width: 35% !important;

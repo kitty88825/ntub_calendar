@@ -23,7 +23,6 @@ export class URLComponent implements OnInit {
   url = '';
   userEmail = '';
   formData = new FormData();
-  isCollapsed = false;
   isTrue = false;
   isOpen = false;
   subCalendarId = [];

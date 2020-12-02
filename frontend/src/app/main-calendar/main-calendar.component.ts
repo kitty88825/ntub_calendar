@@ -301,42 +301,18 @@ export class MainCalendarComponent implements OnInit {
       }
     );
 
+    this.showEventsChange();
+    this.showEventsSort();
+
+    this.loading = false;
+
     this.eventService.getEvents().subscribe(
       data => {
         data.forEach(event => {
-          this.events.push({
-            id: event.id, title: event.title, start: event.startAt, calendar: event.eventinvitecalendarSet,
-            end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
-            endDate: event.endAt.substr(0, 10), description: event.description,
-            backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
-            sTime: event.startAt.substring(11, 16), eTime: event.endAt.substring(11, 16),
-            participants: event.eventparticipantSet, files: event.attachments, permission: false,
-            isChecked: false, mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name
-          });
-        });
-
-        this.calendarEvents = this.events;
-
-        this.events.forEach(event => {
-          this.eventsYear.push(event.startDate.substr(0, 4));
-        });
-
-        this.group.forEach(group => {
-          this.events.forEach(event => {
-            if (event.calendar[0].mainCalendar.permissions.length !== 0 &&
-              Number(group) === event.calendar[0].mainCalendar.permissions[0].group &&
-              this.role === event.calendar[0].mainCalendar.permissions[0].role &&
-              event.calendar[0].mainCalendar.permissions[0].authority === 'write') {
-              event.permission = true;
-            }
-          });
+          this.eventsYear.push(event.startAt.substr(0, 4));
         });
 
         this.eventsYearFilter();
-        this.showEventsChange();
-        this.showEventsSort();
-
-        this.loading = false;
       }
     );
 
@@ -540,19 +516,79 @@ export class MainCalendarComponent implements OnInit {
 
   showEventsChange() {
     this.isShowCheckAll = false;
-    this.events.forEach(event => {
-      if (event.startDate.substr(0, 4) === this.selectYear
-        && Number(event.startDate.substr(5, 2)) === this.selectMonth) {
-        this.showEvents.push(event);
-      }
-    });
-    this.showEventsSort();
+    if (this.selectMonth > 9) {
+      this.eventService.getEventsTime(this.selectYear + '-' + String(this.selectMonth)).subscribe(
+        data => {
+          data.forEach(event => {
+            this.showEvents.push({
+              id: event.id, title: event.title, start: event.startAt, participants: event.eventparticipantSet,
+              end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
+              endDate: event.endAt.substr(0, 10), description: event.description, sTime: event.startAt.substring(11, 16),
+              eTime: event.endAt.substring(11, 16), files: event.attachments,
+              backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
+              mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name,
+              calendar: event.eventinvitecalendarSet
+            });
+            console.log(this.showEvents);
+            this.calendarEvents = this.showEvents;
+          });
 
-    this.showEvents.forEach(event => {
-      if (event.permission === true) {
-        this.isShowCheckAll = true;
-      }
-    });
+          this.group.forEach(group => {
+            this.showEvents.forEach(event => {
+              if (event.calendar[0].mainCalendar.permissions.length !== 0 &&
+                Number(group) === event.calendar[0].mainCalendar.permissions[0].group &&
+                this.role === event.calendar[0].mainCalendar.permissions[0].role &&
+                event.calendar[0].mainCalendar.permissions[0].authority === 'write') {
+                event.permission = true;
+              }
+            });
+          });
+
+          this.showEventsSort();
+
+          this.showEvents.forEach(event => {
+            if (event.permission === true) {
+              this.isShowCheckAll = true;
+            }
+          });
+        });
+    } else if (this.selectMonth <= 9) {
+      this.eventService.getEventsTime(this.selectYear + '-0' + String(this.selectMonth)).subscribe(
+        data => {
+          data.forEach(event => {
+            this.showEvents.push({
+              id: event.id, title: event.title, start: event.startAt, participants: event.eventparticipantSet,
+              end: event.endAt, startDate: event.startAt.substr(0, 10), location: event.location,
+              endDate: event.endAt.substr(0, 10), description: event.description, sTime: event.startAt.substring(11, 16),
+              eTime: event.endAt.substring(11, 16), files: event.attachments,
+              backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
+              mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name,
+              calendar: event.eventinvitecalendarSet
+            });
+          });
+          console.log(this.showEvents);
+          this.calendarEvents = this.showEvents;
+
+          this.group.forEach(group => {
+            this.showEvents.forEach(event => {
+              if (event.calendar[0].mainCalendar.permissions.length !== 0 &&
+                Number(group) === event.calendar[0].mainCalendar.permissions[0].group &&
+                this.role === event.calendar[0].mainCalendar.permissions[0].role &&
+                event.calendar[0].mainCalendar.permissions[0].authority === 'write') {
+                event.permission = true;
+              }
+            });
+          });
+
+          this.showEventsSort();
+
+          this.showEvents.forEach(event => {
+            if (event.permission === true) {
+              this.isShowCheckAll = true;
+            }
+          });
+        });
+    }
   }
 
 
