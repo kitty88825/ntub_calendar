@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import environ
+import logging
+import sys
 
 from datetime import timedelta
 
@@ -205,3 +207,6 @@ Q_CLUSTER = {
 
 # Telgram bot settings
 TG_TOKEN = env('TG_TOKEN')
+
+if DEBUG:
+    logging.basicConfig(stream=sys.stderr)
