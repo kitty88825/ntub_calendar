@@ -290,6 +290,7 @@
     height : 100vh;
 
     .left {
+
       .sideMenu {
         width         : 270px;
         display       : flex;
@@ -321,6 +322,7 @@
 
         &__content {
           overflow: auto;
+          margin-top: $content-size_top-bottom;
           padding : $content-size_top-bottom $content-size_left-right;
 
           &__list {

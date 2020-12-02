@@ -53,7 +53,7 @@ export class MainCalendarComponent implements OnInit {
   IsLoadingEnd: boolean;
   Loading: boolean;
   showEvents = [];
-  allPermission = localStorage.getItem('permission');
+  allPermission = '';
   permission: boolean;
   lookEvent = { id: 0, title: '' };
   options;
@@ -281,6 +281,11 @@ export class MainCalendarComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(
       result => {
         result.forEach(calendar => {
+          calendar.permissions.forEach(permission => {
+            if (this.group.includes(permission.group) && this.role === permission.role && permission.authority === 'write') {
+              this.allPermission = 'true';
+            }
+          });
           if (calendar.display === 'public') {
             this.publicCalendar.push({
               id: calendar.id, name: calendar.name,

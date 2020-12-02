@@ -327,6 +327,7 @@
 
         &__content {
           overflow: auto;
+          margin-top: $content-size_top-bottom;
           padding : $content-size_top-bottom $content-size_left-right;
 
           &__list {

@@ -937,6 +937,7 @@
         }
 
         &__content {
+          margin-top: $content-size_top-bottom;
           overflow: auto;
           padding : $content-size_top-bottom $content-size_left-right;
 
