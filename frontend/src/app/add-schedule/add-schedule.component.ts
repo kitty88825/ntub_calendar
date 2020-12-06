@@ -286,6 +286,8 @@ export class AddScheduleComponent implements OnInit {
             }).then((result) => {
               if (result.value) {
                 this.router.navigate(['/calendar']);
+              } else {
+                window.location.reload();
               }
             });
           },
@@ -300,8 +302,10 @@ export class AddScheduleComponent implements OnInit {
               confirmButtonText: '返回首頁',
               cancelButtonText: '再添一筆'
             }).then((result) => {
-              if (result.value) {
+              if (result.value === true) {
                 this.router.navigate(['/calendar']);
+              } else {
+                window.location.reload();
               }
             });
           }

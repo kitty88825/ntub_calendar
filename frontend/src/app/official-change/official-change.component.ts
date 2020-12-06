@@ -147,10 +147,7 @@ export class OfficialChangeComponent implements OnInit {
   dataTrue() {
     this.istrue = 0;
     this.datas.forEach(event => {
-      if (typeof event[0] === 'string' && event[2].length === 10 &&
-        event[3].length === 10 && event[3].toUpperCase() >= event[2].toUpperCase()) {
-        this.istrue = this.istrue + 1;
-      } else {
+      if (event[0] === undefined || event[2] === undefined || event[3] === undefined) {
         Swal.fire({
           text: '請輸入正確資料',
           icon: 'error',
@@ -167,10 +164,40 @@ export class OfficialChangeComponent implements OnInit {
             }).then((res) => {
               if (res.value === true) {
                 this.router.navigate(['/user-teach']);
+              } else {
+                window.location.reload();
               }
             });
           }
         });
+      } else {
+        if (typeof event[0] === 'string' && event[2].length === 10 &&
+          event[3].length === 10 && event[3].toUpperCase() >= event[2].toUpperCase()) {
+          this.istrue = this.istrue + 1;
+        } else {
+          Swal.fire({
+            text: '請輸入正確資料',
+            icon: 'error',
+          }).then((result) => {
+            if (result.value === true) {
+              Swal.fire({
+                text: '是否前往使用教學查看正確格式?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: '確定',
+                cancelButtonText: '取消'
+              }).then((res) => {
+                if (res.value === true) {
+                  this.router.navigate(['/user-teach']);
+                } else {
+                  window.location.reload();
+                }
+              });
+            }
+          });
+        }
       }
     });
   }
