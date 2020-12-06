@@ -10,7 +10,10 @@ import Swal from 'sweetalert2';
 export class UserTeachComponent implements OnInit {
 
   data = { current: '1' };
+  isCollapsed: boolean;
+  isTrue: boolean;
   loggin = '';
+  permission = localStorage.getItem('permission');
 
   constructor(
     private router: Router

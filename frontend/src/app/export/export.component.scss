@@ -425,10 +425,25 @@
             margin-left: 4%;
           }
         }
+
+        .background {
+          display         : none;
+          position        : fixed;
+          z-index         : 999;
+          background-color: rgba($color: $color_text, $alpha: 0.5);
+          width           : 100%;
+          height          : 100vh;
+          top             : 0;
+          margin-left     : 270px;
+        }
       }
 
       #sideMenu-active:checked+.sideMenu {
         transform: translateX(0);
+
+        .background {
+          display: block;
+        }
       }
 
       label.open {

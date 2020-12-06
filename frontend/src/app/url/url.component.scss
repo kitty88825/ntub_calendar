@@ -125,7 +125,6 @@
 
             input.searchbox {
               width      : 250px;
-              margin-left: auto;
             }
 
             input.searchbox:hover,
@@ -136,7 +135,8 @@
             i {
               position: relative;
               cursor  : unset;
-              left    : -30px;
+              margin-left: auto;
+              left: 240px;
             }
           }
 
@@ -271,6 +271,8 @@
         }
 
         &__content {
+          overflow: auto;
+          margin-top: $content-size_top-bottom;
           padding: $content-size_top-bottom $content-size_left-right;
 
           .item-categories {
@@ -319,12 +321,122 @@
             }
 
           }
+
+          &__list {
+            display  : flex;
+            flex-flow: column;
+            padding  : $content-size_left-right/2 0;
+
+            li {
+              display    : inline-flex;
+              align-items: center;
+              padding    : $content-size_left-right/2 0;
+              cursor     : pointer;
+            }
+          }
+
+          &__item {
+            flex       : auto;
+            margin-left: $content-size_left-right/2;
+          }
+
+          &__status {
+            width        : 10px;
+            height       : 10px;
+            border-radius: 50%;
+          }
+
+          &__title {
+            display        : flex;
+            align-items    : center;
+            justify-content: space-between;
+            padding        : $content-size_left-right/1.5 0;
+            border-bottom  : $color_border solid 1px;
+            font-size      : 1.2rem;
+            margin-top     : $content-size_top-bottom;
+
+            &:hover,
+            &.active {
+              .sideMenu__content__arrow {
+                transform: rotate(-90deg);
+              }
+            }
+
+            .title {
+              display    : flex;
+              align-items: center;
+
+              h1 {
+                margin-left: $content-size_left-right/2;
+              }
+            }
+          }
+
+          &__arrow {
+            transition: $transition_short;
+          }
+
+          &__subscribe,
+          &__userTeach {
+            display         : flex;
+            align-items     : center;
+            width           : 100%;
+            justify-content : center;
+            padding         : $content-size_top-bottom $content-size_left-right;
+            background-color: $color_accent;
+            border-radius   : 5px;
+            color           : white;
+            letter-spacing  : 1px;
+
+            i {
+              color: white;
+            }
+
+            span {
+              margin-left: $content-size_left-right/2;
+            }
+          }
+
+          &__userTeach {
+            margin-top: $content-size_top-bottom/2;
+          }
+
+          &__add {
+            display         : flex;
+            align-items     : center;
+            width           : 48%;
+            justify-content : center;
+            padding         : $content-size_top-bottom $content-size_left-right;
+            background-color: $color_accent;
+            border-radius   : 5px;
+            color           : white;
+            letter-spacing  : 1px;
+          }
+
+          &__add:nth-child(2) {
+            margin-left: 4%;
+          }
+        }
+
+        .background {
+          display         : none;
+          position        : fixed;
+          z-index         : 999;
+          background-color: rgba($color: $color_text, $alpha: 0.5);
+          width           : 100%;
+          height          : 100vh;
+          top             : 0;
+          margin-left     : 270px;
         }
 
       }
 
       #sideMenu-active:checked+.sideMenu {
         transform: translateX(0);
+
+        .background {
+          display: block;
+        }
       }
 
       label.open {
@@ -397,8 +509,12 @@
             }
 
             input {
-              width    : 170px;
+              width    : 170px !important;
               font-size: 13px;
+            }
+
+            i {
+              left: 165px !important;
             }
           }
 
