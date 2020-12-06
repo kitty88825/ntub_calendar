@@ -12,9 +12,9 @@ from app.users.models import User
 from app.calendars.models import Calendar
 
 from .models import TelegramBot
-from .serializers import GetSerializer, CalendarSerializer, MeetingDetailSerializer
+from .serializers import GetSerializer, CalendarSerializer, MeetingDetailSerializer  # noqa 501
 
-from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton  # noqa 501
 
 
 # timezone
@@ -158,7 +158,7 @@ def meeting(update, context):
             i = i.replace('editors', '(會議發起人)')
             i = i.replace('role:', '')
             i = i.replace('participants', '')
-            i = i.replace( ", response:",':')
+            i = i.replace(", response:", ':')
             i = i.replace('accept', '參加')
             i = i.replace('maybe', '不確定')
             i = i.replace('no_reply', '未回應')
@@ -170,7 +170,10 @@ def meeting(update, context):
             ]
 
             reply_markup = InlineKeyboardMarkup(keyboard)
-            context.bot.send_message(chat_id=chat_id, text=i, reply_markup=reply_markup)
+            context.bot.send_message(
+                chat_id=chat_id,text=i,
+                reply_markup=reply_markup
+            )
 
     else:
         context.bot.send_message(chat_id, '目前沒有已參與會議~')
@@ -249,7 +252,7 @@ def meeting_callback(update, context):
         data[0] = data[0].replace('editors', '(會議發起人)')
         data[0] = data[0].replace('role:', '')
         data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace(", response:", ':')
         data[0] = data[0].replace('accept', '參加')
         data[0] = data[0].replace('maybe', '不確定')
         data[0] = data[0].replace('no_reply', '未回應')
@@ -293,7 +296,7 @@ def meeting_callback(update, context):
         data[0] = data[0].replace('editors', '(會議發起人)')
         data[0] = data[0].replace('role:', '')
         data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace(", response:", ':')
         data[0] = data[0].replace('accept', '參加')
         data[0] = data[0].replace('maybe', '不確定')
         data[0] = data[0].replace('no_reply', '未回應')
@@ -342,7 +345,7 @@ def meeting_callback(update, context):
         data[0] = data[0].replace('editors', '(會議發起人)')
         data[0] = data[0].replace('role:', '')
         data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace(", response:", ':')
         data[0] = data[0].replace('accept', '參加')
         data[0] = data[0].replace('maybe', '不確定')
         data[0] = data[0].replace('no_reply', '未回應')
@@ -444,5 +447,8 @@ def calendarSubscribe(update, context):
             data = data.replace(' ', '')
             data = data.replace(',', '\n')
 
-        context.bot.send_message(chat_id, text='如過想再訂閱請用 /calendar', reply_markup=ReplyKeyboardRemove())
+        context.bot.send_message(
+            chat_id, text='如過想再訂閱請用 /calendar',
+            reply_markup=ReplyKeyboardRemove()
+        )
         context.bot.send_message(chat_id, text=f'已經訂閱的行事曆：\n{data}')
