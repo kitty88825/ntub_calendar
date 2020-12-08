@@ -1,6 +1,9 @@
 # OSX file
 .DS_Store
 
+# Database files
+db/*
+
 # Static files
 */assets/*
 !assets/.gitkeep
