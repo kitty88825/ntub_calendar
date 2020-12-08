@@ -1,13 +1,14 @@
 import json
 import datetime
 
-from .models import TelegramBot
 from django.db.models import Q
-from app.events.models import Event, EventParticipant
-from app.users.models import User
-from .serializers import GetSerializer, MeetingDetailSerializer
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
+from .models import TelegramBot
+from .serializers import GetSerializer, MeetingDetailSerializer
+from .callbacks import meeting_handle, event_handle
+from app.events.models import Event, EventParticipant
+
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 def today(bot):
@@ -34,11 +35,7 @@ def today(bot):
 
         if data:
             for i in data:
-                i['行程'] = i.pop('title')
-                i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
-                i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')  # noqa 501
-                i['備註'] = i.pop('description')
-                i['地點'] = i.pop('location')
+                event_handle(i)
 
             data = json.dumps(data, ensure_ascii=False)
             data = data.replace('"', '')
@@ -78,30 +75,7 @@ def invite_meeting(bot, event_id):
         serializer = MeetingDetailSerializer(event, many=True)
         data = json.loads(json.dumps(serializer.data))
 
-
-        data[0]['行程'] = data[0].pop('title')
-        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['備註'] = data[0].pop('description')
-        data[0]['地點'] = data[0].pop('location')
-        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
-
-        data[0] = json.dumps(data[0], ensure_ascii=False)
-        data[0] = data[0].replace('"', '')
-        data[0] = data[0].replace('[', '')
-        data[0] = data[0].replace(']', '')
-        data[0] = data[0].replace('}', '')
-        data[0] = data[0].replace('{', '')
-        data[0] = data[0].replace("user:", '')
-        data[0] = data[0].replace('editors', '(會議發起人)')
-        data[0] = data[0].replace('role:', '')
-        data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
-        data[0] = data[0].replace('accept', '參加')
-        data[0] = data[0].replace('maybe', '不確定')
-        data[0] = data[0].replace('no_reply', '未回應')
-        data[0] = data[0].replace('decline', '不參加')
-        data[0] = data[0].replace(',', '\n')
+        data[0] = meeting_handle(data[0])
 
         bot.send_message(chat[0].chat_id, '您收到一則會議邀請！')
         bot.send_message(chat_id=chat[0].chat_id, text=data[0], reply_markup=reply_markup)

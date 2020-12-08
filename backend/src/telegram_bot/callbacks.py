@@ -35,6 +35,18 @@ def text_after_command(update):
     return text[command_len:] if len(text) > command_len else ''
 
 
+def event_handle(i):
+    calendar_id = ''.join(str(c) for c in i['calendars'])
+    calendar = Calendar.objects.filter(id=calendar_id)
+    i['calendars'] = calendar[0].name
+    i['行程'] = i.pop('title')
+    i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
+    i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
+    i['備註'] = i.pop('description')
+    i['地點'] = i.pop('location')
+    i['行事曆'] = i.pop('calendars')
+
+
 def start(update, context):
     chat_id = update.message.chat.id
     context.bot.send_message(
@@ -81,16 +93,12 @@ def get_event(update, context):
                     Q(calendars__groups__user=get_id[0]) &
                     (
                         Q(title__contains=search) &
-                        Q(start_at__year__gte=datetime.date.today().year) &
-                        Q(start_at__month__gte=datetime.date.today().month) &
-                        Q(start_at__day__gte=datetime.date.today().day)
+                        Q(start_at__gte=datetime.date.today())
                     ) |
                     Q(participants=get_id[0]) &
                     (
                         Q(title__contains=search) &
-                        Q(start_at__year__gte=datetime.date.today().year) &
-                        Q(start_at__month__gte=datetime.date.today().month) &
-                        Q(start_at__day__gte=datetime.date.today().day)
+                        Q(start_at__gte=datetime.date.today())
                     )
                 ).distinct()
             if not event:
@@ -100,13 +108,8 @@ def get_event(update, context):
                 serializer = GetSerializer(event, many=True)
 
                 data = json.loads(json.dumps(serializer.data))
-
                 for i in data:
-                    i['行程'] = i.pop('title')
-                    i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
-                    i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
-                    i['備註'] = i.pop('description')
-                    i['地點'] = i.pop('location')
+                    i = event_handle(i)
 
                 data = json.dumps(data, ensure_ascii=False)
                 data = data.replace('"', '')
@@ -122,48 +125,56 @@ def get_event(update, context):
         context.bot.send_message(chat_id, '請先綁定!')
 
 
+def meeting_handle(i):
+    i['行程'] = i.pop('title')
+    i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
+    i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
+    i['備註'] = i.pop('description')
+    i['地點'] = i.pop('location')
+    i['參與人員'] = i.pop('eventparticipant_set')
+
+    i = json.dumps(i, ensure_ascii=False)
+    i = i.replace('"', '')
+    i = i.replace('[', '')
+    i = i.replace(']', '')
+    i = i.replace('}', '')
+    i = i.replace('{', '')
+    i = i.replace("user:", '')
+    i = i.replace('editors', '(會議發起人)')
+    i = i.replace('role:', '')
+    i = i.replace('participants', '')
+    i = i.replace(", response:", ':')
+    i = i.replace(',  : accept', ':參加')
+    i = i.replace('maybe', '不確定')
+    i = i.replace('no_reply', '未回應')
+    i = i.replace('decline', '不參加')
+    i = i.replace(',', '\n')
+    return i
+
+
 def meeting(update, context):
     chat_id = update.message.chat.id
     get_id = TelegramBot.objects.filter(chat_id=chat_id)
-
-    meeting = Event.objects.filter(
-        Q(nature='meeting'),
-        Q(eventparticipant__user_id=get_id[0].user_id) &
-        (
-            Q(start_at__year__gte=datetime.date.today().year) &
-            Q(start_at__month__gte=datetime.date.today().month) &
-            Q(start_at__day__gte=datetime.date.today().day)
-
+    search = text_after_command(update)
+    if search:
+        meeting = Event.objects.filter(
+            Q(nature='meeting'),
+            Q(eventparticipant__user_id=get_id[0].user_id),
+            Q(start_at__gte=datetime.date.today()),
+            Q(title__contains=search),
         )
-    )
+    else:
+        meeting = Event.objects.filter(
+            Q(nature='meeting'),
+            Q(eventparticipant__user_id=get_id[0].user_id),
+            Q(start_at__contains=datetime.date.today()),
+        )
     if meeting:
         serializer = MeetingDetailSerializer(meeting, many=True)
         data = json.loads(json.dumps(serializer.data))
 
         for i in data:
-            i['行程'] = i.pop('title')
-            i['開始時間'] = i.pop('start_at').replace('T', ' ').replace('+08:00', '')
-            i['結束時間'] = i.pop('end_at').replace('T', ' ').replace('+08:00', '')
-            i['備註'] = i.pop('description')
-            i['地點'] = i.pop('location')
-            i['參與人員'] = i.pop('eventparticipant_set')
-
-            i = json.dumps(i, ensure_ascii=False)
-            i = i.replace('"', '')
-            i = i.replace('[', '')
-            i = i.replace(']', '')
-            i = i.replace('}', '')
-            i = i.replace('{', '')
-            i = i.replace("user:", '')
-            i = i.replace('editors', '(會議發起人)')
-            i = i.replace('role:', '')
-            i = i.replace('participants', '')
-            i = i.replace(", response:", ':')
-            i = i.replace('accept', '參加')
-            i = i.replace('maybe', '不確定')
-            i = i.replace('no_reply', '未回應')
-            i = i.replace('decline', '不參加')
-            i = i.replace(',', '\n')
+            i = meeting_handle(i)
 
             keyboard = [
                 [InlineKeyboardButton('修改出席狀態', callback_data='1')]
@@ -171,37 +182,51 @@ def meeting(update, context):
 
             reply_markup = InlineKeyboardMarkup(keyboard)
             context.bot.send_message(
-                chat_id=chat_id,text=i,
-                reply_markup=reply_markup
+                chat_id=chat_id,
+                text=i,
+                reply_markup=reply_markup,
             )
+        search_keyboard = [
+            [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
+            [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
+            [InlineKeyboardButton('查看一個月內的會議', callback_data='30天')],
+        ]
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='如果需要查詢其他日期的會議請點選以下按鈕',
+            reply_markup=InlineKeyboardMarkup(search_keyboard),
+        )
 
     else:
-        context.bot.send_message(chat_id, '目前沒有已參與會議~')
+        context.bot.send_message(chat_id, '沒有找到已參與會議或是近期會議~')
 
 
 def meeting_callback(update, context):
-    chat_id = update.callback_query.message.chat_id
-    text = update.callback_query.message.text
-    text = text.replace('行程:', '')
-    text = text.replace('開始時間:', '')
-    text = text.replace('結束時間:', '')
-    text = text.replace('備註:', '')
-    text = text.replace('地點:', '')
-    text = text.replace('參與人員:', '')
-    text = text.replace(' ', '')
-    text = text.replace('(會議發起人)', '')
-    text = text.replace('不參加:', '')
-    text = text.replace('參加', '')
-    text = text.replace('不確定:', '')
-
-    text = text.split('\n')
-    event = Event.objects.filter(
-        Q(title=text[0]) &
-        Q(start_at__date=dt.strptime(text[1], '%Y-%m-%d%H:%M:%S')) &
-        Q(end_at__date=dt.strptime(text[2], '%Y-%m-%d%H:%M:%S'))
-    )
-
     query = update.callback_query.data
+
+    chat_id = update.callback_query.message.chat_id
+
+    if query == '2' or query == '3' or query == '4':
+        text = update.callback_query.message.text
+        text = text.replace('行程:', '')
+        text = text.replace('開始時間:', '')
+        text = text.replace('結束時間:', '')
+        text = text.replace('備註:', '')
+        text = text.replace('地點:', '')
+        text = text.replace('參與人員:', '')
+        text = text.replace(' ', '')
+        text = text.replace('(會議發起人)', '')
+        text = text.replace('不參加:', '')
+        text = text.replace('參加', '')
+        text = text.replace('不確定:', '')
+
+        text = text.split('\n')
+        event = Event.objects.filter(
+            Q(title=text[0]) &
+            Q(start_at__date=dt.strptime(text[1], '%Y-%m-%d%H:%M:%S')) &
+            Q(end_at__date=dt.strptime(text[2], '%Y-%m-%d%H:%M:%S'))
+        )
+
     if query == '1':
         reply_markup = InlineKeyboardMarkup(
             [
@@ -235,29 +260,7 @@ def meeting_callback(update, context):
         serializer = MeetingDetailSerializer(event, many=True)
         data = json.loads(json.dumps(serializer.data))
 
-        data[0]['行程'] = data[0].pop('title')
-        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['備註'] = data[0].pop('description')
-        data[0]['地點'] = data[0].pop('location')
-        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
-
-        data[0] = json.dumps(data[0], ensure_ascii=False)
-        data[0] = data[0].replace('"', '')
-        data[0] = data[0].replace('[', '')
-        data[0] = data[0].replace(']', '')
-        data[0] = data[0].replace('}', '')
-        data[0] = data[0].replace('{', '')
-        data[0] = data[0].replace("user:", '')
-        data[0] = data[0].replace('editors', '(會議發起人)')
-        data[0] = data[0].replace('role:', '')
-        data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace(", response:", ':')
-        data[0] = data[0].replace('accept', '參加')
-        data[0] = data[0].replace('maybe', '不確定')
-        data[0] = data[0].replace('no_reply', '未回應')
-        data[0] = data[0].replace('decline', '不參加')
-        data[0] = data[0].replace(',', '\n')
+        data[0] = meeting_handle(data[0])
 
         context.bot.edit_message_reply_markup(
             chat_id=chat_id,
@@ -279,29 +282,7 @@ def meeting_callback(update, context):
         serializer = MeetingDetailSerializer(event, many=True)
         data = json.loads(json.dumps(serializer.data))
 
-        data[0]['行程'] = data[0].pop('title')
-        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['備註'] = data[0].pop('description')
-        data[0]['地點'] = data[0].pop('location')
-        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
-
-        data[0] = json.dumps(data[0], ensure_ascii=False)
-        data[0] = data[0].replace('"', '')
-        data[0] = data[0].replace('[', '')
-        data[0] = data[0].replace(']', '')
-        data[0] = data[0].replace('}', '')
-        data[0] = data[0].replace('{', '')
-        data[0] = data[0].replace("user:", '')
-        data[0] = data[0].replace('editors', '(會議發起人)')
-        data[0] = data[0].replace('role:', '')
-        data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace(", response:", ':')
-        data[0] = data[0].replace('accept', '參加')
-        data[0] = data[0].replace('maybe', '不確定')
-        data[0] = data[0].replace('no_reply', '未回應')
-        data[0] = data[0].replace('decline', '不參加')
-        data[0] = data[0].replace(',', '\n')
+        data[0] = meeting_handle(data[0])
 
         reply_markup = InlineKeyboardMarkup(
             [
@@ -328,29 +309,7 @@ def meeting_callback(update, context):
         serializer = MeetingDetailSerializer(event, many=True)
         data = json.loads(json.dumps(serializer.data))
 
-        data[0]['行程'] = data[0].pop('title')
-        data[0]['開始時間'] = data[0].pop('start_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['結束時間'] = data[0].pop('end_at').replace('T', ' ').replace('+08:00', '')
-        data[0]['備註'] = data[0].pop('description')
-        data[0]['地點'] = data[0].pop('location')
-        data[0]['參與人員'] = data[0].pop('eventparticipant_set')
-
-        data[0] = json.dumps(data[0], ensure_ascii=False)
-        data[0] = data[0].replace('"', '')
-        data[0] = data[0].replace('[', '')
-        data[0] = data[0].replace(']', '')
-        data[0] = data[0].replace('}', '')
-        data[0] = data[0].replace('{', '')
-        data[0] = data[0].replace("user:", '')
-        data[0] = data[0].replace('editors', '(會議發起人)')
-        data[0] = data[0].replace('role:', '')
-        data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace(", response:", ':')
-        data[0] = data[0].replace('accept', '參加')
-        data[0] = data[0].replace('maybe', '不確定')
-        data[0] = data[0].replace('no_reply', '未回應')
-        data[0] = data[0].replace('decline', '不參加')
-        data[0] = data[0].replace(',', '\n')
+        data[0] = meeting_handle(data[0])
 
         reply_markup = InlineKeyboardMarkup(
             [
@@ -363,6 +322,93 @@ def meeting_callback(update, context):
             reply_markup=reply_markup
         )
         context.bot.send_message(chat_id, f'已幫您修改出席狀態爲不參加\n{data[0]}')
+
+    elif query == '3天':
+        today = datetime.date.today()
+        end = today + datetime.timedelta(days=2)
+        user = TelegramBot.objects.filter(chat_id=chat_id)
+        meeting = Event.objects.filter(
+            Q(eventparticipant__user_id=user[0].user_id),
+            Q(nature='meeting'),
+            Q(start_at__range=[today, end]),
+        )
+        if meeting:
+            serializer = MeetingDetailSerializer(meeting, many=True)
+            data = json.loads(json.dumps(serializer.data))
+
+            for i in data:
+                i = meeting_handle(i)
+
+                keyboard = [
+                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                ]
+
+                context.bot.send_message(
+                    chat_id=chat_id,
+                    text=i,
+                    reply_markup=InlineKeyboardMarkup(keyboard)
+                )
+            context.bot.send_message(chat_id, '以上就是這三天的會議☺️')
+        else:
+            context.bot.send_message(chat_id, '這三天沒有受邀或是參與會議')
+
+    elif query == '7天':
+        today = datetime.date.today()
+        end = today + datetime.timedelta(days=7)
+        user = TelegramBot.objects.filter(chat_id=chat_id)
+        meeting = Event.objects.filter(
+            Q(eventparticipant__user_id=user[0].user_id),
+            Q(nature='meeting'),
+            Q(start_at__range=[today, end]),
+        )
+        if meeting:
+            serializer = MeetingDetailSerializer(meeting, many=True)
+            data = json.loads(json.dumps(serializer.data))
+
+            for i in data:
+                i = meeting_handle(i)
+
+                keyboard = [
+                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                ]
+
+                context.bot.send_message(
+                    chat_id=chat_id,
+                    text=i,
+                    reply_markup=InlineKeyboardMarkup(keyboard)
+                )
+            context.bot.send_message(chat_id, '以上就是最近七天的會議☺️')
+        else:
+            context.bot.send_message(chat_id, '最近七天沒有受邀或是參與會議')
+
+    elif query == '30天':
+        today = datetime.date.today()
+        end = today + datetime.timedelta(days=31)
+        user = TelegramBot.objects.filter(chat_id=chat_id)
+        meeting = Event.objects.filter(
+            Q(eventparticipant__user_id=user[0].user_id),
+            Q(nature='meeting'),
+            Q(start_at__range=[today, end]),
+        )
+        if meeting:
+            serializer = MeetingDetailSerializer(meeting, many=True)
+            data = json.loads(json.dumps(serializer.data))
+
+            for i in data:
+                i = meeting_handle(i)
+
+                keyboard = [
+                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                ]
+
+                context.bot.send_message(
+                    chat_id=chat_id,
+                    text=i,
+                    reply_markup=InlineKeyboardMarkup(keyboard)
+                )
+            context.bot.send_message(chat_id, '以上就是最近一個月的會議☺️')
+        else:
+            context.bot.send_message(chat_id, '最近一個月內沒有受邀或是參與會議')
 
 
 def calendar(update, context):
