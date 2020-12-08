@@ -3,6 +3,7 @@ import json
 import datetime
 
 from datetime import datetime as dt
+from textwrap import dedent
 
 from django.db.models import Q
 from django.utils import timezone
@@ -45,14 +46,54 @@ def event_handle(i):
     i['備註'] = i.pop('description')
     i['地點'] = i.pop('location')
     i['行事曆'] = i.pop('calendars')
+    return i
 
 
 def start(update, context):
     chat_id = update.message.chat.id
     context.bot.send_message(
         chat_id,
-        '歡迎使用一訂行☺️請先進行身分綁定來獲得所有的功能！沒有綁定的話大部份功能皆無法使用🙁欲綁定請輸入 /login 你的訂閱網址\nEX: /login http://127.0.0.1/feed/12345'  # noqa 501
-        )
+        dedent('''\
+        歡迎使用一訂行☺️請先進行身分綁定來獲得所有的功能！
+        沒有綁定的話大部份功能皆無法使用🙁欲綁定請輸入 /login 你的訂閱網址
+        訂閱網址請在本系統網頁服務中的"我的訂閱"中獲取
+        ''')
+    )
+    context.bot.send_message(
+        chat_id,
+        dedent('''\
+        範例:/login https://calendar.ntub.tw//feed/3ce855c-8f65-8c8949365f34
+        網頁服務請到
+        https://fir-project-44c79.firebaseapp.com/#/
+        '''),
+    )
+
+
+def help(update, context):
+    chat_id = update.message.chat.id
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=dedent('''\
+            /login - 貼上你的訂閱網址  »綁定並開始使用一訂行！
+            /help - 查看所有功能
+            /website - 前往一訂行網頁服務
+            /event - 接上關鍵字來搜尋特定行程!
+            /meeting - 查看今日會議或是以關鍵字來搜尋會議
+            /subscribe - 訂閱行事曆
+        '''),
+    )
+
+
+def website(update, context):
+    chat_id = update.message.chat.id
+    keyboard = [
+        [InlineKeyboardButton('GO!', url='https://fir-project-44c79.firebaseapp.com/#/')]  # noqa 501
+    ]
+    context.bot.send_message(
+        chat_id=chat_id,
+        text='點選按鈕前往一訂行網頁服務',
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
 
 
 def login(update, context):
@@ -74,7 +115,7 @@ def login(update, context):
             )
             context.bot.send_message(
                 chat_id,
-                '綁定成功！歡迎{}！🥰如果之後您更換了訂閱網址(URL)，不需要重新綁定喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                '綁定成功！歡迎{}！🥰如果之後您更換了訂閱網址(URL)，不需要重新綁定喔！接下來使用 /help 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
                 )
 
 
@@ -96,6 +137,11 @@ def get_event(update, context):
                         Q(start_at__gte=datetime.date.today())
                     ) |
                     Q(participants=get_id[0]) &
+                    (
+                        Q(title__contains=search) &
+                        Q(start_at__gte=datetime.date.today())
+                    ) |
+                    Q(calendars__display='public') &
                     (
                         Q(title__contains=search) &
                         Q(start_at__gte=datetime.date.today())
@@ -140,8 +186,8 @@ def meeting_handle(i):
     i = i.replace('}', '')
     i = i.replace('{', '')
     i = i.replace("user:", '')
-    i = i.replace('editors', '(會議發起人)')
-    i = i.replace('role:', '')
+    i = i.replace('editors, response: accept', '(發起人)')
+    i = i.replace(', role:', '')
     i = i.replace('participants', '')
     i = i.replace(", response:", ':')
     i = i.replace(',  : accept', ':參加')
