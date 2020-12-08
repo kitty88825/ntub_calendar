@@ -167,6 +167,7 @@ def get_event(update, context):
                     i = i.replace('}', '')
                     i = i.replace(',', '\n')
                     context.bot.send_message(chat_id, i)
+                context.bot.send_message(chat_id, '以上是這次的查詢結果🥰')
     else:
         context.bot.send_message(chat_id, '請先綁定!')
 
