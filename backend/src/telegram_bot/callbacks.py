@@ -12,9 +12,9 @@ from app.users.models import User
 from app.calendars.models import Calendar
 
 from .models import TelegramBot
-from .serializers import GetSerializer, CalendarSerializer, MeetingDetailSerializer
+from .serializers import GetSerializer, CalendarSerializer, MeetingDetailSerializer  # noqa 501
 
-from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton  # noqa 501
 
 
 # timezone
@@ -39,7 +39,7 @@ def start(update, context):
     chat_id = update.message.chat.id
     context.bot.send_message(
         chat_id,
-        '歡迎使用一訂行☺️請先登入來獲得所有的功能！沒有登入的話大部份功能皆無法使用🙁登入請輸入 /login 你的訂閱網址\nEX: /login http://127.0.0.1/feed/12345'  # noqa 501
+        '歡迎使用一訂行☺️請先進行身分綁定來獲得所有的功能！沒有綁定的話大部份功能皆無法使用🙁欲綁定請輸入 /login 你的訂閱網址\nEX: /login http://127.0.0.1/feed/12345'  # noqa 501
         )
 
 
@@ -48,10 +48,10 @@ def login(update, context):
     reply = text_after_command(update)
     get_id = TelegramBot.objects.filter(chat_id=chat_id)
     if get_id:
-        context.bot.send_message(chat_id, '您已經登入完成囉🤗不用再重新登入~')
+        context.bot.send_message(chat_id, '您已經綁定完成囉🤗不用再重新綁定~')
     else:
         if not reply:
-            context.bot.send_message(chat_id, '沒有網址沒辦法登入唷🙁，登入請輸入 /login 你的訂閱網址(URL)')  # noqa 501
+            context.bot.send_message(chat_id, '沒有網址沒辦法綁定唷🙁，綁定請輸入 /login 你的訂閱網址(URL)')  # noqa 501
         else:
             reply_list = reply.split('/')
             reply = reply_list[4]
@@ -62,7 +62,7 @@ def login(update, context):
             )
             context.bot.send_message(
                 chat_id,
-                '登入成功！歡迎{}！🥰如果之後您更換了訂閱網址(URL)，不需要重新登入喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                '綁定成功！歡迎{}！🥰如果之後您更換了訂閱網址(URL)，不需要重新綁定喔！接下來使用 / 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
                 )
 
 
@@ -119,7 +119,7 @@ def get_event(update, context):
                     i = i.replace(',', '\n')
                     context.bot.send_message(chat_id, i)
     else:
-        context.bot.send_message(chat_id, '請先登入!')
+        context.bot.send_message(chat_id, '請先綁定!')
 
 
 def meeting(update, context):
@@ -158,7 +158,7 @@ def meeting(update, context):
             i = i.replace('editors', '(會議發起人)')
             i = i.replace('role:', '')
             i = i.replace('participants', '')
-            i = i.replace( ", response:",':')
+            i = i.replace(", response:", ':')
             i = i.replace('accept', '參加')
             i = i.replace('maybe', '不確定')
             i = i.replace('no_reply', '未回應')
@@ -170,7 +170,10 @@ def meeting(update, context):
             ]
 
             reply_markup = InlineKeyboardMarkup(keyboard)
-            context.bot.send_message(chat_id=chat_id, text=i, reply_markup=reply_markup)
+            context.bot.send_message(
+                chat_id=chat_id,text=i,
+                reply_markup=reply_markup
+            )
 
     else:
         context.bot.send_message(chat_id, '目前沒有已參與會議~')
@@ -249,7 +252,7 @@ def meeting_callback(update, context):
         data[0] = data[0].replace('editors', '(會議發起人)')
         data[0] = data[0].replace('role:', '')
         data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace(", response:", ':')
         data[0] = data[0].replace('accept', '參加')
         data[0] = data[0].replace('maybe', '不確定')
         data[0] = data[0].replace('no_reply', '未回應')
@@ -293,7 +296,7 @@ def meeting_callback(update, context):
         data[0] = data[0].replace('editors', '(會議發起人)')
         data[0] = data[0].replace('role:', '')
         data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace(", response:", ':')
         data[0] = data[0].replace('accept', '參加')
         data[0] = data[0].replace('maybe', '不確定')
         data[0] = data[0].replace('no_reply', '未回應')
@@ -342,7 +345,7 @@ def meeting_callback(update, context):
         data[0] = data[0].replace('editors', '(會議發起人)')
         data[0] = data[0].replace('role:', '')
         data[0] = data[0].replace('participants', '')
-        data[0] = data[0].replace( ", response:",':')
+        data[0] = data[0].replace(", response:", ':')
         data[0] = data[0].replace('accept', '參加')
         data[0] = data[0].replace('maybe', '不確定')
         data[0] = data[0].replace('no_reply', '未回應')
@@ -407,7 +410,7 @@ def calendar(update, context):
         else:
             context.bot.send_message(chat_id, '行事曆都已訂閱，沒有可以訂閱的行事曆了')
     else:
-        context.bot.send_message(chat_id, '您尚未登入無法使用此功能😢')
+        context.bot.send_message(chat_id, '您尚未綁定無法使用此功能😢')
 
 
 def calendarSubscribe(update, context):
@@ -443,6 +446,9 @@ def calendarSubscribe(update, context):
             data = data.replace('name', '')
             data = data.replace(' ', '')
             data = data.replace(',', '\n')
+            context.bot.send_message(chat_id, text=f'已經訂閱的行事曆：\n{data}')
 
-        context.bot.send_message(chat_id, text='如過想再訂閱請用 /calendar', reply_markup=ReplyKeyboardRemove())
-        context.bot.send_message(chat_id, text=f'已經訂閱的行事曆：\n{data}')
+        context.bot.send_message(
+            chat_id, text='如過想再訂閱請用 /subscribe',
+            reply_markup=ReplyKeyboardRemove()
+        )
