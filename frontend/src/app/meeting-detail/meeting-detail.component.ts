@@ -32,6 +32,7 @@ export class MeetingDetailComponent implements OnInit {
   permission = '';
   showEvent: boolean;
   data = { current: '0' };
+  origin = '';
   formDate = {};
   role = '';
   noRes: boolean;
@@ -116,10 +117,13 @@ export class MeetingDetailComponent implements OnInit {
               this.noRes = false;
               if (par.response === 'accept') {
                 this.data.current = '1';
+                this.origin = '1';
               } else if (par.response === 'decline') {
                 this.data.current = '2';
+                this.origin = '2';
               } else if (par.response === 'maybe') {
                 this.data.current = '3';
+                this.origin = '3';
               }
             }
           });
@@ -149,6 +153,7 @@ export class MeetingDetailComponent implements OnInit {
 
   showResponse() {
     this.showEvent = true;
+    this.data.current = this.origin;
   }
 
   goback() {

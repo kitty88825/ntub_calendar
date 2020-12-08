@@ -36,6 +36,7 @@ export class MainCalendarComponent implements OnInit {
   isShowCheckAll = false;
   showEvent: boolean;
   events = [];
+  eventNature = '';
   eventTitle = '';
   eventStart = '';
   eventEnd = '';
@@ -115,18 +116,23 @@ export class MainCalendarComponent implements OnInit {
   hiddenCalendarEvents = [];
 
   eventClick(info) {
-    this.showEvent = true;
-    this.lookEvent.id = info.event._def.publicId;
-    this.lookEvent.title = info.event._def.title;
-    this.eventTitle = info.event._def.title;
-    this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
-    this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
-    this.eventDescription = info.event._def.extendedProps.description;
-    this.eventOffice = info.event._def.extendedProps.mainCalendarName;
-    this.eventParticipant = info.event._def.extendedProps.participants.length + '人';
-    this.eventFile = info.event._def.extendedProps.files.length + '個';
-    this.eventLocation = info.event._def.extendedProps.location;
-    this.permission = info.event._def.extendedProps.permission;
+    this.eventNature = info.event._def.extendedProps.nature;
+    if (this.eventNature === 'meeting') {
+      this.router.navigate(['/meeting', info.event._def.publicId]);
+    } else {
+      this.showEvent = true;
+      this.lookEvent.id = info.event._def.publicId;
+      this.lookEvent.title = info.event._def.title;
+      this.eventTitle = info.event._def.title;
+      this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
+      this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
+      this.eventDescription = info.event._def.extendedProps.description;
+      this.eventOffice = info.event._def.extendedProps.mainCalendarName;
+      this.eventParticipant = info.event._def.extendedProps.participants.length + '人';
+      this.eventFile = info.event._def.extendedProps.files.length + '個';
+      this.eventLocation = info.event._def.extendedProps.location;
+      this.permission = info.event._def.extendedProps.permission;
+    }
   }
 
   toggleColours(): void {
@@ -199,9 +205,9 @@ export class MainCalendarComponent implements OnInit {
     }
 
     this.calendarEvents = calendarEvents;
-    this.events = calendarEvents;
+    this.showEvents = calendarEvents;
 
-    this.onChange();
+    this.showEventsSort();
   }
 
   displayTypePrivate(eventType: any): void {
@@ -262,9 +268,9 @@ export class MainCalendarComponent implements OnInit {
     }
 
     this.calendarEvents = calendarEvents;
-    this.events = calendarEvents;
+    this.showEvents = calendarEvents;
 
-    this.onChange();
+    this.showEventsSort();
   }
 
   ngOnInit() {
@@ -469,18 +475,23 @@ export class MainCalendarComponent implements OnInit {
   }
 
   lookEventDetail(event) {
-    this.showEvent = true;
-    this.lookEvent.id = event.id;
-    this.lookEvent.title = event.title;
-    this.eventTitle = event.title;
-    this.eventStart = event.startDate + ' ' + event.sTime;
-    this.eventEnd = event.endDate + ' ' + event.eTime;
-    this.eventDescription = event.description;
-    this.eventOffice = event.mainCalendarName;
-    this.eventParticipant = event.participants.length + '人';
-    this.eventFile = event.files.length + '個';
-    this.eventLocation = event.location;
-    this.permission = event.permission;
+    this.eventNature = event.nature;
+    if (this.eventNature === 'meeting') {
+      this.router.navigate(['/meeting', event.id]);
+    } else {
+      this.showEvent = true;
+      this.lookEvent.id = event.id;
+      this.lookEvent.title = event.title;
+      this.eventTitle = event.title;
+      this.eventStart = event.startDate + ' ' + event.sTime;
+      this.eventEnd = event.endDate + ' ' + event.eTime;
+      this.eventDescription = event.description;
+      this.eventOffice = event.mainCalendarName;
+      this.eventParticipant = event.participants.length + '人';
+      this.eventFile = event.files.length + '個';
+      this.eventLocation = event.location;
+      this.permission = event.permission;
+    }
   }
 
   showEventsSort() {
@@ -532,9 +543,8 @@ export class MainCalendarComponent implements OnInit {
               eTime: event.endAt.substring(11, 16), files: event.attachments,
               backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
               mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name,
-              calendar: event.eventinvitecalendarSet
+              calendar: event.eventinvitecalendarSet, nature: event.nature
             });
-            console.log(this.showEvents);
             this.calendarEvents = this.showEvents;
           });
 
@@ -568,10 +578,9 @@ export class MainCalendarComponent implements OnInit {
               eTime: event.endAt.substring(11, 16), files: event.attachments,
               backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
               mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name,
-              calendar: event.eventinvitecalendarSet
+              calendar: event.eventinvitecalendarSet, nature: event.nature
             });
           });
-          console.log(this.showEvents);
           this.calendarEvents = this.showEvents;
 
           this.group.forEach(group => {

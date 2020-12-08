@@ -127,13 +127,13 @@
                     <h1>開始時間：</h1>
                   </div>
                   <input type="text" class="form-control startTime" bsDatepicker
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate required placement="right"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate placement="right"
                     [(ngModel)]="startDate">
                   <div class="end">
                     <h1>結束時間：</h1>
                   </div>
                   <input type="text" class="form-control endTime" bsDatepicker
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate required placement="right"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate placement="right"
                     [(ngModel)]="endDate">
                   <div class="btn" (click)="changeDate()">查看</div>
                 </div>
@@ -154,11 +154,11 @@
             </div>
             <div class="time">
               <input type="text" class="form-control startTime" bsDatepicker
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate required placement="bottom"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate placement="bottom"
                 [(ngModel)]="startDate">
               <span>至</span>
               <input type="text" class="form-control endTime" bsDatepicker
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate required placement="bottom"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate placement="bottom"
                 [(ngModel)]="endDate">
               <div class="btn" (click)="changeDate()">查看</div>
             </div>

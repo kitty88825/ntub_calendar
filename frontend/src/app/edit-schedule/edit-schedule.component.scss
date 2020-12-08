@@ -24,13 +24,14 @@
       width: 100%;
 
       article {
-        padding-top : $height_header;
-        padding-left: $content-size_left-right*2;
+        padding-top: $height_header;
 
         section.container,
         section.small {
           margin          : $content-size_left-right;
           margin-top      : $content-size_top-bottom*4;
+          margin-left     : auto;
+          margin-right    : auto;
           padding         : $content-size_left-right;
           background-color: $color_white;
           box-shadow      : $box-shadow--container;
@@ -351,7 +352,7 @@
                   margin     : $content-size_top-bottom $content-size_left-right/2;
 
                   i {
-                    font-size: 15px;
+                    font-size : 15px;
                     margin-top: 5px;
                   }
 
@@ -417,6 +418,7 @@
           display: none;
         }
       }
+
       .event_dialog {
         width      : 50%;
         height     : 500px;
@@ -571,7 +573,7 @@
                   }
 
                   i.export {
-                    transform:rotate(-45deg);
+                    transform: rotate(-45deg);
                   }
 
                   i:hover {
@@ -925,7 +927,7 @@
           position   : fixed;
           right      : 10%;
           top        : 3%;
-          transform: rotate(180deg);
+          transform  : rotate(180deg);
           line-height: 40px;
           text-align : center;
 
@@ -938,8 +940,8 @@
 
         &__content {
           margin-top: $content-size_top-bottom;
-          overflow: auto;
-          padding : $content-size_top-bottom $content-size_left-right;
+          overflow  : auto;
+          padding   : $content-size_top-bottom $content-size_left-right;
 
           &__list {
             display  : flex;
@@ -1220,7 +1222,7 @@
                   }
 
                   i.maybe {
-                    color      : wheat;
+                    color: wheat;
                   }
 
                   i.attend {
@@ -1362,7 +1364,7 @@
 
             .event_content {
               letter-spacing: 1px;
-              overflow: auto;
+              overflow      : auto;
 
               .event_block {
                 padding   : 0 $content-size_left-right;
@@ -1409,9 +1411,10 @@
                   align-items: center;
                 }
 
-                .all, .choose {
-                  width: 94%;
-                  margin-left: 3%;
+                .all,
+                .choose {
+                  width       : 94%;
+                  margin-left : 3%;
                   margin-right: 3%;
                 }
 
@@ -1419,7 +1422,8 @@
                   margin-top: $content-size_top-bottom;
                 }
 
-                .allEmails, .chooseEmails {
+                .allEmails,
+                .chooseEmails {
                   overflow    : auto;
                   width       : 94%;
                   margin-left : 3%;

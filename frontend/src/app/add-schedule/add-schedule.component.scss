@@ -24,11 +24,12 @@
 
       article {
         padding-top : $height_header;
-        padding-left: $content-size_left-right*2;
 
         section.container,
         section.small {
           margin          : $content-size_left-right;
+          margin-left     : auto;
+          margin-right    : auto;
           margin-top      : $content-size_top-bottom*4;
           padding         : $content-size_left-right;
           background-color: $color_white;
@@ -515,7 +516,7 @@
                   }
 
                   i.export {
-                    transform:rotate(-45deg);
+                    transform: rotate(-45deg);
                   }
 
                   i:hover {
@@ -838,7 +839,7 @@
           width      : 20px;
           height     : 40px;
           position   : fixed;
-          transform: rotate(180deg);
+          transform  : rotate(180deg);
           right      : 10%;
           top        : 3%;
           line-height: 40px;
@@ -852,9 +853,9 @@
         }
 
         &__content {
-          overflow: auto;
+          overflow  : auto;
           margin-top: $content-size_top-bottom;
-          padding : $content-size_top-bottom $content-size_left-right;
+          padding   : $content-size_top-bottom $content-size_left-right;
 
           &__list {
             display  : flex;
@@ -1284,7 +1285,7 @@
 
             .event_content {
               letter-spacing: 1px;
-              overflow: auto;
+              overflow      : auto;
 
               .event_block {
                 padding   : 0 $content-size_left-right;
@@ -1331,9 +1332,10 @@
                   align-items: center;
                 }
 
-                .all, .choose {
-                  width: 94%;
-                  margin-left: 3%;
+                .all,
+                .choose {
+                  width       : 94%;
+                  margin-left : 3%;
                   margin-right: 3%;
                 }
 
@@ -1341,7 +1343,8 @@
                   margin-top: $content-size_top-bottom;
                 }
 
-                .allEmails, .chooseEmails {
+                .allEmails,
+                .chooseEmails {
                   overflow    : auto;
                   width       : 94%;
                   margin-left : 3%;
