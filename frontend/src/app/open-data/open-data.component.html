@@ -1,0 +1,266 @@
+<div class="body-content">
+  <div class="left" *ngIf="loggin === 'true'">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
+          </i>
+          <span>新增訂閱</span>
+        </div>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
+    </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar *ngIf="loggin === 'true'"></app-navbar>
+    <header class="header__unlogin" *ngIf="loggin === null">
+      <h1 class="header__unlogin__title" [routerLink]="['']">
+        <i class="header__unlogin__icon">
+          <img src="../../assets/images/一訂行_湖水綠.png">
+        </i>
+        <span class=" header__unlogin__name">
+          一訂行
+        </span>
+      </h1>
+      <nav class="header__unlogin__navbar">
+        <div class="header__unlogin__person">
+          <div class="header__unlogin__avatar" [routerLink]="['']">回首頁</div>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <aside class="aside">
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              <div class="name">
+                <i class="material-icons">
+                  content_paste
+                </i>
+                <span>選擇匯出年度</span>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <ul class="item-categories__list">
+                <div class="form-group">
+                  <li>
+                    <span class="title">設立別</span>
+                    <span class="value">公立</span>
+                  </li>
+                  <li>
+                    <span class="title">學校類別</span>
+                    <span class="value">技專院校</span>
+                  </li>
+                  <li>
+                    <span class="title">學校代碼</span>
+                    <span class="value">0051</span>
+                  </li>
+                  <li>
+                    <span class="title">學校名稱</span>
+                    <span class="value">國立台北商業大學</span>
+                  </li>
+                  <li>
+                    <span class="title">學年度</span>
+                    <span class="select">
+                      <select class="form-control" [(ngModel)]="setYear" (change)="change()">
+                        <option *ngFor="let year of year">{{year}}</option>
+                      </select>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="title">學期</span>
+                    <span class="select">
+                      <select class="form-control" [(ngModel)]="setTerm" (change)="change()">
+                        <option>1</option>
+                        <option>2</option>
+                      </select>
+                    </span>
+                  </li>
+                </div>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </aside>
+      <article>
+        <section class="container">
+          <div class="header">
+            <ul class="item-categories__list">
+              <div class="form-group">
+                <li>
+                  <span class="title">設立別</span>
+                  <span class="value">公立</span>
+                </li>
+                <li>
+                  <span class="title">學校類別</span>
+                  <span class="value">技專院校</span>
+                </li>
+                <li>
+                  <span class="title">學校代碼</span>
+                  <span class="value">0051</span>
+                </li>
+                <li>
+                  <span class="title">學校名稱</span>
+                  <span class="value">國立台北商業大學</span>
+                </li>
+                <li>
+                  <span class="title">學年度</span>
+                  <span class="select">
+                    <select class="form-control" [(ngModel)]="setYear" (change)="change()">
+                      <option *ngFor="let year of year">{{year}}</option>
+                    </select>
+                  </span>
+                </li>
+                <li>
+                  <span class="title">學期</span>
+                  <span class="select">
+                    <select class="form-control" [(ngModel)]="setTerm" (change)="change()">
+                      <option>1</option>
+                      <option>2</option>
+                    </select>
+                  </span>
+                </li>
+              </div>
+            </ul>
+          </div>
+          <ul class="event-list">
+            <div class="table" #table>
+              <table class="table table-hover">
+                <thead class="event-list__header">
+                  <tr>
+                    <th scope="col" *ngFor="let name of header">{{name}}</th>
+                  </tr>
+                </thead>
+                <tbody class="event-list__phase">
+                  <tr *ngFor="let row of showDatas">
+                    <td *ngFor="let val of row">
+                      {{val}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ul>
+          <div class="download" (click)="download()">下載</div>
+        </section>
+      </article>
+      <!-- Creates the bootstrap modal where the image will appear -->
+      <div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal_dialog">
+          <div class="modal_header">
+            <i class="material-icons" (click)="hideExcel()">
+              cancel
+            </i>
+          </div>
+          <div class="modal_body">
+            <span>下載格式：</span>
+            <div class="item" (click)="daochu($event)">
+              <h4>csv</h4>
+            </div>
+            <div class="item" (click)="daochu($event)">
+              <h4>xlsx</h4>
+            </div>
+            <div class="item" (click)="daochu($event)">
+              <h4>xls</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+  </div>
+</div>

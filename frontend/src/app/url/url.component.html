@@ -1,0 +1,209 @@
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
+          </i>
+          <span>新增訂閱</span>
+        </div>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title">
+              我的訂閱
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div class="info">
+              <ul class="item-categories__list">
+                <li *ngFor="let sub of subCalendar">
+                  <label class="container">
+                    <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="sub.isChecked"
+                      (change)="changeSelect()">{{sub.name}}
+                    <span class="checkmark"></span>
+                  </label>
+                  <span class="item-categories__status" [style.background-color]="sub.color"></span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
+    </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <aside class="aside">
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title">
+              我的訂閱
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div class="info">
+              <ul class="item-categories__list">
+                <li *ngFor="let sub of subCalendar">
+                  <label class="container">
+                    <input type="checkbox" class="material-icons item-categories__checkbox" [(ngModel)]="sub.isChecked"
+                      (change)="changeSelect()">{{sub.name}}
+                    <span class="checkmark"></span>
+                  </label>
+                  <span class="item-categories__status" [style.background-color]="sub.color"></span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </aside>
+      <article>
+        <section class="container">
+          <div class="content">
+            <div class="URL">
+              <h1>個人URL：</h1>
+              <input type="text" [(ngModel)]="url" class="form-control" #URL>
+              <div class="functionBtn">
+                <div class="copy" (click)="copyInputMessage(URL)">
+                  <i class="material-icons">
+                    file_copy
+                  </i>
+                  <span>複製</span>
+                </div>
+                <div class="renew" (click)="renewURL()">
+                  <i class="material-icons">
+                    autorenew
+                  </i>
+                  <span>撤換</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="container">
+          <div class="header">
+            <h2>已訂閱行程</h2>
+            <i class="material-icons">
+              search
+            </i>
+            <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
+          </div>
+          <hr>
+          <div class="subEvent">
+            <ul>
+              <li *ngFor="let event of showEvent | appFilter : searchText">
+                <div class="event">
+                  <span class="status" [style.background-color]="event.color"></span>
+                  <span>{{event.startDate}}&nbsp;&nbsp;&nbsp;{{event.title}}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="subBtn">
+            <div class="cancel" (click)="edit()">
+              <i class="material-icons">
+                edit
+              </i>
+              <span>修改訂閱</span>
+            </div>
+          </div>
+        </section>
+      </article>
+    </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+  </div>
+</div>

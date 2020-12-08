@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  serverIp: 'https://calendar.ntub.tw/api/v2/'
 };
 
 /*

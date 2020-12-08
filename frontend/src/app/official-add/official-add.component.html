@@ -1,95 +1,193 @@
-<!-- <div class="wrap">
-  <app-navbar></app-navbar>
-  <div class="content">
-    <div class="bar">
-      <ul class="nav">
-        <div class="form-group">
-          <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-            <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
-          </select>
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
+          </i>
+          <span>新增訂閱</span>
         </div>
-        <li class="nav-item">
-          <span class="nav-link disabled">學年度</span>
-        </li>
-      </ul>
-    </div>
-    <div class="container">
-      <div class="table" #table>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col" *ngFor="let name of header">{{name}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of showDatas">
-            <td *ngFor="let val of row">
-              {{val}}
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-primary active">
-          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
-        </label>
-        <label class="btn btn-primary">
-          <input type="checkbox" autocomplete="off" (click)="daochu()"> 匯出
-        </label>
-      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
     </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
   </div>
-</div> -->
-<app-navbar></app-navbar>
-<main>
-  <aside class="aside">
-    <ul class="item-categories">
-      <li>
-        <div class="item-categories__title active">
-          選擇行事曆
-          <div class="form-group row">
-            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-              arrow_left
-            </i>
-          </div>
-        </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-          <ul class="item-categories__list">
-            <div class="form-group">
-              <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-                <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <aside class="aside">
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              <div class="name">
+                <i class="material-icons">
+                  toggle_off
+                </i>
+                <span>選擇匯出時段</span>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <ul class="item-categories__list">
+                <div class="form-group">
+                  <h1>選擇行事曆：</h1>
+                  <select class="form-control calendar" id="exampleSelect1" [(ngModel)]="selectCalendar"
+                    (change)="onChange()">
+                    <option *ngFor="let sub of permissionCalendars">{{sub.name}}</option>
+                  </select>
+                  <div class="start">
+                    <h1>開始時間：</h1>
+                  </div>
+                  <input type="text" class="form-control startTime" bsDatepicker
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate required placement="right"
+                    [(ngModel)]="startDate">
+                  <div class="end">
+                    <h1>結束時間：</h1>
+                  </div>
+                  <input type="text" class="form-control endTime" bsDatepicker
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate required placement="right"
+                    [(ngModel)]="endDate">
+                  <div class="btn" (click)="changeDate()">查看</div>
+                </div>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </aside>
+      <article>
+        <section class="container">
+          <div class="header">
+            <div class="calendar">
+              <h1>選擇行事曆</h1>
+              <select class="form-control calendar" id="exampleSelect1" [(ngModel)]="selectCalendar"
+                (change)="onChange()">
+                <option *ngFor="let sub of permissionCalendars">{{sub.name}}</option>
               </select>
             </div>
+            <div class="time">
+              <input type="text" class="form-control startTime" bsDatepicker
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate required placement="bottom"
+                [(ngModel)]="startDate">
+              <span>至</span>
+              <input type="text" class="form-control endTime" bsDatepicker
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate required placement="bottom"
+                [(ngModel)]="endDate">
+              <div class="btn" (click)="changeDate()">查看</div>
+            </div>
+          </div>
+          <ul class="event-list">
+            <div class="table" #table>
+              <table class="table table-hover">
+                <thead class="event-list__header">
+                  <tr>
+                    <th scope="col" *ngFor="let name of header">{{name}}</th>
+                  </tr>
+                </thead>
+                <tbody class="event-list__phase">
+                  <tr *ngFor="let row of showDatas">
+                    <td *ngFor="let val of row">
+                      {{val}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </ul>
-        </div>
-      </li>
-    </ul>
-    <div class="date-picker" (click)="daochu()">
-      匯出Excel
-    </div>
-  </aside>
-  <article>
-    <section class="container">
-      <ul class="event-list">
-        <div class="table" #table>
-          <table class="table table-hover">
-            <thead class="event-list__header">
-              <tr>
-                <th scope="col" *ngFor="let name of header">{{name}}</th>
-              </tr>
-            </thead>
-            <tbody class="event-list_phase">
-              <tr *ngFor="let row of showDatas">
-              <td *ngFor="let val of row">
-                {{val}}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </ul>
-    </section>
-  </article>
-</main>
+          <div class="export" (click)="daochu()">匯出</div>
+        </section>
+      </article>
+    </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+  </div>
+</div>

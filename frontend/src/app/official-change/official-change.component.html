@@ -1,111 +1,195 @@
-<!-- <div class="wrap">
-  <app-navbar></app-navbar>
-  <div class="content">
-    <div class="bar row">
-      <div class="form-group col-sm-4">
-        <div class="input-group">
-          <div class="custom-file">
-            <input type="file" class="file" (change)="onFileChange($event)" accept=".xlsx"/>
-          </div>
-        </div>
-      </div>
-      <ul class="nav">
-        <li class="nav-item">
-          <span class="nav-link disabled">選擇行事曆</span>
-        </li>
-        <div class="form-group">
-          <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-            <option *ngFor="let calendar of result" [ngValue]="calendar">{{calendar}}</option>
-          </select>
-        </div>
-      </ul>
-    </div>
-    <div class="container">
-      <div class="table">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col" *ngFor="let name of header">{{name}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of datas">
-              <td *ngFor="let val of row">
-                {{val}}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-primary active">
-          <input type="checkbox" checked="" autocomplete="off" [routerLink]="['/calendar']"> 取消
-        </label>
-        <label class="btn btn-primary">
-          <input type="checkbox" autocomplete="off" (click)="add()"> 建立
-        </label>
-      </div>
-    </div>
-  </div>
-</div> -->
-<app-navbar></app-navbar>
-<main>
-  <aside class="aside">
-    <div>
-      <label class="chooseFile">
-        <i class="material-icons">
-          folder
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
           </i>
-        <input class="file" style="display:none;" type="file" (change)="onFileChange($event)" accept=".xlsx">
-        選擇檔案
+          <span>新增訂閱</span>
+        </div>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
       </label>
     </div>
-    <ul class="item-categories">
-      <li>
-        <div class="item-categories__title active">
-          選擇加入行事曆
-          <div class="form-group row">
-            <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-              arrow_left
-            </i>
-          </div>
-        </div>
-        <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
-          <ul class="item-categories__list">
-            <div class="form-group">
-              <select class="form-control" id="exampleSelect1" [(ngModel)]="selectedValue" (change)="onChange()">
-                <option *ngFor="let year of result" [ngValue]="year">{{year}}</option>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <aside class="aside">
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              <div class="name">
+                <i class="material-icons">
+                  event_note
+                </i>
+                <span>選擇匯入行程</span>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <div class="item-categories__chooseFile">
+                <div class="custom-file">
+                  <input id="customFileInput" type="file" (change)="onFileChange($event)" accept=".xlsx">
+                  <label for="customFileInput" class="button-primary">
+                    <i class="material-icons">
+                      attach_file
+                    </i>
+                    <span>選擇檔案</span>
+                  </label>
+                </div>
+              </div>
+              <h2>選擇行事曆：</h2>
+              <ul class="item-categories__list">
+                <div class="form-group">
+                  <select class="form-control" [(ngModel)]="selectedValue">
+                    <option></option>
+                    <option *ngFor="let calendar of permissionCalendars">{{calendar.name}}</option>
+                  </select>
+                </div>
+              </ul>
+              <h3 (click)="addCalendar()">建立新行事曆?</h3>
+            </div>
+          </li>
+        </ul>
+      </aside>
+      <article>
+        <section class="container">
+          <div class="header">
+            <div class="chooseFile">
+              <div class="custom-file">
+                <input id="customFileInput" type="file" (change)="onFileChange($event)" accept=".xlsx">
+                <label for="customFileInput" class="button-primary">
+                  <i class="material-icons">
+                    attach_file
+                  </i>
+                  <span>選擇檔案</span>
+                </label>
+              </div>
+            </div>
+            <div class="calendar">
+              <h2>選擇行事曆</h2>
+              <select class="form-control" [(ngModel)]="selectedValue">
+                <option></option>
+                <option *ngFor="let calendar of permissionCalendars">{{calendar.name}}</option>
               </select>
             </div>
+            <h3 (click)="addCalendar()">建立新行事曆?</h3>
+          </div>
+          <ul class="event-list">
+            <div class="table">
+              <table class="table table-hover">
+                <thead class="event-list__header">
+                  <tr>
+                    <th scope="col" *ngFor="let name of header">{{name}}</th>
+                  </tr>
+                </thead>
+                <tbody class="event-list__phase">
+                  <tr *ngFor="let row of datas">
+                    <td *ngFor="let val of row">
+                      {{val}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </ul>
-        </div>
-      </li>
-    </ul>
-    <div class="submit" (click)="add()">
-      建立行程
-    </div>
-  </aside>
-  <article>
-    <section class="container">
-      <ul class="event-list">
-        <div class="table">
-          <table class="table table-hover">
-            <thead class="event-list__header">
-              <tr>
-                <th scope="col" *ngFor="let name of header">{{name}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of datas">
-                <td *ngFor="let val of row">
-                  {{val}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ul>
-    </section>
-  </article>
-</main>
+          <div class="submit" (click)="add()">
+            建立
+          </div>
+        </section>
+      </article>
+    </main>
+    <ngx-loading [show]="loading" [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+    [template]="loadingTemplate">
+  </ngx-loading>
+  </div>
+</div>

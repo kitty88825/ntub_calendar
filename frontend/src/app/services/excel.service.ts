@@ -1,6 +1,5 @@
+import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
-import * as XLSX from 'xlsx';
-import * as moment from 'moment';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -19,7 +18,7 @@ export class ExcelService {
       return {
         Eid: item.eid,
         Ename: item.ename,
-        EDate: item.edate ? moment(item.edate).format('YYYY-MM-DD') : 'N/A'
+        EDate: item.edate ? formatDate(item.edate, 'yyyy-mm-dd', 'en') : 'N/A'
       };
     });
 

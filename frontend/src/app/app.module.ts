@@ -1,3 +1,5 @@
+import { RouterModule, Routes } from '@angular/router';
+import { TokenInterceptor } from './interceptors/token.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -25,11 +27,27 @@ import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { FilterPipe } from '../app/filter.pipe'; // -> imported filter pipe
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
+import { UserTeachComponent } from './user-teach/user-teach.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { MeetingComponent } from './meeting/meeting.component';
+import { CommonUserComponent } from './common-user/common-user.component';
+import { OpenDataComponent } from './open-data/open-data.component';
+import { AddCalendarComponent } from './add-calendar/add-calendar.component';
+import { AddCalendarUnstaffComponent } from './add-calendar-unstaff/add-calendar-unstaff.component';
+import { URLComponent } from './url/url.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { NgxLoadingModule } from 'ngx-loading';
+import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
+
+
+const googleLoginOptions = {
+  hosted_domain: 'ntub.edu.tw'
+};
 
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider('1035929255551-0a4248ua8cabhe19s8v946td1i211u5r.apps.googleusercontent.com')
+    provider: new GoogleLoginProvider('1035929255551-0a4248ua8cabhe19s8v946td1i211u5r.apps.googleusercontent.com', googleLoginOptions),
   },
 ]);
 
@@ -48,7 +66,15 @@ export function provideConfig() {
     MainCalendarComponent,
     NavbarComponent,
     EditScheduleComponent,
-    FilterPipe
+    FilterPipe,
+    UserTeachComponent,
+    MeetingComponent,
+    CommonUserComponent,
+    OpenDataComponent,
+    AddCalendarComponent,
+    AddCalendarUnstaffComponent,
+    URLComponent,
+    MeetingDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +91,16 @@ export function provideConfig() {
     NgbModule,
     HttpClientModule,
     ReactiveFormsModule,
-    SocialLoginModule
+    SocialLoginModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: function tokenGetter() {
+          return localStorage.getItem('access_token');
+        },
+      }
+    }),
+    ColorPickerModule,
+    NgxLoadingModule.forRoot({})
   ],
   providers: [
     {
@@ -76,7 +111,9 @@ export function provideConfig() {
     {
       provide: AuthServiceConfig,
       useFactory: provideConfig
-    }
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+
   ],
   bootstrap: [AppComponent]
 })

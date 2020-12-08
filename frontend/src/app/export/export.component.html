@@ -1,35 +1,438 @@
-<div class="wrap">
-  <app-navbar></app-navbar>
-  <!-- <div class="container">
-    <div class="bar">
-      <span class="badge badge-light">我的行事曆</span>
-      <br>
-      <div class="mine pretty p-default p-curve p-thick">
-        <input type="checkbox"/>
-        <div class="state">
-          <label class="mine">109學年度</label>
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
+          </i>
+          <span>新增訂閱</span>
         </div>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
       </div>
-      <hr>
-      <span class="badge badge-light">我的訂閱</span>
-      <div class="card">
-        <div class="pretty p-default p-curve p-thick">
-          <input type="checkbox" class="card-checkbox"/>
-          <div class="state">
-            <label class="customize">108學年度</label>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
+    </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main #main>
+      <article>
+        <section class="container">
+          <div class="item-categories">
+            <div class="item-categories__title active">
+              <div class="name">
+                <i class="material-icons">
+                  picture_as_pdf
+                </i>
+                <span>選擇匯出學年度</span>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <div class="year">
+                <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
+                  <option *ngFor="let year of year">{{year}}</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="content">
-      <div class="card" id="content" #content>
-        <div class="footer">
-          <img src="../assets/images/clear-black-18dp.svg" [routerLink]="['/calendar']">
-          <img src="../assets/images/save_alt-black-18dp.svg" value="Download PDF" (click)="savePdf()">
-        </div>
-      </div>
-    </div>
-  </div> -->
-  <h1>新功能開發中請您耐心等候！</h1>
-</div>
+        </section>
+        <section class="body">
+          <ul class="event-list" #screen id="screen">
+            <div class="event-list__header">
+              <h1>國立臺北商業大學{{setYear}}學年度第1學期行事曆</h1>
+            </div>
+            <div class="event-list__calendarName_all">
+              <div class="event-list__calendarName_all__empty"></div>
+              <div class="event-list__calendarName_all__empty2"></div>
+              <div class="event-list__calendarName_all__ds">日間部行事摘要</div>
+              <div class="event-list__calendarName_all__nd">進修部行事摘要</div>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">八月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate8">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_8">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_8_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">九月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate9">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_9">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_9_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
 
+            <div class="event-list__phase">
+              <div class="event-list__month">十月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate10">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_10">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_10_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">十一月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate11">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_11">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_11_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">十二月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate12">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_12">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_12_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">一月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate1">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_1">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_1_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="nextPage"></div>
+            <div class="event-list__header">
+              <h1>國立臺北商業大學{{setYear}}學年度第2學期行事曆</h1>
+            </div>
+            <div class="event-list__calendarName_all">
+              <div class="event-list__calendarName_all__empty"></div>
+              <div class="event-list__calendarName_all__empty2"></div>
+              <div class="event-list__calendarName_all__ds">日間部行事摘要</div>
+              <div class="event-list__calendarName_all__nd">進修部行事摘要</div>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">二月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate2">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_2">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_2_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">三月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate3">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_3">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_3_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">四月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate4">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_4">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_4_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">五月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate5">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_5">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_5_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">六月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate6">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_6">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_6_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+            <div class="event-list__phase">
+              <div class="event-list__month">七月</div>
+              <div class="event-list__datapicker">
+                <full-calendar #header [header]=false [plugins]="calendarPlugins" [defaultDate]="setDate7">
+                </full-calendar>
+              </div>
+              <li *ngFor="let calendar of eventMonth_7">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+              <li *ngFor="let calendar of eventMonth_7_nd">
+                <div class="event-list__content">
+                  <div class="event-list__title" *ngFor="let event of calendar.events">
+                    <span class="date">{{event.startMonth}} / {{event.startDay}}</span>
+                    <span class="eventTitle">{{event.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="subBtn" (click)="savePdf(main)">
+            <i class="material-icons">
+              download
+            </i>
+            <span>下載</span>
+          </div>
+        </section>
+        <div id="nodownload">
+          <img #canvas>
+          <a #downloadLink></a>
+        </div>
+      </article>
+    </main>
+    <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+    [template]="loadingTemplate">
+  </ngx-loading>
+  </div>
+</div>

@@ -1,0 +1,284 @@
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
+          </i>
+          <span>新增訂閱</span>
+        </div>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
+    </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <article>
+        <section class="container">
+          <div class="block">
+            <div class="info__block">
+              <div class="info__block__title">
+                <i class="material-icons">
+                  title
+                </i>
+                <h2>會議名稱</h2>
+                <span>{{lookTitle}}</span>
+              </div>
+              <div class="info__block__office">
+                <i class="material-icons">
+                  event
+                </i>
+                <h2>發布單位</h2>
+                <span>{{lookOffice}}</span>
+              </div>
+              <div class="info__block__time">
+                <i class="material-icons">
+                  schedule
+                </i>
+                <h2>開始時間</h2>
+                <span>{{lookSTime}}</span>
+              </div>
+              <div class="info__block__time">
+                <i class="material-icons">
+                  schedule
+                </i>
+                <h2>結束時間</h2>
+                <span>{{lookETime}}</span>
+              </div>
+              <div class="info__block__location">
+                <i class="material-icons">
+                  location_on
+                </i>
+                <h2>地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;點</h2>
+                <span>{{lookLocation}}</span>
+              </div>
+              <div class="info__block__description">
+                <i class="material-icons">
+                  subject
+                </i>
+                <h2>備&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;註</h2>
+                <textarea class="form-control" disabled>{{lookDes}}</textarea>
+              </div>
+              <div class="info__block__file">
+                <i class="material-icons">
+                  attach_file
+                </i>
+                <h2>附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</h2>
+                <div class="allFiles">
+                  <ul>
+                    <li *ngFor="let file of lookFiles">
+                      <a href={{file.fileLink}}>{{file.fileName}}</a>
+                    </li>
+                    <div *ngIf="lookFiles.length === 0">無</div>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="participant__block">
+              <div class="participant__block__header">
+                <i class="material-icons">
+                  group
+                </i>
+                <h2>參與對象</h2>
+                <i class="attend material-icons">
+                  done_all
+                </i>
+                <h4>參加</h4>
+                <i class="deny material-icons">
+                  highlight_off
+                </i>
+                <h4>拒絕</h4>
+                <i class="maybe material-icons">
+                  info
+                </i>
+                <h4>不確定</h4>
+                <i class="noresponse material-icons">
+                  remove_circle
+                </i>
+                <h4>未回應</h4>
+                <i class="creator material-icons">
+                  person
+                </i>
+                <h4>發起人</h4>
+              </div>
+              <div class="participant__block__all">
+                <ul>
+                  <li *ngFor="let participant of lookParticipants">
+                    <div class="user">
+                      <h5>{{participant.user}}</h5>
+                      <div class="resBtn"
+                        *ngIf="participant.user === myEmail && participant.response === 'no_reply' && noRes === true">
+                        <div class="yes btn" (click)="setCurrent(1); changeResponse()">參加</div>
+                        <div class="no btn" (click)="setCurrent(2); changeResponse()">拒絕</div>
+                        <div class="maybe btn" (click)="setCurrent(3); changeResponse()">不確定</div>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'maybe'">
+                        <i class="maybe material-icons">
+                          info
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'creator'">
+                        <i class="creator material-icons">
+                          person
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'no_reply'">
+                        <i class="noresponse material-icons">
+                          remove_circle
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'decline'">
+                        <i class="deny material-icons">
+                          highlight_off
+                        </i>
+                      </div>
+                      <div class="response" *ngIf="participant.response === 'accept'">
+                        <i class="attend material-icons">
+                          done_all
+                        </i>
+                      </div>
+                    </div>
+                    <div class="resBtn_small"
+                      *ngIf="participant.user === myEmail && participant.response === 'no_reply' && noRes === true">
+                      <div class="yes btn" (click)="setCurrent(1); changeResponse()">參加</div>
+                      <div class="no btn" (click)="setCurrent(2); changeResponse()">拒絕</div>
+                      <div class="maybe btn" (click)="setCurrent(3); changeResponse()">不確定</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="subBtn">
+                <div class="goback" (click)="goback()">
+                  <i class="material-icons">
+                    undo
+                  </i>
+                  <h4>返回</h4>
+                </div>
+                <div class="response" *ngIf="noRes === false" (click)="showResponse()">
+                  <i class="material-icons">
+                    feedback
+                  </i>
+                  <h4>修改回覆</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </article>
+      <!-- Creates the bootstrap modal where the image will appear -->
+      <div [style.display]="showEvent ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="calendar_dialog">
+          <div class="calendar_body">
+            <div class="calendar_border">
+              <i class="cancel material-icons" (click)="hide()">
+                cancel
+              </i>
+              <div class="calendar_container">
+                <h3>是否參加會議?</h3>
+                <div class="calendar_button">
+                  <div class="attend btn" (click)="setCurrent(1)" [ngClass]="{'active': data.current == '1'}">參加</div>
+                  <div class="deny btn" (click)="setCurrent(2)" [ngClass]="{'active': data.current == '2'}">拒絕</div>
+                  <div class="notsure btn" (click)="setCurrent(3)" [ngClass]="{'active': data.current == '3'}">不確定</div>
+                </div>
+              </div>
+              <div class="btn">
+                <div class="cancel" (click)="hide()">取消</div>
+                <div class="import" (click)="changeResponse()">確定</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+  </div>
+</div>

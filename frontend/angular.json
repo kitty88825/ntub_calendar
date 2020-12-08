@@ -28,21 +28,18 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@fullcalendar/list/main.css",
               "node_modules/@fullcalendar/core/main.css",
               "node_modules/@fullcalendar/daygrid/main.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss",
-              "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/sweetalert2/src/sweetalert2.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@fullcalendar/core/main.js",
               "node_modules/@fullcalendar/daygrid/main.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/jspdf/dist/jspdf.min.js",
-              "src/assets/fonts/jf-normal.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/jspdf/dist/jspdf.min.js"
             ]
           },
           "configurations": {
@@ -63,14 +60,10 @@
               "buildOptimizer": true,
               "budgets": [
                 {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "type": "initial"
                 },
                 {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "type": "anyComponentStyle"
                 }
               ]
             }

@@ -1,0 +1,231 @@
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="addBtn" (click)="addMeetName()">
+          <i class="material-icons">
+            group
+          </i>
+          <span>新增常用參與人員</span>
+        </div>
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              <div class="title">
+                <span>查看常用參與人員</span>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <ul class="item-categories__list">
+                <li *ngFor="let all of allMeetings; let i =index">
+                  <label class="container name">
+                    <input type="checkbox" class="material-icons" (change)="change(i)"
+                      [(ngModel)]="all.isChecked">{{all.title}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
+    </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <aside class="aside">
+        <div class="addBtn" (click)="addMeetName()">
+          <i class="material-icons">
+            group
+          </i>
+          <span>新增常用參與人員</span>
+        </div>
+        <ul class="item-categories">
+          <li>
+            <div class="item-categories__title active">
+              <div class="title">
+                <span>查看常用參與人員</span>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+              <ul class="item-categories__list">
+                <li *ngFor="let all of allMeetings; let i =index">
+                  <label class="container name">
+                    <input type="checkbox" class="material-icons" (change)="change(i)"
+                      [(ngModel)]="all.isChecked">{{all.title}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </aside>
+      <article>
+        <section class="container" *ngIf="hasCommonUser === true && look === true">
+          <div class="container__name">
+            <span class="title">會議名稱：</span>
+            <span class="meetName">{{lookMeetName}}</span>
+          </div>
+          <hr>
+          <div class="container__header">
+            <span>新增參與對象：</span>
+            <form [formGroup]="oldSendEmailForm" (ngSubmit)="oldSend(oldSendEmailForm.value)" class="email">
+              <div>
+                <input type="email" class="addEmail" placeholder="輸入邀請對象Email" formControlName="toAddress">
+              </div>
+              <input type="submit" class="addUserBtn" [disabled]="!oldSendEmailForm.valid" value="新增">
+            </form>
+          </div>
+          <div class="container__body">
+            <div class="container__equipment">
+              <div class="origin__participants__header">
+                <span class="old">已包含參與對象：</span>
+                <div class="filterBtn">
+                  <i class="old material-icons" (click)="deleteOld()">
+                    delete
+                  </i>
+                  <label class="container origin">
+                    <input type="checkbox" class="material-icons" (change)="oldCheckUncheckAll()"
+                      [(ngModel)]="oldMasterSelected">全選
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="origin__participants">
+                <ul>
+                  <li *ngFor="let participant of allParticipants;let index = index">
+                    <label class="container participants__checkbox">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="participant.isChecked"
+                        (change)="changeSelection()">{{participant.participants}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="container__equipment">
+              <div class="new__participants__header">
+                <span class="new">欲新增參與對象：</span>
+                <div class="filterBtn">
+                  <i class="new material-icons" (click)="deleteNew()">
+                    delete
+                  </i>
+                  <label class="container new">
+                    <input type="checkbox" class="material-icons" (change)="newCheckUncheckAll()"
+                      [(ngModel)]="newMasterSelected">全選
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="new__participants">
+                <ul>
+                  <li *ngFor="let name of oldInvalidEmails;let index = index">
+                    <label class="container participants__checkbox">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="name.isChecked"
+                        (change)="changeSelection()">{{name.email}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="container__btn">
+            <div class="btn submit" (click)="edit()">
+              <i class="material-icons">
+                done_all
+              </i>
+              <span class="btnName">確定</span>
+            </div>
+            <div class="btn delete" (click)="deleteOrigin()">
+              <i class="material-icons">
+                clear
+              </i>
+              <span class="btnName">刪除</span>
+            </div>
+          </div>
+        </section>
+        <section class="container" *ngIf="hasCommonUser === false || new === true">
+          <div class="container__name">
+            <span class="title">會議名稱：</span>
+            <input type="text" class="meetName" value={{meetName}} [(ngModel)]="meetName" required>
+          </div>
+          <hr>
+          <div class="container__header">
+            <span>新增參與對象：</span>
+            <form [formGroup]="newSendEmailForm" (ngSubmit)="newSend(newSendEmailForm.value)" class="email">
+              <div>
+                <input type="email" class="addEmail" placeholder="輸入邀請對象Email" formControlName="toAddress">
+              </div>
+              <input type="submit" class="addUserBtn" [disabled]="!newSendEmailForm.valid" value="新增">
+            </form>
+          </div>
+          <div class="container__body">
+            <div class="container__equipment">
+              <div class="participants__header">
+                <span class="add">欲新增參與對象：</span>
+                <div class="filterBtn">
+                  <i class="add material-icons" (click)="deleteAdd()">
+                    delete
+                  </i>
+                  <label class="container add">
+                    <input type="checkbox" class="material-icons" (change)="addCheckUncheckAll()"
+                      [(ngModel)]="addMasterSelected">全選
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="participants">
+                <ul>
+                  <li *ngFor="let name of newInvalidEmails;let index = index">
+                    <label class="container participants__checkbox">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="name.isChecked"
+                        (change)="changeSelection()">{{name.email}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="container__btn">
+            <div class="btn submit" (click)="submit()">
+              <i class="material-icons">
+                done_all
+              </i>
+              <span class="btnName">確定</span>
+            </div>
+          </div>
+        </section>
+      </article>
+    </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+  </div>
+</div>

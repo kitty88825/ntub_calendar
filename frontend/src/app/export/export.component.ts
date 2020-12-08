@@ -1,5 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { EventService } from './../services/event.service';
+import { CalendarService } from './../services/calendar.service';
+import { Component, ViewChild, OnInit, ElementRef, TemplateRef } from '@angular/core';
+import html2canvas from 'html2canvas';
 import * as jsPDF from 'jspdf';
+import { FullCalendarComponent } from '@fullcalendar/angular';
+
+import dayGridPlugin from '@fullcalendar/daygrid';
+import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+
+const PrimaryWhite = '#ffffff';
+const SecondaryGrey = '#ccc';
+const PrimaryRed = '#dd0031';
+const SecondaryBlue = '#006ddd';
 
 @Component({
   selector: 'app-export',
@@ -9,196 +21,637 @@ import * as jsPDF from 'jspdf';
 
 export class ExportComponent implements OnInit {
 
-  doc;
+  isCollapsed = false;
+  isTrue = false;
+  isOpen = false;
+  openCalendar = [];
+  allEvents = [];
+  year = [];
+  permission = localStorage.getItem('permission');
+  setYear = new Date().getFullYear() - 1911;
+  showTitle = false;
+
+  eventMonth_1 = [];
+  eventMonth_2 = [];
+  eventMonth_3 = [];
+  eventMonth_4 = [];
+  eventMonth_5 = [];
+  eventMonth_6 = [];
+  eventMonth_7 = [];
+  eventMonth_8 = [];
+  eventMonth_9 = [];
+  eventMonth_10 = [];
+  eventMonth_11 = [];
+  eventMonth_12 = [];
+
+  eventMonth_1_nd = [];
+  eventMonth_2_nd = [];
+  eventMonth_3_nd = [];
+  eventMonth_4_nd = [];
+  eventMonth_5_nd = [];
+  eventMonth_6_nd = [];
+  eventMonth_7_nd = [];
+  eventMonth_8_nd = [];
+  eventMonth_9_nd = [];
+  eventMonth_10_nd = [];
+  eventMonth_11_nd = [];
+  eventMonth_12_nd = [];
+
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent; // the #calendar in the template
+  @ViewChild('screen') screen: ElementRef;
+  @ViewChild('canvas') canvas: ElementRef;
+  @ViewChild('downloadLink') downloadLink: ElementRef;
+
+
+  @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  public loading = false;
+  public primaryColour = PrimaryWhite;
+  public secondaryColour = SecondaryGrey;
+  public coloursEnabled = false;
+  public loadingTemplate: TemplateRef<any>;
+  public config = {
+    animationType: ngxLoadingAnimationTypes.none, primaryColour: this.primaryColour,
+    secondaryColour: this.secondaryColour, tertiaryColour: this.primaryColour, backdropBorderRadius: '3px'
+  };
+
+  constructor(
+    private calendarService: CalendarService,
+    private eventService: EventService
+  ) { }
+
+  calendarPlugins = [dayGridPlugin];
+  setDate8 = '2020-08-01';
+  setDate9 = '2020-09-01';
+  setDate10 = '2020-10-01';
+  setDate11 = '2020-11-01';
+  setDate12 = '2020-12-01';
+  setDate1 = '2020-01-01';
+  setDate2 = '2020-02-01';
+  setDate3 = '2020-03-01';
+  setDate4 = '2020-04-01';
+  setDate5 = '2020-05-01';
+  setDate6 = '2020-06-01';
+  setDate7 = '2020-07-01';
 
   ngOnInit(): void {
-    this.doc = new jsPDF('l', 'pt', 'a4');
-    this.doc.setFont('jf');
+    this.loading = !this.loading;
+    this.year.push(this.setYear);
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        data.forEach(calendar => {
+          this.openCalendar.push({
+            id: calendar.id, name: calendar.name, display: calendar.display,
+            color: calendar.color //isChecked: false
+          });
+        });
+      }
+    );
 
-    // horizontal line
-    this.doc.setLineWidth(3);
-    this.doc.line(20, 80, 250, 80);
-    this.doc.line(20, 530, 250, 530);
+    this.eventService.getEvents().subscribe(
+      data => {
+        data.forEach(event => {
+          this.allEvents.push({
+            id: event.id, title: event.title, description: event.description, startDate: event.startAt.substr(0, 10),
+            calendars: event.eventinvitecalendarSet, startMonth: event.startAt.substr(5, 2), startDay: event.startAt.substr(8, 2),
+            mainCalendar: event.eventinvitecalendarSet[0].mainCalendar.name
+          });
+        });
 
-    this.doc.setLineWidth(1);
-    this.doc.line(20, 100, 250, 100);
-    this.doc.line(260, 100, 820, 100);
-    this.doc.line(20, 171.6, 87, 171.6);
-    this.doc.line(20, 243.2, 87, 243.2);
-    this.doc.line(20, 314.8, 87, 314.8);
-    this.doc.line(20, 386.4, 87, 386.4);
-    this.doc.line(20, 458, 87, 458);
-    this.doc.line(87, 114.32, 250, 114.32);
-    this.doc.line(87, 128.64, 250, 128.64);
-    this.doc.line(87, 142.96, 250, 142.96);
-    this.doc.line(87, 157.28, 250, 157.28);
-    this.doc.line(87, 185.92, 250, 185.92);
-    this.doc.line(87, 200.24, 250, 200.24);
-    this.doc.line(87, 214.56, 250, 214.56);
-    this.doc.line(87, 228.88, 250, 228.88);
-    this.doc.line(87, 257.52, 250, 257.52);
-    this.doc.line(87, 271.84, 250, 271.84);
-    this.doc.line(87, 286.16, 250, 286.16);
-    this.doc.line(87, 300.48, 250, 300.48);
-    this.doc.line(87, 329.12, 250, 329.12);
-    this.doc.line(87, 343.44, 250, 343.44);
-    this.doc.line(87, 357.76, 250, 357.76);
-    this.doc.line(87, 372.08, 250, 372.08);
-    this.doc.line(87, 400.72, 250, 400.72);
-    this.doc.line(87, 415.04, 250, 415.04);
-    this.doc.line(87, 429.36, 250, 429.36);
-    this.doc.line(87, 443.68, 250, 443.68);
-    this.doc.line(87, 472.32, 250, 472.32);
-    this.doc.line(87, 486.64, 250, 486.64);
-    this.doc.line(87, 500.96, 250, 500.96);
-    this.doc.line(87, 515.28, 250, 515.28);
+        this.allEvents.forEach(event => {
+          this.year.push(Number(event.startDate.substr(0, 4)) - 1911);
+        });
 
-    this.doc.setLineWidth(3);
-    this.doc.line(260, 80, 820, 80);
-    this.doc.line(260, 530, 820, 530);
-
-    this.doc.setLineWidth(2);
-    this.doc.line(87, 171.6, 250, 171.6);
-    this.doc.line(87, 243.2, 250, 243.2);
-    this.doc.line(87, 314.8, 250, 314.8);
-    this.doc.line(87, 386.4, 250, 386.4);
-    this.doc.line(87, 458, 250, 458);
-    this.doc.line(260, 171.6, 820, 171.6);
-    this.doc.line(260, 243.2, 820, 243.2);
-    this.doc.line(260, 314.8, 820, 314.8);
-    this.doc.line(260, 386.4, 820, 386.4);
-    this.doc.line(260, 458, 820, 458);
-
-    // vertical line
-    this.doc.setLineWidth(3);
-    this.doc.line(20, 78.5, 20, 531.5);
-    this.doc.line(87, 78.5, 87, 530);
-    this.doc.line(250, 78.5, 250, 531.5);
-    this.doc.line(260, 78.5, 260, 531.5);
-    this.doc.line(820, 78.5, 820, 531.5);
-
-    this.doc.setLineWidth(1);
-    this.doc.line(40, 100, 40, 530);
-    this.doc.line(110, 78.5, 110, 530);
-    this.doc.line(135, 78.5, 135, 530);
-    this.doc.line(160, 78.5, 160, 530);
-    this.doc.line(184, 78.5, 184, 530);
-    this.doc.line(208, 78.5, 208, 530);
-    this.doc.line(230, 78.5, 230, 530);
-    this.doc.setLineWidth(2);
-    this.doc.line(550, 78.5, 550, 530);
-
-    // text
-    this.doc.setFontSize(19);
-    this.doc.text('國 立 臺 北 商 業 大 學 108 學 年 度 第 1 學 期 行 事 曆', 230, 70);
-
-    this.doc.setFontSize(14);
-    this.doc.text('日', 91, 96);
-    this.doc.text('一', 115, 96);
-    this.doc.text('二', 140, 96);
-    this.doc.text('三', 165, 96);
-    this.doc.text('四', 189, 96);
-    this.doc.text('五', 211, 96);
-    this.doc.text('六', 232, 96);
-    this.doc.text('日間學制行事摘要', 350, 96);
-    this.doc.text('進修學制行事摘要', 630, 96);
-
-    this.doc.addPage();
-
-
-    // horizontal line
-    this.doc.setLineWidth(3);
-    this.doc.line(20, 80, 250, 80);
-    this.doc.line(20, 530, 250, 530);
-
-    this.doc.setLineWidth(1);
-    this.doc.line(20, 100, 250, 100);
-    this.doc.line(260, 100, 820, 100);
-    this.doc.line(20, 171.6, 87, 171.6);
-    this.doc.line(20, 243.2, 87, 243.2);
-    this.doc.line(20, 314.8, 87, 314.8);
-    this.doc.line(20, 386.4, 87, 386.4);
-    this.doc.line(20, 458, 87, 458);
-    this.doc.line(87, 114.32, 250, 114.32);
-    this.doc.line(87, 128.64, 250, 128.64);
-    this.doc.line(87, 142.96, 250, 142.96);
-    this.doc.line(87, 157.28, 250, 157.28);
-    this.doc.line(87, 185.92, 250, 185.92);
-    this.doc.line(87, 200.24, 250, 200.24);
-    this.doc.line(87, 214.56, 250, 214.56);
-    this.doc.line(87, 228.88, 250, 228.88);
-    this.doc.line(87, 257.52, 250, 257.52);
-    this.doc.line(87, 271.84, 250, 271.84);
-    this.doc.line(87, 286.16, 250, 286.16);
-    this.doc.line(87, 300.48, 250, 300.48);
-    this.doc.line(87, 329.12, 250, 329.12);
-    this.doc.line(87, 343.44, 250, 343.44);
-    this.doc.line(87, 357.76, 250, 357.76);
-    this.doc.line(87, 372.08, 250, 372.08);
-    this.doc.line(87, 400.72, 250, 400.72);
-    this.doc.line(87, 415.04, 250, 415.04);
-    this.doc.line(87, 429.36, 250, 429.36);
-    this.doc.line(87, 443.68, 250, 443.68);
-    this.doc.line(87, 472.32, 250, 472.32);
-    this.doc.line(87, 486.64, 250, 486.64);
-    this.doc.line(87, 500.96, 250, 500.96);
-    this.doc.line(87, 515.28, 250, 515.28);
-
-    this.doc.setLineWidth(3);
-    this.doc.line(260, 80, 820, 80);
-    this.doc.line(260, 530, 820, 530);
-
-    this.doc.setLineWidth(2);
-    this.doc.line(87, 171.6, 250, 171.6);
-    this.doc.line(87, 243.2, 250, 243.2);
-    this.doc.line(87, 314.8, 250, 314.8);
-    this.doc.line(87, 386.4, 250, 386.4);
-    this.doc.line(87, 458, 250, 458);
-    this.doc.line(260, 171.6, 820, 171.6);
-    this.doc.line(260, 243.2, 820, 243.2);
-    this.doc.line(260, 314.8, 820, 314.8);
-    this.doc.line(260, 386.4, 820, 386.4);
-    this.doc.line(260, 458, 820, 458);
-
-    // vertical line
-    this.doc.setLineWidth(3);
-    this.doc.line(20, 78.5, 20, 531.5);
-    this.doc.line(87, 78.5, 87, 530);
-    this.doc.line(250, 78.5, 250, 531.5);
-    this.doc.line(260, 78.5, 260, 531.5);
-    this.doc.line(820, 78.5, 820, 531.5);
-
-    this.doc.setLineWidth(1);
-    this.doc.line(40, 100, 40, 530);
-    this.doc.line(110, 78.5, 110, 530);
-    this.doc.line(135, 78.5, 135, 530);
-    this.doc.line(160, 78.5, 160, 530);
-    this.doc.line(184, 78.5, 184, 530);
-    this.doc.line(208, 78.5, 208, 530);
-    this.doc.line(230, 78.5, 230, 530);
-    this.doc.setLineWidth(2);
-    this.doc.line(550, 78.5, 550, 530);
-
-    // text
-    this.doc.setFontSize(19);
-    this.doc.text('國 立 臺 北 商 業 大 學 108 學 年 度 第 2 學 期 行 事 曆  ', 230, 70);
-
-    this.doc.setFontSize(14);
-    this.doc.text('日', 91, 96);
-    this.doc.text('一', 115, 96);
-    this.doc.text('二', 140, 96);
-    this.doc.text('三', 165, 96);
-    this.doc.text('四', 189, 96);
-    this.doc.text('五', 211, 96);
-    this.doc.text('六', 232, 96);
-    this.doc.text('日間學制行事摘要', 350, 96);
-    this.doc.text('進修學制行事摘要', 630, 96);
-    console.log(this.doc);
+        this.yearSort();
+        this.resetDate();
+        this.showEventSort();
+        this.loading = !this.loading;
+      }
+    );
   }
 
+  yearSort() {
+    this.year = this.year.filter((el, i, arr) => {
+      return arr.indexOf(el) === i;
+    });
 
-  savePdf() {
-    this.doc.save('demo.pdf');
+    this.year.sort((a, b) => {
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
+  async savePdf(main: HTMLElement) {
+    this.loading = !this.loading;
+    await new Promise(resolve => {
+      setTimeout(() => {
+        main.scrollIntoView();
+        resolve();
+      }, 500);
+    });
+    html2canvas(this.screen.nativeElement).then(canvas => {
+      const pageWidth = 841.89;
+      const pageHeight = 592.28;
+      const contentWidth = canvas.width * 3 / 4;
+      const contentHeight = canvas.height * 3 / 4;
+      const imgWidth = pageWidth;
+      const imgHeight = pageWidth / contentWidth * contentHeight;
+
+      let position = 5;
+      let leftHeight = imgHeight;
+
+      const pageData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('landscape', 'pt', 'a4');
+
+      if (leftHeight <= pageHeight) {
+        pdf.addImage(pageData, 'JPEG', 5, 10, imgWidth, imgHeight);
+      } else {
+        while (leftHeight > 0) {
+          pdf.addImage(pageData, 'JPEG', 5, position, imgWidth, imgHeight)
+          leftHeight -= pageHeight;
+          position -= pageHeight;
+          if (leftHeight > 0) {
+            pdf.addPage();
+          }
+        }
+      }
+      this.loading = !this.loading;
+      pdf.save('台北商業大學' + this.setYear + '.pdf');
+    });
+  }
+
+  changeYear() {
+    this.resetDate();
+    this.showEventSort();
+  }
+
+  resetDate() {
+    this.showTitle = true;
+
+    this.eventMonth_1 = [];
+    this.eventMonth_2 = [];
+    this.eventMonth_3 = [];
+    this.eventMonth_4 = [];
+    this.eventMonth_5 = [];
+    this.eventMonth_6 = [];
+    this.eventMonth_7 = [];
+    this.eventMonth_8 = [];
+    this.eventMonth_9 = [];
+    this.eventMonth_10 = [];
+    this.eventMonth_11 = [];
+    this.eventMonth_12 = [];
+
+    const eventMonth_1 = [];
+    const eventMonth_2 = [];
+    const eventMonth_3 = [];
+    const eventMonth_4 = [];
+    const eventMonth_5 = [];
+    const eventMonth_6 = [];
+    const eventMonth_7 = [];
+    const eventMonth_8 = [];
+    const eventMonth_9 = [];
+    const eventMonth_10 = [];
+    const eventMonth_11 = [];
+    const eventMonth_12 = [];
+
+    this.eventMonth_1_nd = [];
+    this.eventMonth_2_nd = [];
+    this.eventMonth_3_nd = [];
+    this.eventMonth_4_nd = [];
+    this.eventMonth_5_nd = [];
+    this.eventMonth_6_nd = [];
+    this.eventMonth_7_nd = [];
+    this.eventMonth_8_nd = [];
+    this.eventMonth_9_nd = [];
+    this.eventMonth_10_nd = [];
+    this.eventMonth_11_nd = [];
+    this.eventMonth_12_nd = [];
+
+    const eventMonth_1_nd = [];
+    const eventMonth_2_nd = [];
+    const eventMonth_3_nd = [];
+    const eventMonth_4_nd = [];
+    const eventMonth_5_nd = [];
+    const eventMonth_6_nd = [];
+    const eventMonth_7_nd = [];
+    const eventMonth_8_nd = [];
+    const eventMonth_9_nd = [];
+    const eventMonth_10_nd = [];
+    const eventMonth_11_nd = [];
+    const eventMonth_12_nd = [];
+
+    this.openCalendar.forEach(calendar => {
+      this.allEvents.forEach(event => {
+        if (calendar.id === event.calendars[0].mainCalendar.id &&
+          calendar.name === '日間部行事曆') {
+          // if內 calendar.isChecked === true
+          if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) &&
+            event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+            switch (event.startDate.substr(5, 2)) {
+              case '02':
+                eventMonth_2.push(event);
+                break;
+              case '03':
+                eventMonth_3.push(event);
+                break;
+              case '04':
+                eventMonth_4.push(event);
+                break;
+              case '05':
+                eventMonth_5.push(event);
+                break;
+              case '06':
+                eventMonth_6.push(event);
+                break;
+              case '07':
+                eventMonth_7.push(event);
+                break;
+            }
+            return 0;
+          } else if (Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) &&
+            event.startDate.substr(5, 2) > 7) {
+            switch (event.startDate.substr(5, 2)) {
+              case '08':
+                eventMonth_8.push(event);
+                break;
+              case '09':
+                eventMonth_9.push(event);
+                break;
+              case '10':
+                eventMonth_10.push(event);
+                break;
+              case '11':
+                eventMonth_11.push(event);
+                break;
+              case '12':
+                eventMonth_12.push(event);
+                break;
+            }
+            return 0;
+          } else if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) < 2) {
+            switch (event.startDate.substr(5, 2)) {
+              case '01':
+                eventMonth_1.push(event);
+                break;
+            }
+            return 0;
+          }
+        } else if (calendar.id === event.calendars[0].mainCalendar.id &&
+          calendar.name === '進修部行事曆') {
+          if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+            switch (event.startDate.substr(5, 2)) {
+              case '02':
+                eventMonth_2_nd.push(event);
+                break;
+              case '03':
+                eventMonth_3_nd.push(event);
+                break;
+              case '04':
+                eventMonth_4_nd.push(event);
+                break;
+              case '05':
+                eventMonth_5_nd.push(event);
+                break;
+              case '06':
+                eventMonth_6_nd.push(event);
+                break;
+              case '07':
+                eventMonth_7_nd.push(event);
+                break;
+            }
+            return 0;
+          } else if (Number(this.setYear) === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) > 7) {
+            switch (event.startDate.substr(5, 2)) {
+              case '08':
+                eventMonth_8_nd.push(event);
+                break;
+              case '09':
+                eventMonth_9_nd.push(event);
+                break;
+              case '10':
+                eventMonth_10_nd.push(event);
+                break;
+              case '11':
+                eventMonth_11_nd.push(event);
+                break;
+              case '12':
+                eventMonth_12_nd.push(event);
+                break;
+            }
+            return 0;
+          } else if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) < 2) {
+            switch (event.startDate.substr(5, 2)) {
+              case '01':
+                eventMonth_1_nd.push(event);
+                break;
+            }
+            return 0;
+          }
+        }
+      });
+    });
+    this.eventMonth_1.push({ events: eventMonth_1 });
+    this.eventMonth_2.push({ events: eventMonth_2 });
+    this.eventMonth_3.push({ events: eventMonth_3 });
+    this.eventMonth_4.push({ events: eventMonth_4 });
+    this.eventMonth_5.push({ events: eventMonth_5 });
+    this.eventMonth_6.push({ events: eventMonth_6 });
+    this.eventMonth_7.push({ events: eventMonth_7 });
+    this.eventMonth_8.push({ events: eventMonth_8 });
+    this.eventMonth_9.push({ events: eventMonth_9 });
+    this.eventMonth_10.push({ events: eventMonth_10 });
+    this.eventMonth_11.push({ events: eventMonth_11 });
+    this.eventMonth_12.push({ events: eventMonth_12 });
+
+    this.eventMonth_1_nd.push({ events: eventMonth_1_nd });
+    this.eventMonth_2_nd.push({ events: eventMonth_2_nd });
+    this.eventMonth_3_nd.push({ events: eventMonth_3_nd });
+    this.eventMonth_4_nd.push({ events: eventMonth_4_nd });
+    this.eventMonth_5_nd.push({ events: eventMonth_5_nd });
+    this.eventMonth_6_nd.push({ events: eventMonth_6_nd });
+    this.eventMonth_7_nd.push({ events: eventMonth_7_nd });
+    this.eventMonth_8_nd.push({ events: eventMonth_8_nd });
+    this.eventMonth_9_nd.push({ events: eventMonth_9_nd });
+    this.eventMonth_10_nd.push({ events: eventMonth_10_nd });
+    this.eventMonth_11_nd.push({ events: eventMonth_11_nd });
+    this.eventMonth_12_nd.push({ events: eventMonth_12_nd });
+
+    this.showEventSort();
+  }
+
+  showEventSort() {
+    // 日間部
+    this.eventMonth_1[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_2[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_3[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_4[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_5[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_6[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_7[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_8[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_9[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_10[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_11[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_12[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+
+    // 進修部
+    this.eventMonth_1_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_2_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_3_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_4_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_5_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_6_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_7_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_8_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_9_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_10_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_11_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.eventMonth_12_nd[0].events.sort((a, b) => {
+      const startA = a.startDate.toUpperCase();
+      const startB = b.startDate.toUpperCase();
+      if (startA < startB) {
+        return -1;
+      }
+      if (startA > startB) {
+        return 1;
+      }
+      return 0;
+    });
+
   }
 }
-

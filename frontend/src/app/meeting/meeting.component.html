@@ -1,0 +1,179 @@
+<div class="body-content">
+  <div class="left">
+    <input type="checkbox" name="" id="sideMenu-active">
+    <div class="sideMenu">
+      <label for="sideMenu-active" class="close">
+        <i class="material-icons">east</i>
+      </label>
+      <div class="sideMenu__content">
+        <div class="sideMenu__content__subscribe" routerLink="/add-subscribe">
+          <i class="material-icons">
+            bookmarks
+          </i>
+          <span>新增訂閱</span>
+        </div>
+        <div class="sideMenu__content__userTeach" routerLink="/user-teach">
+          <i class="material-icons">
+            help_outline
+          </i>
+          <span>使用說明</span>
+        </div>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  library_add
+                </i>
+                <h1>行程管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isOpen = !isOpen"
+                  [attr.aria-expanded]="!isOpen" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isOpen" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/add-schedule">
+                    <span>新增行程</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/meeting">
+                    <span>查看會議</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="sideMenu__content__title active">
+              <div class="title">
+                <i class="material-icons">
+                  open_in_new
+                </i>
+                <h1>匯出入管理</h1>
+              </div>
+              <div class="form-group row">
+                <i class="material-icons sideMenu__content__arrow" (click)="isTrue = !isTrue"
+                  [attr.aria-expanded]="!isTrue" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
+              </div>
+            </div>
+            <div id="collapseBasic" [collapse]="isTrue" [isAnimated]="true">
+              <ul class="sideMenu__content__list">
+                <li *ngIf="permission === 'true'">
+                  <div class="sideMenu__content__add" routerLink="/official-add">
+                    <span>匯出修改</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/official-change">
+                    <span>匯入建立</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="sideMenu__content__add" routerLink="/opendata">
+                    <span>OpenData</span>
+                  </div>
+                  <div class="sideMenu__content__add" routerLink="/export" *ngIf="permission === 'true'">
+                    <span>匯出&nbsp;PDF</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <label for="sideMenu-active">
+        <div class="background"></div>
+      </label>
+    </div>
+    <label for="sideMenu-active" class="open">
+      <i class="material-icons">menu</i>
+    </label>
+  </div>
+  <div class="right">
+    <app-navbar></app-navbar>
+    <main>
+      <article>
+        <section class="container">
+          <div class="date-picker">
+            <div class="title">
+              <i class="material-icons">
+                date_range
+              </i>
+              <h3>選擇日期區間</h3>
+            </div>
+            <div class="date-range">
+              <input type="text" class="form-control startTime" bsDatepicker [(ngModel)]="setStartDate"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate required placement="bottom">
+              <span class="point">至</span>
+              <input type="text" class="form-control endTime" bsDatepicker [(ngModel)]="setEndDate"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate required placement="bottom">
+              <div class="look" (click)="changeDate()">查看</div>
+            </div>
+          </div>
+        </section>
+        <section class="body">
+          <ul class="category">
+            <li class="category__item">
+              <h2>自行發起會議</h2>
+              <hr>
+              <ul class="item-title">
+                <li class="item-title__date">日期</li>
+                <li class="item-title__time">時間</li>
+                <li class="item-title__name">會議名稱</li>
+              </ul>
+              <div class="category__item__content">
+                <ul class="item-content" *ngFor="let meet of myMeet" (click)="editMeet(meet.id)">
+                  <li class="item-title__date">{{meet.startDate}}</li>
+                  <li class="item-title__time">{{meet.sTime}}</li>
+                  <li class="item-title__name">{{meet.title}}</li>
+                </ul>
+              </div>
+            </li>
+            <li class="category__item">
+              <h2>受邀參與的會議</h2>
+              <hr>
+              <ul class="item-title">
+                <li class="item-title__date">日期</li>
+                <li class="item-title__time">時間</li>
+                <li class="item-title__name">會議名稱</li>
+              </ul>
+              <div class="category__item__content">
+                <ul class="item-content" *ngFor="let meet of invitedMeet" (click)="editMeet(meet.id)">
+                  <li class="item-title__date">{{meet.startDate}}</li>
+                  <li class="item-title__time">{{meet.sTime}}</li>
+                  <li class="item-title__name">{{meet.title}}</li>
+                </ul>
+              </div>
+            </li>
+            <li class="category__item">
+              <h2>已結束會議</h2>
+              <hr>
+              <ul class="item-title">
+                <li class="item-title__date">日期</li>
+                <li class="item-title__time">時間</li>
+                <li class="item-title__name">會議名稱</li>
+              </ul>
+              <div class="category__item__content">
+                <ul class="item-content" *ngFor="let meet of pastMeet" (click)="editMeet(meet.id)">
+                  <li class="item-title__date">{{meet.startDate}}</li>
+                  <li class="item-title__time">{{meet.sTime}}</li>
+                  <li class="item-title__name">{{meet.title}}</li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </article>
+    </main>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+  </div>
+</div>

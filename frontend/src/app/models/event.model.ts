@@ -5,6 +5,64 @@ export interface Event {
   endAt: string;
   description?: string;
   location?: string;
-  calendars: number[];
-  files?: File;
+  nature: string;
+  main_calendar_id: number;
+  invite_calendars_id: [];
+  eventinvitecalendarSet: [{
+    calendar: {
+      id: number,
+      name: string,
+      description: string,
+      display: string,
+      color: string,
+      permissions: [{
+        id: number,
+        group: number,
+        group_name: string,
+        role: string,
+        anthority: string
+      }]
+    },
+    mainCalendar: {
+      id: number,
+      name: string,
+      description: string,
+      display: string,
+      color: string,
+      permissions: [{
+        id: number,
+        group: number,
+        group_name: string,
+        role: string,
+        anthority: string
+      }]
+    },
+    response: string
+  }];
+  eventparticipantSet: [{
+    user: string,
+    role: string,
+    response: string
+  }];
+  calendars: [{
+    color: string;
+    description?: string,
+    display: string,
+    id?: number,
+    name: string,
+    permissions: [{
+      authority: string,
+      group: number,
+      groupName: string,
+      id?: number,
+      role: string
+    }]
+  }];
+  attachments?: [{
+    filename: string,
+    id: string,
+    file: string
+  }];
+  attribute: string;
+  participants?: [];
 }

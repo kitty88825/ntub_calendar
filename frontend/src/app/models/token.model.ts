@@ -1,4 +1,8 @@
 export class Token {
   accessToken: string;
-  token?: string;
+  token?: {
+    access?: string;
+    refresh?: string;
+  };
+  staff?: boolean;
 }
