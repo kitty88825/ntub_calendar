@@ -64,9 +64,12 @@ class EventFeed(ICalFeed):
         for participant in participants:
             attendee = icalendar.vCalAddress(f"MAILTO:{participant.email}")
             participant_dic = default_attendee_params.copy()
-            response = item.participants.through.objects \
-                .values_list('response', flat=True) \
-                .get(user=participant)
+            try:
+                response = item.participants.through.objects \
+                    .values_list('response', flat=True) \
+                    .get(user=participant)
+            except Exception as error:
+                print(f'Feed item.participants.through.objects.get{error}')
 
             # 參與者邀請回覆
             if response == 'accept':
