@@ -120,13 +120,15 @@ export class AddCalendarComponent implements OnInit {
                 this.permissionCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
               }
             });
-            if (group === calendar.id) {
-              this.groupName.push({ name: calendar.name, id: calendar.id });
-            }
           });
         });
-        this.groupName.forEach(name => {
-          this.setPermissions.push({ groupName: name.name, role: this.role, authority: 'write', group: name.id });
+        this.allCalendar.forEach(calendar => {
+          this.group.forEach(group => {
+            if (group === calendar.id) {
+              this.groupName.push({ name: calendar.name, id: calendar.id });
+              this.setPermissions.push({ groupName: calendar.name, role: this.role, authority: 'write', group: calendar.id });
+            }
+          });
         });
         this.loading = !this.loading;
       },
