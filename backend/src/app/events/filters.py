@@ -14,7 +14,7 @@ class SubscriberEventsFilter(filters.FilterSet):
     )
     month = filters.DateTimeFilter(
         field_name='start_at',
-        method='filter_time',
+        method='filter_month',
     )
     study_years = filters.DateTimeFilter(method='filter_study_years')
     semester = filters.DateTimeFilter(method='filter_semester')
