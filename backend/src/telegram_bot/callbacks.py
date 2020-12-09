@@ -115,7 +115,7 @@ def login(update, context):
             )
             context.bot.send_message(
                 chat_id,
-                '綁定成功！歡迎{}！🥰如果之後您更換了訂閱網址(URL)，不需要重新綁定喔！接下來使用 /help 來查看所有功能吧👉'.format(update.message.chat.first_name)  # noqa 501
+                f'綁定成功！歡迎{update.message.chat.first_name}！🥰如果之後您更換了訂閱網址，不需要重新綁定喔！接下來使用 /help 來查看所有功能吧👉'  # noqa 501
                 )
 
 
@@ -191,7 +191,7 @@ def meeting_handle(i):
     i = i.replace(', role:', '')
     i = i.replace('participants', '')
     i = i.replace(", response:", ':')
-    i = i.replace(',  : accept', ':參加')
+    i = i.replace('accept', '參加')
     i = i.replace('maybe', '不確定')
     i = i.replace('no_reply', '未回應')
     i = i.replace('decline', '不參加')
@@ -204,23 +204,44 @@ def meeting(update, context):
     get_id = TelegramBot.objects.filter(chat_id=chat_id)
     search = text_after_command(update)
     if search:
-        meeting = Event.objects.filter(
+        edit_meeting = Event.objects.filter(
             Q(nature='meeting'),
             Q(eventparticipant__user_id=get_id[0].user_id),
+            Q(eventparticipant__role='editors'),
+            Q(start_at__gte=datetime.date.today()),
+            Q(title__contains=search),
+        )
+        attend_meeting = Event.objects.filter(
+            Q(nature='meeting'),
+            Q(eventparticipant__user_id=get_id[0].user_id),
+            Q(eventparticipant__role='participants'),
             Q(start_at__gte=datetime.date.today()),
             Q(title__contains=search),
         )
     else:
-        meeting = Event.objects.filter(
+        edit_meeting = Event.objects.filter(
             Q(nature='meeting'),
             Q(eventparticipant__user_id=get_id[0].user_id),
+            Q(eventparticipant__role='editors'),
+            Q(start_at__contains=datetime.date.today()),
+        )
+        attend_meeting = Event.objects.filter(
+            Q(nature='meeting'),
+            Q(eventparticipant__user_id=get_id[0].user_id),
+            Q(eventparticipant__role='participants'),
             Q(start_at__contains=datetime.date.today()),
         )
     if meeting:
-        serializer = MeetingDetailSerializer(meeting, many=True)
-        data = json.loads(json.dumps(serializer.data))
+        serializer = MeetingDetailSerializer(edit_meeting, many=True)
+        attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
+        edit_data = json.loads(json.dumps(serializer.data))
+        attend_data = json.loads(json.dumps(attend_serializer.data))
 
-        for i in data:
+        for i in edit_data:  # 使用者發起的會議
+            i = meeting_handle(i)
+            context.bot.send_message(chat_id, i)
+
+        for i in attend_data:  # 使用者受邀的會議
             i = meeting_handle(i)
 
             keyboard = [
@@ -246,6 +267,16 @@ def meeting(update, context):
 
     else:
         context.bot.send_message(chat_id, '沒有找到已參與會議或是近期會議~')
+        search_keyboard = [
+            [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
+            [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
+            [InlineKeyboardButton('查看一個月內的會議', callback_data='30天')],
+        ]
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='如果需要查詢其他日期的會議請點選以下按鈕',
+            reply_markup=InlineKeyboardMarkup(search_keyboard),
+        )
 
 
 def meeting_callback(update, context):
@@ -376,14 +407,27 @@ def meeting_callback(update, context):
         user = TelegramBot.objects.filter(chat_id=chat_id)
         meeting = Event.objects.filter(
             Q(eventparticipant__user_id=user[0].user_id),
+            Q(eventparticipant__role='editors'),
+            Q(nature='meeting'),
+            Q(start_at__range=[today, end]),
+        )
+        attend_meeting = Event.objects.filter(
+            Q(eventparticipant__user_id=user[0].user_id),
+            Q(eventparticipant__role='participants'),
             Q(nature='meeting'),
             Q(start_at__range=[today, end]),
         )
         if meeting:
             serializer = MeetingDetailSerializer(meeting, many=True)
+            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
             data = json.loads(json.dumps(serializer.data))
+            attend_data = json.loads(json.dumps(attend_serializer.data))
 
             for i in data:
+                i = meeting_handle(i)
+                context.bot.send_message(chat_id, i)
+
+            for i in attend_data:
                 i = meeting_handle(i)
 
                 keyboard = [
@@ -405,14 +449,27 @@ def meeting_callback(update, context):
         user = TelegramBot.objects.filter(chat_id=chat_id)
         meeting = Event.objects.filter(
             Q(eventparticipant__user_id=user[0].user_id),
+            Q(eventparticipant__role='editors'),
+            Q(nature='meeting'),
+            Q(start_at__range=[today, end]),
+        )
+        attend_meeting = Event.objects.filter(
+            Q(eventparticipant__user_id=user[0].user_id),
+            Q(eventparticipant__role='participants'),
             Q(nature='meeting'),
             Q(start_at__range=[today, end]),
         )
         if meeting:
             serializer = MeetingDetailSerializer(meeting, many=True)
+            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
             data = json.loads(json.dumps(serializer.data))
+            attend_data = json.loads(json.dumps(attend_serializer.data))
 
             for i in data:
+                i = meeting_handle(i)
+                context.bot.send_message(chat_id, i)
+
+            for i in attend_data:
                 i = meeting_handle(i)
 
                 keyboard = [
@@ -434,14 +491,27 @@ def meeting_callback(update, context):
         user = TelegramBot.objects.filter(chat_id=chat_id)
         meeting = Event.objects.filter(
             Q(eventparticipant__user_id=user[0].user_id),
+            Q(eventparticipant__role='editors'),
+            Q(nature='meeting'),
+            Q(start_at__range=[today, end]),
+        )
+        attend_meeting = Event.objects.filter(
+            Q(eventparticipant__user_id=user[0].user_id),
+            Q(eventparticipant__role='participants'),
             Q(nature='meeting'),
             Q(start_at__range=[today, end]),
         )
         if meeting:
             serializer = MeetingDetailSerializer(meeting, many=True)
+            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
             data = json.loads(json.dumps(serializer.data))
+            attend_data = json.loads(json.dumps(attend_serializer.data))
 
             for i in data:
+                i = meeting_handle(i)
+                context.bot.send_message(chat_id, i)
+
+            for i in attend_data:
                 i = meeting_handle(i)
 
                 keyboard = [
