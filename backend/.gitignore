@@ -2,7 +2,7 @@
 .DS_Store
 
 # Database files
-db/*
+src/db/*
 
 # Static files
 */assets/*
