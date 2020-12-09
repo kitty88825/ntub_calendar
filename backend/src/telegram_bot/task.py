@@ -53,9 +53,9 @@ def invite_meeting(bot, event_id):
         reply_markup = InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton('參加', callback_data='2'),
-                        InlineKeyboardButton('不確定', callback_data='3'),
-                        InlineKeyboardButton('不參加', callback_data='4')
+                        InlineKeyboardButton('參加', callback_data='accept'),
+                        InlineKeyboardButton('不確定', callback_data='maybe'),
+                        InlineKeyboardButton('不參加', callback_data='decline')
                     ]
                 ]
             )
