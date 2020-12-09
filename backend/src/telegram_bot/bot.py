@@ -18,6 +18,8 @@ def webhook_handler(data):
 
     # Handlers
     dispatcher.add_handler(CommandHandler('start', callbacks.start))
+    dispatcher.add_handler(CommandHandler('website', callbacks.website))
+    dispatcher.add_handler(CommandHandler('help', callbacks.help))
     dispatcher.add_handler(CommandHandler('event', callbacks.get_event))
     dispatcher.add_handler(CommandHandler('login', callbacks.login))
     dispatcher.add_handler(CommandHandler('meeting', callbacks.meeting))

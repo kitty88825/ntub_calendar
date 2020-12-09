@@ -7,6 +7,8 @@ from rest_framework.response import Response
 
 from django_filters import rest_framework as filters
 
+from app.events.models import Event
+
 from .models import Calendar
 from .serializers import CalendarSerializer, SubscribeCalendarSerializer
 from .permission import IsStaffUserEditOnly
@@ -28,6 +30,9 @@ class CalendarViewSet(ModelViewSet):
                     (
                         Q(permissions__role=self.request.user.role) &
                         Q(permissions__group__user=self.request.user)
+                    ) |
+                    (
+                        Q(event__participants=self.request.user)
                     ),
                 ) \
                 .distinct()
@@ -48,6 +53,11 @@ class CalendarViewSet(ModelViewSet):
         ids = serializer.data['calendars']
         calendars = Calendar.objects.filter(id__in=ids)
         self.request.user.calendar_set.add(*calendars)
+        events = Event.objects.filter(
+            calendars__in=calendars,
+            subscribers=self.request.user,
+        )
+        self.request.user.subscribe_events.remove(*events)
 
         res_serializer = CalendarSerializer(
             self.request.user.calendar_set.all(),
