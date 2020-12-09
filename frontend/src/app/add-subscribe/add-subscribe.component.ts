@@ -66,10 +66,11 @@ export class AddSubscribeComponent implements OnInit {
     this.loading = !this.loading;
     this.calendarService.getCalendar().subscribe(
       data => {
-        data.forEach(calendar => this.calendars.push({
-          id: calendar.id, name: calendar.name, isChecked: false,
-          display: calendar.display
-        }));
+        data.forEach(calendar =>
+          this.calendars.push({
+            id: calendar.id, name: calendar.name, isChecked: false,
+            display: calendar.display
+          }));
         this.eventService.getEvents().subscribe(
           res => {
             res.forEach(event => {

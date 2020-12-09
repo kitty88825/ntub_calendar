@@ -32,11 +32,17 @@ export class EventService {
   }
 
   fGetEventsTime(time: any): Observable<Event[]> {
-    return this.http.get<Event[]>(environment.serverIp + 'event/events?time=' + time + '-01T00%3A00%3A00%2B08%3A00');
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?month=' + time + '-01T00%3A00%3A00%2B08%3A00');
   }
 
   getEventsTime(time: any): Observable<Event[]> {
-    return this.http.get<Event[]>(environment.serverIp + 'event/events?time=' + time + '-01T00%3A00%3A00%2B08%3A00'
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?month=' + time + '-01T00%3A00%3A00%2B08%3A00'
+      , { headers: this.reqHeader });
+  }
+
+  getEventsYear(sTime: any, eTime: any): Observable<Event[]> {
+    return this.http.get<Event[]>(environment.serverIp + 'event/events?study_years=' + sTime +
+      '-01T00%3A00%3A00%2B08%3A00&semester=' + eTime + '-01T00%3A00%3A00%2B08%3A00'
       , { headers: this.reqHeader });
   }
 
