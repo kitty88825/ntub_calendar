@@ -8,8 +8,7 @@ from app.users.models import User
 from telegram_bot.models import TelegramBot
 
 from .choices import RoleChoice, EventParticipantResponseChoice
-from .functions import send_email
-from .schedule import schedule
+from .schedule import schedule, send_email_task
 from .models import (
     Event,
     EventParticipant,
@@ -165,7 +164,7 @@ class EventSerializer(serializers.ModelSerializer):
         )
         if users:
             for user in users:
-                send_email(event, user)
+                send_email_task(event, user)
 
     def create_calendar_from_event(self, event, main_calendar, calendars_id):
         if not calendars_id:
