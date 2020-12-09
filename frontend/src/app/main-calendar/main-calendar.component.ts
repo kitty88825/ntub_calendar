@@ -23,7 +23,7 @@ const SecondaryBlue = '#006ddd';
 export class MainCalendarComponent implements OnInit {
   searchText = '';
   eventsYear = [];
-  selectYear = String(new Date().getFullYear());
+  selectYear = Number(new Date().getFullYear());
   eventsMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   selectAll: boolean;
   publicCalendar = [];
@@ -85,7 +85,7 @@ export class MainCalendarComponent implements OnInit {
             this.calendarComponent.getApi().prev();
             let date = '';
             date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
-            this.selectYear = date.substr(0, 4);
+            this.selectYear = Number(date.substr(0, 4));
             this.selectMonth = Number(date.substr(5, 2));
             this.onChange();
           }
@@ -95,7 +95,7 @@ export class MainCalendarComponent implements OnInit {
             this.calendarComponent.getApi().next();
             let date = '';
             date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
-            this.selectYear = date.substr(0, 4);
+            this.selectYear = Number(date.substr(0, 4));
             this.selectMonth = Number(date.substr(5, 2));
             this.onChange();
           }
@@ -274,8 +274,15 @@ export class MainCalendarComponent implements OnInit {
   }
 
   ngOnInit() {
+    let year = Number(this.todayDate.substr(0, 4));
     this.loading = !this.loading;
-    this.eventsYear.push(this.todayDate.substr(0, 4));
+
+    for (let i = 0; i < 5; i++) {
+      this.eventsYear.push(year);
+      year++;
+    }
+
+    this.eventsYearFilter();
 
     this.tokenService.getUser().subscribe(
       re => {
@@ -316,16 +323,6 @@ export class MainCalendarComponent implements OnInit {
     this.showEventsSort();
 
     this.loading = false;
-
-    this.eventService.getEvents().subscribe(
-      data => {
-        data.forEach(event => {
-          this.eventsYear.push(event.startAt.substr(0, 4));
-        });
-
-        this.eventsYearFilter();
-      }
-    );
 
   }
 
@@ -527,10 +524,6 @@ export class MainCalendarComponent implements OnInit {
   }
 
   eventsYearFilter() {
-    this.eventsYear = this.eventsYear.filter((el, i, arr) => {
-      return arr.indexOf(el) === i;
-    });
-
     this.eventsYear.sort((a, b) => {
       const startA = a;
       const startB = b;

@@ -206,9 +206,12 @@
                     display    : flex;
                     align-items: center;
 
+                    h5 {
+                      margin-right: auto;
+                    }
+
                     .response {
                       width      : 20px;
-                      margin-left: auto;
 
                       i.attend {
                         margin-left: $content-size_left-right/2;

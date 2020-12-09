@@ -118,8 +118,8 @@
             </div>
           </div>
         </section>
-        <section class="body">
-          <ul class="event-list" #screen id="screen">
+        <section class="body" #screen id="screen">
+          <ul class="event-list">
             <div class="event-list__header">
               <h1>國立臺北商業大學{{setYear}}學年度第1學期行事曆</h1>
             </div>
@@ -417,7 +417,7 @@
               </li>
             </div>
           </ul>
-          <div class="subBtn" (click)="savePdf(main)">
+          <div class="subBtn" (click)="savePdf(main)" data-html2canvas-ignore="true">
             <i class="material-icons">
               download
             </i>
