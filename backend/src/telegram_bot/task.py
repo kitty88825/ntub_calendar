@@ -33,22 +33,11 @@ def today(bot):
         data_calendar = json.loads(json.dumps(serializer_calendar.data))
         data = data_event + data_calendar
 
+        bot.send_message(chat_id[0], '今日行程:\n')
+
         if data:
             for i in data:
                 event_handle(i)
-
-            data = json.dumps(data, ensure_ascii=False)
-            data = data.replace('"', '')
-            data = data.replace('[', '')
-            data = data.replace(']', '')
-            data = data.split('}, {')
-
-            bot.send_message(chat_id[0], '今日行程:\n')
-
-            for i in data:
-                i = i.replace('{', '')
-                i = i.replace('}', '')
-                i = i.replace(',', '\n')
                 bot.send_message(chat_id[0], i)
         else:
             bot.send_message(chat_id[0], '今日沒有行程~')

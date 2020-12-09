@@ -46,6 +46,15 @@ def event_handle(i):
     i['備註'] = i.pop('description')
     i['地點'] = i.pop('location')
     i['行事曆'] = i.pop('calendars')
+
+    i = json.dumps(i, ensure_ascii=False)
+    i = i.replace('"', '')
+    i = i.replace('[', '')
+    i = i.replace(']', '')
+    i = i.replace('id:', '')
+    i = i.replace('{', '')
+    i = i.replace('}', '')
+    i = i.replace(',', '\n')
     return i
 
 
@@ -109,13 +118,19 @@ def login(update, context):
             reply_list = reply.split('/')
             reply = reply_list[4]
             user_id = User.objects.values_list('id', flat=True).filter(code=reply)  # noqa 501
-            TelegramBot.objects.get_or_create(
-                chat_id=chat_id,
-                user_id=user_id[0]
-            )
-            context.bot.send_message(
-                chat_id,
-                f'綁定成功！歡迎{update.message.chat.first_name}！🥰如果之後您更換了訂閱網址，不需要重新綁定喔！接下來使用 /help 來查看所有功能吧👉'  # noqa 501
+            if user_id:
+                TelegramBot.objects.get_or_create(
+                    chat_id=chat_id,
+                    user_id=user_id[0]
+                )
+                context.bot.send_message(
+                    chat_id,
+                    f'綁定成功！歡迎{update.message.chat.first_name}！🥰如果之後您更換了訂閱網址，不需要重新綁定喔！接下來使用 /help 來查看所有功能吧👉'  # noqa 501
+                    )
+            else:
+                context.bot.send_messag(
+                    chat_id,
+                    '沒有找到符合訂閱網址的使用者，您是否已經更換過網址或是尚未在一訂行網頁登入呢?'
                 )
 
 
@@ -155,18 +170,17 @@ def get_event(update, context):
 
                 data = json.loads(json.dumps(serializer.data))
                 for i in data:
+                    event_id = i.pop('id')
                     i = event_handle(i)
+                    keyboard = [
+                        [InlineKeyboardButton('單獨訂閱此行程', callback_data=event_id)],
+                    ]
+                    context.bot.send_message(
+                        chat_id=chat_id,
+                        text=i,
+                        reply_markup=InlineKeyboardMarkup(keyboard)
+                    )
 
-                data = json.dumps(data, ensure_ascii=False)
-                data = data.replace('"', '')
-                data = data.replace('[', '')
-                data = data.replace(']', '')
-                data = data.split('}, {')
-                for i in data:
-                    i = i.replace('{', '')
-                    i = i.replace('}', '')
-                    i = i.replace(',', '\n')
-                    context.bot.send_message(chat_id, i)
                 context.bot.send_message(chat_id, '以上是這次的查詢結果🥰')
     else:
         context.bot.send_message(chat_id, '請先綁定!')
@@ -247,7 +261,7 @@ def meeting(update, context):
                 i = meeting_handle(i)
 
                 keyboard = [
-                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                    [InlineKeyboardButton('修改出席狀態', callback_data='edit_meeting')]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 context.bot.send_message(
@@ -257,9 +271,7 @@ def meeting(update, context):
                 )
 
         search_keyboard = [
-            [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
-            [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
-            [InlineKeyboardButton('查看一個月內的會議', callback_data='30天')],
+            [InlineKeyboardButton('查詢其他時間區段的會議', callback_data='search')],
         ]
         context.bot.send_message(
             chat_id=chat_id,
@@ -268,9 +280,7 @@ def meeting(update, context):
         )
     else:
         search_keyboard = [
-            [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
-            [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
-            [InlineKeyboardButton('查看一個月內的會議', callback_data='30天')],
+            [InlineKeyboardButton('查詢其他時間區段的會議', callback_data='search')],
         ]
         context.bot.send_message(
             chat_id=chat_id,
@@ -287,7 +297,7 @@ def meeting_callback(update, context):
 
     chat_id = update.callback_query.message.chat_id
 
-    if query == '2' or query == '3' or query == '4':
+    if query == 'accept' or query == 'maybe' or query == 'decline':
         text = update.callback_query.message.text
         text = text.replace('行程:', '')
         text = text.replace('開始時間:', '')
@@ -308,13 +318,13 @@ def meeting_callback(update, context):
             Q(end_at__date=dt.strptime(text[2], '%Y-%m-%d%H:%M:%S'))
         )
 
-    if query == '1':
+    if query == 'edit_meeting':
         reply_markup = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton('參加', callback_data='2'),
-                    InlineKeyboardButton('不確定', callback_data='3'),
-                    InlineKeyboardButton('不參加', callback_data='4')
+                    InlineKeyboardButton('參加', callback_data='accept'),
+                    InlineKeyboardButton('不確定', callback_data='maybe'),
+                    InlineKeyboardButton('不參加', callback_data='decline')
                 ]
             ]
         )
@@ -324,7 +334,7 @@ def meeting_callback(update, context):
             reply_markup=reply_markup
         )
 
-    elif query == '2':
+    elif query == 'accept':
         user = TelegramBot.objects.filter(chat_id=chat_id)
         reply = EventParticipant.objects.filter(
             Q(event_id=event[0].id) &
@@ -333,7 +343,7 @@ def meeting_callback(update, context):
         reply.update(response='accept')
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton('已修改出席狀態爲參加', callback_data='5')]
+                [InlineKeyboardButton('已修改出席狀態爲參加', callback_data='nothing')]
             ]
         )
         event = Event.objects.filter(id=event[0].id)
@@ -350,7 +360,7 @@ def meeting_callback(update, context):
         )
         context.bot.send_message(chat_id, f'已幫您修改出席狀態爲參加:\n{data[0]}')
 
-    elif query == '3':
+    elif query == 'maybe':
         user = TelegramBot.objects.filter(chat_id=chat_id)
         reply = EventParticipant.objects.filter(
             Q(event_id=event[0].id) &
@@ -367,7 +377,7 @@ def meeting_callback(update, context):
 
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton('已修改出席狀態爲不確定', callback_data='5')]
+                [InlineKeyboardButton('已修改出席狀態爲不確定', callback_data='nothing')]
             ]
         )
         context.bot.edit_message_reply_markup(
@@ -377,7 +387,7 @@ def meeting_callback(update, context):
         )
         context.bot.send_message(chat_id, f'已幫您修改出席狀態爲不確定:\n{data[0]}')
 
-    elif query == '4':
+    elif query == 'decline':
         user = TelegramBot.objects.filter(chat_id=chat_id)
         reply = EventParticipant.objects.filter(
             Q(event_id=event[0].id) &
@@ -394,7 +404,7 @@ def meeting_callback(update, context):
 
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton('已修改出席狀態爲不參加', callback_data='5')]
+                [InlineKeyboardButton('已修改出席狀態爲不參加', callback_data='nothing')]
             ]
         )
         context.bot.edit_message_reply_markup(
@@ -404,9 +414,24 @@ def meeting_callback(update, context):
         )
         context.bot.send_message(chat_id, f'已幫您修改出席狀態爲不參加\n{data[0]}')
 
+    elif query == 'nothing':
+        pass
+
+    elif query == 'search':
+        search_keyboard = [
+            [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
+            [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
+            [InlineKeyboardButton('查看一個月內的會議', callback_data='30天')],
+        ]
+        context.bot.edit_message_reply_markup(
+            chat_id=chat_id,
+            message_id=update.callback_query.message.message_id,
+            reply_markup=InlineKeyboardMarkup(search_keyboard)
+        )
+
     elif query == '3天':
         today = datetime.date.today()
-        end = today + datetime.timedelta(days=2)
+        end = today + datetime.timedelta(days=3)
         user = TelegramBot.objects.filter(chat_id=chat_id)
         meeting = Event.objects.filter(
             Q(eventparticipant__user_id=user[0].user_id),
@@ -435,7 +460,7 @@ def meeting_callback(update, context):
                     i = meeting_handle(i)
 
                     keyboard = [
-                        [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                        [InlineKeyboardButton('修改出席狀態', callback_data='edit_meeting')]
                     ]
 
                     context.bot.send_message(
@@ -477,7 +502,7 @@ def meeting_callback(update, context):
                     i = meeting_handle(i)
 
                     keyboard = [
-                        [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                        [InlineKeyboardButton('修改出席狀態', callback_data='edit_meeting')]
                     ]
 
                     context.bot.send_message(
@@ -519,7 +544,7 @@ def meeting_callback(update, context):
                     i = meeting_handle(i)
 
                     keyboard = [
-                        [InlineKeyboardButton('修改出席狀態', callback_data='1')],
+                        [InlineKeyboardButton('修改出席狀態', callback_data='edit_meeting')],
                     ]
 
                     context.bot.send_message(
@@ -530,6 +555,31 @@ def meeting_callback(update, context):
             context.bot.send_message(chat_id, '以上就是最近一個月的會議☺️')
         else:
             context.bot.send_message(chat_id, '最近一個月內沒有受邀或是參與會議')
+
+    else:
+        event_id = int(query)
+        user_id = TelegramBot.objects.filter(chat_id=chat_id)
+        user = User.objects.filter(id=user_id[0].user_id)
+        event = Event.objects.filter(id=event_id).exclude(subscribers__in=user)
+        if event:
+            event[0].subscribers.add(user[0])
+            keyboard = [
+                [InlineKeyboardButton('已幫您訂閱此行程😊', callback_data='nothing')]
+            ]
+            context.bot.edit_message_reply_markup(
+                chat_id=chat_id,
+                message_id=update.callback_query.message.message_id,
+                reply_markup=InlineKeyboardMarkup(keyboard),
+            )
+        else:
+            keyboard = [
+                [InlineKeyboardButton('這個行程已經訂閱過了😊', callback_data='nothing')]
+            ]
+            context.bot.edit_message_reply_markup(
+                chat_id=chat_id,
+                message_id=update.callback_query.message.message_id,
+                reply_markup=InlineKeyboardMarkup(keyboard),
+            )
 
 
 def calendar(update, context):
