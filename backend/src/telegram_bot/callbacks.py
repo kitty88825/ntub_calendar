@@ -231,29 +231,31 @@ def meeting(update, context):
             Q(eventparticipant__role='participants'),
             Q(start_at__contains=datetime.date.today()),
         )
-    if meeting:
-        serializer = MeetingDetailSerializer(edit_meeting, many=True)
-        attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
-        edit_data = json.loads(json.dumps(serializer.data))
-        attend_data = json.loads(json.dumps(attend_serializer.data))
-
-        for i in edit_data:  # 使用者發起的會議
-            i = meeting_handle(i)
+    if edit_meeting or attend_meeting:
+        if edit_meeting:
+            serializer = MeetingDetailSerializer(edit_meeting, many=True)
+            edit_data = json.loads(json.dumps(serializer.data))
+            for i in edit_data:  # 使用者發起的會議
+                i = meeting_handle(i)
             context.bot.send_message(chat_id, i)
 
-        for i in attend_data:  # 使用者受邀的會議
-            i = meeting_handle(i)
+        if attend_meeting:
+            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)  # noqa 501
+            attend_data = json.loads(json.dumps(attend_serializer.data))
 
-            keyboard = [
-                [InlineKeyboardButton('修改出席狀態', callback_data='1')]
-            ]
+            for i in attend_data:  # 使用者受邀的會議
+                i = meeting_handle(i)
 
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            context.bot.send_message(
-                chat_id=chat_id,
-                text=i,
-                reply_markup=reply_markup,
-            )
+                keyboard = [
+                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                context.bot.send_message(
+                    chat_id=chat_id,
+                    text=i,
+                    reply_markup=reply_markup,
+                )
+
         search_keyboard = [
             [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
             [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
@@ -264,9 +266,7 @@ def meeting(update, context):
             text='如果需要查詢其他日期的會議請點選以下按鈕',
             reply_markup=InlineKeyboardMarkup(search_keyboard),
         )
-
     else:
-        context.bot.send_message(chat_id, '沒有找到已參與會議或是近期會議~')
         search_keyboard = [
             [InlineKeyboardButton('查看三天內的會議', callback_data='3天')],
             [InlineKeyboardButton('查看一個禮拜內的會議', callback_data='7天')],
@@ -274,7 +274,10 @@ def meeting(update, context):
         ]
         context.bot.send_message(
             chat_id=chat_id,
-            text='如果需要查詢其他日期的會議請點選以下按鈕',
+            text=dedent('''\
+                    今日沒有需出席的會議~
+                    如果需要查詢其他日期的會議請點選以下按鈕
+                '''),
             reply_markup=InlineKeyboardMarkup(search_keyboard),
         )
 
@@ -417,28 +420,29 @@ def meeting_callback(update, context):
             Q(nature='meeting'),
             Q(start_at__range=[today, end]),
         )
-        if meeting:
-            serializer = MeetingDetailSerializer(meeting, many=True)
-            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
-            data = json.loads(json.dumps(serializer.data))
-            attend_data = json.loads(json.dumps(attend_serializer.data))
+        if meeting or attend_meeting:
+            if meeting:
+                serializer = MeetingDetailSerializer(meeting, many=True)
+                data = json.loads(json.dumps(serializer.data))
+                for i in data:
+                    i = meeting_handle(i)
+                    context.bot.send_message(chat_id, i)
 
-            for i in data:
-                i = meeting_handle(i)
-                context.bot.send_message(chat_id, i)
+            if attend_meeting:
+                attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
+                attend_data = json.loads(json.dumps(attend_serializer.data))
+                for i in attend_data:
+                    i = meeting_handle(i)
 
-            for i in attend_data:
-                i = meeting_handle(i)
+                    keyboard = [
+                        [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                    ]
 
-                keyboard = [
-                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
-                ]
-
-                context.bot.send_message(
-                    chat_id=chat_id,
-                    text=i,
-                    reply_markup=InlineKeyboardMarkup(keyboard)
-                )
+                    context.bot.send_message(
+                        chat_id=chat_id,
+                        text=i,
+                        reply_markup=InlineKeyboardMarkup(keyboard)
+                    )
             context.bot.send_message(chat_id, '以上就是這三天的會議☺️')
         else:
             context.bot.send_message(chat_id, '這三天沒有受邀或是參與會議')
@@ -459,28 +463,28 @@ def meeting_callback(update, context):
             Q(nature='meeting'),
             Q(start_at__range=[today, end]),
         )
-        if meeting:
-            serializer = MeetingDetailSerializer(meeting, many=True)
-            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
-            data = json.loads(json.dumps(serializer.data))
-            attend_data = json.loads(json.dumps(attend_serializer.data))
+        if meeting or attend_meeting:
+            if meeting:
+                serializer = MeetingDetailSerializer(meeting, many=True)
+                data = json.loads(json.dumps(serializer.data))
+                for i in data:
+                    i = meeting_handle(i)
+                    context.bot.send_message(chat_id, i)
+            if attend_meeting:
+                attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
+                attend_data = json.loads(json.dumps(attend_serializer.data))
+                for i in attend_data:
+                    i = meeting_handle(i)
 
-            for i in data:
-                i = meeting_handle(i)
-                context.bot.send_message(chat_id, i)
+                    keyboard = [
+                        [InlineKeyboardButton('修改出席狀態', callback_data='1')]
+                    ]
 
-            for i in attend_data:
-                i = meeting_handle(i)
-
-                keyboard = [
-                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
-                ]
-
-                context.bot.send_message(
-                    chat_id=chat_id,
-                    text=i,
-                    reply_markup=InlineKeyboardMarkup(keyboard)
-                )
+                    context.bot.send_message(
+                        chat_id=chat_id,
+                        text=i,
+                        reply_markup=InlineKeyboardMarkup(keyboard)
+                    )
             context.bot.send_message(chat_id, '以上就是最近七天的會議☺️')
         else:
             context.bot.send_message(chat_id, '最近七天沒有受邀或是參與會議')
@@ -501,28 +505,28 @@ def meeting_callback(update, context):
             Q(nature='meeting'),
             Q(start_at__range=[today, end]),
         )
-        if meeting:
-            serializer = MeetingDetailSerializer(meeting, many=True)
-            attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
-            data = json.loads(json.dumps(serializer.data))
-            attend_data = json.loads(json.dumps(attend_serializer.data))
+        if meeting or attend_meeting:
+            if meeting:
+                serializer = MeetingDetailSerializer(meeting, many=True)
+                data = json.loads(json.dumps(serializer.data))
+                for i in data:
+                    i = meeting_handle(i)
+                    context.bot.send_message(chat_id, i)
+            if attend_meeting:
+                attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)
+                attend_data = json.loads(json.dumps(attend_serializer.data))
+                for i in attend_data:
+                    i = meeting_handle(i)
 
-            for i in data:
-                i = meeting_handle(i)
-                context.bot.send_message(chat_id, i)
+                    keyboard = [
+                        [InlineKeyboardButton('修改出席狀態', callback_data='1')],
+                    ]
 
-            for i in attend_data:
-                i = meeting_handle(i)
-
-                keyboard = [
-                    [InlineKeyboardButton('修改出席狀態', callback_data='1')]
-                ]
-
-                context.bot.send_message(
-                    chat_id=chat_id,
-                    text=i,
-                    reply_markup=InlineKeyboardMarkup(keyboard)
-                )
+                    context.bot.send_message(
+                        chat_id=chat_id,
+                        text=i,
+                        reply_markup=InlineKeyboardMarkup(keyboard)
+                    )
             context.bot.send_message(chat_id, '以上就是最近一個月的會議☺️')
         else:
             context.bot.send_message(chat_id, '最近一個月內沒有受邀或是參與會議')
