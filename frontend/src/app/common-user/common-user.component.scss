@@ -305,12 +305,17 @@
 
             .submit {
               background-color: $color_accent;
-              margin-left     : auto;
+              margin-left     : 10px;
             }
 
             .delete {
               background-color: rgba($color: red, $alpha: 0.6);
-              margin-left     : 10px;
+              margin-left     : auto;
+            }
+
+            .add {
+              background-color: $color_accent;
+              margin-left     : auto;
             }
           }
         }

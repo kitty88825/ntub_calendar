@@ -104,7 +104,7 @@
             <div class="item-categories__title">
               選擇訂閱
               <div class="form-group row">
-                <i class="material-icons item-categories__arrow">
+                <i class="material-icons item-categories__arrow uncursor">
                   arrow_left
                 </i>
               </div>
@@ -121,181 +121,181 @@
                 <span>學期</span>
                 <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
                   <option>整個學期</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
+                  <option value="1" *ngIf="setYear !== '所有學年度'">1</option>
+                  <option value="2" *ngIf="setYear !== '所有學年度'">2</option>
                 </select>
               </div>
               <hr>
-              <li>
-                <div class="item-categories__title active">
-                  公開行事曆
-                  <div class="form-group row">
-                    <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-                      arrow_left
-                    </i>
-                  </div>
-                </div>
-                <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
-                  <ul class="item-categories__list">
-                    <li *ngFor="let calendar of publicCalendars">
-                      <label class="container origin">
-                        <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                          (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                        <span class="checkmark"></span>
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <div class="item-categories__title active">
-                  非公開行事曆
-                  <div class="form-group row">
-                    <i class="material-icons item-categories__arrow" (click)="isClose = !isClose"
-                      [attr.aria-expanded]="!isClose" aria-controls="collapseBasic">
-                      arrow_left
-                    </i>
-                  </div>
-                </div>
-                <div id="collapseBasic" [collapse]="isClose" [isAnimated]="true" class="info">
-                  <ul class="item-categories__list">
-                    <li *ngFor="let calendar of privateCalendars">
-                      <label class="container origin">
-                        <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                          (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                        <span class="checkmark"></span>
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-            </div>
-          </li>
-        </ul>
-      </aside>
-      <article>
-        <section class="container">
-          <div class="select__block">
-            <div class="time">
-              <div class="year">
-                <span>學年度</span>
-                <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
-                  <option>所有學年度</option>
-                  <option *ngFor="let year of year">{{year}}</option>
-                </select>
-              </div>
-              <div class="term">
-                <span>學期</span>
-                <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
-                  <option>整個學期</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
+          <li>
+            <div class="item-categories__title active">
+              公開行事曆
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                  arrow_left
+                </i>
               </div>
             </div>
-            <div class="calendar">
-              <ul>
-                <li>
-                  <div class="item-categories__title active">
-                    公開行事曆
-                    <div class="form-group row">
-                      <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
-                        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
-                        arrow_left
-                      </i>
-                    </div>
-                  </div>
-                  <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
-                    <ul class="item-categories__list">
-                      <li *ngFor="let calendar of publicCalendars">
-                        <label class="container origin">
-                          <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                            (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                          <span class="checkmark"></span>
-                        </label>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-categories__title active">
-                    非公開行事曆
-                    <div class="form-group row">
-                      <i class="material-icons item-categories__arrow" (click)="isClose = !isClose"
-                        [attr.aria-expanded]="!isClose" aria-controls="collapseBasic">
-                        arrow_left
-                      </i>
-                    </div>
-                  </div>
-                  <div id="collapseBasic" [collapse]="isClose" [isAnimated]="true" class="info">
-                    <ul class="item-categories__list">
-                      <li *ngFor="let calendar of privateCalendars">
-                        <label class="container origin">
-                          <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                            (change)="selectCalendar(calendar.id)">{{calendar.name}}
-                          <span class="checkmark"></span>
-                        </label>
-                      </li>
-                    </ul>
-                  </div>
+            <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+              <ul class="item-categories__list">
+                <li *ngFor="let calendar of publicCalendars">
+                  <label class="container origin">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                      (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                    <span class="checkmark"></span>
+                  </label>
                 </li>
               </ul>
             </div>
-          </div>
-          <div class="header">
-            <h2>單位行程</h2>
-            <i class="material-icons">
-              search
-            </i>
-            <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
-          </div>
-          <hr>
-          <div class="officeEvent">
-            <ul>
-              <li *ngFor="let calendar of showEvent" class="calendarEvent">
-                <div class="officeEvent__title">
-                  {{calendar.calendarName}}
-                  <label class="container">
-                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
-                      (change)="changeAll(calendar)">全選
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-                <div class="officeEvent__content">
-                  <ul>
-                    <li *ngFor="let event of calendar.events | appFilter: searchText">
-                      <label class="container">
-                        <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
-                          (change)="changeEvent(calendar)">{{event.startDate}}&nbsp;&nbsp;&nbsp;{{event.title}}
-                        <span class="checkmark"></span>
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-            <div class="subBtn">
-              <div class="cancel" (click)="reset()">
-                <i class="material-icons">
-                  clear
+          </li>
+          <li>
+            <div class="item-categories__title active">
+              非公開行事曆
+              <div class="form-group row">
+                <i class="material-icons item-categories__arrow" (click)="isClose = !isClose"
+                  [attr.aria-expanded]="!isClose" aria-controls="collapseBasic">
+                  arrow_left
                 </i>
-                <span>重設</span>
-              </div>
-              <div class="submit" (click)="submit(main)">
-                <i class="material-icons">
-                  done_all
-                </i>
-                <span>確定</span>
               </div>
             </div>
-          </div>
-        </section>
-      </article>
-    </main>
-    <ngx-loading [show]="loading"
-      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
-      [template]="loadingTemplate">
-    </ngx-loading>
+            <div id="collapseBasic" [collapse]="isClose" [isAnimated]="true" class="info">
+              <ul class="item-categories__list">
+                <li *ngFor="let calendar of privateCalendars">
+                  <label class="container origin">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                      (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
   </div>
+  </li>
+  </ul>
+  </aside>
+  <article>
+    <section class="container">
+      <div class="select__block">
+        <div class="time">
+          <div class="year">
+            <span>學年度</span>
+            <select class="form-control" [(ngModel)]="setYear" (change)="changeYear()">
+              <option>所有學年度</option>
+              <option *ngFor="let year of year">{{year}}</option>
+            </select>
+          </div>
+          <div class="term">
+            <span>學期</span>
+            <select class="form-control" [(ngModel)]="setTerm" (change)="changeTerm()">
+              <option>整個學期</option>
+              <option value="1" *ngIf="setYear !== '所有學年度'">1</option>
+              <option value="2" *ngIf="setYear !== '所有學年度'">2</option>
+            </select>
+          </div>
+        </div>
+        <div class="calendar">
+          <ul>
+            <li>
+              <div class="item-categories__title active">
+                公開行事曆
+                <div class="form-group row">
+                  <i class="material-icons item-categories__arrow" (click)="isCollapsed = !isCollapsed"
+                    [attr.aria-expanded]="!isCollapsed" aria-controls="collapseBasic">
+                    arrow_left
+                  </i>
+                </div>
+              </div>
+              <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true" class="info">
+                <ul class="item-categories__list">
+                  <li *ngFor="let calendar of publicCalendars">
+                    <label class="container origin">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                        (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <div class="item-categories__title active">
+                非公開行事曆
+                <div class="form-group row">
+                  <i class="material-icons item-categories__arrow" (click)="isClose = !isClose"
+                    [attr.aria-expanded]="!isClose" aria-controls="collapseBasic">
+                    arrow_left
+                  </i>
+                </div>
+              </div>
+              <div id="collapseBasic" [collapse]="isClose" [isAnimated]="true" class="info">
+                <ul class="item-categories__list">
+                  <li *ngFor="let calendar of privateCalendars">
+                    <label class="container origin">
+                      <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                        (change)="selectCalendar(calendar.id)">{{calendar.name}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="header">
+        <h2>單位行程</h2>
+        <i class="material-icons">
+          search
+        </i>
+        <input type="text" placeholder="keyword" class="form-control searchbox" [(ngModel)]="searchText">
+      </div>
+      <hr>
+      <div class="officeEvent">
+        <ul>
+          <li *ngFor="let calendar of showEvent" class="calendarEvent">
+            <div class="officeEvent__title">
+              {{calendar.calendarName}}
+              <label class="container">
+                <input type="checkbox" class="material-icons" [(ngModel)]="calendar.isChecked"
+                  (change)="changeAll(calendar)">全選
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="officeEvent__content">
+              <ul>
+                <li *ngFor="let event of calendar.events | appFilter: searchText">
+                  <label class="container">
+                    <input type="checkbox" class="material-icons" [(ngModel)]="event.isChecked"
+                      (change)="changeEvent(calendar)">{{event.startDate}}&nbsp;&nbsp;&nbsp;{{event.title}}
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <div class="subBtn">
+          <div class="cancel" (click)="reset()">
+            <i class="material-icons">
+              clear
+            </i>
+            <span>重設</span>
+          </div>
+          <div class="submit" (click)="submit(main)">
+            <i class="material-icons">
+              done_all
+            </i>
+            <span>確定</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+  </main>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}"
+    [template]="loadingTemplate">
+  </ngx-loading>
+</div>
 </div>

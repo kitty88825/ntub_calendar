@@ -291,7 +291,7 @@
               </div>
             </div>
             <div class="content__btn">
-              <div class="btn submit" (click)="addCalendar()">
+              <div class="btn add" (click)="addCalendar()">
                 <i class="material-icons">
                   done_all
                 </i>
@@ -361,7 +361,7 @@
                     <select class="form-control" (change)="changeOffice(i, $event)"  *ngIf="item.authority === 'read'">
                       <option *ngFor="let calendar of allCalendar">{{calendar.name}}</option>
                     </select>
-                    <select class="form-control" (change)="changeOffice(i, $event)" *ngIf="item.authority === 'write'">
+                    <select class="form-control" (change)="changeOffice(i, $event)" *ngIf="item.authority === 'write'" [(ngModel)]="item.groupName">
                       <option *ngFor="let calendar of groupName">{{calendar.name}}</option>
                     </select>
                   </div>
@@ -479,17 +479,17 @@
               </div>
             </div>
             <div class="content__btn">
-              <div class="btn submit" (click)="editCalendar()">
-                <i class="material-icons">
-                  done_all
-                </i>
-                <span>確定</span>
-              </div>
               <div class="btn delete" (click)="deleteCalendar()">
                 <i class="material-icons">
                   delete
                 </i>
                 <span>刪除</span>
+              </div>
+              <div class="btn submit" (click)="editCalendar()">
+                <i class="material-icons">
+                  done_all
+                </i>
+                <span>確定</span>
               </div>
             </div>
           </div>

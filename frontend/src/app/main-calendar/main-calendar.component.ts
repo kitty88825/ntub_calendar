@@ -2,7 +2,7 @@ import { TokenService } from './../services/token.service';
 import { Component, ViewChild, OnInit, HostListener, TemplateRef } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { Calendar, EventInput } from '@fullcalendar/core';
+import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -23,7 +23,7 @@ const SecondaryBlue = '#006ddd';
 export class MainCalendarComponent implements OnInit {
   searchText = '';
   eventsYear = [];
-  selectYear = String(new Date().getFullYear());
+  selectYear = Number(new Date().getFullYear());
   eventsMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   selectAll: boolean;
   publicCalendar = [];
@@ -36,6 +36,7 @@ export class MainCalendarComponent implements OnInit {
   isShowCheckAll = false;
   showEvent: boolean;
   events = [];
+  eventNature = '';
   eventTitle = '';
   eventStart = '';
   eventEnd = '';
@@ -84,7 +85,7 @@ export class MainCalendarComponent implements OnInit {
             this.calendarComponent.getApi().prev();
             let date = '';
             date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
-            this.selectYear = date.substr(0, 4);
+            this.selectYear = Number(date.substr(0, 4));
             this.selectMonth = Number(date.substr(5, 2));
             this.onChange();
           }
@@ -94,7 +95,7 @@ export class MainCalendarComponent implements OnInit {
             this.calendarComponent.getApi().next();
             let date = '';
             date = formatDate(this.calendarComponent.getApi().state.currentDate, 'yyyy-MM-dd', 'en');
-            this.selectYear = date.substr(0, 4);
+            this.selectYear = Number(date.substr(0, 4));
             this.selectMonth = Number(date.substr(5, 2));
             this.onChange();
           }
@@ -115,18 +116,23 @@ export class MainCalendarComponent implements OnInit {
   hiddenCalendarEvents = [];
 
   eventClick(info) {
-    this.showEvent = true;
-    this.lookEvent.id = info.event._def.publicId;
-    this.lookEvent.title = info.event._def.title;
-    this.eventTitle = info.event._def.title;
-    this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
-    this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
-    this.eventDescription = info.event._def.extendedProps.description;
-    this.eventOffice = info.event._def.extendedProps.mainCalendarName;
-    this.eventParticipant = info.event._def.extendedProps.participants.length + '人';
-    this.eventFile = info.event._def.extendedProps.files.length + '個';
-    this.eventLocation = info.event._def.extendedProps.location;
-    this.permission = info.event._def.extendedProps.permission;
+    this.eventNature = info.event._def.extendedProps.nature;
+    if (this.eventNature === 'meeting') {
+      this.router.navigate(['/meeting', info.event._def.publicId]);
+    } else {
+      this.showEvent = true;
+      this.lookEvent.id = info.event._def.publicId;
+      this.lookEvent.title = info.event._def.title;
+      this.eventTitle = info.event._def.title;
+      this.eventStart = info.event._def.extendedProps.startDate + ' ' + info.event._def.extendedProps.sTime;
+      this.eventEnd = info.event._def.extendedProps.endDate + ' ' + info.event._def.extendedProps.eTime;
+      this.eventDescription = info.event._def.extendedProps.description;
+      this.eventOffice = info.event._def.extendedProps.mainCalendarName;
+      this.eventParticipant = info.event._def.extendedProps.participants.length + '人';
+      this.eventFile = info.event._def.extendedProps.files.length + '個';
+      this.eventLocation = info.event._def.extendedProps.location;
+      this.permission = info.event._def.extendedProps.permission;
+    }
   }
 
   toggleColours(): void {
@@ -199,9 +205,9 @@ export class MainCalendarComponent implements OnInit {
     }
 
     this.calendarEvents = calendarEvents;
-    this.events = calendarEvents;
+    this.showEvents = calendarEvents;
 
-    this.onChange();
+    this.showEventsSort();
   }
 
   displayTypePrivate(eventType: any): void {
@@ -262,14 +268,21 @@ export class MainCalendarComponent implements OnInit {
     }
 
     this.calendarEvents = calendarEvents;
-    this.events = calendarEvents;
+    this.showEvents = calendarEvents;
 
-    this.onChange();
+    this.showEventsSort();
   }
 
   ngOnInit() {
+    let year = Number(this.todayDate.substr(0, 4));
     this.loading = !this.loading;
-    this.eventsYear.push(this.todayDate.substr(0, 4));
+
+    for (let i = 0; i < 5; i++) {
+      this.eventsYear.push(year);
+      year++;
+    }
+
+    this.eventsYearFilter();
 
     this.tokenService.getUser().subscribe(
       re => {
@@ -290,7 +303,7 @@ export class MainCalendarComponent implements OnInit {
             this.publicCalendar.push({
               id: calendar.id, name: calendar.name,
               description: calendar.description, display: calendar.display,
-              color: calendar.color, permission: calendar.permissions
+              color: calendar.color, permission: calendar.permissions, isChecked: true
             });
             this.eventTypesPublic.push({ title: 'type' + calendar.id, id: calendar.id, name: calendar.name, selected: true });
 
@@ -298,7 +311,7 @@ export class MainCalendarComponent implements OnInit {
             this.privateCalendar.push({
               id: calendar.id, name: calendar.name,
               description: calendar.description, display: calendar.display,
-              color: calendar.color, permission: calendar.permissions
+              color: calendar.color, permission: calendar.permissions, isChecked: true
             });
             this.eventTypesPrivate.push({ title: 'type' + calendar.id, id: calendar.id, name: calendar.name, selected: true });
           }
@@ -310,16 +323,6 @@ export class MainCalendarComponent implements OnInit {
     this.showEventsSort();
 
     this.loading = false;
-
-    this.eventService.getEvents().subscribe(
-      data => {
-        data.forEach(event => {
-          this.eventsYear.push(event.startAt.substr(0, 4));
-        });
-
-        this.eventsYearFilter();
-      }
-    );
 
   }
 
@@ -458,6 +461,20 @@ export class MainCalendarComponent implements OnInit {
   }
 
   onChange() {
+    this.selectAll = false;
+    this.hiddenCalendarEvents.length = 0;
+    this.publicCalendar.forEach(calendar => {
+      calendar.isChecked = true;
+    });
+    this.privateCalendar.forEach(calendar => {
+      calendar.isChecked = true;
+    });
+    this.eventTypesPublic.forEach(eventType => {
+      eventType.selected = true;
+    });
+    this.eventTypesPrivate.forEach(eventType => {
+      eventType.selected = true;
+    });
     if (this.selectMonth > 9) {
       this.calendarComponent.getApi().gotoDate(this.selectYear + '-' + this.selectMonth + '-01');
     } else {
@@ -469,18 +486,23 @@ export class MainCalendarComponent implements OnInit {
   }
 
   lookEventDetail(event) {
-    this.showEvent = true;
-    this.lookEvent.id = event.id;
-    this.lookEvent.title = event.title;
-    this.eventTitle = event.title;
-    this.eventStart = event.startDate + ' ' + event.sTime;
-    this.eventEnd = event.endDate + ' ' + event.eTime;
-    this.eventDescription = event.description;
-    this.eventOffice = event.mainCalendarName;
-    this.eventParticipant = event.participants.length + '人';
-    this.eventFile = event.files.length + '個';
-    this.eventLocation = event.location;
-    this.permission = event.permission;
+    this.eventNature = event.nature;
+    if (this.eventNature === 'meeting') {
+      this.router.navigate(['/meeting', event.id]);
+    } else {
+      this.showEvent = true;
+      this.lookEvent.id = event.id;
+      this.lookEvent.title = event.title;
+      this.eventTitle = event.title;
+      this.eventStart = event.startDate + ' ' + event.sTime;
+      this.eventEnd = event.endDate + ' ' + event.eTime;
+      this.eventDescription = event.description;
+      this.eventOffice = event.mainCalendarName;
+      this.eventParticipant = event.participants.length + '人';
+      this.eventFile = event.files.length + '個';
+      this.eventLocation = event.location;
+      this.permission = event.permission;
+    }
   }
 
   showEventsSort() {
@@ -502,10 +524,6 @@ export class MainCalendarComponent implements OnInit {
   }
 
   eventsYearFilter() {
-    this.eventsYear = this.eventsYear.filter((el, i, arr) => {
-      return arr.indexOf(el) === i;
-    });
-
     this.eventsYear.sort((a, b) => {
       const startA = a;
       const startB = b;
@@ -532,9 +550,8 @@ export class MainCalendarComponent implements OnInit {
               eTime: event.endAt.substring(11, 16), files: event.attachments,
               backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
               mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name,
-              calendar: event.eventinvitecalendarSet
+              calendar: event.eventinvitecalendarSet, nature: event.nature
             });
-            console.log(this.showEvents);
             this.calendarEvents = this.showEvents;
           });
 
@@ -568,10 +585,9 @@ export class MainCalendarComponent implements OnInit {
               eTime: event.endAt.substring(11, 16), files: event.attachments,
               backgroundColor: event.eventinvitecalendarSet[0].mainCalendar.color,
               mainCalendarName: event.eventinvitecalendarSet[0].mainCalendar.name,
-              calendar: event.eventinvitecalendarSet
+              calendar: event.eventinvitecalendarSet, nature: event.nature
             });
           });
-          console.log(this.showEvents);
           this.calendarEvents = this.showEvents;
 
           this.group.forEach(group => {

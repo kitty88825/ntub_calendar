@@ -156,23 +156,23 @@ export class ExportComponent implements OnInit {
     });
     html2canvas(this.screen.nativeElement).then(canvas => {
       const pageWidth = 841.89;
-      const pageHeight = 592.28;
-      const contentWidth = canvas.width * 3 / 4;
-      const contentHeight = canvas.height * 3 / 4;
+      const pageHeight = 595; //592.28
+      const contentWidth = canvas.width * 3 / 6;
+      const contentHeight = canvas.height * 3 / 6;
       const imgWidth = pageWidth;
       const imgHeight = pageWidth / contentWidth * contentHeight;
 
-      let position = 5;
+      let position = 0;
       let leftHeight = imgHeight;
 
       const pageData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF('landscape', 'pt', 'a4');
 
       if (leftHeight <= pageHeight) {
-        pdf.addImage(pageData, 'JPEG', 5, 10, imgWidth, imgHeight);
+        pdf.addImage(pageData, 'JPEG', 0, 5, imgWidth, imgHeight + 35);
       } else {
         while (leftHeight > 0) {
-          pdf.addImage(pageData, 'JPEG', 5, position, imgWidth, imgHeight)
+          pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight + 35);
           leftHeight -= pageHeight;
           position -= pageHeight;
           if (leftHeight > 0) {
@@ -303,7 +303,8 @@ export class ExportComponent implements OnInit {
           }
         } else if (calendar.id === event.calendars[0].mainCalendar.id &&
           calendar.name === '進修部行事曆') {
-          if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) && event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
+          if (Number(this.setYear) + 1 === Number(event.startDate.substr(0, 4) - 1911) &&
+            event.startDate.substr(5, 2) <= 7 && event.startDate.substr(5, 2) > 1) {
             switch (event.startDate.substr(5, 2)) {
               case '02':
                 eventMonth_2_nd.push(event);

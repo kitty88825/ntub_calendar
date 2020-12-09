@@ -109,10 +109,10 @@
             </div>
             <div class="date-range">
               <input type="text" class="form-control startTime" bsDatepicker [(ngModel)]="setStartDate"
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate required placement="bottom">
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addStartDate placement="bottom">
               <span class="point">至</span>
               <input type="text" class="form-control endTime" bsDatepicker [(ngModel)]="setEndDate"
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate required placement="bottom">
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" #addEndDate placement="bottom">
               <div class="look" (click)="changeDate()">查看</div>
             </div>
           </div>

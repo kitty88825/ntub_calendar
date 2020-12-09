@@ -103,7 +103,7 @@
           <div class="add">
             <div class="add__title">
               <h1>新增標題</h1>
-              <input type="text" placeholder="請輸入標題" [(ngModel)]="title" (keyup)="0" required>
+              <input type="text" placeholder="請輸入標題" [(ngModel)]="title" (keyup)="0">
             </div>
             <div class="add__attributes">
               <i class="material-icons">
@@ -144,9 +144,9 @@
               </i>
               <h2>開始時間：</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                [(ngModel)]="startDate" required>
+                [(ngModel)]="startDate">
               <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-                class="timepicker" #addStartTime required></ngb-timepicker>
+                class="timepicker" #addStartTime></ngb-timepicker>
             </div>
             <div class="add__time">
               <i class="material-icons">
@@ -154,9 +154,9 @@
               </i>
               <h2>結束時間：</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                [(ngModel)]="endDate" required>
+                [(ngModel)]="endDate">
               <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-                class="timepicker" #addEndTime required></ngb-timepicker>
+                class="timepicker" #addEndTime></ngb-timepicker>
             </div>
             <div class="add__more">
               <button type="button" class="btn btn-primary disabled" (click)="isOpen = !isOpen"
@@ -249,7 +249,7 @@
           <div class="add">
             <div class="add__title">
               <h1>新增標題</h1>
-              <input type="text" placeholder="請輸入標題" [(ngModel)]="title" (keyup)="0" required>
+              <input type="text" placeholder="請輸入標題" [(ngModel)]="title" (keyup)="0">
             </div>
             <hr>
             <div class="add__attributes">
@@ -293,9 +293,9 @@
               </i>
               <h2>開始</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                required [(ngModel)]="startDate">
+               [(ngModel)]="startDate">
               <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-                class="timepicker" #addStartTime required></ngb-timepicker>
+                class="timepicker" #addStartTime></ngb-timepicker>
             </div>
             <div class="add__time">
               <i class="material-icons">
@@ -303,9 +303,9 @@
               </i>
               <h2>結束</h2>
               <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                [(ngModel)]="endDate" required>
+                [(ngModel)]="endDate">
               <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners" [meridian]="meridian"
-                class="timepicker" #addEndTime required></ngb-timepicker>
+                class="timepicker" #addEndTime></ngb-timepicker>
             </div>
             <hr>
             <div class="add__location">
@@ -539,9 +539,9 @@
                     </i>
                     <h2>開始</h2>
                     <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                      required [(ngModel)]="startDate">
+                     [(ngModel)]="startDate">
                     <ngb-timepicker [(ngModel)]="startTime" [seconds]="seconds" [spinners]="spinners"
-                      [meridian]="meridian" class="timepicker" #addStartTime required></ngb-timepicker>
+                      [meridian]="meridian" class="timepicker" #addStartTime></ngb-timepicker>
                   </div>
                   <div class="add__time">
                     <i class="material-icons">
@@ -549,9 +549,9 @@
                     </i>
                     <h2>結束</h2>
                     <input type="text" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                      [(ngModel)]="endDate" required>
+                      [(ngModel)]="endDate">
                     <ngb-timepicker [(ngModel)]="endTime" [seconds]="seconds" [spinners]="spinners"
-                      [meridian]="meridian" class="timepicker" #addEndTime required></ngb-timepicker>
+                      [meridian]="meridian" class="timepicker" #addEndTime></ngb-timepicker>
                   </div>
                   <div class="look" (click)="changeTime()">查看</div>
                 </div>

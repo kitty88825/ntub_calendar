@@ -155,24 +155,24 @@
             </div>
           </div>
           <div class="container__btn">
-            <div class="btn submit" (click)="edit()">
-              <i class="material-icons">
-                done_all
-              </i>
-              <span class="btnName">確定</span>
-            </div>
             <div class="btn delete" (click)="deleteOrigin()">
               <i class="material-icons">
                 clear
               </i>
               <span class="btnName">刪除</span>
             </div>
+            <div class="btn submit" (click)="edit()">
+              <i class="material-icons">
+                done_all
+              </i>
+              <span class="btnName">確定</span>
+            </div>
           </div>
         </section>
         <section class="container" *ngIf="hasCommonUser === false || new === true">
           <div class="container__name">
             <span class="title">會議名稱：</span>
-            <input type="text" class="meetName" value={{meetName}} [(ngModel)]="meetName" required>
+            <input type="text" class="meetName" value={{meetName}} [(ngModel)]="meetName">
           </div>
           <hr>
           <div class="container__header">
@@ -213,7 +213,7 @@
             </div>
           </div>
           <div class="container__btn">
-            <div class="btn submit" (click)="submit()">
+            <div class="btn add" (click)="submit()">
               <i class="material-icons">
                 done_all
               </i>

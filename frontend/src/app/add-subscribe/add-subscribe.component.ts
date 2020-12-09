@@ -37,9 +37,9 @@ export class AddSubscribeComponent implements OnInit {
   allEvents = [];
   todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   year = [];
-  setYear = '所有學年度';
+  setYear;
   term = [1, 2];
-  setTerm = '整個學期';
+  setTerm;
   showEvent = [];
   permission = localStorage.getItem('permission');
 
@@ -63,256 +63,328 @@ export class AddSubscribeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    let year = Number(this.todayDate.substr(0, 4)) - 1911;
     this.loading = !this.loading;
+    this.setYear = year;
+
+    for (let i = 0; i < 5; i++) {
+      this.year.push(year);
+      year++;
+    }
+
+    this.yearSort();
+
+    if (Number(this.todayDate.substr(5, 2)) >= 7 || Number(this.todayDate.substr(5, 2)) === 1) {
+      this.setTerm = 1;
+    } else {
+      this.setTerm = 2;
+    }
+
     this.calendarService.getCalendar().subscribe(
       data => {
-        data.forEach(calendar => this.calendars.push({
-          id: calendar.id, name: calendar.name, isChecked: false,
-          display: calendar.display
-        }));
-        this.eventService.getEvents().subscribe(
-          res => {
-            res.forEach(event => {
-              this.allEvents.push(event);
-              this.year.push(Number(event.startAt.substr(0, 4)) - 1911);
-            });
+        data.forEach(calendar => {
+          this.calendars.push({
+            id: calendar.id, name: calendar.name, isChecked: false,
+            display: calendar.display
+          });
+        }
+        );
 
-            this.yearSort();
-
-            this.subscriptionService.getCalendarSubscription().subscribe(
-              re => {
-                re.forEach(calendar => {
-                  this.hasSubCalendar.push(calendar);
-                  this.hasSubCalendarId.push(calendar.id);
+        if (Number(this.setTerm) === 1) {
+          this.eventService.getEventsYear(String(Number(this.setYear) + 1911) + '-08', String(Number(this.setYear) + 1912) + '-01')
+            .subscribe(
+              result => {
+                result.forEach(event => {
+                  this.allEvents.push(event);
                 });
 
-                this.calendars.forEach(calendar => {
-                  this.hasSubCalendar.forEach(hasSub => {
-                    if (calendar.id === hasSub.id) {
-                      calendar.isChecked = true;
-                    }
-                  });
-                  if (calendar.isChecked === true) {
-                    const calendarEvents = [];
-                    let calendarsName = '';
-                    let calendarId = 0;
-                    let count = 0;
-                    this.allEvents.forEach(event => {
-                      if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-                        calendarsName = calendar.name;
-                        calendarId = calendar.id;
-                        calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                      } else {
-                        count++;
-                      }
+                this.subscriptionService.getCalendarSubscription().subscribe(
+                  re => {
+                    re.forEach(calendar => {
+                      this.hasSubCalendar.push(calendar);
+                      this.hasSubCalendarId.push(calendar.id);
                     });
-                    this.calendarEventSort(calendarEvents);
 
-                    if (count === this.allEvents.length) {
-                      calendarId = calendar.id;
-                      calendarsName = calendar.name;
-                      this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: [], isChecked: true });
-                    } else {
-                      this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: true });
-                    }
-                  }
-                });
-              }
-            );
-
-            this.subscriptionService.getEventSubscription().subscribe(
-              re => {
-
-                re.forEach(events => {
-                  this.hasSubEvent.push(events);
-                  this.hasSubEventId.push(events.id);
-                });
-
-                this.calendars.forEach(calendar => {
-                  let count = 0;
-                  let unAllCalendarId = [];
-                  this.hasSubEvent.forEach(hasSub => {
-                    if (calendar.id === hasSub.eventinvitecalendarSet[0].mainCalendar.id) {
-                      calendar.isChecked = true;
-                      unAllCalendarId.push(calendar.id);
-                    }
-                  });
-
-                  unAllCalendarId = unAllCalendarId.filter((el, i, arr) => {
-                    return arr.indexOf(el) === i;
-                  });
-
-                  if (calendar.isChecked === true && unAllCalendarId.includes(calendar.id)) {
-                    const calendarEvents = [];
-                    let calendarsName = '';
-                    let calendarId = 0;
-                    this.allEvents.forEach(event => {
-                      if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-                        calendarsName = calendar.name;
-                        calendarId = calendar.id;
-                        calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                      }
-                    });
-                    this.hasSubEvent.forEach(hasSub => {
-                      calendarEvents.forEach(calendarEvent => {
-                        if (hasSub.id === calendarEvent.id) {
-                          calendarEvent.isChecked = true;
-                          count++;
+                    this.calendars.forEach(calendar => {
+                      this.hasSubCalendar.forEach(hasSub => {
+                        if (calendar.id === hasSub.id) {
+                          calendar.isChecked = true;
                         }
                       });
-                    });
-                    this.calendarEventSort(calendarEvents);
-                    this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
+                      if (calendar.isChecked === true) {
+                        const calendarEvents = [];
+                        let calendarsName = '';
+                        let calendarId = 0;
+                        let count = 0;
+                        this.allEvents.forEach(event => {
+                          if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+                            calendarsName = calendar.name;
+                            calendarId = calendar.id;
+                            calendarEvents.push({
+                              id: event.id, title: event.title,
+                              startDate: event.startAt.substr(0, 10), isChecked: true
+                            });
+                          } else {
+                            count++;
+                          }
+                        });
+                        this.calendarEventSort(calendarEvents);
 
-                    this.showEvent.forEach(event => {
-                      if (count === event.events.length && event.events.length !== 0) {
-                        event.isChecked = true;
+                        if (count === this.allEvents.length) {
+                          calendarId = calendar.id;
+                          calendarsName = calendar.name;
+                          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: [], isChecked: true });
+                        } else {
+                          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: true });
+                        }
                       }
                     });
                   }
-                });
+                );
 
-                this.loading = !this.loading;
+                this.subscriptionService.getEventSubscription().subscribe(
+                  re => {
+                    re.forEach(events => {
+                      this.hasSubEvent.push(events);
+                      this.hasSubEventId.push(events.id);
+                    });
+
+                    this.calendars.forEach(calendar => {
+                      let count = 0;
+                      let unAllCalendarId = [];
+                      this.hasSubEvent.forEach(hasSub => {
+                        if (calendar.id === hasSub.eventinvitecalendarSet[0].mainCalendar.id) {
+                          calendar.isChecked = true;
+                          unAllCalendarId.push(calendar.id);
+                        }
+                      });
+
+                      unAllCalendarId = unAllCalendarId.filter((el, i, arr) => {
+                        return arr.indexOf(el) === i;
+                      });
+
+                      if (calendar.isChecked === true && unAllCalendarId.includes(calendar.id)) {
+                        const calendarEvents = [];
+                        let calendarsName = '';
+                        let calendarId = 0;
+                        this.allEvents.forEach(event => {
+                          if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+                            calendarsName = calendar.name;
+                            calendarId = calendar.id;
+                            calendarEvents.push({
+                              id: event.id, title: event.title,
+                              startDate: event.startAt.substr(0, 10), isChecked: false
+                            });
+                          }
+                        });
+                        this.hasSubEvent.forEach(hasSub => {
+                          calendarEvents.forEach(calendarEvent => {
+                            if (hasSub.id === calendarEvent.id) {
+                              calendarEvent.isChecked = true;
+                              count++;
+                            }
+                          });
+                        });
+                        this.calendarEventSort(calendarEvents);
+                        this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
+
+                        this.showEvent.forEach(event => {
+                          if (count === event.events.length && event.events.length !== 0) {
+                            event.isChecked = true;
+                          }
+                        });
+                      }
+                    });
+
+                    this.loading = !this.loading;
+                  }
+                );
+
               }
             );
-          }
-        );
-        this.calendars.forEach(calendar => {
-          if (calendar.display === 'private') {
-            this.privateCalendars.push(calendar);
-          } else if (calendar.display === 'public') {
-            this.publicCalendars.push(calendar);
-          }
-        });
+          this.calendars.forEach(calendar => {
+            if (calendar.display === 'private') {
+              this.privateCalendars.push(calendar);
+            } else if (calendar.display === 'public') {
+              this.publicCalendars.push(calendar);
+            }
+          });
+        } else if (Number(this.setTerm) === 2) {
+          this.eventService.getEventsYear(String(Number(this.setYear) + 1912) + '-02', String(Number(this.setYear) + 1912) + '-07')
+            .subscribe(
+              result => {
+                result.forEach(event => {
+                  this.allEvents.push(event);
+                });
+
+                this.subscriptionService.getCalendarSubscription().subscribe(
+                  re => {
+                    re.forEach(calendar => {
+                      this.hasSubCalendar.push(calendar);
+                      this.hasSubCalendarId.push(calendar.id);
+                    });
+
+                    this.calendars.forEach(calendar => {
+                      this.hasSubCalendar.forEach(hasSub => {
+                        if (calendar.id === hasSub.id) {
+                          calendar.isChecked = true;
+                        }
+                      });
+                      if (calendar.isChecked === true) {
+                        const calendarEvents = [];
+                        let calendarsName = '';
+                        let calendarId = 0;
+                        let count = 0;
+                        this.allEvents.forEach(event => {
+                          if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+                            calendarsName = calendar.name;
+                            calendarId = calendar.id;
+                            calendarEvents.push({
+                              id: event.id, title: event.title,
+                              startDate: event.startAt.substr(0, 10), isChecked: true
+                            });
+                          } else {
+                            count++;
+                          }
+                        });
+                        this.calendarEventSort(calendarEvents);
+
+                        if (count === this.allEvents.length) {
+                          calendarId = calendar.id;
+                          calendarsName = calendar.name;
+                          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: [], isChecked: true });
+                        } else {
+                          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: true });
+                        }
+                      }
+                    });
+                  }
+                );
+
+                this.subscriptionService.getEventSubscription().subscribe(
+                  re => {
+                    re.forEach(events => {
+                      this.hasSubEvent.push(events);
+                      this.hasSubEventId.push(events.id);
+                    });
+
+                    this.calendars.forEach(calendar => {
+                      let count = 0;
+                      let unAllCalendarId = [];
+                      this.hasSubEvent.forEach(hasSub => {
+                        if (calendar.id === hasSub.eventinvitecalendarSet[0].mainCalendar.id) {
+                          calendar.isChecked = true;
+                          unAllCalendarId.push(calendar.id);
+                        }
+                      });
+
+                      unAllCalendarId = unAllCalendarId.filter((el, i, arr) => {
+                        return arr.indexOf(el) === i;
+                      });
+
+                      if (calendar.isChecked === true && unAllCalendarId.includes(calendar.id)) {
+                        const calendarEvents = [];
+                        let calendarsName = '';
+                        let calendarId = 0;
+                        this.allEvents.forEach(event => {
+                          if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+                            calendarsName = calendar.name;
+                            calendarId = calendar.id;
+                            calendarEvents.push({
+                              id: event.id, title: event.title,
+                              startDate: event.startAt.substr(0, 10), isChecked: false
+                            });
+                          }
+                        });
+                        this.hasSubEvent.forEach(hasSub => {
+                          calendarEvents.forEach(calendarEvent => {
+                            if (hasSub.id === calendarEvent.id) {
+                              calendarEvent.isChecked = true;
+                              count++;
+                            }
+                          });
+                        });
+                        this.calendarEventSort(calendarEvents);
+                        this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
+
+                        this.showEvent.forEach(event => {
+                          if (count === event.events.length && event.events.length !== 0) {
+                            event.isChecked = true;
+                          }
+                        });
+                      }
+                    });
+
+                    this.loading = !this.loading;
+                  }
+                );
+
+              }
+            );
+          this.calendars.forEach(calendar => {
+            if (calendar.display === 'private') {
+              this.privateCalendars.push(calendar);
+            } else if (calendar.display === 'public') {
+              this.publicCalendars.push(calendar);
+            }
+          });
+        }
       }
     );
   }
 
   selectCalendar(id) {
-    let count = 0;
-    this.calendars.forEach(calendar => {
-      if (calendar.isChecked === true && calendar.id === id) {
-        const calendarEvents = [];
-        let calendarsName = '';
-        let calendarId = 0;
-        this.allEvents.forEach(event => {
-          if (Number(this.setTerm) === 1) {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              console.log(Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) === 1);
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) > 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) === 1) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度') {
-                if (Number(event.startAt.substr(5, 2)) > 7 || Number(event.startAt.substr(5, 2)) === 1) {
-                  calendarsName = calendar.name;
-                  calendarId = calendar.id;
-                  if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                    count++;
-                    calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                  } else {
-                    calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                  }
-                }
-              }
-            }
-          } else if (Number(this.setTerm) === 2) {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) <= 7 && Number(event.startAt.substr(5, 2)) !== 1) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度' &&
-                Number(event.startAt.substr(5, 2)) <= 7 && Number(event.startAt.substr(5, 2)) !== 1) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
-            }
-          } else if (this.setTerm === '整個學期') {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) > 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) <= 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度') {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
-            }
+    this.loading = !this.loading;
+    this.allEvents.length = 0;
+
+    if (this.setYear === '所有學年度') {
+      this.setTerm = '整個學期';
+    }
+
+    if (Number(this.setTerm) === 1) {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1911) + '-08', String(Number(this.setYear) + 1912) + '-01')
+        .subscribe(
+          data => {
+            data.forEach(event => {
+              this.allEvents.push(event);
+            });
+
+            this.changeCalendarGetDate(id);
           }
-        });
-        this.calendarEventSort(calendarEvents);
+        );
+    } else if (Number(this.setTerm) === 2) {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1912) + '-02', String(Number(this.setYear) + 1912) + '-07')
+        .subscribe(
+          data => {
+            data.forEach(event => {
+              this.allEvents.push(event);
+            });
 
-        if (calendarsName !== '') {
-          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
-        } else if (calendarsName === '') {
-          this.showEvent.push({ id: calendarId, calendarName: calendar.name, events: [], isChecked: false });
-        }
-
-        this.showEvent.forEach(event => {
-          if (count === event.events.length && event.events.length !== 0) {
-            event.isChecked = true;
+            this.changeCalendarGetDate(id);
           }
-        });
+        );
+    } else if (this.setTerm === '整個學期' && this.setYear !== '所有學年度') {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1911) + '-08', String(Number(this.setYear) + 1912) + '-07')
+        .subscribe(
+          data => {
+            data.forEach(event => {
+              this.allEvents.push(event);
+            });
 
-      } else if (calendar.isChecked === false && calendar.id === id) {
-        const index = this.showEvent.findIndex(calendarEvent => calendarEvent.calendarName === calendar.name);
-        if (index >= 0) {
-          this.showEvent.splice(index, 1);
+            this.changeCalendarGetDate(id);
+          }
+        );
+    } else if (this.setYear === '所有學年度') {
+      this.eventService.getEvents().subscribe(
+        data => {
+          data.forEach(event => {
+            this.allEvents.push(event);
+          });
+
+          this.changeCalendarGetDate(id);
         }
-      }
-    });
+      );
+    }
   }
 
   calendarEventSort(calendarEvent) {
@@ -339,105 +411,75 @@ export class AddSubscribeComponent implements OnInit {
 
   resetData() {
     this.showEvent = [];
-    let count = 0;
+    this.allEvents.length = 0;
+    this.loading = !this.loading;
 
+    if (this.setYear === '所有學年度') {
+      this.setTerm = '整個學期';
+    }
+
+    if (Number(this.setTerm) === 1) {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1911) + '-08', String(Number(this.setYear) + 1912) + '-01')
+        .subscribe(
+          data => {
+            data.forEach(event => {
+              this.allEvents.push(event);
+            });
+
+            this.getData();
+          }
+        );
+    } else if (Number(this.setTerm) === 2) {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1912) + '-02', String(Number(this.setYear) + 1912) + '-07')
+        .subscribe(
+          data => {
+            data.forEach(event => {
+              this.allEvents.push(event);
+            });
+
+            this.getData();
+          }
+        );
+    } else if (this.setTerm === '整個學期' && this.setYear !== '所有學年度') {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1911) + '-08', String(Number(this.setYear) + 1912) + '-07')
+        .subscribe(
+          data => {
+            data.forEach(event => {
+              this.allEvents.push(event);
+            });
+
+            this.getData();
+          }
+        );
+    } else if (this.setYear === '所有學年度') {
+      this.eventService.getEvents().subscribe(
+        data => {
+          data.forEach(event => {
+            this.allEvents.push(event);
+          });
+
+          this.getData();
+        }
+      );
+    }
+  }
+
+  getData() {
     this.calendars.forEach(calendar => {
       if (calendar.isChecked === true) {
         const calendarEvents = [];
         let calendarsName = '';
         let calendarId = 0;
+        let count = 0;
         this.allEvents.forEach(event => {
-          if (Number(this.setTerm) === 1) {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) > 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) === 1) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度') {
-                if (Number(event.startAt.substr(5, 2)) > 7 || Number(event.startAt.substr(5, 2)) === 1) {
-                  calendarsName = calendar.name;
-                  calendarId = calendar.id;
-                  if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                    count++;
-                    calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                  } else {
-                    calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                  }
-                }
-              }
-            }
-          } else if (Number(this.setTerm) === 2) {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) <= 7 && Number(event.startAt.substr(5, 2)) !== 1) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度' &&
-                Number(event.startAt.substr(5, 2)) <= 7 && Number(event.startAt.substr(5, 2)) !== 1) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
-            }
-          } else if (this.setTerm === '整個學期') {
-            if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-              if (Number(this.setYear) === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) > 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (Number(this.setYear) + 1 === Number(event.startAt.substr(0, 4)) - 1911 &&
-                Number(event.startAt.substr(5, 2)) <= 7) {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              } else if (this.setYear === '所有學年度') {
-                calendarsName = calendar.name;
-                calendarId = calendar.id;
-                if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
-                  count++;
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
-                } else {
-                  calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
-                }
-              }
+          calendarsName = calendar.name;
+          calendarId = calendar.id;
+          if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+            if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
+              count++;
+              calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
+            } else {
+              calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
             }
           }
         });
@@ -455,6 +497,53 @@ export class AddSubscribeComponent implements OnInit {
         });
       }
     });
+    this.loading = !this.loading;
+  }
+
+  changeCalendarGetDate(id) {
+    this.calendars.forEach(calendar => {
+      if (calendar.isChecked === true && calendar.id === id) {
+        const calendarEvents = [];
+        let calendarsName = '';
+        let calendarId = 0;
+        let count = 0;
+        this.allEvents.forEach(event => {
+          calendarsName = calendar.name;
+          calendarId = calendar.id;
+          if (calendar.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
+            if (this.hasSubCalendarId.includes(calendar.id) || this.hasSubEventId.includes(event.id)) {
+              count++;
+              calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: true });
+            } else {
+              calendarEvents.push({ id: event.id, title: event.title, startDate: event.startAt.substr(0, 10), isChecked: false });
+            }
+          }
+        });
+        this.calendarEventSort(calendarEvents);
+
+        if (calendarsName !== '') {
+          this.showEvent.push({ id: calendarId, calendarName: calendarsName, events: calendarEvents, isChecked: false });
+        } else if (calendarsName === '') {
+          this.showEvent.push({ id: calendarId, calendarName: calendar.name, events: [], isChecked: false });
+        }
+
+        this.showEvent.forEach(event => {
+          if (count === event.events.length && event.events.length !== 0) {
+            event.isChecked = true;
+          }
+        });
+        this.loading = !this.loading;
+
+      } else if (calendar.isChecked === false && calendar.id === id) {
+        const index = this.showEvent.findIndex(calendarEvent => calendarEvent.calendarName === calendar.name);
+
+        if (index >= 0) {
+          this.showEvent.splice(index, 1);
+        }
+        this.loading = !this.loading;
+      }
+    });
+
   }
 
   reset() {
@@ -479,19 +568,8 @@ export class AddSubscribeComponent implements OnInit {
     this.showEvent.forEach(calendarEvents => {
       if (calendarEvents.isChecked === true && this.setYear === '所有學年度' && this.setTerm === '整個學期') {
         this.subCalendar.append('calendars', calendarEvents.id);
-        this.allEvents.forEach(event => {
-          if (calendarEvents.id === event.eventinvitecalendarSet[0].mainCalendar.id) {
-            this.unSubEvent.append('events', event.id);
-          }
-        });
       } else if (calendarEvents.isChecked === false) {
         this.unSubCalendar.append('calendars', calendarEvents.id);
-        this.allEvents.forEach(all => {
-          if (calendarEvents.id === all.eventinvitecalendarSet[0].mainCalendar.id &&
-            this.hasSubCalendarId.includes(calendarEvents.id)) {
-            this.subEvent.append('events', all.id);
-          }
-        });
         calendarEvents.events.forEach(event => {
           if (event.isChecked === true) {
             this.subEvent.append('events', event.id);
@@ -510,18 +588,32 @@ export class AddSubscribeComponent implements OnInit {
         });
       }
     });
-    this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
-      res => { }
-    );
-    this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
-      data => { }
-    );
-    this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
-      res => { }
-    );
-    this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
-      data => { }
-    );
+
+    if (this.subCalendar.get('calendars') !== null) {
+      this.subscriptionService.postCalendarSubscribe(this.subCalendar).subscribe(
+        data => {
+        }
+      );
+    }
+    if (this.unSubCalendar.get('calendars') !== null) {
+      this.subscriptionService.postCalendarUnSub(this.unSubCalendar).subscribe(
+        data => {
+        }
+      );
+    }
+    if (this.subEvent.get('events') !== null) {
+      this.subscriptionService.postEventSubscribe(this.subEvent).subscribe(
+        data => {
+        }
+      );
+    }
+    if (this.unSubEvent.get('events') !== null) {
+      this.subscriptionService.postEventUnSub(this.unSubEvent).subscribe(
+        data => {
+        }
+      );
+    }
+
     setTimeout(() => {
       this.loading = !this.loading;
       Swal.fire({
@@ -556,10 +648,6 @@ export class AddSubscribeComponent implements OnInit {
   }
 
   yearSort() {
-    this.year = this.year.filter((el, i, arr) => {
-      return arr.indexOf(el) === i;
-    });
-
     this.year.sort((a, b) => {
       if (a < b) {
         return 1;

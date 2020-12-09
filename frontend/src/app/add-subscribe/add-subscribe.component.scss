@@ -180,7 +180,10 @@
 
           i {
             color : $color_icon;
-            cursor: pointer;
+          }
+
+          i.uncursor {
+            cursor: unset !important;
           }
 
 

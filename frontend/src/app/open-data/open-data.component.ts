@@ -4,6 +4,8 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { formatDate } from '@angular/common';
 import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
+import { idLocale } from 'ngx-bootstrap/chronos';
+import Swal from 'sweetalert2';
 
 const PrimaryWhite = '#ffffff';
 const SecondaryGrey = '#ccc';
@@ -28,7 +30,6 @@ export class OpenDataComponent implements OnInit {
   setTerm = 0;
   showModal: boolean;
   exportDatas = [];
-  allEvents = [];
   permission = localStorage.getItem('permission');
   loggin = '';
 
@@ -50,38 +51,26 @@ export class OpenDataComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.loading = !this.loading;
+
+    let year = Number(this.todayDate.substr(0, 4)) - 1911;
+
     this.loggin = localStorage.getItem('loggin');
-    this.eventService.fGetEvents().subscribe(
-      data => {
-        this.calendarService.fGetCalendar().subscribe(
-          result => {
-            data.forEach(event => {
-              result.forEach(calendar => {
-                if (event.eventinvitecalendarSet[0].mainCalendar.id === calendar.id && calendar.display === 'public') {
-                  this.allEvents.push(event);
-                  this.year.push(Number(event.startAt.substr(0, 4)) - 1911);
-                }
-              });
-            });
+    for (let i = 0; i < 5; i++) {
+      this.year.push(year);
+      year++;
+    }
 
-            this.yearSort();
+    this.yearSort();
 
-            this.setYear = Number(this.todayDate.substr(0, 4)) - 1911;
-            if (Number(this.todayDate.substr(5, 2)) >= 7 || Number(this.todayDate.substr(5, 2)) === 1) {
-              this.setTerm = 1;
-            } else {
-              this.setTerm = 2;
-            }
+    this.setYear = Number(this.todayDate.substr(0, 4)) - 1911;
+    if (Number(this.todayDate.substr(5, 2)) >= 7 || Number(this.todayDate.substr(5, 2)) === 1) {
+      this.setTerm = 1;
+    } else {
+      this.setTerm = 2;
+    }
 
-            this.changeEvent();
-            this.showDataSort();
-            this.exportDataSort();
-          }
-        );
-        this.loading = !this.loading;
-      }
-    );
+    this.changeEvent();
+
   }
 
   daochu(info) {
@@ -119,8 +108,6 @@ export class OpenDataComponent implements OnInit {
     this.showDatas = [];
     this.exportDatas = [];
     this.changeEvent();
-    this.showDataSort();
-    this.exportDataSort();
   }
 
   showDataSort() {
@@ -176,31 +163,56 @@ export class OpenDataComponent implements OnInit {
   }
 
   changeEvent() {
-    this.allEvents.forEach(event => {
-      if (Number(event.startAt.substr(0, 4)) - 1911 === Number(this.setYear)) {
-        if (Number(this.setTerm) === 1) {
-          if (Number(event.startAt.substr(5, 2)) > 7) {
-            this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
-            this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
-            event.endAt.substr(0, 10), '', '', '', event.title]);
+    this.loading = !this.loading;
+
+    if (Number(this.setTerm) === 1) {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1911) + '-08', String(Number(this.setYear) + 1912) + '-01').subscribe(
+        data => {
+          if (data.length !== 0) {
+            data.forEach(event => {
+              if (event.eventinvitecalendarSet[0].mainCalendar.display === 'public') {
+                this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
+                this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
+                event.endAt.substr(0, 10), '', '', '', event.title]);
+              }
+            });
+            this.showDataSort();
+            this.exportDataSort();
+            this.loading = !this.loading;
+          } else {
+            Swal.fire({
+              text: '目前尚無資料',
+              icon: 'warning'
+            });
+            this.loading = !this.loading;
           }
         }
-      } else if (Number(event.startAt.substr(0, 4)) - 1911 === Number(this.setYear) + 1) {
-        if (Number(this.setTerm) === 1) {
-          if (Number(event.startAt.substr(5, 2)) === 1) {
-            this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
-            this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 1, event.startAt.substr(0, 10),
-            event.endAt.substr(0, 10), '', '', '', event.title]);
+      );
+    } else if (Number(this.setTerm) === 2) {
+      this.eventService.getEventsYear(String(Number(this.setYear) + 1912) + '-02', String(Number(this.setYear) + 1912) + '-07').subscribe(
+        data => {
+          if (data.length !== 0) {
+            data.forEach(event => {
+              if (event.eventinvitecalendarSet[0].mainCalendar.display === 'public') {
+                this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
+                this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 2, event.startAt.substr(0, 10),
+                event.endAt.substr(0, 10), '', '', '', event.title]);
+              }
+            });
+          } else {
+            Swal.fire({
+              text: '目前尚無資料',
+              icon: 'warning'
+            });
+            this.loading = !this.loading;
           }
-        } else if (Number(this.setTerm) === 2) {
-          if (Number(event.startAt.substr(5, 2)) <= 7 && Number(event.startAt.substr(5, 2)) !== 1) {
-            this.showDatas.push([event.startAt.substr(0, 10), event.endAt.substr(0, 10), '', '', '', event.title]);
-            this.exportDatas.push([this.setYear, '公立', '技專院校', '0051', '國立台北商業大學', 2, event.startAt.substr(0, 10),
-            event.endAt.substr(0, 10), '', '', '', event.title]);
-          }
+          this.showDataSort();
+          this.exportDataSort();
+          this.loading = !this.loading;
+
         }
-      }
-    });
+      );
+    }
   }
 
   toggleColours(): void {

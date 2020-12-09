@@ -63,7 +63,7 @@ export class EditScheduleComponent implements OnInit {
   mianCalendarId = 0;
   startDate = '';
   endDate = '';
-  permission = localStorage.getItem('permission');
+  permission = '';
   allSuggestTime = [];
   chooseUserEmail = [];
   hasUserEmail = [];
@@ -110,6 +110,18 @@ export class EditScheduleComponent implements OnInit {
         this.group = re.groups;
         this.role = re.role;
         this.myEmail = re.email;
+      }
+    );
+
+    this.calendarService.getCalendar().subscribe(
+      data => {
+        data.forEach(res => {
+          res.permissions.forEach(permission => {
+            if (this.group.includes(permission.group) && this.role === permission.role && permission.authority === 'write') {
+              this.permission = 'true';
+            }
+          });
+        });
       }
     );
 

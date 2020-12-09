@@ -5,13 +5,15 @@
   .body-content {
     .right {
       article {
-        padding-top : $height_header;
-        padding-left: $content-size_left-right*2;
+        padding-top: $height_header;
 
         section.container {
           margin          : $content-size_left-right;
           margin-top      : $content-size_top-bottom*4;
           padding         : $content-size_left-right;
+          margin-left     : auto;
+          margin-right    : auto;
+          width           : 96%;
           background-color: $color_white;
           box-shadow      : $box-shadow--container;
 

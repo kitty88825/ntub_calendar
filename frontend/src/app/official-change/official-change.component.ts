@@ -123,10 +123,10 @@ export class OfficialChangeComponent implements OnInit {
               text: '新增成功',
               icon: 'success',
             }).then((result) => {
-              this.router.navigate(['calendar']);
+              this.router.navigate(['/calendar']);
             });
           }
-        }, 2000);
+        }, 4000);
 
       } else {
         this.loading = !this.loading;
