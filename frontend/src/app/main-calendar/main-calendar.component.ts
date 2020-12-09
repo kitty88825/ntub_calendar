@@ -2,7 +2,7 @@ import { TokenService } from './../services/token.service';
 import { Component, ViewChild, OnInit, HostListener, TemplateRef } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import { Calendar, EventInput } from '@fullcalendar/core';
+import { EventInput } from '@fullcalendar/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
@@ -296,7 +296,7 @@ export class MainCalendarComponent implements OnInit {
             this.publicCalendar.push({
               id: calendar.id, name: calendar.name,
               description: calendar.description, display: calendar.display,
-              color: calendar.color, permission: calendar.permissions
+              color: calendar.color, permission: calendar.permissions, isChecked: true
             });
             this.eventTypesPublic.push({ title: 'type' + calendar.id, id: calendar.id, name: calendar.name, selected: true });
 
@@ -304,7 +304,7 @@ export class MainCalendarComponent implements OnInit {
             this.privateCalendar.push({
               id: calendar.id, name: calendar.name,
               description: calendar.description, display: calendar.display,
-              color: calendar.color, permission: calendar.permissions
+              color: calendar.color, permission: calendar.permissions, isChecked: true
             });
             this.eventTypesPrivate.push({ title: 'type' + calendar.id, id: calendar.id, name: calendar.name, selected: true });
           }
@@ -464,6 +464,20 @@ export class MainCalendarComponent implements OnInit {
   }
 
   onChange() {
+    this.selectAll = false;
+    this.hiddenCalendarEvents.length = 0;
+    this.publicCalendar.forEach(calendar => {
+      calendar.isChecked = true;
+    });
+    this.privateCalendar.forEach(calendar => {
+      calendar.isChecked = true;
+    });
+    this.eventTypesPublic.forEach(eventType => {
+      eventType.selected = true;
+    });
+    this.eventTypesPrivate.forEach(eventType => {
+      eventType.selected = true;
+    });
     if (this.selectMonth > 9) {
       this.calendarComponent.getApi().gotoDate(this.selectYear + '-' + this.selectMonth + '-01');
     } else {

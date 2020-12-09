@@ -144,6 +144,10 @@ body {
   font-family     : 'Noto Sans TC', sans-serif;
 }
 
+section {
+  max-width: none;
+}
+
 .form-control:focus {
   border-color      : none;
   box-shadow        : none;

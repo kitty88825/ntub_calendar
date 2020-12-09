@@ -107,7 +107,7 @@
                 <li *ngFor="let sub of publicCalendar; let i = index">
                   <label class="container">
                     <input type="checkbox" class="material-icons sideMenu__content__checkbox"
-                      (click)="displayTypePublic(eventTypesPublic[i])" checked>{{sub.name}}
+                      (click)="displayTypePublic(eventTypesPublic[i])" [(ngModel)]="sub.isChecked">{{sub.name}}
                     <span class="checkmark"></span>
                   </label>
                   <span class="sideMenu__content__status" [style.background-color]="sub.color"></span>
@@ -135,7 +135,7 @@
                 <li *ngFor="let sub of privateCalendar; let i = index">
                   <label class="container">
                     <input type="checkbox" class="material-icons sideMenu__content__checkbox"
-                      (click)="displayTypePrivate(eventTypesPrivate[i])" checked>{{sub.name}}
+                      (click)="displayTypePrivate(eventTypesPrivate[i])" [(ngModel)]="sub.isChecked">{{sub.name}}
                     <span class="checkmark"></span>
                   </label>
                   <span class="sideMenu__content__status" [style.background-color]="sub.color"></span>
@@ -182,7 +182,7 @@
                 <li *ngFor="let sub of publicCalendar; let i = index">
                   <label class="container">
                     <input type="checkbox" class="material-icons item-categories__checkbox"
-                      (click)="displayTypePublic(eventTypesPublic[i])" checked>{{sub.name}}
+                      (click)="displayTypePublic(eventTypesPublic[i])" [(ngModel)]="sub.isChecked">{{sub.name}}
                     <span class="checkmark"></span>
                   </label>
                   <span class="item-categories__status" [style.background-color]="sub.color"></span>
@@ -205,7 +205,7 @@
                 <li *ngFor="let sub of privateCalendar; let i = index">
                   <label class="container">
                     <input type="checkbox" class="material-icons item-categories__checkbox"
-                      (click)="displayTypePrivate(eventTypesPrivate[i])" checked>{{sub.name}}
+                      (click)="displayTypePrivate(eventTypesPrivate[i])" [(ngModel)]="sub.isChecked">{{sub.name}}
                     <span class="checkmark"></span>
                   </label>
                   <span class="item-categories__status" [style.background-color]="sub.color"></span>

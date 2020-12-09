@@ -23,11 +23,12 @@
       width: 100%;
 
       article {
-        padding-top : $height_header;
+        padding-top: $height_header;
 
         section.container,
         section.small {
           margin          : $content-size_left-right;
+          width           : 96%;
           margin-left     : auto;
           margin-right    : auto;
           margin-top      : $content-size_top-bottom*4;
@@ -213,7 +214,7 @@
               }
 
               .all_participants {
-                width        : 400px;
+                width        : 410px;
                 height       : 200px;
                 border       : 1px solid $color_form_control;
                 border-radius: 5px;
@@ -338,6 +339,7 @@
               width           : 7%;
               margin-left     : auto;
               background-color: $color_accent;
+              margin-right    : $content-size_left-right*2;
               color           : white;
               cursor          : pointer;
               font-size       : 0.9rem;
@@ -1215,6 +1217,7 @@
 
               .submit,
               .cancel {
+                margin-right: 0;
                 width: 100px;
               }
 
