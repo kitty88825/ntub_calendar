@@ -30,6 +30,9 @@ class CalendarViewSet(ModelViewSet):
                     (
                         Q(permissions__role=self.request.user.role) &
                         Q(permissions__group__user=self.request.user)
+                    ) |
+                    (
+                        Q(event__participants=self.request.user)
                     ),
                 ) \
                 .distinct()
