@@ -5,7 +5,7 @@
       "fields": {
         "calendar": 1,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -15,7 +15,7 @@
       "fields": {
         "calendar": 2,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -25,7 +25,7 @@
       "fields": {
         "calendar": 3,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -35,7 +35,7 @@
       "fields": {
         "calendar": 4,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -45,7 +45,7 @@
       "fields": {
         "calendar": 5,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -55,7 +55,7 @@
       "fields": {
         "calendar": 6,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -65,7 +65,7 @@
       "fields": {
         "calendar": 7,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -75,7 +75,7 @@
       "fields": {
         "calendar": 8,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -85,7 +85,7 @@
       "fields": {
         "calendar": 9,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -95,7 +95,7 @@
       "fields": {
         "calendar": 10,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -105,7 +105,7 @@
       "fields": {
         "calendar": 11,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -115,7 +115,7 @@
       "fields": {
         "calendar": 12,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -125,7 +125,7 @@
       "fields": {
         "calendar": 13,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -135,7 +135,7 @@
       "fields": {
         "calendar": 14,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -145,7 +145,7 @@
       "fields": {
         "calendar": 15,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -155,7 +155,7 @@
       "fields": {
         "calendar": 16,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -165,7 +165,7 @@
       "fields": {
         "calendar": 17,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -175,7 +175,7 @@
       "fields": {
         "calendar": 18,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -185,7 +185,7 @@
       "fields": {
         "calendar": 19,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -195,7 +195,7 @@
       "fields": {
         "calendar": 20,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -205,7 +205,7 @@
       "fields": {
         "calendar": 21,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -215,7 +215,7 @@
       "fields": {
         "calendar": 22,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -225,7 +225,7 @@
       "fields": {
         "calendar": 23,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -235,7 +235,7 @@
       "fields": {
         "calendar": 24,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -245,7 +245,7 @@
       "fields": {
         "calendar": 25,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -255,7 +255,7 @@
       "fields": {
         "calendar": 26,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -265,7 +265,7 @@
       "fields": {
         "calendar": 27,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -275,7 +275,7 @@
       "fields": {
         "calendar": 28,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -285,7 +285,7 @@
       "fields": {
         "calendar":29,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -295,7 +295,7 @@
       "fields": {
         "calendar": 30,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -305,7 +305,7 @@
       "fields": {
         "calendar": 31,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -315,7 +315,7 @@
       "fields": {
         "calendar": 32,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -325,7 +325,7 @@
       "fields": {
         "calendar": 33,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -335,7 +335,7 @@
       "fields": {
         "calendar": 34,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -345,7 +345,7 @@
       "fields": {
         "calendar": 35,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     },
@@ -355,7 +355,7 @@
       "fields": {
         "calendar": 36,
         "group": 35,
-        "role": "system",
+        "role": "student",
         "authority": "write"
       }
     }
