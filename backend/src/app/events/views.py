@@ -12,7 +12,7 @@ from django_filters import rest_framework as filters
 from app.users.models import User
 from core import settings
 
-from .models import Event, EventParticipant
+from .models import Event, EventParticipant, EventInviteCalendar
 from .serializers import (
     EventSerializer,
     UpdateEventAttachmentSerializer,
@@ -20,6 +20,7 @@ from .serializers import (
     SuggestedTimeSerializer,
     ResponseParticipantSerializer,
     EventParticipantSerializer,
+    BulkCreateEventSerializer,
 )
 from .permission import HasCalendarPermissionOrParticipant
 from .filters import SubscriberEventsFilter
@@ -57,6 +58,8 @@ class EventViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action.endswith('subscribe'):
             return SubscribeEventSerializer
+        elif self.action == 'bulk_create':
+            return BulkCreateEventSerializer
         elif self.action == 'suggested_time':
             return SuggestedTimeSerializer
         elif self.action == 'response':
@@ -149,6 +152,23 @@ class EventViewSet(ModelViewSet):
             return Response(EventParticipantSerializer(event).data)
         except Exception:
             return Response("You don't have permission.")
+
+    @action(['POST'], False, permission_classes=[HasCalendarPermissionOrParticipant])  # noqa: E501
+    def bulk_create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data['data']
+        events = [Event.objects.create(**d) for d in data]
+        EventInviteCalendar.objects.bulk_create(
+            [EventInviteCalendar(
+                calendar_id=serializer.data['calendar'],
+                main_calendar_id=serializer.data['calendar'],
+                event=event,
+            )
+             for event in events],
+        )
+
+        return Response(EventSerializer(events, many=True).data)
 
 
 def response_event(request, code, eid, response):
