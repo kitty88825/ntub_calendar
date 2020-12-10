@@ -3,6 +3,7 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from .models import Calendar
+from .choices import AuthorityChoice
 
 
 class SubscriberCalendarsFilter(filters.FilterSet):
@@ -33,5 +34,6 @@ class SubscriberCalendarsFilter(filters.FilterSet):
         return queryset \
             .filter(
                 Q(permissions__role=self.request.user.role),
-                Q(permissions__group__user=self.request.user)) \
+                Q(permissions__group__user=self.request.user),
+                Q(permissions__authority=AuthorityChoice.write)) \
             .distinct()
