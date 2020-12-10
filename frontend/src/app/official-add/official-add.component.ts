@@ -2,10 +2,8 @@ import { CalendarService } from './../services/calendar.service';
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { EventService } from '../services/event.service';
-import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ngxLoadingAnimationTypes, NgxLoadingComponent } from 'ngx-loading';
-import { TokenService } from './../services/token.service';
 
 const PrimaryWhite = '#ffffff';
 const SecondaryGrey = '#ccc';
@@ -29,7 +27,7 @@ export class OfficialAddComponent implements OnInit {
   endDate = this.todayDate;
   isOpen = false;
   isTrue = false;
-  permission = localStorage.getItem('permission');
+  permission = '';
   group = [];
   role = '';
 
@@ -47,8 +45,7 @@ export class OfficialAddComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private calendarService: CalendarService,
-    private tokenService: TokenService
+    private calendarService: CalendarService
   ) { }
 
   @ViewChild('addStartDate') addStartDate: ElementRef;
@@ -60,34 +57,25 @@ export class OfficialAddComponent implements OnInit {
     this.startDate.setMonth(this.startDate.getMonth() - 6);
     this.endDate = new Date();
 
-    this.tokenService.getUser().subscribe(
-      data => {
-        this.group = data.groups;
-        this.role = data.role;
-      }
-    );
-
-    this.calendarService.getCalendar().subscribe(
+    this.calendarService.getCalendarPermission().subscribe(
       data => {
         data.forEach(calendar => {
-          this.group.forEach(group => {
-            calendar.permissions.forEach(permission => {
-              if (permission.group === group && permission.role === this.role && permission.authority === 'write') {
-                this.permissionCalendars.push({ id: calendar.id, name: calendar.name, color: calendar.color });
-              }
-            });
-          });
-        });
+          this.permissionCalendars.push({ id: calendar.id, name: calendar.name, color: calendar.color });
+        })
         this.selectCalendar = this.permissionCalendars[0].name;
-      },
-      error => {
+
+        if(this.permissionCalendars.length !== 0) {
+          this.permission = 'true';
+        }
+        this.loading = !this.loading;
+      }, error => {
+        this.loading = !this.loading;
         Swal.fire({
           text: '獲取資料失敗',
           icon: 'error'
         });
       }
-    );
-    this.loading = !this.loading;
+    )
   }
 
   onChange() {
