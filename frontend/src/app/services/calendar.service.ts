@@ -24,8 +24,12 @@ export class CalendarService {
     return this.http.post<any>(environment.serverIp + 'calendar/calendars', formData, { headers: this.reqHeader });
   }
 
+  getCalendarPermission(): Observable<any> {
+    return this.http.get<any>(environment.serverIp + 'calendar/calendars?permission=True', { headers: this.reqHeader });
+  }
+
   deleteCalendar(id: number): Observable<Calendar> {
-    return this.http.delete<Calendar>(environment.serverIp + 'calendar/calendars/' + id, {headers: this.reqHeader});
+    return this.http.delete<Calendar>(environment.serverIp + 'calendar/calendars/' + id, { headers: this.reqHeader });
   }
 
   getCalendar(): Observable<Calendar[]> {

@@ -1,4 +1,3 @@
-import { TokenService } from './../services/token.service';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
@@ -25,7 +24,7 @@ type AOA = any[];
 
 export class OfficialChangeComponent implements OnInit {
   data: AOA;
-  formData = new FormData();
+  formData = { data: [], calendar: 0 };
   datas = [];
   header = ['發布標題', '內容概要', '開始日期', '結束日期'];
   istrue = 0;
@@ -36,7 +35,7 @@ export class OfficialChangeComponent implements OnInit {
   isTrue = false;
   isOpen = false;
   permissionCalendars = [];
-  permission = localStorage.getItem('permission');
+  permission = '';
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
   @ViewChild('ngxLoading', { static: false }) ngxLoadingComponent: NgxLoadingComponent;
@@ -54,39 +53,30 @@ export class OfficialChangeComponent implements OnInit {
   constructor(
     private router: Router,
     private eventService: EventService,
-    private calendarService: CalendarService,
-    private tokenService: TokenService
+    private calendarService: CalendarService
   ) { }
 
   ngOnInit(): void {
     this.loading = !this.loading;
-    this.tokenService.getUser().subscribe(
-      data => {
-        this.group = data.groups;
-        this.role = data.role;
-      }
-    );
 
-    this.calendarService.getCalendar().subscribe(
+    this.calendarService.getCalendarPermission().subscribe(
       data => {
         data.forEach(calendar => {
-          this.group.forEach(group => {
-            calendar.permissions.forEach(permission => {
-              if (permission.group === group && permission.role === this.role && permission.authority === 'write') {
-                this.permissionCalendars.push({ id: calendar.id, name: calendar.name, color: calendar.color });
-              }
-            });
-          });
-        });
-      },
-      error => {
+          this.permissionCalendars.push({ id: calendar.id, name: calendar.name, color: calendar.color });
+        })
+
+        if(this.permissionCalendars.length !== 0) {
+          this.permission = 'true';
+        }
+        this.loading = !this.loading;
+      }, error => {
+        this.loading = !this.loading;
         Swal.fire({
           text: '獲取資料失敗',
           icon: 'error'
         });
       }
-    );
-    this.loading = !this.loading;
+    )
   }
 
   add() {
@@ -96,37 +86,44 @@ export class OfficialChangeComponent implements OnInit {
       if (this.istrue === this.datas.length && this.datas.length !== 0) {
         this.loading = !this.loading;
         this.datas.forEach(event => {
-          this.permissionCalendars.forEach(calendar => {
-            if (calendar.name === this.selectedValue) {
-              this.formData.append('main_calendar_id', calendar.id);
-            }
-          });
-          this.formData.append('title', event[0]);
-          this.formData.append('location', '');
           if (event[1] === undefined) {
-            this.formData.append('description', '');
+            this.formData.data.push({
+              title: event[0], start_at: event[2] + 'T00:00:00+08:00', end_at: event[3] + 'T00:00:00+08:00',
+              nature: 'event'
+            });
           } else {
-            this.formData.append('description', event[1]);
-          }
-          this.formData.append('start_at', event[2] + 'T00:00:00+08:00');
-          this.formData.append('end_at', event[3] + 'T00:00:00+08:00');
-          this.eventService.postEvent(this.formData).subscribe(
-            data => {
-            }
-          );
-        });
-        setTimeout(() => {
-          this.loading = !this.loading;
-
-          if (this.loading === false) {
-            Swal.fire({
-              text: '新增成功',
-              icon: 'success',
-            }).then((result) => {
-              this.router.navigate(['/calendar']);
+            this.formData.data.push({
+              title: event[0], description: event[1], start_at: event[2] + 'T00:00:00+08:00', end_at: event[3] + 'T00:00:00+08:00',
+              nature: 'event'
             });
           }
-        }, 4000);
+          this.permissionCalendars.forEach(calendar => {
+            if (calendar.name === this.selectedValue) {
+              this.formData.calendar = calendar.id;
+            }
+          });
+        });
+        this.eventService.postEventMany(this.formData).subscribe(
+          data => {
+            this.loading = !this.loading;
+
+            if (this.loading === false) {
+              Swal.fire({
+                text: '新增成功',
+                icon: 'success',
+              }).then((result) => {
+                this.router.navigate(['/calendar']);
+              });
+            }
+          }, error => {
+            console.log(error);
+            this.loading = !this.loading;
+            Swal.fire({
+              text: '新增失敗',
+              icon: 'error'
+            }).then((res) => { window.location.reload() });
+          }
+        );
 
       } else {
         this.loading = !this.loading;
