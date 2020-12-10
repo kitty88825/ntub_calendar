@@ -22,7 +22,7 @@ echo "Loaddata permission.json"
 python manage.py loaddata permission.json
 
 echo "Run django Q"
-python manage.py qcluster --traceback
+python manage.py qcluster --traceback &
 
 echo "Starting uWSGI"
 uwsgi --ini uwsgi.ini
