@@ -557,11 +557,15 @@ export class MainCalendarComponent implements OnInit {
 
           this.group.forEach(group => {
             this.showEvents.forEach(event => {
-              if (event.calendar[0].mainCalendar.permissions.length !== 0 &&
-                Number(group) === event.calendar[0].mainCalendar.permissions[0].group &&
-                this.role === event.calendar[0].mainCalendar.permissions[0].role &&
-                event.calendar[0].mainCalendar.permissions[0].authority === 'write') {
-                event.permission = true;
+              console.log(event);
+              if (event.calendar[0].mainCalendar.permissions.length !== 0) {
+                event.calendar[0].mainCalendar.permissions.forEach(permission => {
+                  if (Number(group) === permission.group &&
+                    this.role === permission.role &&
+                    permission.authority === 'write') {
+                    event.permission = true;
+                  }
+                })
               }
             });
           });

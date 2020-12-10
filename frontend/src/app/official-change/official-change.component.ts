@@ -70,6 +70,7 @@ export class OfficialChangeComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => {
+          console.log(calendar);
           this.group.forEach(group => {
             calendar.permissions.forEach(permission => {
               if (permission.group === group && permission.role === this.role && permission.authority === 'write') {
