@@ -9,9 +9,6 @@ python manage.py makemigrations --noinput
 echo "Migrating Database"
 python manage.py migrate --noinput
 
-echo "Starting uWSGI"
-uwsgi --ini uwsgi.ini
-
 echo "Loaddata group.json"
 python manage.py loaddata group.json  --noinput
 
@@ -20,5 +17,8 @@ python manage.py loaddata calendar.json  --noinput
 
 echo "Run django Q"
 python manage.py qcluster --traceback
+
+echo "Starting uWSGI"
+uwsgi --ini uwsgi.ini
 
 exec "$@"
