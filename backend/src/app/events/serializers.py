@@ -312,3 +312,16 @@ class ResponseParticipantSerializer(serializers.Serializer):
     response = serializers.CharField(
         validators=[validate_response_particiapnt],
     )
+
+
+class BaseEventSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=50)
+    start_at = serializers.DateTimeField()
+    end_at = serializers.DateTimeField()
+    description = serializers.CharField(required=False)
+    nature = serializers.CharField()
+
+
+class BulkCreateEventSerializer(serializers.Serializer):
+    data = serializers.ListField(child=BaseEventSerializer())
+    calendar = serializers.IntegerField()
