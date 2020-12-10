@@ -1,0 +1,362 @@
+[
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 1,
+      "fields": {
+        "calendar": 1,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 2,
+      "fields": {
+        "calendar": 2,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 3,
+      "fields": {
+        "calendar": 3,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 4,
+      "fields": {
+        "calendar": 4,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 5,
+      "fields": {
+        "calendar": 5,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 6,
+      "fields": {
+        "calendar": 6,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 7,
+      "fields": {
+        "calendar": 7,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 8,
+      "fields": {
+        "calendar": 8,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 9,
+      "fields": {
+        "calendar": 9,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 10,
+      "fields": {
+        "calendar": 10,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 11,
+      "fields": {
+        "calendar": 11,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 12,
+      "fields": {
+        "calendar": 12,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 13,
+      "fields": {
+        "calendar": 13,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 14,
+      "fields": {
+        "calendar": 14,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 15,
+      "fields": {
+        "calendar": 15,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 16,
+      "fields": {
+        "calendar": 16,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 17,
+      "fields": {
+        "calendar": 17,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 18,
+      "fields": {
+        "calendar": 18,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 19,
+      "fields": {
+        "calendar": 19,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 20,
+      "fields": {
+        "calendar": 20,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 21,
+      "fields": {
+        "calendar": 21,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 22,
+      "fields": {
+        "calendar": 22,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 23,
+      "fields": {
+        "calendar": 23,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 24,
+      "fields": {
+        "calendar": 24,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 25,
+      "fields": {
+        "calendar": 25,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 26,
+      "fields": {
+        "calendar": 26,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 27,
+      "fields": {
+        "calendar": 27,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 28,
+      "fields": {
+        "calendar": 28,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 29,
+      "fields": {
+        "calendar":29,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 30,
+      "fields": {
+        "calendar": 30,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 31,
+      "fields": {
+        "calendar": 31,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 32,
+      "fields": {
+        "calendar": 32,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 33,
+      "fields": {
+        "calendar": 33,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 34,
+      "fields": {
+        "calendar": 34,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 35,
+      "fields": {
+        "calendar": 35,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    },
+    {
+      "model": "calendars.calendarpermission",
+      "pk": 36,
+      "fields": {
+        "calendar": 36,
+        "group": 35,
+        "role": "system",
+        "authority": "write"
+      }
+    }
+]
