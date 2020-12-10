@@ -19,11 +19,12 @@ RUN pipenv install --system --deploy
 
 ARG DOCKER_ROOT
 COPY ${DOCKER_ROOT}/entrypoint.sh /usr/local/bin/
+COPY ${DOCKER_ROOT}/rundjangoq.sh /usr/local/bin/
 #COPY ${DOCKER_ROOT}/runcelery.sh /usr/local/bin/
 
 ARG DJANGO_ROOT
 COPY ${DJANGO_ROOT}/ .
-RUN chmod +x /usr/local/bin/entrypoint.sh && chmod +x manage.py
+RUN chmod +x /usr/local/bin/entrypoint.sh && chmod +x manage.py  && chmod +x /usr/local/bin/rundjangoq.sh
 #RUN chmod +x /usr/local/bin/entrypoint.sh && chmod +x manage.py && chmod +x /usr/local/bin/runcelery.sh
 
 CMD [ "entrypoint.sh" ]
