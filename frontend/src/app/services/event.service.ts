@@ -23,6 +23,10 @@ export class EventService {
     return this.http.post<any>(environment.serverIp + 'event/events', formData, { headers: this.reqHeader });
   }
 
+  postEventMany(formData: any): Observable<any> {
+    return this.http.post<any>(environment.serverIp + 'event/events/bulk_create', formData, { headers: this.reqHeader });
+  }
+
   deleteEvent(id: number): Observable<Event> {
     return this.http.delete<Event>(`${environment.serverIp}event/events/${id}`, { headers: this.reqHeader });
   }
