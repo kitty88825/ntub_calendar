@@ -105,6 +105,18 @@ export class AddCalendarComponent implements OnInit {
       }
     );
 
+    this.calendarService.getCalendarPermission().subscribe(
+      data => {
+        data.forEach(calendar => {
+          if (calendar.display === 'public') {
+          this.publicCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
+        } else if (calendar.display === 'private') {
+          this.privateCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
+        }
+        })
+      }
+    )
+
     this.calendarService.getCalendar().subscribe(
       data => {
         data.forEach(calendar => {
@@ -112,11 +124,9 @@ export class AddCalendarComponent implements OnInit {
             calendar.permissions.forEach(permission => {
               if (permission.group === group && permission.role === this.role && permission.authority === 'write' &&
                 calendar.display === 'public') {
-                this.publicCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
                 this.permissionCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
               } else if (permission.group === group && permission.role === this.role && permission.authority === 'write' &&
                 calendar.display === 'private') {
-                this.privateCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
                 this.permissionCalendar.push({ id: calendar.id, name: calendar.name, color: calendar.color });
               }
             });
