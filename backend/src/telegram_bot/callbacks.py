@@ -669,6 +669,6 @@ def calendarSubscribe(update, context):
             context.bot.send_message(chat_id, text=f'已經訂閱的行事曆：\n{data}')
 
         context.bot.send_message(
-            chat_id, text='如過想再訂閱請用 /subscribe',
+            chat_id, text='如果想再訂閱請用 /subscribe',
             reply_markup=ReplyKeyboardRemove()
         )

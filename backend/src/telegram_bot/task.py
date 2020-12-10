@@ -50,21 +50,22 @@ def invite_meeting(bot, event_id):
     )
     for i in user:
         chat = TelegramBot.objects.filter(user_id=i.user_id)
-        reply_markup = InlineKeyboardMarkup(
-                [
+        if chat:
+            reply_markup = InlineKeyboardMarkup(
                     [
-                        InlineKeyboardButton('參加', callback_data='accept'),
-                        InlineKeyboardButton('不確定', callback_data='maybe'),
-                        InlineKeyboardButton('不參加', callback_data='decline')
+                        [
+                            InlineKeyboardButton('參加', callback_data='accept'),
+                            InlineKeyboardButton('不確定', callback_data='maybe'),
+                            InlineKeyboardButton('不參加', callback_data='decline')
+                        ]
                     ]
-                ]
-            )
+                )
 
-        event = Event.objects.filter(id=event_id)
-        serializer = MeetingDetailSerializer(event, many=True)
-        data = json.loads(json.dumps(serializer.data))
+            event = Event.objects.filter(id=event_id)
+            serializer = MeetingDetailSerializer(event, many=True)
+            data = json.loads(json.dumps(serializer.data))
 
-        data[0] = meeting_handle(data[0])
+            data[0] = meeting_handle(data[0])
 
-        bot.send_message(chat[0].chat_id, '您收到一則會議邀請！')
-        bot.send_message(chat_id=chat[0].chat_id, text=data[0], reply_markup=reply_markup)
+            bot.send_message(chat[0].chat_id, '您收到一則會議邀請！')
+            bot.send_message(chat_id=chat[0].chat_id, text=data[0], reply_markup=reply_markup)
