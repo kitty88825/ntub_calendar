@@ -18,7 +18,7 @@ class SubscriberCalendarsFilter(filters.FilterSet):
 
     class Meta:
         model = Calendar
-        fields = ['subscribed']
+        fields = ['subscribed', 'permission']
 
     def filter_subscribed(self, queryset, name, value):
         if not value or not self.request.user.is_authenticated:
