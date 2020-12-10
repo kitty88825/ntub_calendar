@@ -18,4 +18,7 @@ python manage.py loaddata group.json
 echo "Loaddata calendar.json"
 python manage.py loaddata calendar.json
 
+echo "Run django Q"
+python manage.py qcluster
+
 exec "$@"
