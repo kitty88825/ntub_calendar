@@ -13,12 +13,12 @@ echo "Starting uWSGI"
 uwsgi --ini uwsgi.ini
 
 echo "Loaddata group.json"
-python manage.py loaddata group.json
+python manage.py loaddata group.json &
 
 echo "Loaddata calendar.json"
-python manage.py loaddata calendar.json
+python manage.py loaddata calendar.json &
 
 echo "Run django Q"
-python manage.py qcluster
+python manage.py qcluster &
 
 exec "$@"
