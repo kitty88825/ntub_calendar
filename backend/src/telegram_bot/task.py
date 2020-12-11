@@ -29,17 +29,23 @@ def today(bot):
         )
         serializer = GetSerializer(event, many=True)
         serializer_calendar = GetSerializer(calendar, many=True)
+
         data_event = json.loads(json.dumps(serializer.data))
         data_calendar = json.loads(json.dumps(serializer_calendar.data))
-        data = data_event + data_calendar
 
         bot.send_message(chat_id[0], '今日行程:\n')
 
-        if data:
-            for i in data:
-                event_handle(i)
+        if data_event:
+            for i in data_event:
+                event_id = i.pop('id')
+                i = event_handle(i)
                 bot.send_message(chat_id[0], i)
-        else:
+        if data_calendar:
+            for i in data_calendar:
+                event_id = i.pop('id')
+                i = event_handle(i)
+                bot.send_message(chat_id[0], i)
+        if not data_calendar and not data_event:
             bot.send_message(chat_id[0], '今日沒有行程~')
 
 

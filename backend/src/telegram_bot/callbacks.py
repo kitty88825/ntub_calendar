@@ -254,7 +254,7 @@ def meeting(update, context):
             edit_data = json.loads(json.dumps(serializer.data))
             for i in edit_data:  # 使用者發起的會議
                 i = meeting_handle(i)
-            context.bot.send_message(chat_id, i)
+                context.bot.send_message(chat_id, i)
 
         if attend_meeting:
             attend_serializer = MeetingDetailSerializer(attend_meeting, many=True)  # noqa 501
