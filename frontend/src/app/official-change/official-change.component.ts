@@ -86,7 +86,7 @@ export class OfficialChangeComponent implements OnInit {
       if (this.istrue === this.datas.length && this.datas.length !== 0) {
         this.loading = !this.loading;
         this.datas.forEach(event => {
-          if (event[1] === undefined) {
+          if (event[1] === undefined || event[1] === '') {
             this.formData.data.push({
               title: event[0], start_at: event[2] + 'T00:00:00+08:00', end_at: event[3] + 'T00:00:00+08:00',
               nature: 'event'
@@ -116,12 +116,29 @@ export class OfficialChangeComponent implements OnInit {
               });
             }
           }, error => {
-            console.log(error);
             this.loading = !this.loading;
             Swal.fire({
               text: '新增失敗',
               icon: 'error'
-            }).then((res) => { window.location.reload() });
+            }).then((result) => {
+              if (result.value === true) {
+                Swal.fire({
+                  text: '是否前往使用教學查看正確格式?',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#aaa',
+                  confirmButtonText: '確定',
+                  cancelButtonText: '取消'
+                }).then((res) => {
+                  if (res.value === true) {
+                    this.router.navigate(['/user-teach']);
+                  } else {
+                    window.location.reload();
+                  }
+                });
+              };
+            });
           }
         );
 
@@ -130,6 +147,24 @@ export class OfficialChangeComponent implements OnInit {
         Swal.fire({
           text: '新增失敗',
           icon: 'error'
+        }).then((result) => {
+          if (result.value === true) {
+            Swal.fire({
+              text: '是否前往使用教學查看正確格式?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#aaa',
+              confirmButtonText: '確定',
+              cancelButtonText: '取消'
+            }).then((res) => {
+              if (res.value === true) {
+                this.router.navigate(['/user-teach']);
+              } else {
+                window.location.reload();
+              }
+            });
+          };
         });
       }
     } else {
