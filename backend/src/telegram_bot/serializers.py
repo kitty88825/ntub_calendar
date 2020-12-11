@@ -35,9 +35,10 @@ class EventParticipantSerializer(serializers.ModelSerializer):
     def get_user(self, event_participnat):
         user = User.objects.filter(email=event_participnat.user)
         if user:
-            return user[0].last_name + user[0].first_name
-        else:
-            return str(event_participnat.user)
+            if user[0].last_name or user[0].first_name:
+                return user[0].last_name + user[0].first_name
+            else:
+                return str(event_participnat.user)
 
 
 class MeetingDetailSerializer(serializers.ModelSerializer):
